@@ -80,7 +80,7 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 	}
 }
 
-// WithEscapingType sets the escaping type. See the definitions of UnescapingMode
+// WithUnescapingMode sets the escaping type. See the definitions of UnescapingMode
 // for more information.
 func WithUnescapingMode(mode UnescapingMode) ServeMuxOption {
 	return func(serveMux *ServeMux) {
@@ -231,7 +231,6 @@ func WithHealthEndpointAt(healthCheckClient grpc_health_v1.HealthClient, endpoin
 				w.Header().Set("Content-Type", "application/json")
 
 				if resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
-					var err error
 					switch resp.GetStatus() {
 					case grpc_health_v1.HealthCheckResponse_NOT_SERVING, grpc_health_v1.HealthCheckResponse_UNKNOWN:
 						err = status.Error(codes.Unavailable, resp.String())
