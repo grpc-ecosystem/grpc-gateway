@@ -47,8 +47,7 @@ type DefaultQueryParser struct{}
 // A value is ignored if its key starts with one of the elements in "filter".
 func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	for key, values := range values {
-		match := valuesKeyRegexp.FindStringSubmatch(key)
-		if len(match) == 3 {
+		if match := valuesKeyRegexp.FindStringSubmatch(key); len(match) == 3 {
 			key = match[1]
 			values = append([]string{match[2]}, values...)
 		}
@@ -321,15 +320,13 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		msg = fm
 	case "google.protobuf.Value":
 		var v structpb.Value
-		err := protojson.Unmarshal([]byte(value), &v)
-		if err != nil {
+		if err := protojson.Unmarshal([]byte(value), &v); err != nil {
 			return protoreflect.Value{}, err
 		}
 		msg = &v
 	case "google.protobuf.Struct":
 		var v structpb.Struct
-		err := protojson.Unmarshal([]byte(value), &v)
-		if err != nil {
+		if err := protojson.Unmarshal([]byte(value), &v); err != nil {
 			return protoreflect.Value{}, err
 		}
 		msg = &v
