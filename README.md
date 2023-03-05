@@ -491,6 +491,8 @@ $ go get github.com/grpc-ecosystem/grpc-gateway/v2@v2.6.0
 
 To get the same version of the runtime in your `go.mod`.
 
+Note that usage of remote plugins is incompatible with usage of external configuration files like [grpc_api_configuration](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/grpc_api_configuration/#using-an-external-configuration-file).
+
 ## Video intro
 
 This GopherCon UK 2019 presentation from our maintainer [@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to using the gRPC-Gateway. It uses the following boilerplate repo as a base: https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
