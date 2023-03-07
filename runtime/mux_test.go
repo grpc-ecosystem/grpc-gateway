@@ -35,8 +35,11 @@ func TestMuxServeHTTP(t *testing.T) {
 
 		respStatus  int
 		respContent string
+		respHeaders map[string]string
 
 		disablePathLengthFallback bool
+		respondOnHttpHead         bool
+		respondOnHttpOptions      bool
 		unescapingMode            runtime.UnescapingMode
 	}{
 		{
@@ -520,6 +523,167 @@ func TestMuxServeHTTP(t *testing.T) {
 			unescapingMode: runtime.UnescapingModeAllCharacters,
 			respContent:    "POST /api/v1/organizations:verb",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:         "HEAD",
+			reqPath:           "/foo",
+			respStatus:        http.StatusNoContent,
+			respHeaders:       map[string]string{"Content-Type": "application/json"},
+			respondOnHttpHead: true,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "HEAD",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:         "HEAD",
+			reqPath:           "/foo",
+			respStatus:        http.StatusOK,
+			respondOnHttpHead: true,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:         "HEAD",
+			reqPath:           "/bar",
+			respStatus:        http.StatusNotFound,
+			respondOnHttpHead: true,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:  "HEAD",
+			reqPath:    "/bar",
+			respStatus: http.StatusNotFound,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:  "HEAD",
+			reqPath:    "/foo",
+			respStatus: http.StatusNotImplemented,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "OPTIONS",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:            "OPTIONS",
+			reqPath:              "/foo",
+			respStatus:           http.StatusOK,
+			respondOnHttpOptions: true,
+			respHeaders: map[string]string{
+				"Allow": "",
+			},
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:            "OPTIONS",
+			reqPath:              "/foo",
+			respStatus:           http.StatusOK,
+			respondOnHttpOptions: true,
+			respHeaders: map[string]string{
+				// TODO: Change to "POST, HEAD, OPTIONS" when implemented.
+				"Allow": "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS",
+			},
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+				{
+					method: "PUT",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:            "OPTIONS",
+			reqPath:              "/foo",
+			respStatus:           http.StatusOK,
+			respondOnHttpOptions: true,
+			respHeaders: map[string]string{
+				// TODO: Change to "GET, POST, PUT, HEAD, OPTIONS" when implemented.
+				"Allow": "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS",
+			},
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:            "OPTIONS",
+			reqPath:              "/bar",
+			respStatus:           http.StatusNotFound,
+			respondOnHttpOptions: true,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:  "OPTIONS",
+			reqPath:    "/bar",
+			respStatus: http.StatusNotFound,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod:  "OPTIONS",
+			reqPath:    "/foo",
+			respStatus: http.StatusNotImplemented,
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			var opts []runtime.ServeMuxOption
@@ -529,6 +693,17 @@ func TestMuxServeHTTP(t *testing.T) {
 					runtime.WithDisablePathLengthFallback(),
 				)
 			}
+			if spec.respondOnHttpHead {
+				opts = append(opts,
+					runtime.WithRespondOnHttpHead(),
+				)
+			}
+			if spec.respondOnHttpOptions {
+				opts = append(opts,
+					runtime.WithRespondOnHttpOptions(),
+				)
+			}
+
 			mux := runtime.NewServeMux(opts...)
 			for _, p := range spec.patterns {
 				func(p stubPattern) {
@@ -559,6 +734,13 @@ func TestMuxServeHTTP(t *testing.T) {
 			if spec.respContent != "" {
 				if got, want := w.Body.String(), spec.respContent; got != want {
 					t.Errorf("w.Body = %q; want %q; patterns=%v; req=%v", got, want, spec.patterns, r)
+				}
+			}
+			if spec.respHeaders != nil {
+				for name, want := range spec.respHeaders {
+					if got := w.Header().Get(name); got != want {
+						t.Errorf("w.Header().Get(%q) = %q; want %q; patterns=%v; req=%v", name, got, want, spec.patterns, r)
+					}
 				}
 			}
 		})

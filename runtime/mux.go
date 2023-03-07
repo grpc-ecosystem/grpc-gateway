@@ -62,6 +62,8 @@ type ServeMux struct {
 	streamErrorHandler        StreamErrorHandlerFunc
 	routingErrorHandler       RoutingErrorHandlerFunc
 	disablePathLengthFallback bool
+	respondOnHttpHead         bool
+	respondOnHttpOptions      bool
 	unescapingMode            UnescapingMode
 }
 
@@ -254,6 +256,20 @@ func WithHealthzEndpoint(healthCheckClient grpc_health_v1.HealthClient) ServeMux
 	return WithHealthEndpointAt(healthCheckClient, "/healthz")
 }
 
+// WithRespondOnHttpHead returns a ServeMuxOption that will add a handler for HEAD requests to the created ServeMux.
+func WithRespondOnHttpHead() ServeMuxOption {
+	return func(s *ServeMux) {
+		s.respondOnHttpHead = true
+	}
+}
+
+// WithRespondOnHttpOptions returns a ServeMuxOption that will add a handler for OPTIONS requests to the created ServeMux.
+func WithRespondOnHttpOptions() ServeMuxOption {
+	return func(s *ServeMux) {
+		s.respondOnHttpOptions = true
+	}
+}
+
 // NewServeMux returns a new ServeMux whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
@@ -434,6 +450,19 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				h.h(w, r, pathParams)
 				return
 			}
+
+			if r.Method == http.MethodHead && s.respondOnHttpHead {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+			if r.Method == http.MethodOptions && s.respondOnHttpOptions {
+				// TODO: filter out methods that are not supported by this path
+				w.Header().Set("Allow", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS")
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+
 			_, outboundMarshaler := MarshalerForRequest(s, r)
 			s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusMethodNotAllowed)
 			return
