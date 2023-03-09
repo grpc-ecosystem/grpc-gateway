@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"math"
 	"os"
 	"reflect"
@@ -110,33 +109,6 @@ func reqFromFile(f *descriptor.File) *pluginpb.CodeGeneratorRequest {
 		},
 		FileToGenerate: []string{f.GetName()},
 	}
-}
-
-// captureStderr executes the given function and returns the full string of what
-// was written to os.Stderr during execution and any error the function may have returned
-func captureStderr(f func() error) (string, error) {
-	old := os.Stderr // keep backup of the real stderr
-	r, w, err := os.Pipe()
-	if err != nil {
-		return "", err
-	}
-	os.Stderr = w
-
-	outC := make(chan string)
-	// copy the output in a separate goroutine so printing can't block indefinitely
-	go func() {
-		var buf bytes.Buffer
-		_, _ = io.Copy(&buf, r)
-		outC <- buf.String()
-	}()
-
-	// calling function which stderr we are going to capture:
-	err = f()
-
-	// back to normal state
-	_ = w.Close()
-	os.Stderr = old // restoring the real stderr
-	return <-outC, err
 }
 
 func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
