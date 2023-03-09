@@ -969,8 +969,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_analytics",
         importpath = "cloud.google.com/go/analytics",
-        sum = "h1:UjyFxMFx90sTEpzj+iWprDpk/B0DDdiN2oto+SYUnSU=",
-        version = "v0.17.0",
+        sum = "h1:uN80RHQeT2jGA3uAFDZSBnKdful4bFw0IHJV6t3EkqU=",
+        version = "v0.18.0",
     )
     go_repository(
         name = "com_google_cloud_go_apigateway",
@@ -1007,14 +1007,14 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_area120",
         importpath = "cloud.google.com/go/area120",
-        sum = "h1:KC4F0UMGT/F3R9M/bVzUJ606uob49r7ONC4v/+hgKYs=",
-        version = "v0.7.0",
+        sum = "h1:ugckkFh4XkHJMPhTIx0CyvdoBxmOpMe8rNs4Ok8GAag=",
+        version = "v0.7.1",
     )
     go_repository(
         name = "com_google_cloud_go_artifactregistry",
         importpath = "cloud.google.com/go/artifactregistry",
-        sum = "h1:ysELwxk4Xx4RhjnwesW9gD82qq7T63WMM89scC+A/pg=",
-        version = "v1.11.1",
+        sum = "h1:G9kjfHsDto5AdKK93hkHWHsY9Oe+6Nv66i7o/KgUO8E=",
+        version = "v1.11.2",
     )
 
     go_repository(
@@ -1057,8 +1057,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_bigquery",
         importpath = "cloud.google.com/go/bigquery",
-        sum = "h1:p75CbwOe91ojFIlljAlNm8jQlkeDFeCScfz0b1Xr2Dk=",
-        version = "v1.47.0",
+        sum = "h1:u+fhS1jJOkPO9vdM84M8HO5VznTfVUicBeoXNKD26ho=",
+        version = "v1.48.0",
     )
     go_repository(
         name = "com_google_cloud_go_billing",
@@ -1087,8 +1087,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_cloudbuild",
         importpath = "cloud.google.com/go/cloudbuild",
-        sum = "h1:qQixbNlItgGTLxKerVj159BpVv/cKzAExV1+/mbn9DY=",
-        version = "v1.6.0",
+        sum = "h1:osBOHQJqLPqNfHfkRQXz6sCKAIEKRrupA9NaAGiLN4s=",
+        version = "v1.7.0",
     )
     go_repository(
         name = "com_google_cloud_go_clouddms",
@@ -1341,8 +1341,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_kms",
         importpath = "cloud.google.com/go/kms",
-        sum = "h1:VrJLOsMRzW7IqTTYn+OYupqF3iKSE060Nrn+PECrYjg=",
-        version = "v1.8.0",
+        sum = "h1:b0votJQa/9DSsxgHwN33/tTLA7ZHVzfWhDCrfiXijSo=",
+        version = "v1.9.0",
     )
 
     go_repository(
@@ -1575,8 +1575,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_servicecontrol",
         importpath = "cloud.google.com/go/servicecontrol",
-        sum = "h1:P1OiVugNQtWVM3hVJSzaAmye48pExx1VPX2SKT8Z4Yg=",
-        version = "v1.10.0",
+        sum = "h1:iEiMJgD1bzRL9Zu4JYDQUWfqZ+kRLX8wWZSCMBK8Qzs=",
+        version = "v1.11.0",
     )
 
     go_repository(
@@ -1657,14 +1657,14 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_translate",
         importpath = "cloud.google.com/go/translate",
-        sum = "h1:ln6tru7+QTGPkG9wAlqyF73sTeHsakmK0OKRPMgRJTM=",
-        version = "v1.5.0",
+        sum = "h1:oBW4KVgcUq4OAXGdKEdyV7lqWiA3keQ3+8FKreAQv4g=",
+        version = "v1.6.0",
     )
     go_repository(
         name = "com_google_cloud_go_video",
         importpath = "cloud.google.com/go/video",
-        sum = "h1:XyxKgoyMnD14icQLj09T+wae35ji5AEAJdVvrBLVmLE=",
-        version = "v1.12.0",
+        sum = "h1:FL+xG+4vgZASVIxcWACxneKPhFOnOX75GJhhTP7yUkQ=",
+        version = "v1.13.0",
     )
 
     go_repository(
@@ -1823,8 +1823,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:QQF+HdiI4iocoxUjjpLgvTYDHKm99C/VtTBFnfiCJos=",
-        version = "v0.0.0-20230303212802-e74f57abe488",
+        sum = "h1:DdoeryqhaXp1LtT/emMP1BRJPHHKFi5akj/nbx/zNTA=",
+        version = "v0.0.0-20230306155012-7f2fa6fef1f4",
     )
     go_repository(
         name = "org_golang_google_grpc",
