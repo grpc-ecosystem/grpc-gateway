@@ -6,10 +6,10 @@ var path = require('path');
 
 var bower = require('gulp-bower');
 var exit = require('gulp-exit');
-var gprocess = require('gulp-process');
 var shell = require('gulp-shell');
 var jasmineBrowser = require('gulp-jasmine-browser');
 var webpack = require('webpack-stream');
+const child = require('child_process');
 
 gulp.task('bower', function () {
   return bower();
@@ -24,30 +24,37 @@ gulp.task('gateway', shell.task([
 ]));
 
 gulp.task('serve-server', ['server'], function () {
-  gprocess.start('server-server', 'bin/example-server', [
+  let server = child.spawn('bin/example-server', [
     '--logtostderr',
-  ]);
-  gulp.watch('bin/example-server', ['serve-server']);
+  ], { stdio: 'inherit' });
+  process.on('exit', function () {
+    server.kill();
+  });
 });
 
 gulp.task('serve-gateway', ['gateway', 'serve-server'], function () {
-  gprocess.start('gateway-server', 'bin/example-gw', [
+  let gw = child.spawn('bin/example-gw', [
     '--logtostderr', '--openapi_dir', path.join(__dirname, "../proto/examplepb"),
-  ]);
-  gulp.watch('bin/example-gw', ['serve-gateway']);
+  ], { stdio: 'inherit' });
+  process.on('exit', function () {
+    gw.kill();
+  });
 });
 
 gulp.task('backends', ['serve-gateway', 'serve-server']);
 
 var specFiles = ['*.spec.js'];
 gulp.task('test', ['backends'], function (done) {
-  return gulp.src(specFiles)
+  let s = gulp.src(specFiles)
+  console.log(s);
+  return s
     .pipe(webpack({ output: { filename: 'spec.js' } }))
     .pipe(jasmineBrowser.specRunner({
       console: true,
       sourceMappedStacktrace: true,
     }))
     .pipe(jasmineBrowser.headless({
+      driver: 'phantomjs',
       findOpenPort: true,
       catch: true,
       throwFailures: true,
