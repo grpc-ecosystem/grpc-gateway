@@ -111,7 +111,7 @@ Alternatively, see the section on remotely managed plugin versions below.
 
 ## Usage
 
-1. Define your [gRPC](https://grpc.io/docs/) service using protocol buffers
+### 1.Define your [gRPC](https://grpc.io/docs/) service using protocol buffers
 
    `your_service.proto`:
 
@@ -129,7 +129,7 @@ Alternatively, see the section on remotely managed plugin versions below.
     }
    ```
 
-2. Generate gRPC stubs
+### 2. Generate gRPC stubs
 
    This step generates the gRPC stubs that you can use to implement the service and consume from clients:
 
@@ -165,9 +165,9 @@ Alternatively, see the section on remotely managed plugin versions below.
        your/service/v1/your_service.proto
    ```
 
-3. Implement your service in gRPC as usual.
+### 3. Implement your service in gRPC as usual.
 
-4. Generate reverse-proxy using `protoc-gen-grpc-gateway`
+### 4. Generate reverse-proxy using `protoc-gen-grpc-gateway`
 
    At this point, you have 3 options:
 
@@ -179,7 +179,7 @@ Alternatively, see the section on remotely managed plugin versions below.
      - relies on an external configuration file to set custom HTTP mappings
      - mostly useful when the source proto file isn't under your control
 
-   1. Using the default mapping
+   #### 1. Using the default mapping
 
    This requires no additional modification to the `.proto` file but does require enabling a specific option when executing the plugin.
    The `generate_unbound_methods` should be enabled.
@@ -214,7 +214,7 @@ Alternatively, see the section on remotely managed plugin versions below.
        your/service/v1/your_service.proto
    ```
 
-   2. With custom annotations
+  #### 2. With custom annotations
 
    Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
    annotation to your .proto file
@@ -300,7 +300,7 @@ Alternatively, see the section on remotely managed plugin versions below.
        your/service/v1/your_service.proto
    ```
 
-   3. External configuration
+   #### 3. External configuration
       If you do not want to (or cannot) modify the proto file for use with gRPC-Gateway you can
       alternatively use an external
       [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
@@ -341,7 +341,7 @@ Alternatively, see the section on remotely managed plugin versions below.
        your/service/v1/your_service.proto
    ```
 
-5. Write an entrypoint for the HTTP reverse-proxy server
+### 5. Write an entrypoint for the HTTP reverse-proxy server
 
    ```go
    package main
@@ -393,7 +393,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    }
    ```
 
-6. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
+### 6. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
 
    Here's what a `buf.gen.yaml` file might look like:
 
