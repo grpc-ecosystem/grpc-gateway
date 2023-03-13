@@ -5372,6 +5372,18 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: "example.Message.nested",
+						Option: &openapi_options.JSONSchema{
+							Title:       "nested field title",
+							Description: "nested field desc",
+							Example:     `"ok":"TRUE"`,
+						},
+					},
+				},
+			},
 			defs: map[string]openapiSchemaObject{
 				"exampleMessage": {
 					schemaCore: schemaCore{
@@ -5386,6 +5398,11 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 							Value: openapiSchemaObject{
 								AllOf:    []allOfEntry{{Ref: "#/definitions/MessageNested"}},
 								ReadOnly: true,
+								schemaCore: schemaCore{
+									Example: RawExample(`"ok":"TRUE"`),
+								},
+								Title:       "nested field title",
+								Description: "nested field desc",
 							},
 						},
 					},
