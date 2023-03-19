@@ -682,6 +682,9 @@ message SecurityScheme {
   // extra functionality that is not covered by the standard OpenAPI Specification.
   // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 9;
+  // The discovery URL for OpenID connect.
+  // Valid for openIdConnect.
+  string openid_connect_url = 10
 }
 
 // `SecurityRequirement` is a representation of OpenAPI v2 specification's
