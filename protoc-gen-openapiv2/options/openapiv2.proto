@@ -625,12 +625,13 @@ message SecurityDefinitions {
 // password, application and access code).
 message SecurityScheme {
   // The type of the security scheme. Valid values are "basic",
-  // "apiKey" or "oauth2".
+  // "apiKey" "oauth2" or "openIdConnect".
   enum Type {
     TYPE_INVALID = 0;
     TYPE_BASIC = 1;
     TYPE_API_KEY = 2;
     TYPE_OAUTH2 = 3;
+    TYPE_OPENID_CONNECT = 4;
   }
 
   // The location of the API key. Valid values are "query" or "header".
