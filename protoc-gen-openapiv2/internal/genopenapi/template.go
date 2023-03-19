@@ -1784,6 +1784,8 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 						newSecDefValue.Type = "apiKey"
 					case openapi_options.SecurityScheme_TYPE_OAUTH2:
 						newSecDefValue.Type = "oauth2"
+					case openapi_options.SecurityScheme_TYPE_OPENID_CONNECT:
+						newSecDefValue.Type = "openIdConnect"
 					}
 				}
 				if secDefValue.Description != "" {
