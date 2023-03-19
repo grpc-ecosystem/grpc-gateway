@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"gopkg.in/yaml.v3"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 )
 
 type param struct {
@@ -92,6 +93,7 @@ type openapiSecuritySchemeObject struct {
 	AuthorizationURL string              `json:"authorizationUrl,omitempty" yaml:"authorizationUrl,omitempty"`
 	TokenURL         string              `json:"tokenUrl,omitempty" yaml:"tokenUrl,omitempty"`
 	Scopes           openapiScopesObject `json:"scopes,omitempty" yaml:"scopes,omitempty"`
+	OpenidConnectUrl string              `json:"openIdConnectUrl,omitempty" yaml:"openIdConnectUrl,omitempty"`
 
 	extensions []extension `json:"-" yaml:"-"`
 }

@@ -684,7 +684,7 @@ message SecurityScheme {
   map<string, google.protobuf.Value> extensions = 9;
   // The discovery URL for OpenID connect.
   // Valid for openIdConnect.
-  string openid_connect_url = 10
+  string openid_connect_url = 10;
 }
 
 // `SecurityRequirement` is a representation of OpenAPI v2 specification's

@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 var (
-	filter_EchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_EchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -102,7 +102,7 @@ func local_request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_EchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_EchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -192,7 +192,7 @@ func local_request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_EchoService_Echo_2 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1, "lang": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
+	filter_EchoService_Echo_2 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1, "lang": 2}, Base: []int{1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 3, 4}}
 )
 
 func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -312,7 +312,7 @@ func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_EchoService_Echo_3 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "line_num": 1, "lineNum": 2, "status": 3, "note": 4}, Base: []int{1, 2, 3, 4, 6, 7, 0, 0, 0, 0, 6, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 2, 2, 3, 4, 5, 11, 6}}
+	filter_EchoService_Echo_3 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "line_num": 1, "status": 2, "note": 3}, Base: []int{1, 1, 2, 1, 3, 0, 0, 0}, Check: []int{0, 1, 1, 1, 4, 2, 3, 5}}
 )
 
 func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -432,7 +432,7 @@ func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_EchoService_Echo_4 = &utilities.DoubleArray{Encoding: map[string]int{"no": 0, "note": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_EchoService_Echo_4 = &utilities.DoubleArray{Encoding: map[string]int{"no": 0, "note": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -502,7 +502,7 @@ func local_request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_EchoService_Echo_5 = &utilities.DoubleArray{Encoding: map[string]int{"resource_id": 0, "resourceId": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_EchoService_Echo_5 = &utilities.DoubleArray{Encoding: map[string]int{"resource_id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_EchoService_Echo_5(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -606,7 +606,7 @@ func local_request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime
 }
 
 var (
-	filter_EchoService_EchoBody_1 = &utilities.DoubleArray{Encoding: map[string]int{"no": 0, "id": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_EchoService_EchoBody_1 = &utilities.DoubleArray{Encoding: map[string]int{"no": 0, "id": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -702,7 +702,7 @@ func local_request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime
 }
 
 var (
-	filter_EchoService_EchoBody_2 = &utilities.DoubleArray{Encoding: map[string]int{"resource_id": 0, "resourceId": 1, "id": 2}, Base: []int{1, 1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 3, 4, 4}}
+	filter_EchoService_EchoBody_2 = &utilities.DoubleArray{Encoding: map[string]int{"resource_id": 0, "id": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_EchoService_EchoBody_2(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -824,7 +824,7 @@ func local_request_EchoService_EchoDelete_0(ctx context.Context, marshaler runti
 }
 
 var (
-	filter_EchoService_EchoPatch_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_EchoService_EchoPatch_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1237,7 +1237,7 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // RegisterEchoServiceHandlerFromEndpoint is same as RegisterEchoServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
 	}

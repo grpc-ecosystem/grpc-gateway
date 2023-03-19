@@ -18,15 +18,16 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/structpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 )
 
 // The OpenAPI specification does not allow for more than one endpoint with the same HTTP method and path.
@@ -100,7 +101,8 @@ var wktSchemas = map[string]schemaCore{
 		Items: (*openapiItemsObject)(&openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
-			}}),
+			},
+		}),
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
@@ -594,10 +596,12 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 	for _, property := range *schema.Properties {
 		if property.Key == typeFieldName {
 			schema.AdditionalProperties = &openapiSchemaObject{}
-			schema.Properties = &openapiSchemaObjectProperties{keyVal{
-				Key:   "@type",
-				Value: property.Value,
-			}}
+			schema.Properties = &openapiSchemaObjectProperties{
+				keyVal{
+					Key:   "@type",
+					Value: property.Value,
+				},
+			}
 			break
 		}
 	}
@@ -742,7 +746,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			AdditionalProperties: &openapiSchemaObject{Properties: props, schemaCore: core},
+			AdditionalProperties: &openapiSchemaObject{
+				Properties: props, schemaCore: core,
+			},
 		}
 	default:
 		ret = openapiSchemaObject{
@@ -938,7 +944,9 @@ pathLoop:
 				jsonSnakeCaseName := string(jsonBuffer[1:])
 				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName, fields, msgs))
 				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
-				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
+				buffer = strings.Join([]string{
+					prev, "{", jsonCamelCaseName, "}",
+				}, "")
 				jsonBuffer = ""
 			}
 		case '/':
@@ -1151,7 +1159,9 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					}
 
 					if parameter.IsRepeated() {
-						core := schemaCore{Type: paramType, Format: paramFormat}
+						core := schemaCore{
+							Type: paramType, Format: paramFormat,
+						}
 						if parameter.IsEnum() {
 							var s []string
 							core.Enum = enumNames
@@ -1389,7 +1399,8 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							Key: "error",
 							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
+									Ref: fmt.Sprintf("#/definitions/%s", statusDef),
+								},
 							},
 						})
 					}
@@ -1835,6 +1846,9 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 					}
 					newSecDefValue.extensions = exts
 				}
+				if secDefValue.OpenidConnectUrl != "" {
+					newSecDefValue.OpenidConnectUrl = secDefValue.OpenidConnectUrl
+				}
 				s.SecurityDefinitions[secDefKey] = newSecDefValue
 			}
 		}
@@ -1948,7 +1962,9 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 		if err != nil {
 			return nil, err
 		}
-		exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
+		exts = append(exts, extension{
+			key: k, value: json.RawMessage(ext),
+		})
 	}
 	sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
 	return exts, nil
