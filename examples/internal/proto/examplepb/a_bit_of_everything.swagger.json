@@ -7511,6 +7511,9 @@
         "read": "Grants read access",
         "write": "Grants write access"
       }
+    },
+    "OIDC": {
+      "type": ""
     }
   },
   "security": [
@@ -7523,6 +7526,9 @@
       "OAuth2": [
         "read",
         "write"
+      ],
+      "OIDC": [
+        "openid"
       ]
     }
   ],

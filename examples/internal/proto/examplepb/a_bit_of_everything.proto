@@ -102,6 +102,13 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         }
       }
     }
+    security: {
+      key: "OIDC";
+      value: {
+        type: TYPE_OPENID_CONNECT;
+        openid_connect_url: "/.well-known/openid-configuration"
+      }
+    }
   }
   security: {
     security_requirement: {
@@ -119,6 +126,12 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
       value: {
         scope: "read";
         scope: "write";
+      }
+    }
+    security_requirement: {
+      key: "OIDC";
+      value: {
+        scope: "openid";
       }
     }
     security_requirement: {
