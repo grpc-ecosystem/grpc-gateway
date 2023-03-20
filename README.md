@@ -556,6 +556,8 @@ gRPC-Gateway, and a gRPC server, see
 [this example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go)
 (and its accompanying [blog post](https://web.archive.org/web/20201112010739/https://coreos.com/blog/grpc-protobufs-swagger.html)).
 
+[This example by neiro.ai](https://github.com/mynalabsai/grpc_gateway_media_example) (and its accompanying [blog post](https://medium.com/neiro-ai/grpc-gateway-for-media-api-by-neiro-9033caab12c8)) shows how mediafiles using `multipart/form-data` can be integrated into rpc messages using a middleware.
+
 ## Features
 
 ### Supported
