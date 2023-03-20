@@ -78,6 +78,9 @@ type Registry struct {
 	// in your protofile comments
 	useGoTemplate bool
 
+	// ignoreProtoComments determines whether all protofile comments should be excluded from output
+	ignoreProtoComments bool
+
 	// enumsAsInts render enum as integer, as opposed to string
 	enumsAsInts bool
 
@@ -562,6 +565,16 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+// SetIgnoreProtoComments sets ignoreProtoComments
+func (r *Registry) SetIgnoreProtoComments(ignore bool) {
+	r.ignoreProtoComments = ignore
+}
+
+// GetIgnoreProtoComments returns ignoreProtoComments
+func (r *Registry) GetIgnoreProtoComments() bool {
+	return r.ignoreProtoComments
 }
 
 // SetEnumsAsInts set enumsAsInts
