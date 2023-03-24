@@ -11,7 +11,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
@@ -19,7 +19,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
         with:
           check-latest: true
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: 10
-      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
         with:
           check-latest: true
       - run: >
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
-      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
         with:
           go-version: 1.19
           check-latest: true
@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
-      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
         with:
           check-latest: true
       - run: make install
