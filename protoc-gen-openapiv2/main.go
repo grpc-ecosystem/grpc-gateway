@@ -30,7 +30,7 @@ var (
 	useFQNForOpenAPIName           = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualified names from the proto definition (ie my.package.MyMessage.MyInnerMessage). DEPRECATED: prefer `openapi_naming_strategy=fqn`")
 	openAPINamingStrategy          = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
 	useGoTemplate                  = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
-	ignoreProtoComments            = flag.Bool("ignore_comments", false, "if set, all protofile comments are excluded from output")
+	ignoreComments                 = flag.Bool("ignore_comments", false, "if set, all protofile comments are excluded from output")
 	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
 	enumsAsInts                    = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 	simpleOperationIDs             = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation. Can introduce duplicate operationIDs, use with caution.")
@@ -120,7 +120,7 @@ func main() {
 	}
 	reg.SetOpenAPINamingStrategy(namingStrategy)
 	reg.SetUseGoTemplate(*useGoTemplate)
-	reg.SetIgnoreProtoComments(*ignoreProtoComments)
+	reg.SetIgnoreComments(*ignoreComments)
 	reg.SetEnumsAsInts(*enumsAsInts)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	reg.SetSimpleOperationIDs(*simpleOperationIDs)

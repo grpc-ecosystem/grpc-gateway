@@ -2132,7 +2132,7 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	}
 
 	// Checks whether the "ignore_comments" flag is set to true
-	if reg.GetIgnoreProtoComments() {
+	if reg.GetIgnoreComments() {
 		return nil
 	}
 
