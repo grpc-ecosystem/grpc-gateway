@@ -20,6 +20,8 @@ message MyMessage {
 }
 ```
 
+You can disable this behavior and exclude all protobuf comments from OpenAPI output via the `ignore_comments` option.
+
 ## Using proto options
 
 You can define options on your Protocol Buffer services, operations, messages, and field definitions to customize your Open API output. For instance, to customize the [OpenAPI Schema Object](https://swagger.io/specification/v2/#schemaObject) for messages and fields:
@@ -822,5 +824,28 @@ definitions:
       message:
         type: string
 ```
+
+### Ignore comments
+
+If you want to exclude all protobuf comments (such as `// buf:lint:ignore`) from OpenAPI output, use the `ignore_comments` option. Allowed values are: `true`, `false`.
+
+**Note**: `ignore_comments` and `use_go_templates` are mutually exclusive and cannot be enabled at the same time.
+
+If you are using `buf`:
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - ignore_comments=true
+```
+
+or with `protoc`:
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=ignore_comments=true ./path/to/file.proto
+```
+
 
 {% endraw %}
