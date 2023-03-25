@@ -118,9 +118,15 @@ func main() {
 		emitError(fmt.Errorf("invalid naming strategy %q", namingStrategy))
 		return
 	}
-	reg.SetOpenAPINamingStrategy(namingStrategy)
+
+	if *useGoTemplate && *ignoreComments {
+		emitError(fmt.Errorf("`ignore_comments` and `use_go_templates` are mutually exclusive and cannot be enabled at the same time"))
+		return
+	}
 	reg.SetUseGoTemplate(*useGoTemplate)
 	reg.SetIgnoreComments(*ignoreComments)
+
+	reg.SetOpenAPINamingStrategy(namingStrategy)
 	reg.SetEnumsAsInts(*enumsAsInts)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	reg.SetSimpleOperationIDs(*simpleOperationIDs)
