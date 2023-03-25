@@ -3,4 +3,4 @@ plugins:
   - name: openapiv2
     out: .
     opt:
-      - ignore_proto_comments=true
+      - ignore_comments=true
