@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: examples/internal/proto/examplepb/ignore_proto_comment.proto
+// source: examples/internal/proto/examplepb/ignore_comment.proto
 
 package examplepb
 
@@ -101,5 +101,5 @@ var FooService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "examples/internal/proto/examplepb/ignore_proto_comment.proto",
+	Metadata: "examples/internal/proto/examplepb/ignore_comment.proto",
 }

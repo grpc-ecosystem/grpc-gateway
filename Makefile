@@ -116,8 +116,8 @@ proto:
 		--template ./examples/internal/proto/examplepb/use_go_template.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/use_go_template.proto
 	buf generate \
-		--template ./examples/internal/proto/examplepb/ignore_proto_comment.buf.gen.yaml \
-		--path examples/internal/proto/examplepb/ignore_proto_comment.proto
+		--template ./examples/internal/proto/examplepb/ignore_comment.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/ignore_comment.proto
 	buf generate \
 		--template ./examples/internal/proto/examplepb/visibility_rule_preview_echo_service.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/visibility_rule_echo_service.proto

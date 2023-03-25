@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/ignore_proto_comment.proto",
+    "title": "examples/internal/proto/examplepb/ignore_comment.proto",
     "version": "version not set"
   },
   "tags": [
