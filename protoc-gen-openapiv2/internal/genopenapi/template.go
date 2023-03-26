@@ -2131,6 +2131,11 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 		return nil
 	}
 
+	// Checks whether the "ignore_comments" flag is set to true
+	if reg.GetIgnoreComments() {
+		return nil
+	}
+
 	// Checks whether the "use_go_templates" flag is set to true
 	if reg.GetUseGoTemplate() {
 		comment = goTemplateComments(comment, data, reg)
