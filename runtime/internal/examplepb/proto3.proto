@@ -7,11 +7,19 @@ import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "tagger/tagger.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
 
+message Proto3Request {
+    // this example tags this field so it does not add a 'query.' prefix on URIs
+    Proto3Message filter = 1 [(tagger.tags) = "query:\"\"" ];
+    string search_text = 2 [(tagger.tags) = "query:\"q\"" ];
+    string some_value = 3;
+}
+
 message Proto3Message {
-  // Next number: 49
+  // Next number: 50
   Proto3Message nested = 41;
   float float_value = 42;
   double double_value = 43;
@@ -61,6 +69,7 @@ message Proto3Message {
   map<string, google.protobuf.UInt64Value> map_value16 = 45;
   google.protobuf.Value struct_value_value = 47;
   google.protobuf.Struct struct_value = 48;
+  string alias_string_value = 49 [(tagger.tags) = "query:\"alias\"" ];
 }
 
 enum EnumValue {

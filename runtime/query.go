@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -68,6 +69,76 @@ func PopulateFieldFromPath(msg proto.Message, fieldPathString string, value stri
 	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value})
 }
 
+// findCustomQueryNameField finds a custom named query name via the 'query' tag or an empty query name for a struct
+// to avoid adding a "some_field." prefix to all the nested fields
+func findCustomQueryNameField(msgValue protoreflect.Message, fields protoreflect.FieldDescriptors, fieldName string) (protoreflect.Message, protoreflect.FieldDescriptor, error) {
+	t := reflect.ValueOf(msgValue.Interface())
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+	if t.Kind() != reflect.Struct {
+		return nil, nil, nil
+	}
+	numFields := t.NumField()
+	for i := 0; i < numFields; i++ {
+		ft := t.Type().Field(i)
+		field := t.Field(i)
+		if !field.CanSet() {
+			continue
+		}
+		query, ok := ft.Tag.Lookup("query")
+		if !ok {
+			continue
+		}
+		protobufName := getProtobufName(ft)
+		if query != "" && query == fieldName {
+			// use this field via the query name tag as there is no field with this proto/json name
+			fieldDescriptor := fields.ByName(protoreflect.Name(protobufName))
+			if fieldDescriptor == nil {
+				fieldDescriptor = fields.ByJSONName(getJSONName(ft))
+			}
+			if fieldDescriptor != nil {
+				return nil, fieldDescriptor, nil
+			}
+		} else if query == "" {
+			// do not use a query prefix for this struct which is handy for nested
+			// filter structs inside SomeRequest protobuf
+			fieldDescriptor := fields.ByName(protoreflect.Name(protobufName))
+			if fieldDescriptor == nil {
+				fieldDescriptor = fields.ByJSONName(getJSONName(ft))
+			}
+			if fieldDescriptor == nil || fieldDescriptor.Message() == nil || fieldDescriptor.Cardinality() == protoreflect.Repeated {
+				continue
+			}
+			msgValue2 := msgValue.Mutable(fieldDescriptor).Message()
+
+			// now see if we can find fieldName in this nested field
+			nestedFields := msgValue2.Descriptor().Fields()
+			fieldDescriptor = nestedFields.ByName(protoreflect.Name(fieldName))
+			if fieldDescriptor == nil {
+				fieldDescriptor = nestedFields.ByJSONName(fieldName)
+			}
+			if fieldDescriptor == nil {
+				// check if we have a custom query name for a field or no prefix for a nested struct
+				msgValue3, fd, err := findCustomQueryNameField(msgValue2, nestedFields, fieldName)
+				if err != nil {
+					return nil, nil, err
+				}
+				if fd != nil {
+					fieldDescriptor = fd
+					if msgValue3 != nil {
+						msgValue2 = msgValue3
+					}
+				}
+			}
+			if fieldDescriptor != nil {
+				return msgValue2, fieldDescriptor, nil
+			}
+		}
+	}
+	return nil, nil, nil
+}
+
 func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
 	if len(fieldPath) < 1 {
 		return errors.New("no field path")
@@ -85,10 +156,22 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 		if fieldDescriptor == nil {
 			fieldDescriptor = fields.ByJSONName(fieldName)
 			if fieldDescriptor == nil {
-				// We're not returning an error here because this could just be
-				// an extra query parameter that isn't part of the request.
-				grpclog.Infof("field not found in %q: %q", msgValue.Descriptor().FullName(), strings.Join(fieldPath, "."))
-				return nil
+				// check if we have a custom query name for a field or no prefix for a nested struct
+				nestedMsgValue, fd, err := findCustomQueryNameField(msgValue, fields, fieldName)
+				if err != nil {
+					return err
+				}
+				if fd != nil {
+					fieldDescriptor = fd
+					if nestedMsgValue != nil {
+						msgValue = nestedMsgValue
+					}
+				} else {
+					// We're not returning an error here because this could just be
+					// an extra query parameter that isn't part of the request.
+					grpclog.Infof("field not found in %q: %q", msgValue.Descriptor().FullName(), strings.Join(fieldPath, "."))
+					return nil
+				}
 			}
 		}
 
@@ -335,4 +418,35 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 	}
 
 	return protoreflect.ValueOfMessage(msg.ProtoReflect()), nil
+}
+
+// getProtobufName gets the field protobuf name
+func getProtobufName(ft reflect.StructField) string {
+	name := getTagName(ft.Tag.Get("protobuf"), "name=")
+	if name == "" {
+		name = ft.Name
+	}
+	return name
+}
+
+// getJSONName gets the field protobuf name
+func getJSONName(ft reflect.StructField) string {
+	name := getTagName(ft.Tag.Get("json"), "")
+	if name == "" {
+		name = ft.Name
+	}
+	return name
+}
+
+func getTagName(text, prefix string) string {
+	values := strings.Split(text, ",")
+	for _, v := range values {
+		switch {
+		case prefix != "" && strings.HasPrefix(v, prefix):
+			return v[len(prefix):]
+		case prefix == "" && v != "":
+			return v
+		}
+	}
+	return ""
 }
