@@ -371,7 +371,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -412,7 +416,11 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -507,8 +515,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -730,7 +750,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -771,7 +795,11 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -866,8 +894,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -1087,7 +1127,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -1126,7 +1170,11 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -1213,8 +1261,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -1598,7 +1658,11 @@ This API creates a new ABitOfEverything
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "BytesValue" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -1625,7 +1689,11 @@ type ABitOfEverythingServiceCreateOpts struct {
 	SingleNestedOk optional.String
 	BytesValue optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
 	RepeatedEnumAnnotation optional.Interface
@@ -1695,8 +1763,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
 		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
@@ -2241,7 +2321,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -2284,7 +2368,11 @@ type ABitOfEverythingServiceCustomOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -2382,8 +2470,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -2608,7 +2708,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -2651,7 +2755,11 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -2749,8 +2857,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -3246,7 +3366,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -3289,7 +3413,11 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -3387,8 +3515,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -3767,7 +3907,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -3810,7 +3954,11 @@ type ABitOfEverythingServiceExistsOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -3908,8 +4056,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
@@ -4249,7 +4409,11 @@ ABitOfEverythingServiceApiService
      * @param "Sint32Value" (optional.Int32) - 
      * @param "Sint64Value" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
+     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -4292,7 +4456,11 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	Sint32Value optional.Int32
 	Sint64Value optional.String
 	RepeatedStringValue optional.Interface
+	OneofEmpty optional.Interface
 	OneofString optional.String
+	MapValue optional.Interface
+	MappedStringValue optional.String
+	MappedNestedValue optional.Interface
 	NonConventionalNameValue optional.String
 	TimestampValue optional.Time
 	RepeatedEnumValue optional.Interface
@@ -4390,8 +4558,20 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
 		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
+	if localVarOptionals != nil && localVarOptionals.OneofEmpty.IsSet() {
+		localVarQueryParams.Add("oneofEmpty", parameterToString(localVarOptionals.OneofEmpty.Value(), ""))
+	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
 		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MapValue.IsSet() {
+		localVarQueryParams.Add("mapValue", parameterToString(localVarOptionals.MapValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedStringValue.IsSet() {
+		localVarQueryParams.Add("mappedStringValue", parameterToString(localVarOptionals.MappedStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.MappedNestedValue.IsSet() {
+		localVarQueryParams.Add("mappedNestedValue", parameterToString(localVarOptionals.MappedNestedValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))

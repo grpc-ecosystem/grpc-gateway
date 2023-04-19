@@ -8668,3 +8668,201 @@ func TestArrayMessageItemsType(t *testing.T) {
 		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
+
+func TestQueryParameterType(t *testing.T) {
+	ntDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("AddressEntry"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("key"),
+				Number:   proto.Int32(1),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				JsonName: proto.String("key"),
+			},
+			{
+				Name:     proto.String("value"),
+				Number:   proto.Int32(2),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+				JsonName: proto.String("value"),
+			},
+		},
+		Options: &descriptorpb.MessageOptions{
+			MapEntry: proto.Bool(true),
+		},
+	}
+
+	msgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Person"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("Address"),
+				Number:   proto.Int32(1),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.com.Person.AddressEntry"),
+				JsonName: proto.String("Address"),
+			},
+		},
+		NestedType: []*descriptorpb.DescriptorProto{
+			ntDesc,
+		},
+	}
+
+	nesteDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleResponse"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("Key"),
+				Number:   proto.Int32(1),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				JsonName: proto.String("Key"),
+			},
+			{
+				Name:     proto.String("Value"),
+				Number:   proto.Int32(2),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+				JsonName: proto.String("Value"),
+			},
+		},
+	}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("Person"),
+		OutputType: proto.String("ExampleResponse"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgDesc,
+	}
+	nt := &descriptor.Message{
+		DescriptorProto: ntDesc,
+	}
+	nest := &descriptor.Message{
+		DescriptorProto: nesteDesc,
+	}
+	msg.Fields = []*descriptor.Field{
+		{
+			Message:              msg,
+			FieldDescriptorProto: msg.GetField()[0],
+		},
+	}
+	nt.Fields = []*descriptor.Field{
+		{
+			Message:              nt,
+			FieldDescriptorProto: msg.GetField()[0],
+		},
+	}
+	nest.Fields = []*descriptor.Field{
+		{
+			Message:              nest,
+			FieldDescriptorProto: nest.GetField()[0],
+		},
+		{
+			Message:              nest,
+			FieldDescriptorProto: nest.GetField()[1],
+		},
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("person.proto"),
+			Package:        proto.String("example.com"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nesteDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg, nest},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          nest,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	expect := openapiPathsObject{
+		"/v1/echo": openapiPathItemObject{
+			Get: &openapiOperationObject{
+				Parameters: openapiParametersObject{
+					{
+						Name:        "Address[string]",
+						Description: `This is a request variable of the map type. The query format is "map_name[key]=value", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age["bob"]=18`,
+						In:          "query",
+						Type:        "integer",
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(false)
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
+			{
+				Name:           proto.String("person.proto"),
+				Package:        proto.String("example.com"),
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nesteDesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("person.proto"),
+				},
+			},
+		},
+	})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := expect["/v1/echo"].Get.Parameters, result.Paths["/v1/echo"].Get.Parameters, "Produces"; !reflect.DeepEqual(is, want) {
+
+		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
+	}
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
