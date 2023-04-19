@@ -121,7 +121,7 @@ jobs:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
       - uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5 # v3
         with:
-          version: v1.45
+          version: v1.52.2
           args: --enable goimports
   fuzz:
     runs-on: ubuntu-latest
