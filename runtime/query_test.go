@@ -517,6 +517,42 @@ func TestPopulateParameters(t *testing.T) {
 	}
 }
 
+func TestPopulateParametersCustomQuery(t *testing.T) {
+	for _, spec := range []struct {
+		values url.Values
+		filter *utilities.DoubleArray
+		want   proto.Message
+	}{
+		{
+			values: url.Values{
+				"string_value": {"u"}, // allows direct 'string_value' instead of 'filter.string_value' due to query:"" tag
+				"some_value":   {"v"},
+				"q":            {"sampleSearchText"}, // shorter query name instead of 'search_text' due to query:"q"
+				"alias":        {"sampleAliasText"},  // alias of nested value on the nested filter structure
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Request{
+				Filter: &examplepb.Proto3Message{
+					StringValue:      "u",
+					AliasStringValue: "sampleAliasText",
+				},
+				SomeValue:  "v",
+				SearchText: "sampleSearchText",
+			},
+		},
+	} {
+		msg := spec.want.ProtoReflect().New().Interface()
+		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
+		if err != nil {
+			t.Errorf("runtime.PoplateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
+			continue
+		}
+		if got, want := msg, spec.want; !proto.Equal(got, want) {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v = %v; want %v", spec.values, spec.filter, got, want)
+		}
+	}
+}
+
 func TestPopulateParametersWithFilters(t *testing.T) {
 	for _, spec := range []struct {
 		values url.Values
