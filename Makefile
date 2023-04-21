@@ -148,3 +148,14 @@ clean:
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 
 .PHONY: generate test clean proto install
+
+
+
+
+proto3:
+	protoc -I. --go_out=. runtime/internal/examplepb/proto3.proto
+	protoc -I. --gotag_out=:. runtime/internal/examplepb/proto3.proto
+	cp -r github.com/grpc-ecosystem/grpc-gateway/v2/runtime/* runtime
+	rm -rf github.com
+
+

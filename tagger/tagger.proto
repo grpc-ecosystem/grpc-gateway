@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package tagger;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/srikrsna/protoc-gen-gotag/tagger;tagger";
+
+// Tags are applied at the field level
+extend google.protobuf.FieldOptions {
+    // Multiple Tags can be specified.
+    string tags = 847939;
+}
+
+extend google.protobuf.OneofOptions {
+    // Multiple Tags can be specified.
+    string oneof_tags = 847939;
+}
