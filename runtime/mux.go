@@ -320,7 +320,12 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		path = r.URL.RawPath
 	}
 
-	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
+	override := r.Header.Get("X-Method-Override")
+	if override == "" {
+		override = r.Header.Get("X-HTTP-Method-Override")
+	}
+
+	if override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
 		if err := r.ParseForm(); err != nil {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
@@ -428,7 +433,8 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			// X-HTTP-Method-Override is optional. Always allow fallback to POST.
+			// X-Method-Override or X-HTTP-Method-Override is optional.
+			// Always allow fallback to POST.
 			// Also, only consider POST -> GET fallbacks, and avoid falling back to
 			// potentially dangerous operations like DELETE.
 			if s.isPathLengthFallback(r) && m == http.MethodGet {
