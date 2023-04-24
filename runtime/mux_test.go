@@ -222,7 +222,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			reqMethod: "POST",
 			reqPath:   "/foo",
 			headers: map[string]string{
-				"Content-Type":           "application/x-www-form-urlencoded",
+				"Content-Type":      "application/x-www-form-urlencoded",
 				"X-Method-Override": "GET",
 			},
 			respStatus:  http.StatusOK,
