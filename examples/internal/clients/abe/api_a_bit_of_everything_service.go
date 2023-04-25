@@ -27,8 +27,8 @@ var (
 
 type ABitOfEverythingServiceApiService service
 
-/* 
-ABitOfEverythingServiceApiService
+/*
+ABitOfEverythingServiceCheckExternalNestedPathEnum
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param value
 
@@ -183,8 +183,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
-ABitOfEverythingServiceApiService
+/*
+ABitOfEverythingServiceCheckExternalPathEnum
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param value
 
@@ -1409,8 +1409,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
-ABitOfEverythingServiceApiService
+/*
+ABitOfEverythingServiceCheckStatus
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return ExamplepbCheckStatusResponse
