@@ -134,6 +134,10 @@ proto:
 		--template ./examples/internal/proto/examplepb/visibility_rule_preview_and_internal_echo_service.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/visibility_rule_echo_service.proto
 	mv examples/internal/proto/examplepb/visibility_rule_echo_service.swagger.json examples/internal/proto/examplepb/visibility_rule_preview_and_internal_echo_service.swagger.json
+	buf generate \
+		--template ./examples/internal/proto/examplepb/visibility_rule_enums_as_ints_echo_service.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/visibility_rule_echo_service.proto
+	mv examples/internal/proto/examplepb/visibility_rule_echo_service.swagger.json examples/internal/proto/examplepb/visibility_rule_enums_as_ints_echo_service.swagger.json
 
 generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 
