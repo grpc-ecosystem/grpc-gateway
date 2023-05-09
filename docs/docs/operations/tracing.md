@@ -180,3 +180,7 @@ if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opt
 	log.Fatalf("could not register HTTP service: %v", err)
 }
 ```
+
+## OpenTelemetry
+
+If your project uses [OpenTelemetry](https://opentelemetry.io/) and you would like spans to propagate through the gateway, you can refer to the [OpenTelemetry gRPC-Gateway Boilerplate](https://github.com/iamrajiv/opentelemetry-grpc-gateway-boilerplate) project. This repository provides a sample project that showcases the integration of OpenTelemetry with gRPC-Gateway to set up an OpenTelemetry-enabled gRPC-Gateway REST server. The project includes a simple `SayHello` method implemented on the gRPC server that returns a greeting message to the client.
