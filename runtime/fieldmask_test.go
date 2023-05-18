@@ -8,9 +8,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	field_mask "google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 func newFieldMask(paths ...string) *field_mask.FieldMask {

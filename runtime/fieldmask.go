@@ -7,9 +7,9 @@ import (
 	"io"
 	"sort"
 
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	field_mask "google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 func getFieldByName(fields protoreflect.FieldDescriptors, name string) protoreflect.FieldDescriptor {
