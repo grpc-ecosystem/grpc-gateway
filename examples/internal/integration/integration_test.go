@@ -23,12 +23,12 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
-	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
