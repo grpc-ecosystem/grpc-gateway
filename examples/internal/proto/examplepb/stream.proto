@@ -18,7 +18,7 @@ service StreamService {
       body: "*"
     };
   }
-  rpc List(google.protobuf.Empty) returns (stream ABitOfEverything) {
+  rpc List(Options) returns (stream ABitOfEverything) {
     option (google.api.http) = {get: "/v1/example/a_bit_of_everything"};
   }
   rpc BulkEcho(stream grpc.gateway.examples.internal.proto.sub.StringMessage) returns (stream grpc.gateway.examples.internal.proto.sub.StringMessage) {
@@ -28,7 +28,11 @@ service StreamService {
     };
   }
 
-  rpc Download(google.protobuf.Empty) returns (stream google.api.HttpBody) {
+  rpc Download(Options) returns (stream google.api.HttpBody) {
     option (google.api.http) = {get: "/v1/example/download"};
   }
+}
+
+message Options {
+  bool error = 1;
 }
