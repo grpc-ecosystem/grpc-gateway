@@ -2665,7 +2665,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/echo", // TODO(achew): Figure out what this hsould really be
+									Template: "/v1/echo", // TODO(achew): Figure out what this should really be
 								},
 								PathParams: []descriptor.Parameter{
 									{
@@ -2825,7 +2825,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/echo", // TODO(achew): Figure out what this hsould really be
+									Template: "/v1/echo", // TODO(achew): Figure out what this should really be
 								},
 								PathParams: []descriptor.Parameter{
 									{
@@ -2909,6 +2909,182 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			}
 			err := errorProperty.Value.(openapiSchemaObject)
 			if want, got, name := "#/definitions/rpcStatus", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(openapiSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+			}
+		}
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
+func TestApplyTemplateRequestWithServerStreamingAndNoStandardErrors(t *testing.T) {
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("nested"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String("NestedMessage"),
+				Number:   proto.Int32(1),
+			},
+		},
+	}
+	nesteddesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("NestedMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("int32"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("bool"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_BOOL.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:            proto.String("Echo"),
+		InputType:       proto.String("ExampleMessage"),
+		OutputType:      proto.String("ExampleMessage"),
+		ClientStreaming: proto.Bool(false),
+		ServerStreaming: proto.Bool(true),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	nested := &descriptor.Message{
+		DescriptorProto: nesteddesc,
+	}
+
+	nestedField := &descriptor.Field{
+		Message:              msg,
+		FieldDescriptorProto: msg.GetField()[0],
+	}
+	intField := &descriptor.Field{
+		Message:              nested,
+		FieldDescriptorProto: nested.GetField()[0],
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc, nesteddesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg, nested},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "nested",
+												Target: nestedField,
+											},
+											{
+												Name:   "int32",
+												Target: intField,
+											},
+										}),
+										Target: intField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "nested",
+											Target: nestedField,
+										},
+									}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+	})
+	if err != nil {
+		t.Fatalf("failed to load code generator request: %v", err)
+	}
+	reg.SetDisableDefaultErrors(true)
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	// Should only include the message, no status or any type
+	if want, got, name := 1, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	}
+	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
+		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/echo"].Post.Responses["200"]`)
+	} else {
+		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		streamExampleExampleMessage := result.Paths["/v1/echo"].Post.Responses["200"].Schema
+		if want, got, name := "object", streamExampleExampleMessage.Type, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Type`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if want, got, name := "Stream result of exampleExampleMessage", streamExampleExampleMessage.Title, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Title`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		streamExampleExampleMessageProperties := *(streamExampleExampleMessage.Properties)
+		if want, got, name := 1, len(streamExampleExampleMessageProperties), `len(StreamDefinitions["exampleExampleMessage"].Properties)`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+		} else {
+			resultProperty := streamExampleExampleMessageProperties[0]
+			if want, got, name := "result", resultProperty.Key, `(*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Key`; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+			}
+			result := resultProperty.Value.(openapiSchemaObject)
+			if want, got, name := "#/definitions/exampleExampleMessage", result.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(openapiSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
 		}
