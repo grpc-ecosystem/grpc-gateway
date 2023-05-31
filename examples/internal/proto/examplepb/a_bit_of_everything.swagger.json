@@ -402,10 +402,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -820,10 +845,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -1225,10 +1275,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -1655,10 +1730,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -2107,10 +2207,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "timestampValue",
@@ -2802,10 +2927,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -3207,10 +3357,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -3636,10 +3811,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -4065,10 +4265,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",

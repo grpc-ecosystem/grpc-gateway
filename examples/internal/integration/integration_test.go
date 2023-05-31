@@ -2047,6 +2047,7 @@ func testRequestQueryParams(t *testing.T, port int) {
 	formValues.Add("repeated_string_value", "demo1")
 	formValues.Add("repeated_string_value", "demo2")
 	formValues.Add("optional_string_value", "optional-val")
+	mappedStringValueStr := fmt.Sprintf("mapped_string_value[%v]=%v", "map_key", "map_value")
 
 	testCases := []struct {
 		name           string
@@ -2060,13 +2061,16 @@ func testRequestQueryParams(t *testing.T, port int) {
 			name:        "get url query values",
 			httpMethod:  "GET",
 			contentType: "application/json",
-			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v&%v", port, 1234.56, true, mappedStringValueStr),
 			wantContent: &examplepb.ABitOfEverything{
 				SingleNested: &examplepb.ABitOfEverything_Nested{
 					Name: "foo",
 				},
 				DoubleValue: 1234.56,
 				BoolValue:   true,
+				MappedStringValue: map[string]string{
+					"map_key": "map_value",
+				},
 			},
 		},
 		{

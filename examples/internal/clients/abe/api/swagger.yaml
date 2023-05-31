@@ -309,12 +309,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -692,12 +723,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -1060,12 +1122,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -1455,12 +1548,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -1855,12 +1979,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "timestampValue"
         in: "query"
         required: false
@@ -2232,12 +2387,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -2653,12 +2839,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -3031,12 +3248,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
@@ -3426,12 +3674,43 @@ paths:
           type: "string"
         collectionFormat: "multi"
         x-exportParamName: "RepeatedStringValue"
+      - name: "oneofEmpty"
+        in: "query"
+        required: false
+        type: "object"
+        x-exportParamName: "OneofEmpty"
       - name: "oneofString"
         in: "query"
         required: false
         type: "string"
         x-exportParamName: "OneofString"
         x-optionalDataType: "String"
+      - name: "mapValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MapValue"
+      - name: "mappedStringValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        type: "string"
+        x-exportParamName: "MappedStringValue"
+        x-optionalDataType: "String"
+      - name: "mappedNestedValue"
+        in: "query"
+        description: "This is a request variable of the map type. The query format\
+          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
+          \ is string, and the value type is integer, the query parameter is expressed\
+          \ as Age[\"bob\"]=18"
+        required: false
+        x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
         in: "query"
         required: false
