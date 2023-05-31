@@ -1428,15 +1428,17 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							},
 						},
 					}
-					statusDef, hasStatus := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
-					if hasStatus {
-						props = append(props, keyVal{
-							Key: "error",
-							Value: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
-							},
-						})
+					if !reg.GetDisableDefaultErrors() {
+						statusDef, hasStatus := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
+						if hasStatus {
+							props = append(props, keyVal{
+								Key: "error",
+								Value: openapiSchemaObject{
+									schemaCore: schemaCore{
+										Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
+								},
+							})
+						}
 					}
 					responseSchema.Properties = &props
 					responseSchema.Ref = ""
