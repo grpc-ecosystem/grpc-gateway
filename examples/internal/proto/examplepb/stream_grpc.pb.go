@@ -26,9 +26,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StreamServiceClient interface {
 	BulkCreate(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkCreateClient, error)
-	List(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error)
+	List(ctx context.Context, in *Options, opts ...grpc.CallOption) (StreamService_ListClient, error)
 	BulkEcho(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkEchoClient, error)
-	Download(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (StreamService_DownloadClient, error)
+	Download(ctx context.Context, in *Options, opts ...grpc.CallOption) (StreamService_DownloadClient, error)
 }
 
 type streamServiceClient struct {
@@ -73,7 +73,7 @@ func (x *streamServiceBulkCreateClient) CloseAndRecv() (*emptypb.Empty, error) {
 	return m, nil
 }
 
-func (c *streamServiceClient) List(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error) {
+func (c *streamServiceClient) List(ctx context.Context, in *Options, opts ...grpc.CallOption) (StreamService_ListClient, error) {
 	stream, err := c.cc.NewStream(ctx, &StreamService_ServiceDesc.Streams[1], "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List", opts...)
 	if err != nil {
 		return nil, err
@@ -136,7 +136,7 @@ func (x *streamServiceBulkEchoClient) Recv() (*sub.StringMessage, error) {
 	return m, nil
 }
 
-func (c *streamServiceClient) Download(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (StreamService_DownloadClient, error) {
+func (c *streamServiceClient) Download(ctx context.Context, in *Options, opts ...grpc.CallOption) (StreamService_DownloadClient, error) {
 	stream, err := c.cc.NewStream(ctx, &StreamService_ServiceDesc.Streams[3], "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download", opts...)
 	if err != nil {
 		return nil, err
@@ -173,9 +173,9 @@ func (x *streamServiceDownloadClient) Recv() (*httpbody.HttpBody, error) {
 // for forward compatibility
 type StreamServiceServer interface {
 	BulkCreate(StreamService_BulkCreateServer) error
-	List(*emptypb.Empty, StreamService_ListServer) error
+	List(*Options, StreamService_ListServer) error
 	BulkEcho(StreamService_BulkEchoServer) error
-	Download(*emptypb.Empty, StreamService_DownloadServer) error
+	Download(*Options, StreamService_DownloadServer) error
 }
 
 // UnimplementedStreamServiceServer should be embedded to have forward compatible implementations.
@@ -185,13 +185,13 @@ type UnimplementedStreamServiceServer struct {
 func (UnimplementedStreamServiceServer) BulkCreate(StreamService_BulkCreateServer) error {
 	return status.Errorf(codes.Unimplemented, "method BulkCreate not implemented")
 }
-func (UnimplementedStreamServiceServer) List(*emptypb.Empty, StreamService_ListServer) error {
+func (UnimplementedStreamServiceServer) List(*Options, StreamService_ListServer) error {
 	return status.Errorf(codes.Unimplemented, "method List not implemented")
 }
 func (UnimplementedStreamServiceServer) BulkEcho(StreamService_BulkEchoServer) error {
 	return status.Errorf(codes.Unimplemented, "method BulkEcho not implemented")
 }
-func (UnimplementedStreamServiceServer) Download(*emptypb.Empty, StreamService_DownloadServer) error {
+func (UnimplementedStreamServiceServer) Download(*Options, StreamService_DownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
 }
 
@@ -233,7 +233,7 @@ func (x *streamServiceBulkCreateServer) Recv() (*ABitOfEverything, error) {
 }
 
 func _StreamService_List_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(emptypb.Empty)
+	m := new(Options)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
@@ -280,7 +280,7 @@ func (x *streamServiceBulkEchoServer) Recv() (*sub.StringMessage, error) {
 }
 
 func _StreamService_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(emptypb.Empty)
+	m := new(Options)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}

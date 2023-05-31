@@ -42,6 +42,14 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "error",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "StreamService"
         ]
@@ -130,16 +138,10 @@
           "200": {
             "description": "A successful response.(streaming responses)",
             "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/apiHttpBody"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of apiHttpBody"
+              "type": "string",
+              "format": "binary",
+              "properties": {},
+              "title": "Free form byte stream"
             }
           },
           "default": {
@@ -149,6 +151,14 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "error",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "StreamService"
         ]

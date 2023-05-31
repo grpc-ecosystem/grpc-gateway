@@ -1779,80 +1779,91 @@ func TestResponseBody(t *testing.T) {
 }
 
 func testResponseBody(t *testing.T, port int) {
-	tests := []struct {
-		name       string
-		url        string
-		wantStatus int
-		wantBody   string
-	}{{
-		name:       "unary case",
-		url:        "http://localhost:%d/responsebody/foo",
-		wantStatus: http.StatusOK,
-		wantBody:   `{"data":"foo"}`,
-	}}
+	apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			apiURL := fmt.Sprintf(tt.url, port)
-			resp, err := http.Get(apiURL)
-			if err != nil {
-				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
-			}
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("io.ReadAll(resp.Body) failed with %v; want success", err)
+	}
 
-			defer resp.Body.Close()
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				t.Fatalf("io.ReadAll(resp.Body) failed with %v; want success", err)
-			}
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
 
-			if got, want := resp.StatusCode, tt.wantStatus; got != want {
-				t.Errorf("resp.StatusCode = %d; want %d", got, want)
-				t.Logf("%s", buf)
-			}
-
-			if got, want := string(buf), tt.wantBody; got != want {
-				t.Errorf("response = %q; want %q", got, want)
-			}
-		})
+	if diff := cmp.Diff(string(buf), `{"data":"foo"}`); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
 func TestResponseBodyStream(t *testing.T) {
-	tests := []struct {
-		name       string
-		url        string
-		wantStatus int
-		wantBody   []string
-	}{{
-		name:       "stream case",
-		url:        "http://localhost:%d/responsebody/stream/foo",
-		wantStatus: http.StatusOK,
-		wantBody:   []string{`{"result":{"data":"first foo"}}`, `{"result":{"data":"second foo"}}`},
-	}}
+	apiURL := "http://localhost:8088/responsebody/stream/foo"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
 
-	port := 8088
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			apiURL := fmt.Sprintf(tt.url, port)
-			resp, err := http.Get(apiURL)
-			if err != nil {
-				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
-			}
+	defer resp.Body.Close()
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
 
-			defer resp.Body.Close()
-			body, err := readAll(resp.Body)
-			if err != nil {
-				t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
-			}
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
 
-			if got, want := resp.StatusCode, tt.wantStatus; got != want {
-				t.Errorf("resp.StatusCode = %d; want %d", got, want)
-			}
+	if diff := cmp.Diff(body, []string{`{"result":{"data":"first foo"}}`, `{"result":{"data":"second foo"}}`}); diff != "" {
+		t.Errorf(diff)
+	}
+}
 
-			if !reflect.DeepEqual(tt.wantBody, body) {
-				t.Errorf("response = %v; want %v", body, tt.wantBody)
-			}
-		})
+func TestResponseBodyStreamHttpBody(t *testing.T) {
+	apiURL := "http://localhost:8088/v1/example/download"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
+
+	defer resp.Body.Close()
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	if diff := cmp.Diff(body, []string{"Hello 1", "Hello 2"}); diff != "" {
+		t.Errorf(diff)
+	}
+}
+
+func TestResponseBodyStreamHttpBodyError(t *testing.T) {
+	apiURL := "http://localhost:8088/v1/example/download?error=true"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
+
+	defer resp.Body.Close()
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	if diff := cmp.Diff(body, []string{"Hello 1", "Hello 2", `{"error":{"code":3,"message":"error","details":[]}}`}); diff != "" {
+		t.Errorf(diff)
 	}
 }
 

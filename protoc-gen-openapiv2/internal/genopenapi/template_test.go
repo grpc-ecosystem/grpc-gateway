@@ -22,6 +22,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"
@@ -9036,6 +9038,129 @@ func TestQueryParameterType(t *testing.T) {
 
 		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
 	}
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
+func TestApplyTemplateRequestWithServerStreamingHttpBody(t *testing.T) {
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:            proto.String("Echo"),
+		InputType:       proto.String(".google.api.HttpBody"),
+		OutputType:      proto.String(".google.api.HttpBody"),
+		ClientStreaming: proto.Bool(false),
+		ServerStreaming: proto.Bool(true),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	httpBodyFile, err := protoregistry.GlobalFiles.FindFileByPath("google/api/httpbody.proto")
+	if err != nil {
+		t.Fatal(err)
+	}
+	httpBodyFile.SourceLocations()
+	desc, err := protoregistry.GlobalFiles.FindDescriptorByName("google.api.HttpBody")
+	if err != nil {
+		t.Fatal(err)
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: protodesc.ToDescriptorProto(desc.(protoreflect.MessageDescriptor)),
+		File: &descriptor.File{
+			FileDescriptorProto: protodesc.ToFileDescriptorProto(httpBodyFile),
+		},
+	}
+	anyFile, err := protoregistry.GlobalFiles.FindFileByPath("google/protobuf/any.proto")
+	if err != nil {
+		t.Fatal(err)
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency: []string{
+				"google/api/httpbody.proto",
+			},
+			Service: []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	err = reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
+			protodesc.ToFileDescriptorProto(anyFile),
+			protodesc.ToFileDescriptorProto(httpBodyFile),
+			file.FileDescriptorProto,
+		},
+	})
+	if err != nil {
+		t.Fatalf("failed to load code generator request: %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	}
+	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
+		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/echo"].Post.Responses["200"]`)
+	} else {
+		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		streamExampleExampleMessage := result.Paths["/v1/echo"].Post.Responses["200"].Schema
+		if want, got, name := "string", streamExampleExampleMessage.Type, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Type`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if want, got, name := "binary", streamExampleExampleMessage.Format, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Format`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if want, got, name := "Free form byte stream", streamExampleExampleMessage.Title, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Title`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if len(*streamExampleExampleMessage.Properties) != 0 {
+			t.Errorf("applyTemplate(%#v).Properties should be empty", file)
+		}
+	}
+
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)

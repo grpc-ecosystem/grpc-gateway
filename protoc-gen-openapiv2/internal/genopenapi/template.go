@@ -1440,6 +1440,17 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							})
 						}
 					}
+
+					// Special case HttpBody responses, they will be unformatted bytes
+					if meth.ResponseType.FQMN() == ".google.api.HttpBody" {
+						responseSchema.Type = "string"
+						responseSchema.Format = "binary"
+						responseSchema.Title = "Free form byte stream"
+						// The error response is still JSON, but technically the full response
+						// is still unformatted, so don't include the error response structure.
+						props = nil
+					}
+
 					responseSchema.Properties = &props
 					responseSchema.Ref = ""
 				}
