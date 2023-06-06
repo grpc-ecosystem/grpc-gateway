@@ -164,6 +164,9 @@ type Service struct {
 	*descriptorpb.ServiceDescriptorProto
 	// File is the file where this service is defined.
 	File *File
+	// GRPCFile is the file where this service's gRPC stubs are defined.
+	// This is nil if the service's gRPC stubs are defined alongside the messages.
+	GRPCFile *File
 	// Methods is the list of methods defined in this service.
 	Methods []*Method
 	// ForcePrefixedName when set to true, prefixes a type with a package prefix.
@@ -173,7 +176,9 @@ type Service struct {
 // FQSN returns the fully qualified service name of this service.
 func (s *Service) FQSN() string {
 	components := []string{""}
-	if s.File.Package != nil {
+	if s.GRPCFile != nil && s.GRPCFile.GetPackage() != "" {
+		components = append(components, s.GRPCFile.GetPackage())
+	} else if s.File.Package != nil {
 		components = append(components, s.File.GetPackage())
 	}
 	components = append(components, s.GetName())
@@ -185,7 +190,11 @@ func (s *Service) InstanceName() string {
 	if !s.ForcePrefixedName {
 		return s.GetName()
 	}
-	return fmt.Sprintf("%s.%s", s.File.Pkg(), s.GetName())
+	pkg := s.File.Pkg()
+	if s.GRPCFile != nil {
+		pkg = s.GRPCFile.Pkg()
+	}
+	return fmt.Sprintf("%s.%s", pkg, s.GetName())
 }
 
 // ClientConstructorName returns name of the Client constructor with package prefix if needed
@@ -194,7 +203,11 @@ func (s *Service) ClientConstructorName() string {
 	if !s.ForcePrefixedName {
 		return constructor
 	}
-	return fmt.Sprintf("%s.%s", s.File.Pkg(), constructor)
+	pkg := s.File.Pkg()
+	if s.GRPCFile != nil {
+		pkg = s.GRPCFile.Pkg()
+	}
+	return fmt.Sprintf("%s.%s", pkg, constructor)
 }
 
 // Method wraps descriptorpb.MethodDescriptorProto for richer features.

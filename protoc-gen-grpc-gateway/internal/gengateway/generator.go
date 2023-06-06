@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"go/format"
 	"path"
+	"path/filepath"
+	"strings"
 
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -22,11 +24,18 @@ type generator struct {
 	registerFuncSuffix string
 	allowPatchFeature  bool
 	standalone         bool
+	separatePackage    bool
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix string,
-	allowPatchFeature, standalone bool) gen.Generator {
+func New(
+	reg *descriptor.Registry,
+	useRequestContext bool,
+	registerFuncSuffix string,
+	allowPatchFeature bool,
+	standalone bool,
+	separatePackage bool,
+) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
@@ -65,6 +74,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 		registerFuncSuffix: registerFuncSuffix,
 		allowPatchFeature:  allowPatchFeature,
 		standalone:         standalone,
+		separatePackage:    separatePackage,
 	}
 }
 
@@ -86,10 +96,19 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 			glog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
+		goPkg := file.GoPkg
+		fileNamePrefix := file.GeneratedFilenamePrefix
+		if g.separatePackage {
+			goPkg = descriptor.GoPackage{
+				Path: filepath.Join(file.GoPkg.Path, file.GoPkg.Name),
+				Name: file.GoPkg.Name,
+			}
+			fileNamePrefix = path.Join(file.GeneratedFilenamePrefix, file.GoPkg.Name, filepath.Base(file.GeneratedFilenamePrefix))
+		}
 		files = append(files, &descriptor.ResponseFile{
-			GoPkg: file.GoPkg,
+			GoPkg: goPkg,
 			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
-				Name:    proto.String(file.GeneratedFilenamePrefix + ".pb.gw.go"),
+				Name:    proto.String(fileNamePrefix + ".pb.gw.go"),
 				Content: proto.String(string(formatted)),
 			},
 		})
@@ -103,6 +122,14 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 	for _, pkg := range g.baseImports {
 		pkgSeen[pkg.Path] = true
 		imports = append(imports, pkg)
+	}
+
+	for _, additionalImport := range g.reg.GetAdditionalImports() {
+		elems := strings.Split(additionalImport, "/")
+		imports = append(imports, descriptor.GoPackage{
+			Path: additionalImport,
+			Name: elems[len(elems)-1],
+		})
 	}
 
 	if g.standalone {

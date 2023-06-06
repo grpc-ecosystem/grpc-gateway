@@ -3,6 +3,7 @@ package descriptor
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/golang/glog"
@@ -18,6 +19,7 @@ import (
 func (r *Registry) loadServices(file *File) error {
 	glog.V(1).Infof("Loading services from %s", file.GetName())
 	var svcs []*Service
+	var additionalImports []string
 	for _, sd := range file.GetService() {
 		glog.V(2).Infof("Registering %s", sd.GetName())
 		svc := &Service{
@@ -25,6 +27,35 @@ func (r *Registry) loadServices(file *File) error {
 			ServiceDescriptorProto: sd,
 			ForcePrefixedName:      r.standalone,
 		}
+		if r.separatePackage {
+			// when generating a separate package for the gateway, we need to generate an import statement
+			// for the gRPC stubs that are no longer in the same package. This is done by adding the grpc
+			// package to the additionalImports list. In order to prepare a valid import statement, we'll replace
+			// the source package name, something like: ../pet/v1/v1petgateway with ../pet/v1/v1petgrpc
+			const (
+				baseTypePackageName    = "protocolbuffers"
+				baseTypePackageSubPath = baseTypePackageName + "/go"
+				grpcPackageName        = "grpc"
+				grpcPackageSubPath     = grpcPackageName + "/go"
+			)
+			packageName := strings.TrimSuffix(svc.File.GoPkg.Name, "gateway") + grpcPackageName
+			svc.GRPCFile = &File{
+				GoPkg: GoPackage{
+					// additionally, as the `go_package` option is passed through from the generator, and can only be
+					// set the one time, without making major changes, we'll use the package name sent through the
+					// options as a basis, and replace the source package name with the grpc package name.
+					Path: strings.Replace(
+						filepath.Join(svc.File.GoPkg.Path, packageName),
+						baseTypePackageSubPath,
+						grpcPackageSubPath,
+						1,
+					),
+					Name: strings.Replace(packageName, baseTypePackageSubPath, grpcPackageSubPath, 1),
+				},
+			}
+			additionalImports = append(r.GetAdditionalImports(), svc.GRPCFile.GoPkg.Path)
+		}
+		r.SetAdditionalImports(additionalImports)
 		for _, md := range sd.GetMethod() {
 			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
 			opts, err := extractAPIOptions(md)

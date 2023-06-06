@@ -146,6 +146,13 @@ type Registry struct {
 
 	// allowPatchFeature determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).
 	allowPatchFeature bool
+
+	// separatePackage determines whether to output the generated code into a separate package.
+	separatePackage bool
+
+	// additionalImports is a list of additional imports to be added to the generated code.
+	// N.B. additional imports is not a flag option
+	additionalImports []string
 }
 
 type repeatedFieldSeparator struct {
@@ -236,7 +243,9 @@ func (r *Registry) loadFile(filePath string, file *protogen.File) {
 	if r.standalone {
 		pkg.Alias = "ext" + cases.Title(language.AmericanEnglish).String(pkg.Name)
 	}
-
+	if r.separatePackage {
+		pkg.Name += "gateway"
+	}
 	if err := r.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
 		for i := 0; ; i++ {
 			alias := fmt.Sprintf("%s_%d", pkg.Name, i)
@@ -810,4 +819,24 @@ func (r *Registry) SetAllowPatchFeature(allow bool) {
 // GetAllowPatchFeature returns allowPatchFeature
 func (r *Registry) GetAllowPatchFeature() bool {
 	return r.allowPatchFeature
+}
+
+// SetSeparatePackage sets separatePackage
+func (r *Registry) SetSeparatePackage(use bool) {
+	r.separatePackage = use
+}
+
+// GetSeparatePackage returns separatePackage
+func (r *Registry) GetSeparatePackage() bool {
+	return r.separatePackage
+}
+
+// SetAdditionalImports sets additionalImports
+func (r *Registry) SetAdditionalImports(imports []string) {
+	r.additionalImports = imports
+}
+
+// GetAdditionalImports returns additionalImports
+func (r *Registry) GetAdditionalImports() []string {
+	return r.additionalImports
 }
