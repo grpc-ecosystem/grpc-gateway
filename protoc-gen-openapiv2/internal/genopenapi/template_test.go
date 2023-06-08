@@ -1326,6 +1326,139 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 	}
 }
 
+func TestMessageToQueryParametersWithEnumFieldOption(t *testing.T) {
+	type test struct {
+		MsgDescs []*descriptorpb.DescriptorProto
+		Message  string
+		Params   []openapiParameterObject
+	}
+
+	fieldSchema := &openapi_options.JSONSchema{Enum: []string{"enum1", "enum2"}}
+	fieldOption := &descriptorpb.FieldOptions{}
+	proto.SetExtension(fieldOption, openapi_options.E_Openapiv2Field, fieldSchema)
+
+	tests := []test{
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("a"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
+							Options: fieldOption,
+						},
+						{
+							Name:   proto.String("b"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+						{
+							Name:     proto.String("c"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+							TypeName: proto.String(".example.ExampleMessage.EnabledEnum"),
+							Number:   proto.Int32(3),
+						},
+						{
+							Name:     proto.String("d"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+							TypeName: proto.String(".example.ExampleMessage.EnabledEnum"),
+							Number:   proto.Int32(4),
+							Options:  fieldOption,
+						},
+					},
+					EnumType: []*descriptorpb.EnumDescriptorProto{
+						{
+							Name: proto.String("EnabledEnum"),
+							Value: []*descriptorpb.EnumValueDescriptorProto{
+								{Name: proto.String("FALSE"), Number: proto.Int32(0)},
+								{Name: proto.String("TRUE"), Number: proto.Int32(1)},
+							},
+						},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name: "a",
+					In:   "query",
+					Type: "string",
+					Enum: []string{"enum1", "enum2"},
+				},
+				{
+					Name: "b",
+					In:   "query",
+					Type: "string",
+				},
+				{
+					Name:    "c",
+					In:      "query",
+					Type:    "string",
+					Enum:    []string{"FALSE", "TRUE"},
+					Default: "FALSE",
+				},
+				{
+					Name:    "d",
+					In:      "query",
+					Type:    "string",
+					Enum:    []string{"FALSE", "TRUE"},
+					Default: "FALSE",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		// avoid checking Items for array types
+		for i := range params {
+			params[i].Items = nil
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
 func TestApplyTemplateSimple(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
