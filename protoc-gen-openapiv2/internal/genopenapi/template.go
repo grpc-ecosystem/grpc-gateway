@@ -328,6 +328,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Pattern:     schema.Pattern,
 			Required:    required,
 			extensions:  schema.extensions,
+			Enum:        schema.Enum,
 		}
 		if param.Type == "array" {
 			param.CollectionFormat = "multi"
