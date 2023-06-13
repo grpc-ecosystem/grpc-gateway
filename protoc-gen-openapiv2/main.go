@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -56,7 +56,6 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
 
 	if *versionFlag {
 		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
@@ -64,26 +63,31 @@ func main() {
 	}
 
 	reg := descriptor.NewRegistry()
-
-	glog.V(1).Info("Processing code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Processing code generator request")
+	}
 	f := os.Stdin
 	if *file != "-" {
 		var err error
 		f, err = os.Open(*file)
 		if err != nil {
-			glog.Fatal(err)
+			grpclog.Fatal(err)
 		}
 	}
-	glog.V(1).Info("Parsing code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Parsing code generator request")
+	}
 	req, err := codegenerator.ParseRequest(f)
 	if err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
-	glog.V(1).Info("Parsed code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Parsed code generator request")
+	}
 	pkgMap := make(map[string]string)
 	if req.Parameter != nil {
 		if err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap); err != nil {
-			glog.Fatalf("Error parsing flags: %v", err)
+			grpclog.Fatalf("Error parsing flags: %v", err)
 		}
 	}
 
@@ -95,7 +99,7 @@ func main() {
 
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == "allow_repeated_fields_in_body" {
-			glog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
+			grpclog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
 		}
 	})
 
@@ -107,9 +111,9 @@ func main() {
 	namingStrategy := *openAPINamingStrategy
 	if *useFQNForOpenAPIName {
 		if namingStrategy != "" {
-			glog.Fatal("The deprecated `fqn_for_openapi_name` flag must remain unset if `openapi_naming_strategy` is set.")
+			grpclog.Fatal("The deprecated `fqn_for_openapi_name` flag must remain unset if `openapi_naming_strategy` is set.")
 		}
-		glog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `openapi_naming_strategy=fqn` instead.")
+		grpclog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `openapi_naming_strategy=fqn` instead.")
 		namingStrategy = "fqn"
 	} else if namingStrategy == "" {
 		namingStrategy = "legacy"
@@ -183,13 +187,15 @@ func main() {
 	for _, target := range req.FileToGenerate {
 		f, err := reg.LookupFile(target)
 		if err != nil {
-			glog.Fatal(err)
+			grpclog.Fatal(err)
 		}
 		targets = append(targets, f)
 	}
 
 	out, err := g.Generate(targets)
-	glog.V(1).Info("Processed code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Processed code generator request")
+	}
 	if err != nil {
 		emitError(err)
 		return
@@ -214,10 +220,10 @@ func emitError(err error) {
 func emitResp(resp *pluginpb.CodeGeneratorResponse) {
 	buf, err := proto.Marshal(resp)
 	if err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 	if _, err := os.Stdout.Write(buf); err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 }
 
