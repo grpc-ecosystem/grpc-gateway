@@ -15,10 +15,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -46,7 +46,6 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
 
 	if *versionFlag {
 		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
@@ -66,7 +65,9 @@ func main() {
 
 		generator := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone)
 
-		glog.V(1).Infof("Parsing code generator request")
+		if grpclog.V(1) {
+			grpclog.Infof("Parsing code generator request")
+		}
 
 		if err := reg.LoadFromPlugin(gen); err != nil {
 			return err
@@ -88,14 +89,19 @@ func main() {
 
 		files, err := generator.Generate(targets)
 		for _, f := range files {
-			glog.V(1).Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)
+			if grpclog.V(1) {
+				grpclog.Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)
+			}
+
 			genFile := gen.NewGeneratedFile(f.GetName(), protogen.GoImportPath(f.GoPkg.Path))
 			if _, err := genFile.Write([]byte(f.GetContent())); err != nil {
 				return err
 			}
 		}
 
-		glog.V(1).Info("Processed code generator request")
+		if grpclog.V(1) {
+			grpclog.Info("Processed code generator request")
+		}
 
 		return err
 	})
@@ -108,14 +114,14 @@ func applyFlags(reg *descriptor.Registry) error {
 		}
 	}
 	if *warnOnUnboundMethods && *generateUnboundMethods {
-		glog.Warningf("Option warn_on_unbound_methods has no effect when generate_unbound_methods is used.")
+		grpclog.Warningf("Option warn_on_unbound_methods has no effect when generate_unbound_methods is used.")
 	}
 	reg.SetStandalone(*standalone)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == "allow_repeated_fields_in_body" {
-			glog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
+			grpclog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
 		}
 	})
 

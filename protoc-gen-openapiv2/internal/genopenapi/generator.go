@@ -9,12 +9,12 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/golang/glog"
 	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -322,10 +322,14 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 
 	var openapis []*wrapper
 	for _, file := range targets {
-		glog.V(1).Infof("Processing %s", file.GetName())
+		if grpclog.V(1) {
+			grpclog.Infof("Processing %s", file.GetName())
+		}
 		swagger, err := applyTemplate(param{File: file, reg: g.reg})
 		if errors.Is(err, errNoTargetService) {
-			glog.V(1).Infof("%s: %v", file.GetName(), err)
+			if grpclog.V(1) {
+				grpclog.Infof("%s: %v", file.GetName(), err)
+			}
 			continue
 		}
 		if err != nil {
@@ -344,7 +348,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", g.reg.GetMergeFileName(), err)
 		}
 		files = append(files, f)
-		glog.V(1).Infof("New OpenAPI file will emit")
+		if grpclog.V(1) {
+			grpclog.Infof("New OpenAPI file will emit")
+		}
 	} else {
 		for _, file := range openapis {
 			f, err := encodeOpenAPI(file, g.format)
@@ -352,7 +358,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", file.fileName, err)
 			}
 			files = append(files, f)
-			glog.V(1).Infof("New OpenAPI file will emit")
+			if grpclog.V(1) {
+				grpclog.Infof("New OpenAPI file will emit")
+			}
 		}
 	}
 	return files, nil

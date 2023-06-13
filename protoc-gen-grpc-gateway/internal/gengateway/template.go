@@ -7,10 +7,10 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"google.golang.org/grpc/grpclog"
 )
 
 type param struct {
@@ -174,7 +174,9 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		svc.Name = &svcName
 
 		for _, meth := range svc.Methods {
-			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
+			if grpclog.V(2) {
+				grpclog.Infof("Processing %s.%s", svc.GetName(), meth.GetName())
+			}
 			methName := casing.Camel(*meth.Name)
 			meth.Name = &methName
 			for _, b := range meth.Bindings {

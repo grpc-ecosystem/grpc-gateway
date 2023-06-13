@@ -6,9 +6,9 @@ import (
 	"go/format"
 	"path"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -71,11 +71,15 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
 	var files []*descriptor.ResponseFile
 	for _, file := range targets {
-		glog.V(1).Infof("Processing %s", file.GetName())
+		if grpclog.V(1) {
+			grpclog.Infof("Processing %s", file.GetName())
+		}
 
 		code, err := g.generate(file)
 		if errors.Is(err, errNoTargetService) {
-			glog.V(1).Infof("%s: %v", file.GetName(), err)
+			if grpclog.V(1) {
+				grpclog.Infof("%s: %v", file.GetName(), err)
+			}
 			continue
 		}
 		if err != nil {
@@ -83,7 +87,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 		formatted, err := format.Source([]byte(code))
 		if err != nil {
-			glog.Errorf("%v: %s", err, code)
+			grpclog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
 		files = append(files, &descriptor.ResponseFile{

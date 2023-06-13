@@ -11,7 +11,7 @@ go_library(
         "//internal/codegenerator",
         "//internal/descriptor",
         "//protoc-gen-grpc-gateway/internal/gengateway",
-        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//grpclog",
         "@org_golang_google_protobuf//compiler/protogen",
     ],
 )
