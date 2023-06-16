@@ -1155,7 +1155,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						pathParamName := fc.GetPathParamName()
 						if pathParamName != "" && pathParamName != parameterString {
 							pathParamNames["{"+parameterString+"}"] = "{" + pathParamName + "}"
-							parameterString = pathParamName
+							parameterString, _, _ = strings.Cut(pathParamName, "=")
 						}
 					}
 					parameters = append(parameters, openapiParameterObject{
