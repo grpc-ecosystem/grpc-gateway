@@ -198,7 +198,7 @@ GEM
       html-pipeline (~> 2.2)
       jekyll (>= 3.0, < 5.0)
     json (1.8.6)
-    just-the-docs (0.5.2)
+    just-the-docs (0.5.3)
       jekyll (>= 3.8.5)
       jekyll-seo-tag (>= 2.0)
       rake (>= 12.3.1)
