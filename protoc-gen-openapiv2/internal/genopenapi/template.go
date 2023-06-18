@@ -2277,6 +2277,9 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 	protoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.EnumDescriptorProto)(nil)), "Value")
 	var comments []string
 	for idx, value := range enum.GetValue() {
+		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
+			continue
+		}
 		if !isVisible(getEnumValueVisibilityOption(value), reg) {
 			continue
 		}
