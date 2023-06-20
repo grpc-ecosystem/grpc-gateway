@@ -15,7 +15,9 @@ There are two scenarios:
 
 - The FieldMask is hidden from the REST request as per the
   [Google API design guide](https://cloud.google.com/apis/design/standard_methods#update) (as in the first additional binding in the
-  [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/370d869f65d1ffb3d07187fb0db238eca2371ce3/examples/internal/proto/examplepb/a_bit_of_everything.proto#L428-L431) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
+  [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/370d869f65d1ffb3d07187fb0db238eca2371ce3/examples/internal/proto/examplepb/a_bit_of_everything.proto#L428-L431) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message. 
+  - By default this feature is enabled, if you need to disable it, you can use the plugin option `allow_patch_feature=false`. 
+  - Note: The same option is supported by the `protoc-gen-openapiv2` plugin.
 - The FieldMask is exposed to the REST request (as in the second additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/370d869f65d1ffb3d07187fb0db238eca2371ce3/examples/internal/proto/examplepb/a_bit_of_everything.proto#L432-L435) example). For this case, the field mask is left untouched by the gateway.
 
 ## Example Usage

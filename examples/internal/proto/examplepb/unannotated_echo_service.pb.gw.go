@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 var (
-	filter_UnannotatedEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_UnannotatedEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
 func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -102,7 +102,7 @@ func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler 
 }
 
 var (
-	filter_UnannotatedEchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_UnannotatedEchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -373,7 +373,7 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 // RegisterUnannotatedEchoServiceHandlerFromEndpoint is same as RegisterUnannotatedEchoServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterUnannotatedEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

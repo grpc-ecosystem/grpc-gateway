@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -30,6 +30,7 @@ var (
 	useFQNForOpenAPIName           = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualified names from the proto definition (ie my.package.MyMessage.MyInnerMessage). DEPRECATED: prefer `openapi_naming_strategy=fqn`")
 	openAPINamingStrategy          = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
 	useGoTemplate                  = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
+	ignoreComments                 = flag.Bool("ignore_comments", false, "if set, all protofile comments are excluded from output")
 	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
 	enumsAsInts                    = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 	simpleOperationIDs             = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation. Can introduce duplicate operationIDs, use with caution.")
@@ -42,6 +43,8 @@ var (
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
 	disableDefaultResponses        = flag.Bool("disable_default_responses", false, "if set, disables generation of default responses. Useful if you have to support custom response codes that are not 200.")
+	useAllOfForRefs                = flag.Bool("use_allof_for_refs", false, "if set, will use allOf as container for $ref to preserve same-level properties.")
+	allowPatchFeature              = flag.Bool("allow_patch_feature", true, "whether to hide update_mask fields in PATCH requests from the generated swagger file.")
 )
 
 // Variables set by goreleaser at build time
@@ -53,7 +56,6 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
 
 	if *versionFlag {
 		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
@@ -61,26 +63,31 @@ func main() {
 	}
 
 	reg := descriptor.NewRegistry()
-
-	glog.V(1).Info("Processing code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Processing code generator request")
+	}
 	f := os.Stdin
 	if *file != "-" {
 		var err error
 		f, err = os.Open(*file)
 		if err != nil {
-			glog.Fatal(err)
+			grpclog.Fatal(err)
 		}
 	}
-	glog.V(1).Info("Parsing code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Parsing code generator request")
+	}
 	req, err := codegenerator.ParseRequest(f)
 	if err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
-	glog.V(1).Info("Parsed code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Parsed code generator request")
+	}
 	pkgMap := make(map[string]string)
 	if req.Parameter != nil {
 		if err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap); err != nil {
-			glog.Fatalf("Error parsing flags: %v", err)
+			grpclog.Fatalf("Error parsing flags: %v", err)
 		}
 	}
 
@@ -92,7 +99,7 @@ func main() {
 
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == "allow_repeated_fields_in_body" {
-			glog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
+			grpclog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
 		}
 	})
 
@@ -104,9 +111,9 @@ func main() {
 	namingStrategy := *openAPINamingStrategy
 	if *useFQNForOpenAPIName {
 		if namingStrategy != "" {
-			glog.Fatal("The deprecated `fqn_for_openapi_name` flag must remain unset if `openapi_naming_strategy` is set.")
+			grpclog.Fatal("The deprecated `fqn_for_openapi_name` flag must remain unset if `openapi_naming_strategy` is set.")
 		}
-		glog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `openapi_naming_strategy=fqn` instead.")
+		grpclog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `openapi_naming_strategy=fqn` instead.")
 		namingStrategy = "fqn"
 	} else if namingStrategy == "" {
 		namingStrategy = "legacy"
@@ -115,8 +122,15 @@ func main() {
 		emitError(fmt.Errorf("invalid naming strategy %q", namingStrategy))
 		return
 	}
-	reg.SetOpenAPINamingStrategy(namingStrategy)
+
+	if *useGoTemplate && *ignoreComments {
+		emitError(fmt.Errorf("`ignore_comments` and `use_go_templates` are mutually exclusive and cannot be enabled at the same time"))
+		return
+	}
 	reg.SetUseGoTemplate(*useGoTemplate)
+	reg.SetIgnoreComments(*ignoreComments)
+
+	reg.SetOpenAPINamingStrategy(namingStrategy)
 	reg.SetEnumsAsInts(*enumsAsInts)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	reg.SetSimpleOperationIDs(*simpleOperationIDs)
@@ -127,6 +141,8 @@ func main() {
 	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	reg.SetDisableServiceTags(*disableServiceTags)
 	reg.SetDisableDefaultResponses(*disableDefaultResponses)
+	reg.SetUseAllOfForRefs(*useAllOfForRefs)
+	reg.SetAllowPatchFeature(*allowPatchFeature)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
@@ -171,13 +187,15 @@ func main() {
 	for _, target := range req.FileToGenerate {
 		f, err := reg.LookupFile(target)
 		if err != nil {
-			glog.Fatal(err)
+			grpclog.Fatal(err)
 		}
 		targets = append(targets, f)
 	}
 
 	out, err := g.Generate(targets)
-	glog.V(1).Info("Processed code generator request")
+	if grpclog.V(1) {
+		grpclog.Info("Processed code generator request")
+	}
 	if err != nil {
 		emitError(err)
 		return
@@ -202,10 +220,10 @@ func emitError(err error) {
 func emitResp(resp *pluginpb.CodeGeneratorResponse) {
 	buf, err := proto.Marshal(resp)
 	if err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 	if _, err := os.Stdout.Write(buf); err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 }
 

@@ -338,7 +338,7 @@ type FieldPath []FieldPathComponent
 
 // String returns a string representation of the field path.
 func (p FieldPath) String() string {
-	var components []string
+	components := make([]string, 0, len(p))
 	for _, c := range p {
 		components = append(components, c.Name)
 	}

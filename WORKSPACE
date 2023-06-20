@@ -3,20 +3,27 @@ workspace(name = "grpc_ecosystem_grpc_gateway")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
+http_archive(
+    name = "com_google_googletest",
+    sha256 = "ffa17fbc5953900994e2deec164bb8949879ea09b411e07f215bfbb1f87f4632",
+    strip_prefix = "googletest-1.13.0",
+    urls = ["https://github.com/google/googletest/archive/v1.13.0.zip"],
+)
+
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "902f0db07d0e4726b4b649c1aaecc7c514e1c0724841e7c0b49691b28fa3d9ec",
-    strip_prefix = "protobuf-3.21.11",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.21.11.tar.gz"],
+    sha256 = "5e4b555f72a7e3f143a7aff7262292500bb02c49b174351684bb70fc7f2a6d33",
+    strip_prefix = "protobuf-3.23.3",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.23.3.tar.gz"],
 )
 
 http_archive(
     name = "bazel_skylib",
-    sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
+    sha256 = "66ffd9315665bfaafc96b52278f57c7e2dd09f5ede279ea6d39b2be471e7e3aa",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.4.2/bazel-skylib-1.4.2.tar.gz",
     ],
 )
 
@@ -42,10 +49,10 @@ rules_proto_toolchains()
 
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "56d8c5a5c91e1af73eca71a6fab2ced959b67c86d12ba37feedb0a2dfea441a6",
+    sha256 = "6b65cb7917b4d1709f9410ffe00ecf3e160edf674b78c54a894471320862184f",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.37.0/rules_go-v0.37.0.zip",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.37.0/rules_go-v0.37.0.zip",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.39.0/rules_go-v0.39.0.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.39.1/rules_go-v0.39.0.zip",
     ],
 )
 
@@ -60,7 +67,7 @@ load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_depe
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.17.2")
+go_register_toolchains(version = "1.19.4")
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
@@ -81,9 +88,9 @@ protobuf_deps()
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "e3bb0dc8b0274ea1aca75f1f8c0c835adbe589708ea89bf698069d0790701ea3",
-    strip_prefix = "buildtools-5.1.0",
-    urls = ["https://github.com/bazelbuild/buildtools/archive/5.1.0.tar.gz"],
+    sha256 = "977a0bd4593c8d4c8f45e056d181c35e48aa01ad4f8090bdb84f78dca42f47dc",
+    strip_prefix = "buildtools-6.1.2",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/v6.1.2.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")

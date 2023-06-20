@@ -7,10 +7,10 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"google.golang.org/grpc/grpclog"
 )
 
 type param struct {
@@ -69,9 +69,17 @@ func (b binding) QueryParamFilter() queryParamFilter {
 	var seqs [][]string
 	if b.Body != nil {
 		seqs = append(seqs, strings.Split(b.Body.FieldPath.String(), "."))
+		for _, comp := range b.Body.FieldPath {
+			if comp.Target.JsonName != nil {
+				seqs = append(seqs, strings.Split(*comp.Target.JsonName, "."))
+			}
+		}
 	}
 	for _, p := range b.PathParams {
 		seqs = append(seqs, strings.Split(p.FieldPath.String(), "."))
+		if p.Target.JsonName != nil {
+			seqs = append(seqs, strings.Split(*p.Target.JsonName, "."))
+		}
 	}
 	return queryParamFilter{utilities.NewDoubleArray(seqs)}
 }
@@ -166,7 +174,9 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		svc.Name = &svcName
 
 		for _, meth := range svc.Methods {
-			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
+			if grpclog.V(2) {
+				grpclog.Infof("Processing %s.%s", svc.GetName(), meth.GetName())
+			}
 			methName := casing.Camel(*meth.Name)
 			meth.Name = &methName
 			for _, b := range meth.Bindings {
@@ -653,7 +663,7 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context,
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint is same as Register{{$svc.GetName}}{{$.RegisterFuncSuffix}} but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

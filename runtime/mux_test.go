@@ -217,6 +217,47 @@ func TestMuxServeHTTP(t *testing.T) {
 			reqMethod: "POST",
 			reqPath:   "/foo",
 			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			respStatus:  http.StatusOK,
+			respContent: "GET /foo",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "DELETE",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+				{
+					method: "PUT",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+				{
+					method: "PATCH",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			respStatus: http.StatusNotImplemented,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
 			respStatus: http.StatusNotImplemented,

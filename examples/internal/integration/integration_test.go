@@ -23,12 +23,12 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
-	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/emptypb"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -46,11 +46,15 @@ func TestEcho(t *testing.T) {
 			testEchoOneof(t, 8088, apiPrefix, "application/json")
 			testEchoOneof1(t, 8088, apiPrefix, "application/json")
 			testEchoOneof2(t, 8088, apiPrefix, "application/json")
+			testEchoPathParamOverwrite(t, 8088)
 			testEchoBody(t, 8088, apiPrefix, true)
 			testEchoBody(t, 8088, apiPrefix, false)
 			// Use SendHeader/SetTrailer without gRPC server https://github.com/grpc-ecosystem/grpc-gateway/issues/517#issuecomment-684625645
 			testEchoBody(t, 8089, apiPrefix, true)
 			testEchoBody(t, 8089, apiPrefix, false)
+			testEchoBodyParamOverwrite(t, 8088)
+			testEchoWithNonASCIIHeaderValues(t, 8088, apiPrefix)
+			testEchoWithInvalidHeaderKey(t, 8088, apiPrefix)
 		})
 	}
 }
@@ -347,8 +351,37 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 	}
 }
 
+func testEchoPathParamOverwrite(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo/resource/my_resource_id?resourceId=bad_resource_id", port)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got, want := msg.GetResourceId(), "my_resource_id"; got != want {
+		t.Errorf("msg.GetResourceId() = %q; want %q", got, want)
+	}
+}
+
 func testEchoBody(t *testing.T, port int, apiPrefix string, useTrailers bool) {
-	sent := examplepb.UnannotatedSimpleMessage{Id: "example"}
+	sent := examplepb.UnannotatedSimpleMessage{Id: "example", ResourceId: "my_resource_id"}
 	payload, err := marshaler.Marshal(&sent)
 	if err != nil {
 		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
@@ -410,6 +443,48 @@ func testEchoBody(t *testing.T, port int, apiPrefix string, useTrailers bool) {
 		if got := resp.Trailer.Get(trailer); got != want {
 			t.Errorf("%s was %q, wanted %q", trailer, got, want)
 		}
+	}
+}
+
+func testEchoBodyParamOverwrite(t *testing.T, port int) {
+	sent := "my_resource_id"
+	payload, err := marshaler.Marshal(&sent)
+	if err != nil {
+		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
+	}
+
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo_body2/%s?resourceId=bad_resource_id", port, "my_id")
+
+	req, err := http.NewRequest("PUT", apiURL, bytes.NewReader(payload))
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	var received examplepb.UnannotatedSimpleMessage
+	if err := marshaler.Unmarshal(buf, &received); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if diff := cmp.Diff(&received.ResourceId, &sent, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -1704,80 +1779,91 @@ func TestResponseBody(t *testing.T) {
 }
 
 func testResponseBody(t *testing.T, port int) {
-	tests := []struct {
-		name       string
-		url        string
-		wantStatus int
-		wantBody   string
-	}{{
-		name:       "unary case",
-		url:        "http://localhost:%d/responsebody/foo",
-		wantStatus: http.StatusOK,
-		wantBody:   `{"data":"foo"}`,
-	}}
+	apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			apiURL := fmt.Sprintf(tt.url, port)
-			resp, err := http.Get(apiURL)
-			if err != nil {
-				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
-			}
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("io.ReadAll(resp.Body) failed with %v; want success", err)
+	}
 
-			defer resp.Body.Close()
-			buf, err := io.ReadAll(resp.Body)
-			if err != nil {
-				t.Fatalf("io.ReadAll(resp.Body) failed with %v; want success", err)
-			}
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
 
-			if got, want := resp.StatusCode, tt.wantStatus; got != want {
-				t.Errorf("resp.StatusCode = %d; want %d", got, want)
-				t.Logf("%s", buf)
-			}
-
-			if got, want := string(buf), tt.wantBody; got != want {
-				t.Errorf("response = %q; want %q", got, want)
-			}
-		})
+	if diff := cmp.Diff(string(buf), `{"data":"foo"}`); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
 func TestResponseBodyStream(t *testing.T) {
-	tests := []struct {
-		name       string
-		url        string
-		wantStatus int
-		wantBody   []string
-	}{{
-		name:       "stream case",
-		url:        "http://localhost:%d/responsebody/stream/foo",
-		wantStatus: http.StatusOK,
-		wantBody:   []string{`{"result":{"data":"first foo"}}`, `{"result":{"data":"second foo"}}`},
-	}}
+	apiURL := "http://localhost:8088/responsebody/stream/foo"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
 
-	port := 8088
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			apiURL := fmt.Sprintf(tt.url, port)
-			resp, err := http.Get(apiURL)
-			if err != nil {
-				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
-			}
+	defer resp.Body.Close()
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
 
-			defer resp.Body.Close()
-			body, err := readAll(resp.Body)
-			if err != nil {
-				t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
-			}
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
 
-			if got, want := resp.StatusCode, tt.wantStatus; got != want {
-				t.Errorf("resp.StatusCode = %d; want %d", got, want)
-			}
+	if diff := cmp.Diff(body, []string{`{"result":{"data":"first foo"}}`, `{"result":{"data":"second foo"}}`}); diff != "" {
+		t.Errorf(diff)
+	}
+}
 
-			if !reflect.DeepEqual(tt.wantBody, body) {
-				t.Errorf("response = %v; want %v", body, tt.wantBody)
-			}
-		})
+func TestResponseBodyStreamHttpBody(t *testing.T) {
+	apiURL := "http://localhost:8088/v1/example/download"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
+
+	defer resp.Body.Close()
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	if diff := cmp.Diff(body, []string{"Hello 1", "Hello 2"}); diff != "" {
+		t.Errorf(diff)
+	}
+}
+
+func TestResponseBodyStreamHttpBodyError(t *testing.T) {
+	apiURL := "http://localhost:8088/v1/example/download?error=true"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
+
+	defer resp.Body.Close()
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	if diff := cmp.Diff(body, []string{"Hello 1", "Hello 2", `{"error":{"code":3,"message":"error","details":[]}}`}); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -1972,6 +2058,7 @@ func testRequestQueryParams(t *testing.T, port int) {
 	formValues.Add("repeated_string_value", "demo1")
 	formValues.Add("repeated_string_value", "demo2")
 	formValues.Add("optional_string_value", "optional-val")
+	mappedStringValueStr := fmt.Sprintf("mapped_string_value[%v]=%v", "map_key", "map_value")
 
 	testCases := []struct {
 		name           string
@@ -1985,13 +2072,16 @@ func testRequestQueryParams(t *testing.T, port int) {
 			name:        "get url query values",
 			httpMethod:  "GET",
 			contentType: "application/json",
-			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v&%v", port, 1234.56, true, mappedStringValueStr),
 			wantContent: &examplepb.ABitOfEverything{
 				SingleNested: &examplepb.ABitOfEverything_Nested{
 					Name: "foo",
 				},
 				DoubleValue: 1234.56,
 				BoolValue:   true,
+				MappedStringValue: map[string]string{
+					"map_key": "map_value",
+				},
 			},
 		},
 		{
@@ -2429,5 +2519,81 @@ func testABETrace(t *testing.T, port int) {
 	if err := marshaler.Unmarshal(buf, want); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, want) failed with %v; want success", buf, err)
 		return
+	}
+}
+
+func testEchoWithNonASCIIHeaderValues(t *testing.T, port int, apiPrefix string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader("{}"))
+	if err != nil {
+		t.Errorf("http.NewRequest() = err: %v", err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Grpc-Metadata-Location", "Gjøvik")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got, want := msg.Id, "myid"; got != want {
+		t.Errorf("msg.Id = %q; want %q", got, want)
+	}
+}
+
+func testEchoWithInvalidHeaderKey(t *testing.T, port int, apiPrefix string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader("{}"))
+	if err != nil {
+		t.Errorf("http.NewRequest() = err: %v", err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Grpc-Metadata-Foo+Bar", "Hello")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got, want := msg.Id, "myid"; got != want {
+		t.Errorf("msg.Id = %q; want %q", got, want)
 	}
 }

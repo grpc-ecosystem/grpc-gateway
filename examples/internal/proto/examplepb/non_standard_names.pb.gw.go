@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 var (
-	filter_NonStandardService_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_NonStandardService_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
 func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -98,7 +98,7 @@ func local_request_NonStandardService_Update_0(ctx context.Context, marshaler ru
 }
 
 var (
-	filter_NonStandardService_UpdateWithJSONNames_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_NonStandardService_UpdateWithJSONNames_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
 func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -225,7 +225,7 @@ func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.S
 // RegisterNonStandardServiceHandlerFromEndpoint is same as RegisterNonStandardServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterNonStandardServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

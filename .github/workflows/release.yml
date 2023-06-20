@@ -17,10 +17,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@7dd9e2a3dc350cf687eb1b2a4fadfee8c8e49675 # v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3
+      - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4
         with:
           check-latest: true
       - name: Generate goreleaser args
@@ -32,7 +32,7 @@ jobs:
             args+=' --snapshot'
           fi
           echo "args=$args" >> $GITHUB_OUTPUT
-      - uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757 # tag=v3
+      - uses: goreleaser/goreleaser-action@336e29918d653399e599bfca99fadc1d7ffbc9f7 # v4
         id: run-goreleaser
         with:
           args: ${{ steps.args.outputs.args }}
@@ -46,51 +46,15 @@ jobs:
           set -euo pipefail
 
           checksum_file=$(echo "$ARTIFACTS" | jq -r '.[] | select (.type=="Checksum") | .path')
-          echo "::set-output name=hashes::$(cat $checksum_file | base64 -w0)"
+          echo "hashes=$(cat $checksum_file | base64 -w0)" >> $GITHUB_OUTPUT
   provenance:
     needs: [goreleaser]
     permissions:
       actions: read # To read the workflow path.
       id-token: write # To sign the provenance.
       contents: write # To add assets to a release.
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.4.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.7.0
     with:
       compile-generator: true # Workaround for https://github.com/slsa-framework/slsa-github-generator/issues/1163
       base64-subjects: "${{ needs.goreleaser.outputs.hashes }}"
       upload-assets: ${{ github.event_name == 'push' }} # upload to a new release when pushing via tag
-
-  push_bsr_plugins:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    steps:
-      - uses: actions/checkout@7dd9e2a3dc350cf687eb1b2a4fadfee8c8e49675 # v3
-      - uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325 # tag=v2
-      - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # tag=v2
-        with:
-          registry: plugins.buf.build
-          username: grpcgatewaybot
-          password: ${{ secrets.BUF_TOKEN }}
-      - name: Set protobuf-version
-        run: echo ::set-output name=version::$(go list -m -f '{{.Version}}' google.golang.org/protobuf)
-        id: protobuf-version
-      - name: Set grpc-version
-        run: echo ::set-output name=version::$(go list -m -f '{{.Version}}' google.golang.org/grpc)
-        id: grpc-version
-      - uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # tag=v3
-        with:
-          push: true
-          tags: plugins.buf.build/grpc-ecosystem/grpc-gateway:${{ github.ref_name }}-1
-          context: .github/plugins/protoc-gen-grpc-gateway
-          platforms: linux/amd64
-          build-args: |
-            RELEASE_VERSION=${{ github.ref_name }}
-            GO_PROTOBUF_RELEASE_VERSION=${{ steps.protobuf-version.outputs.version }}
-            GO_GRPC_RELEASE_VERSION=${{ steps.grpc-version.outputs.version }}
-      - uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # tag=v3
-        with:
-          push: true
-          tags: plugins.buf.build/grpc-ecosystem/openapiv2:${{ github.ref_name }}-1
-          context: .github/plugins/protoc-gen-openapiv2
-          platforms: linux/amd64
-          build-args: |
-            RELEASE_VERSION=${{ github.ref_name }}

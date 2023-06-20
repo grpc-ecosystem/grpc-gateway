@@ -8,18 +8,18 @@ name: renovate
 jobs:
   update_repositoriesbzl:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.19
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@7dd9e2a3dc350cf687eb1b2a4fadfee8c8e49675 # v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # tag=v3
+      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
         with:
           path: /home/vscode/.cache/_grpc_gateway_bazel
           key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
@@ -30,6 +30,8 @@ jobs:
           startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
           build --test_output errors
           build --features race
+          # Protobuf v3.22.0+ requires C++14
+          build --repo_env=BAZEL_CXXOPTS=-std=c++14
           # Workaround https://github.com/bazelbuild/bazel/issues/3645
           # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
           build --local_ram_resources=7168 # Github runners have 7G of memory
@@ -46,7 +48,7 @@ jobs:
           fi
   regenerate:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.19
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -57,7 +59,7 @@ jobs:
       # git conflicts
       - update_repositoriesbzl
     steps:
-      - uses: actions/checkout@7dd9e2a3dc350cf687eb1b2a4fadfee8c8e49675 # v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}

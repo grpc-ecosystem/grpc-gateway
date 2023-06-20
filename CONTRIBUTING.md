@@ -11,19 +11,19 @@ All submissions, including submissions by project members, require review.
 It should be as simple as this (run from the root of the repository):
 
 ```bash
-docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.17 \
+docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.19 \
     /bin/bash -c 'make install && \
         make clean && \
         make generate'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
-    ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.17 -c '\
+    ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.19 -c '\
         bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
         bazel run :gazelle && \
         bazel run :buildifier'
 ```
 
-You may need to authenticate with GitHub to pull `ghcr.io/grpc-ecosystem/grpc-gateway/build-env`.
-You can do this by following the steps on the [GitHub Package docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages).
+You may need to authenticate with GitHub to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
+You can do this by following the steps on the [GitHub Package docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
 
 ### Using Visual Studio Code dev containers
 

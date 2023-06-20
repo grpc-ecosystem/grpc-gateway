@@ -78,6 +78,9 @@ type Registry struct {
 	// in your protofile comments
 	useGoTemplate bool
 
+	// ignoreComments determines whether all protofile comments should be excluded from output
+	ignoreComments bool
+
 	// enumsAsInts render enum as integer, as opposed to string
 	enumsAsInts bool
 
@@ -136,6 +139,13 @@ type Registry struct {
 	// disableDefaultResponses disables the generation of default responses.
 	// Useful if you have to support custom response codes that are not 200.
 	disableDefaultResponses bool
+
+	// useAllOfForRefs, if set, will use allOf as container for $ref to preserve same-level
+	// properties
+	useAllOfForRefs bool
+
+	// allowPatchFeature determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).
+	allowPatchFeature bool
 }
 
 type repeatedFieldSeparator struct {
@@ -426,7 +436,7 @@ func (r *Registry) ReserveGoPackageAlias(alias, pkgpath string) error {
 
 // GetAllFQMNs returns a list of all FQMNs
 func (r *Registry) GetAllFQMNs() []string {
-	var keys []string
+	keys := make([]string, 0, len(r.msgs))
 	for k := range r.msgs {
 		keys = append(keys, k)
 	}
@@ -435,7 +445,7 @@ func (r *Registry) GetAllFQMNs() []string {
 
 // GetAllFQENs returns a list of all FQENs
 func (r *Registry) GetAllFQENs() []string {
-	var keys []string
+	keys := make([]string, 0, len(r.enums))
 	for k := range r.enums {
 		keys = append(keys, k)
 	}
@@ -555,6 +565,16 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+// SetIgnoreComments sets ignoreComments
+func (r *Registry) SetIgnoreComments(ignore bool) {
+	r.ignoreComments = ignore
+}
+
+// GetIgnoreComments returns ignoreComments
+func (r *Registry) GetIgnoreComments() bool {
+	return r.ignoreComments
 }
 
 // SetEnumsAsInts set enumsAsInts
@@ -745,8 +765,7 @@ func (r *Registry) FieldName(f *Field) string {
 
 func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate string, svc *Service) error {
 	a := annotationIdentifier{method: httpMethod, pathTemplate: httpTemplate, service: svc}
-	_, ok := r.annotationMap[a]
-	if ok {
+	if _, ok := r.annotationMap[a]; ok {
 		return fmt.Errorf("duplicate annotation: method=%s, template=%s", httpMethod, httpTemplate)
 	}
 	r.annotationMap[a] = struct{}{}
@@ -771,4 +790,24 @@ func (r *Registry) SetDisableDefaultResponses(use bool) {
 // GetDisableDefaultResponses returns disableDefaultResponses
 func (r *Registry) GetDisableDefaultResponses() bool {
 	return r.disableDefaultResponses
+}
+
+// SetUseAllOfForRefs sets useAllOfForRefs
+func (r *Registry) SetUseAllOfForRefs(use bool) {
+	r.useAllOfForRefs = use
+}
+
+// GetUseAllOfForRefs returns useAllOfForRefs
+func (r *Registry) GetUseAllOfForRefs() bool {
+	return r.useAllOfForRefs
+}
+
+// SetAllowPatchFeature sets allowPatchFeature
+func (r *Registry) SetAllowPatchFeature(allow bool) {
+	r.allowPatchFeature = allow
+}
+
+// GetAllowPatchFeature returns allowPatchFeature
+func (r *Registry) GetAllowPatchFeature() bool {
+	return r.allowPatchFeature
 }

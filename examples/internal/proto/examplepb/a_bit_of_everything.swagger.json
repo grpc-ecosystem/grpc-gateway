@@ -248,6 +248,7 @@
             "in": "query",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
           },
@@ -401,10 +402,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -665,6 +691,7 @@
             "in": "query",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
           },
@@ -818,10 +845,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -1075,6 +1127,7 @@
             "in": "query",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
           },
@@ -1222,10 +1275,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -1473,6 +1551,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -1651,10 +1730,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -2081,6 +2185,7 @@
             "in": "query",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
           },
@@ -2102,10 +2207,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "timestampValue",
@@ -2335,6 +2465,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -2354,6 +2485,7 @@
                 "nested": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   }
                 },
@@ -2495,6 +2627,7 @@
                 "repeatedNestedAnnotation": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   },
                   "description": "Repeated nested object description.",
@@ -2615,6 +2748,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -2793,10 +2927,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -3019,6 +3178,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -3197,10 +3357,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -3447,6 +3632,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -3625,10 +3811,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -3875,6 +4086,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -4053,10 +4265,35 @@
             "collectionFormat": "multi"
           },
           {
+            "name": "oneofEmpty",
+            "in": "query",
+            "required": false,
+            "type": "object"
+          },
+          {
             "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "mapValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "mappedStringValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappedNestedValue",
+            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "in": "query",
+            "required": false
           },
           {
             "name": "nonConventionalNameValue",
@@ -4736,6 +4973,7 @@
                 },
                 "uuid": {
                   "type": "string",
+                  "format": "uuid",
                   "minLength": 1,
                   "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
                   "x-internal": true
@@ -4743,6 +4981,7 @@
                 "nested": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   }
                 },
@@ -4884,6 +5123,7 @@
                 "repeatedNestedAnnotation": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   },
                   "description": "Repeated nested object description.",
@@ -5246,13 +5486,6 @@
             }
           },
           {
-            "name": "updateMask",
-            "description": "The list of fields to be updated.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "allowMissing",
             "description": "If set to true, and the book is not found, a new book will be created.\nIn this situation, `update_mask` is ignored.",
             "in": "query",
@@ -5384,6 +5617,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -5404,6 +5638,7 @@
                 "nested": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   }
                 },
@@ -5545,6 +5780,7 @@
                 "repeatedNestedAnnotation": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   },
                   "description": "Repeated nested object description.",
@@ -5695,6 +5931,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -5715,6 +5952,7 @@
                 "nested": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   }
                 },
@@ -5856,6 +6094,7 @@
                 "repeatedNestedAnnotation": {
                   "type": "array",
                   "items": {
+                    "type": "object",
                     "$ref": "#/definitions/ABitOfEverythingNested"
                   },
                   "description": "Repeated nested object description.",
@@ -5947,13 +6186,6 @@
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
-          },
-          {
-            "name": "updateMask",
-            "description": "The paths to update.",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -6573,6 +6805,7 @@
             "in": "path",
             "required": true,
             "type": "string",
+            "format": "uuid",
             "x-internal": true
           },
           {
@@ -6595,6 +6828,7 @@
                     "nested": {
                       "type": "array",
                       "items": {
+                        "type": "object",
                         "$ref": "#/definitions/ABitOfEverythingNested"
                       }
                     },
@@ -6736,6 +6970,7 @@
                     "repeatedNestedAnnotation": {
                       "type": "array",
                       "items": {
+                        "type": "object",
                         "$ref": "#/definitions/ABitOfEverythingNested"
                       },
                       "description": "Repeated nested object description.",
@@ -6951,6 +7186,7 @@
         },
         "uuid": {
           "type": "string",
+          "format": "uuid",
           "minLength": 1,
           "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
           "x-internal": true
@@ -6958,6 +7194,7 @@
         "nested": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
@@ -7099,6 +7336,7 @@
         "repeatedNestedAnnotation": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/ABitOfEverythingNested"
           },
           "description": "Repeated nested object description.",
@@ -7496,7 +7734,7 @@
         }
       },
       "additionalProperties": {},
-      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
     "rpcStatus": {
       "type": "object",
@@ -7513,6 +7751,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           },
           "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"gopkg.in/yaml.v3"
 )
 
 type param struct {
@@ -146,9 +147,9 @@ type openapiParameterObject struct {
 	Type             string              `json:"type,omitempty" yaml:"type,omitempty"`
 	Format           string              `json:"format,omitempty" yaml:"format,omitempty"`
 	Items            *openapiItemsObject `json:"items,omitempty" yaml:"items,omitempty"`
-	Enum             []string            `json:"enum,omitempty" yaml:"enum,omitempty"`
+	Enum             interface{}         `json:"enum,omitempty" yaml:"enum,omitempty"`
 	CollectionFormat string              `json:"collectionFormat,omitempty" yaml:"collectionFormat,omitempty"`
-	Default          string              `json:"default,omitempty" yaml:"default,omitempty"`
+	Default          interface{}         `json:"default,omitempty" yaml:"default,omitempty"`
 	MinItems         *int                `json:"minItems,omitempty" yaml:"minItems,omitempty"`
 	Pattern          string              `json:"pattern,omitempty" yaml:"pattern,omitempty"`
 
@@ -178,8 +179,12 @@ type schemaCore struct {
 	// If the item is an enumeration include a list of all the *NAMES* of the
 	// enum values.  I'm not sure how well this will work but assuming all enums
 	// start from 0 index it will be great. I don't think that is a good assumption.
-	Enum    []string `json:"enum,omitempty" yaml:"enum,omitempty"`
-	Default string   `json:"default,omitempty" yaml:"default,omitempty"`
+	Enum    interface{} `json:"enum,omitempty" yaml:"enum,omitempty"`
+	Default interface{} `json:"default,omitempty" yaml:"default,omitempty"`
+}
+
+type allOfEntry struct {
+	Ref string `json:"$ref,omitempty" yaml:"$ref,omitempty"`
 }
 
 type RawExample json.RawMessage
@@ -219,7 +224,7 @@ func (e RawExample) MarshalYAML() (interface{}, error) {
 func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
 	name, ok := fullyQualifiedNameToOpenAPIName(ref, reg)
 	if !ok {
-		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from '%v'", ref)
+		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from %q", ref)
 	}
 	s.Ref = fmt.Sprintf("#/definitions/%s", name)
 	return nil
@@ -259,13 +264,23 @@ type keyVal struct {
 type openapiSchemaObjectProperties []keyVal
 
 func (p openapiSchemaObjectProperties) MarshalYAML() (interface{}, error) {
-	m := make(map[string]interface{}, len(p))
-
-	for _, v := range p {
-		m[v.Key] = v.Value
+	n := yaml.Node{
+		Kind:    yaml.MappingNode,
+		Content: make([]*yaml.Node, len(p)*2),
 	}
-
-	return m, nil
+	for i, v := range p {
+		keyNode := yaml.Node{}
+		if err := keyNode.Encode(v.Key); err != nil {
+			return nil, err
+		}
+		valueNode := yaml.Node{}
+		if err := valueNode.Encode(v.Value); err != nil {
+			return nil, err
+		}
+		n.Content[i*2+0] = &keyNode
+		n.Content[i*2+1] = &valueNode
+	}
+	return n, nil
 }
 
 func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
@@ -321,6 +336,8 @@ type openapiSchemaObject struct {
 	Required         []string `json:"required,omitempty" yaml:"required,omitempty"`
 
 	extensions []extension
+
+	AllOf []allOfEntry `json:"allOf,omitempty" yaml:"allOf,omitempty"`
 }
 
 // http://swagger.io/specification/#definitionsObject

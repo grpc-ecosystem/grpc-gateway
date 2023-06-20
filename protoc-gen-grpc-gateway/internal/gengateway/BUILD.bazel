@@ -15,7 +15,7 @@ go_library(
         "//internal/descriptor",
         "//internal/generator",
         "//utilities",
-        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//grpclog",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/pluginpb",
     ],

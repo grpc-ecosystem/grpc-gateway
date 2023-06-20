@@ -84,33 +84,25 @@ service VisibilityRuleEchoService {
   // Echo method receives a simple message and returns it.
   // It should always be visible in the open API output.
   rpc Echo(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
-    option (google.api.http) = {
-      post: "/v1/example/echo/{id}"
-    };
+    option (google.api.http) = {post: "/v1/example/echo/{id}"};
   }
   // EchoInternal is an internal API that should only be visible in the OpenAPI spec
   // if `visibility_restriction_selectors` includes "INTERNAL".
   rpc EchoInternal(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
     option (google.api.method_visibility).restriction = "INTERNAL";
-    option (google.api.http) = {
-      get: "/v1/example/echo_internal"
-    };
+    option (google.api.http) = {get: "/v1/example/echo_internal"};
   }
   // EchoPreview is a preview API that should only be visible in the OpenAPI spec
   // if `visibility_restriction_selectors` includes "PREVIEW".
   rpc EchoPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleMessageInPreviewMethod) {
     option (google.api.method_visibility).restriction = "PREVIEW";
-    option (google.api.http) = {
-      get: "/v1/example/echo_preview"
-    };
+    option (google.api.http) = {get: "/v1/example/echo_preview"};
   }
   // EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
   // if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
   rpc EchoInternalAndPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
     option (google.api.method_visibility).restriction = "INTERNAL,PREVIEW";
-    option (google.api.http) = {
-      get: "/v1/example/echo_internal_and_preview"
-    };
+    option (google.api.http) = {get: "/v1/example/echo_internal_and_preview"};
   }
 }
 
@@ -122,8 +114,6 @@ service VisibilityRuleInternalEchoService {
   // Echo method receives a simple message and returns it.
   // It should not be visible in the open API output.
   rpc Echo(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
-    option (google.api.http) = {
-      post: "/v1/example/internal/echo/{id}"
-    };
+    option (google.api.http) = {post: "/v1/example/internal/echo/{id}"};
   }
 }

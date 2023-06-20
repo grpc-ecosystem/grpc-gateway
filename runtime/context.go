@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
@@ -99,6 +100,38 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 	return metadata.NewIncomingContext(ctx, md), nil
 }
 
+func isValidGRPCMetadataKey(key string) bool {
+	// Must be a valid gRPC "Header-Name" as defined here:
+	//   https://github.com/grpc/grpc/blob/4b05dc88b724214d0c725c8e7442cbc7a61b1374/doc/PROTOCOL-HTTP2.md
+	// This means 0-9 a-z _ - .
+	// Only lowercase letters are valid in the wire protocol, but the client library will normalize
+	// uppercase ASCII to lowercase, so uppercase ASCII is also acceptable.
+	bytes := []byte(key) // gRPC validates strings on the byte level, not Unicode.
+	for _, ch := range bytes {
+		validLowercaseLetter := ch >= 'a' && ch <= 'z'
+		validUppercaseLetter := ch >= 'A' && ch <= 'Z'
+		validDigit := ch >= '0' && ch <= '9'
+		validOther := ch == '.' || ch == '-' || ch == '_'
+		if !validLowercaseLetter && !validUppercaseLetter && !validDigit && !validOther {
+			return false
+		}
+	}
+	return true
+}
+
+func isValidGRPCMetadataTextValue(textValue string) bool {
+	// Must be a valid gRPC "ASCII-Value" as defined here:
+	//   https://github.com/grpc/grpc/blob/4b05dc88b724214d0c725c8e7442cbc7a61b1374/doc/PROTOCOL-HTTP2.md
+	// This means printable ASCII (including/plus spaces); 0x20 to 0x7E inclusive.
+	bytes := []byte(textValue) // gRPC validates strings on the byte level, not Unicode.
+	for _, ch := range bytes {
+		if ch < 0x20 || ch > 0x7E {
+			return false
+		}
+	}
+	return true
+}
+
 func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, metadata.MD, error) {
 	ctx = withRPCMethod(ctx, rpcMethodName)
 	for _, o := range options {
@@ -121,6 +154,10 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 				pairs = append(pairs, "authorization", val)
 			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
+				if !isValidGRPCMetadataKey(h) {
+					grpclog.Errorf("HTTP header name %q is not valid as gRPC metadata key; skipping", h)
+					continue
+				}
 				// Handles "-bin" metadata in grpc, since grpc will do another base64
 				// encode before sending to server, we need to decode it first.
 				if strings.HasSuffix(key, metadataHeaderBinarySuffix) {
@@ -130,6 +167,9 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 					}
 
 					val = string(b)
+				} else if !isValidGRPCMetadataTextValue(val) {
+					grpclog.Errorf("Value of HTTP header %q contains non-ASCII value (not valid as gRPC metadata): skipping", h)
+					continue
 				}
 				pairs = append(pairs, h, val)
 			}

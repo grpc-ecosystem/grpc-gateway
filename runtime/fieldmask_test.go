@@ -8,9 +8,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	field_mask "google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 func newFieldMask(paths ...string) *field_mask.FieldMask {
@@ -165,12 +165,17 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 				"nested",
 			),
 		},
-
 		{
 			name:     "protobuf-any",
 			msg:      &examplepb.ABitOfEverything{},
 			input:    `{"anytype":{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}}`,
 			expected: newFieldMask("anytype"), //going deeper makes no sense
+		},
+		{
+			name:     "repeated-protobuf-any",
+			msg:      &examplepb.ABitOfEverything{},
+			input:    `{"repeated_anytype":[{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}]}`,
+			expected: newFieldMask("repeated_anytype"), //going deeper makes no sense
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

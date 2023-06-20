@@ -7,9 +7,9 @@ import (
 	"io"
 	"sort"
 
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	field_mask "google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 func getFieldByName(fields protoreflect.FieldDescriptors, name string) protoreflect.FieldDescriptor {
@@ -64,7 +64,7 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 					continue
 				}
 
-				if isProtobufAnyMessage(fd.Message()) {
+				if isProtobufAnyMessage(fd.Message()) && !fd.IsList() {
 					_, hasTypeField := v.(map[string]interface{})["@type"]
 					if hasTypeField {
 						queue = append(queue, fieldMaskPathItem{path: k})

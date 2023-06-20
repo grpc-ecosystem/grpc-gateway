@@ -80,7 +80,7 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 	}
 }
 
-// WithEscapingType sets the escaping type. See the definitions of UnescapingMode
+// WithUnescapingMode sets the escaping type. See the definitions of UnescapingMode
 // for more information.
 func WithUnescapingMode(mode UnescapingMode) ServeMuxOption {
 	return func(serveMux *ServeMux) {
@@ -101,8 +101,9 @@ func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMux
 type HeaderMatcherFunc func(string) (string, bool)
 
 // DefaultHeaderMatcher is used to pass http request headers to/from gRPC context. This adds permanent HTTP header
-// keys (as specified by the IANA) to gRPC context with grpcgateway- prefix. HTTP headers that start with
-// 'Grpc-Metadata-' are mapped to gRPC metadata after removing prefix 'Grpc-Metadata-'.
+// keys (as specified by the IANA, e.g: Accept, Cookie, Host) to the gRPC metadata with the grpcgateway- prefix. If you want to know which headers are considered permanent, you can view the isPermanentHTTPHeader function.
+// HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata after removing the prefix 'Grpc-Metadata-'.
+// Other headers are not added to the gRPC metadata.
 func DefaultHeaderMatcher(key string) (string, bool) {
 	switch key = textproto.CanonicalMIMEHeaderKey(key); {
 	case isPermanentHTTPHeader(key):
@@ -230,7 +231,6 @@ func WithHealthEndpointAt(healthCheckClient grpc_health_v1.HealthClient, endpoin
 				w.Header().Set("Content-Type", "application/json")
 
 				if resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
-					var err error
 					switch resp.GetStatus() {
 					case grpc_health_v1.HealthCheckResponse_NOT_SERVING, grpc_health_v1.HealthCheckResponse_UNKNOWN:
 						err = status.Error(codes.Unavailable, resp.String())
@@ -389,8 +389,12 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// lookup other methods to handle fallback from GET to POST and
-	// to determine if it is NotImplemented or NotFound.
+	// if no handler has found for the request, lookup for other methods
+	// to handle POST -> GET fallback if the request is subject to path
+	// length fallback.
+	// Note we are not eagerly checking the request here as we want to return the
+	// right HTTP status code, and we need to process the fallback candidates in
+	// order to do that.
 	for m, handlers := range s.handlers {
 		if m == r.Method {
 			continue
@@ -423,8 +427,11 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 				continue
 			}
+
 			// X-HTTP-Method-Override is optional. Always allow fallback to POST.
-			if s.isPathLengthFallback(r) {
+			// Also, only consider POST -> GET fallbacks, and avoid falling back to
+			// potentially dangerous operations like DELETE.
+			if s.isPathLengthFallback(r) && m == http.MethodGet {
 				if err := r.ParseForm(); err != nil {
 					_, outboundMarshaler := MarshalerForRequest(s, r)
 					sterr := status.Error(codes.InvalidArgument, err.Error())

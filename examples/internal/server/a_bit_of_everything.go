@@ -138,7 +138,7 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessag
 	return nil, status.Errorf(codes.NotFound, "not found")
 }
 
-func (s *_ABitOfEverythingServer) List(_ *emptypb.Empty, stream examples.StreamService_ListServer) error {
+func (s *_ABitOfEverythingServer) List(opt *examples.Options, stream examples.StreamService_ListServer) error {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -155,20 +155,17 @@ func (s *_ABitOfEverythingServer) List(_ *emptypb.Empty, stream examples.StreamS
 		}
 	}
 
-	// return error when metadata includes error header
-	if header, ok := metadata.FromIncomingContext(stream.Context()); ok {
-		if v, ok := header["error"]; ok {
-			stream.SetTrailer(metadata.New(map[string]string{
-				"foo": "foo2",
-				"bar": "bar2",
-			}))
-			return status.Errorf(codes.InvalidArgument, "error metadata: %v", v)
-		}
+	if opt.Error {
+		stream.SetTrailer(metadata.New(map[string]string{
+			"foo": "foo2",
+			"bar": "bar2",
+		}))
+		return status.Error(codes.InvalidArgument, "error")
 	}
 	return nil
 }
 
-func (s *_ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.StreamService_DownloadServer) error {
+func (s *_ABitOfEverythingServer) Download(opt *examples.Options, stream examples.StreamService_DownloadServer) error {
 	msgs := []*httpbody.HttpBody{{
 		ContentType: "text/html",
 		Data:        []byte("Hello 1"),
@@ -185,6 +182,13 @@ func (s *_ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.Str
 		time.Sleep(5 * time.Millisecond)
 	}
 
+	if opt.Error {
+		stream.SetTrailer(metadata.New(map[string]string{
+			"foo": "foo2",
+			"bar": "bar2",
+		}))
+		return status.Error(codes.InvalidArgument, "error")
+	}
 	return nil
 }
 
