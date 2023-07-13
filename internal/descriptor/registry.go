@@ -78,6 +78,9 @@ type Registry struct {
 	// in your protofile comments
 	useGoTemplate bool
 
+	// goTemplateArg
+	goTemplateArg map[string]string
+
 	// ignoreComments determines whether all protofile comments should be excluded from output
 	ignoreComments bool
 
@@ -565,6 +568,25 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+// SetGoTemplateArgs sets goTemplateArgs
+func (r *Registry) SetGoTemplateArgs(args []string) {
+
+	m := make(map[string]string)
+	for _, arg := range args {
+		kv := strings.Split(arg, "=")
+		if len(kv) > 1 {
+			m[kv[0]] = strings.Join(kv[1:], "") // joining strings because value can contain '=' sign
+		}
+	}
+
+	r.goTemplateArg = m
+}
+
+// GetGoTemplateArgs return Args for the go template to use
+func (r *Registry) GetGoTemplateArgs() map[string]string {
+	return r.goTemplateArg
 }
 
 // SetIgnoreComments sets ignoreComments
