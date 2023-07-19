@@ -388,19 +388,19 @@ This method is not used outside of the initial routing.
 If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be converted to the equivalent of the gRPC `12 UNIMPLEMENTED`, which is  HTTP `501 Not Implmented` you can use the following example:
 
 ```go
-func handleRoutingError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
+func handleRoutingError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
 	if httpStatus != http.StatusMethodNotAllowed {
-		runtime.DefaultRoutingErrorHandler(ctx, mux, marshaler, writer, request, httpStatus)
+		runtime.DefaultRoutingErrorHandler(ctx, mux, marshaler, w, r, httpStatus)
 		return
 	}
 
 	// Use HTTPStatusError to customize the DefaultHTTPErrorHandler status code
-	err := &HTTPStatusError{
-		HTTPStatus: httpStatus
-		Err:        status.Error(codes.Unimplemented, http.StatusText(httpStatus))
+	err := &runtime.HTTPStatusError{
+		HTTPStatus: httpStatus,
+		Err:        status.Error(codes.Unimplemented, http.StatusText(httpStatus)),
 	}
 
-	runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w , r, err)
+	runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w, r, err)
 }
 ```
 
