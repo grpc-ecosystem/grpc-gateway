@@ -20,7 +20,7 @@ go_test(
         "@com_github_golang_glog//:glog",
         "@com_github_google_go_cmp//cmp",
         "@com_github_rogpeppe_fastuuid//:fastuuid",
-        "@go_googleapis//google/rpc:status_go_proto",
+        "@org_golang_google_genproto_googleapis_rpc//status",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_protobuf//encoding/protojson",
         "@org_golang_google_protobuf//proto",

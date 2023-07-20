@@ -72,10 +72,11 @@ proto_library(
         "@com_google_protobuf//:struct_proto",
         "@com_google_protobuf//:timestamp_proto",
         "@com_google_protobuf//:wrappers_proto",
-        "@go_googleapis//google/api:annotations_proto",
-        "@go_googleapis//google/api:httpbody_proto",
-        "@go_googleapis//google/api:visibility_proto",
-        "@go_googleapis//google/rpc:status_proto",
+        "@googleapis//google/api:annotations_proto",
+        "@googleapis//google/api:field_behavior_proto",
+        "@googleapis//google/api:httpbody_proto",
+        "@googleapis//google/api:visibility_proto",
+        "@googleapis//google/rpc:status_proto",
     ],
 )
 
@@ -87,8 +88,10 @@ proto_library(
         "openapi_merge_b.proto",
     ],
     deps = [
-        "@go_googleapis//google/api:annotations_proto",
-        "@go_googleapis//google/api:httpbody_proto",
+        "@com_google_protobuf//:api_proto",
+        "@googleapis//google/api:annotations_proto",
+        "@googleapis//google/api:field_behavior_proto",
+        "@googleapis//google/rpc:status_proto",
     ],
 )
 
@@ -108,10 +111,10 @@ go_proto_library(
         "//examples/internal/proto/sub2",
         "//protoc-gen-openapiv2/options",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
-        "@go_googleapis//google/api:annotations_go_proto",
-        "@go_googleapis//google/api:httpbody_go_proto",
-        "@go_googleapis//google/api:visibility_go_proto",
-        "@go_googleapis//google/rpc:status_go_proto",
+        "@org_golang_google_genproto_googleapis_api//annotations",
+        "@org_golang_google_genproto_googleapis_api//httpbody",
+        "@org_golang_google_genproto_googleapis_api//visibility",
+        "@org_golang_google_genproto_googleapis_rpc//status",
         "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
 )
@@ -131,7 +134,7 @@ go_library(
     deps = [
         "//runtime",
         "//utilities",
-        "@go_googleapis//google/api:annotations_go_proto",
+        "@org_golang_google_genproto_googleapis_api//annotations",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//grpclog",

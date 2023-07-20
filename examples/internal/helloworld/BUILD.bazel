@@ -12,7 +12,7 @@ proto_library(
     visibility = ["//visibility:public"],
     deps = [
         "@com_google_protobuf//:wrappers_proto",
-        "@go_googleapis//google/api:annotations_proto",
+        "@googleapis//google/api:annotations_proto",
     ],
 )
 
@@ -27,7 +27,7 @@ go_proto_library(
     proto = ":helloworld_proto",
     visibility = ["//visibility:public"],
     deps = [
-        "@go_googleapis//google/api:annotations_go_proto",
+        "@org_golang_google_genproto_googleapis_api//annotations",
         "@org_golang_google_protobuf//proto:go_default_library",  #keep
     ],
 )
