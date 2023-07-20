@@ -1,0 +1,10 @@
+version: v1
+plugins:
+  - name: grpc-gateway
+    out: .
+    opt:
+      - grpc_api_configuration=examples/internal/proto/globalconfig/grpc_annotations.yaml
+  - name: openapiv2
+    out: .
+    opt:
+      - grpc_api_configuration=examples/internal/proto/globalconfig/grpc_annotations.yaml

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.globalconfig.first_svc.v1;
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/globalconfig/first_svc/v1;first_svcv1";
+
+service FirstService {
+  rpc Get(GetRequest) returns (GetResponse) {}
+}
+
+message GetRequest {
+  string request = 1;
+}
+
+message GetResponse {
+  string response = 1;
+}

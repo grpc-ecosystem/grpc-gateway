@@ -1,0 +1,12 @@
+type: google.api.Service
+config_version: 3
+
+http:
+  rules:
+      ### First service ###
+    - selector: grpc.gateway.examples.internal.proto.globalconfig.first_svc.v1.FirstService.Get
+      get: /api/v1/first/get
+
+      ### Second service ###
+    - selector: grpc.gateway.examples.internal.proto.globalconfig.second_svc.v1.SecondService.Get
+      get: /api/v2/second/get
