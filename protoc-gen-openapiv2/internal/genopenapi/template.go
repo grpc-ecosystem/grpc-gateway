@@ -2771,6 +2771,9 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		if len(j.GetEnum()) == 0 {
 			s.Items.Enum = nil
 		}
+		if j.GetFormat() != "" {
+			s.Items.Format = j.GetFormat()
+		}
 	} else {
 		s.MaxLength = j.GetMaxLength()
 		s.MinLength = j.GetMinLength()
@@ -2794,6 +2797,9 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		if len(j.GetEnum()) == 0 {
 			s.Enum = nil
 		}
+		if j.GetFormat() != "" {
+			s.Format = j.GetFormat()
+		}
 	}
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
@@ -2810,9 +2816,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	}
 	if j.GetExample() != "" {
 		s.Example = RawExample(j.GetExample())
-	}
-	if j.GetFormat() != "" {
-		s.Format = j.GetFormat()
 	}
 }
 

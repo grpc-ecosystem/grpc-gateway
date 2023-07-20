@@ -4137,6 +4137,9 @@ func TestSchemaOfField(t *testing.T) {
 	jsonSchemaRequired := &openapi_options.JSONSchema{
 		Required: []string{"required_via_json_schema"},
 	}
+	jsonSchemaWithFormat := &openapi_options.JSONSchema{
+		Format: "uuid",
+	}
 
 	var fieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
@@ -4843,6 +4846,35 @@ func TestSchemaOfField(t *testing.T) {
 				Description: "field description",
 				MaxItems:    20,
 				MinItems:    2,
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("array_field_format"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.array_field_format",
+						Option: jsonSchemaWithFormat,
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						schemaCore: schemaCore{
+							Type:   "string",
+							Format: "uuid",
+						},
+					},
+				},
 			},
 		},
 		{

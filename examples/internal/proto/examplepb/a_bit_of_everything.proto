@@ -376,6 +376,11 @@ message ABitOfEverything {
   //
   // This is an example of a multi-line comment.
   string trailing_multiline = 50; // Trailing multiline.
+
+  // Specify a custom format of repeated field
+  repeated string uuids = 51 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    format: "uuid"
+  }];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
