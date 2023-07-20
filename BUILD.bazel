@@ -19,6 +19,18 @@ buildifier(
 # gazelle:go_proto_compilers //:go_apiv2
 # gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc
 # gazelle:go_naming_convention import_alias
+# gazelle:resolve proto proto google/api/annotations.proto @googleapis//google/api:annotations_proto
+# gazelle:resolve proto go google/api/annotations.proto  @org_golang_google_genproto_googleapis_api//annotations
+# gazelle:resolve proto proto google/api/http.proto @googleapis//google/api:http_proto
+# gazelle:resolve proto go google/api/http.proto  @org_golang_google_genproto_googleapis_api//annotations
+# gazelle:resolve proto proto google/api/field_behavior.proto @googleapis//google/api:field_behavior_proto
+# gazelle:resolve proto go google/api/field_behavior.proto  @org_golang_google_genproto_googleapis_api//annotations
+# gazelle:resolve proto proto google/api/httpbody.proto @googleapis//google/api:httpbody_proto
+# gazelle:resolve proto go google/api/httpbody.proto  @org_golang_google_genproto_googleapis_api//httpbody
+# gazelle:resolve proto proto google/api/visibility.proto @googleapis//google/api:visibility_proto
+# gazelle:resolve proto go google/api/visibility.proto  @org_golang_google_genproto_googleapis_api//visibility
+# gazelle:resolve proto proto google/rpc/status.proto @googleapis//google/rpc:status_proto
+# gazelle:resolve proto go google/rpc/status.proto  @org_golang_google_genproto_googleapis_rpc//status
 
 gazelle(name = "gazelle")
 

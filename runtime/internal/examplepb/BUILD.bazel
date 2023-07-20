@@ -22,7 +22,7 @@ proto_library(
         "@com_google_protobuf//:struct_proto",
         "@com_google_protobuf//:timestamp_proto",
         "@com_google_protobuf//:wrappers_proto",
-        "@go_googleapis//google/api:annotations_proto",
+        "@googleapis//google/api:annotations_proto",
     ],
 )
 
@@ -34,7 +34,10 @@ go_proto_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb",
     proto = ":examplepb_proto",
-    deps = ["@go_googleapis//google/api:annotations_go_proto"],
+    deps = [
+        "@org_golang_google_genproto_googleapis_api//annotations",
+        "@org_golang_google_protobuf//proto:go_default_library",  #keep
+    ],
 )
 
 go_library(

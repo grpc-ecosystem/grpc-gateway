@@ -9,9 +9,7 @@ proto_library(
     srcs = [
         "apiconfig.proto",
     ],
-    deps = [
-        "@go_googleapis//google/api:annotations_proto",
-    ],
+    deps = ["@googleapis//google/api:http_proto"],
 )
 
 go_proto_library(
@@ -19,7 +17,7 @@ go_proto_library(
     compilers = ["//:go_apiv2"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig",
     proto = ":apiconfig_proto",
-    deps = ["@go_googleapis//google/api:annotations_go_proto"],
+    deps = ["@org_golang_google_genproto_googleapis_api//annotations"],
 )
 
 go_library(
