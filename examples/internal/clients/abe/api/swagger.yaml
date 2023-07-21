@@ -517,6 +517,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -936,6 +946,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -1342,6 +1362,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -1768,6 +1798,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -2181,6 +2221,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -2607,6 +2657,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -3059,6 +3119,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -3468,6 +3538,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -3894,6 +3974,16 @@ paths:
         type: "string"
         x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
+      - name: "uuids"
+        in: "query"
+        description: "Specify a custom format of repeated field items"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        x-exportParamName: "Uuids"
       responses:
         200:
           description: "A successful response."
@@ -5326,6 +5416,12 @@ definitions:
         type: "string"
         description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
+      uuids:
+        type: "array"
+        title: "Specify a custom format of repeated field items"
+        items:
+          type: "string"
+          format: "uuid"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5835,6 +5931,12 @@ definitions:
         type: "string"
         description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
+      uuids:
+        type: "array"
+        title: "Specify a custom format of repeated field items"
+        items:
+          type: "string"
+          format: "uuid"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -6037,6 +6139,12 @@ definitions:
         type: "string"
         description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
+      uuids:
+        type: "array"
+        title: "Specify a custom format of repeated field items"
+        items:
+          type: "string"
+          format: "uuid"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -6237,6 +6345,12 @@ definitions:
         type: "string"
         description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
+      uuids:
+        type: "array"
+        title: "Specify a custom format of repeated field items"
+        items:
+          type: "string"
+          format: "uuid"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -6422,6 +6536,12 @@ definitions:
         type: "string"
         description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
+      uuids:
+        type: "array"
+        title: "Specify a custom format of repeated field items"
+        items:
+          type: "string"
+          format: "uuid"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -6597,6 +6717,12 @@ definitions:
         type: "string"
         description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
+      uuids:
+        type: "array"
+        title: "Specify a custom format of repeated field items"
+        items:
+          type: "string"
+          format: "uuid"
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example: "{\"int64_value\":12,\"double_value\":12.3}"

@@ -612,6 +612,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1060,6 +1072,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1497,6 +1521,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1952,6 +1988,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -2411,6 +2459,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -2699,6 +2759,14 @@
                   "type": "string",
                   "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
+                },
+                "uuids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -3149,6 +3217,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -3579,6 +3659,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -4033,6 +4125,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -4487,6 +4591,18 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "uuids",
+            "description": "Specify a custom format of repeated field items",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -5195,6 +5311,14 @@
                   "type": "string",
                   "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
+                },
+                "uuids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5852,6 +5976,14 @@
                   "type": "string",
                   "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
+                },
+                "uuids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -6166,6 +6298,14 @@
                   "type": "string",
                   "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
+                },
+                "uuids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -7042,6 +7182,14 @@
                       "type": "string",
                       "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                       "title": "Leading multiline"
+                    },
+                    "uuids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "title": "Specify a custom format of repeated field items"
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -7408,6 +7556,14 @@
           "type": "string",
           "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
           "title": "Leading multiline"
+        },
+        "uuids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": "Specify a custom format of repeated field items"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

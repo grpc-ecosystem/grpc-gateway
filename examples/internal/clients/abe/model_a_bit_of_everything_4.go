@@ -74,4 +74,5 @@ type ABitOfEverything4 struct {
 	TrailingBoth string `json:"trailingBoth,omitempty"`
 	// This is an example of a multi-line comment.  Trailing multiline.
 	TrailingMultiline string `json:"trailingMultiline,omitempty"`
+	Uuids []string `json:"uuids,omitempty"`
 }

@@ -461,6 +461,14 @@
           "type": "string",
           "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
           "title": "Leading multiline"
+        },
+        "uuids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": "Specify a custom format of repeated field items"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

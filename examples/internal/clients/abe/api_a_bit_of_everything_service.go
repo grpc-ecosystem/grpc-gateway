@@ -393,6 +393,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -438,6 +439,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -585,6 +587,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -772,6 +777,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -817,6 +823,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -964,6 +971,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1150,6 +1160,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -1193,6 +1204,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1334,6 +1346,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1679,6 +1694,7 @@ This API creates a new ABitOfEverything
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -1710,6 +1726,7 @@ type ABitOfEverythingServiceCreateOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1830,6 +1847,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -2344,6 +2364,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -2391,6 +2412,7 @@ type ABitOfEverythingServiceCustomOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -2543,6 +2565,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -2731,6 +2756,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return interface{}
 */
@@ -2778,6 +2804,7 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
@@ -2930,6 +2957,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -3389,6 +3419,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -3436,6 +3467,7 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -3588,6 +3620,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -3930,6 +3965,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return interface{}
 */
@@ -3977,6 +4013,7 @@ type ABitOfEverythingServiceExistsOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
@@ -4129,6 +4166,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -4432,6 +4472,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return interface{}
 */
@@ -4479,6 +4520,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	TrailingOnlyDot optional.String
 	TrailingBoth optional.String
 	TrailingMultiline optional.String
+	Uuids optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
@@ -4631,6 +4673,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
 		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uuids.IsSet() {
+		localVarQueryParams.Add("uuids", parameterToString(localVarOptionals.Uuids.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
