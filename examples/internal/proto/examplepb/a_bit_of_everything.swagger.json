@@ -615,7 +615,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1075,7 +1075,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1524,7 +1524,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1991,7 +1991,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -2462,7 +2462,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -2766,7 +2766,7 @@
                     "type": "string",
                     "format": "uuid"
                   },
-                  "title": "Specify a custom format of repeated field"
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -3220,7 +3220,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -3662,7 +3662,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -4128,7 +4128,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -4594,7 +4594,7 @@
           },
           {
             "name": "uuids",
-            "description": "Specify a custom format of repeated field",
+            "description": "Specify a custom format of repeated field items",
             "in": "query",
             "required": false,
             "type": "array",
@@ -5318,7 +5318,7 @@
                     "type": "string",
                     "format": "uuid"
                   },
-                  "title": "Specify a custom format of repeated field"
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5983,7 +5983,7 @@
                     "type": "string",
                     "format": "uuid"
                   },
-                  "title": "Specify a custom format of repeated field"
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -6305,7 +6305,7 @@
                     "type": "string",
                     "format": "uuid"
                   },
-                  "title": "Specify a custom format of repeated field"
+                  "title": "Specify a custom format of repeated field items"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -7189,7 +7189,7 @@
                         "type": "string",
                         "format": "uuid"
                       },
-                      "title": "Specify a custom format of repeated field"
+                      "title": "Specify a custom format of repeated field items"
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -7563,7 +7563,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "title": "Specify a custom format of repeated field"
+          "title": "Specify a custom format of repeated field items"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

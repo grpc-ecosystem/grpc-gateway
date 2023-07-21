@@ -393,7 +393,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -777,7 +777,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -1160,7 +1160,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -1694,7 +1694,7 @@ This API creates a new ABitOfEverything
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -2364,7 +2364,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -2756,7 +2756,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return interface{}
 */
@@ -3419,7 +3419,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return ExamplepbABitOfEverything
 */
@@ -3965,7 +3965,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return interface{}
 */
@@ -4472,7 +4472,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
      * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
-     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field
+     * @param "Uuids" (optional.Interface of []string) -  Specify a custom format of repeated field items
 
 @return interface{}
 */

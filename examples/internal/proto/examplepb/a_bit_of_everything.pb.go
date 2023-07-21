@@ -415,7 +415,7 @@ type ABitOfEverything struct {
 	//
 	// This is an example of a multi-line comment.
 	TrailingMultiline string `protobuf:"bytes,50,opt,name=trailing_multiline,json=trailingMultiline,proto3" json:"trailing_multiline,omitempty"` // Trailing multiline.
-	// Specify a custom format of repeated field
+	// Specify a custom format of repeated field items
 	Uuids []string `protobuf:"bytes,51,rep,name=uuids,proto3" json:"uuids,omitempty"`
 }
 

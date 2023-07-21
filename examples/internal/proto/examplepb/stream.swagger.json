@@ -468,7 +468,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "title": "Specify a custom format of repeated field"
+          "title": "Specify a custom format of repeated field items"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

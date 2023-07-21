@@ -519,7 +519,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -948,7 +948,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -1364,7 +1364,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -1800,7 +1800,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -2223,7 +2223,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -2659,7 +2659,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -3121,7 +3121,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -3540,7 +3540,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -3976,7 +3976,7 @@ paths:
         x-optionalDataType: "String"
       - name: "uuids"
         in: "query"
-        description: "Specify a custom format of repeated field"
+        description: "Specify a custom format of repeated field items"
         required: false
         type: "array"
         items:
@@ -5418,7 +5418,7 @@ definitions:
         title: "Leading multiline"
       uuids:
         type: "array"
-        title: "Specify a custom format of repeated field"
+        title: "Specify a custom format of repeated field items"
         items:
           type: "string"
           format: "uuid"
@@ -5933,7 +5933,7 @@ definitions:
         title: "Leading multiline"
       uuids:
         type: "array"
-        title: "Specify a custom format of repeated field"
+        title: "Specify a custom format of repeated field items"
         items:
           type: "string"
           format: "uuid"
@@ -6141,7 +6141,7 @@ definitions:
         title: "Leading multiline"
       uuids:
         type: "array"
-        title: "Specify a custom format of repeated field"
+        title: "Specify a custom format of repeated field items"
         items:
           type: "string"
           format: "uuid"
@@ -6347,7 +6347,7 @@ definitions:
         title: "Leading multiline"
       uuids:
         type: "array"
-        title: "Specify a custom format of repeated field"
+        title: "Specify a custom format of repeated field items"
         items:
           type: "string"
           format: "uuid"
@@ -6538,7 +6538,7 @@ definitions:
         title: "Leading multiline"
       uuids:
         type: "array"
-        title: "Specify a custom format of repeated field"
+        title: "Specify a custom format of repeated field items"
         items:
           type: "string"
           format: "uuid"
@@ -6719,7 +6719,7 @@ definitions:
         title: "Leading multiline"
       uuids:
         type: "array"
-        title: "Specify a custom format of repeated field"
+        title: "Specify a custom format of repeated field items"
         items:
           type: "string"
           format: "uuid"
