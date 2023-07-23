@@ -36,7 +36,6 @@ go_proto_library(
     proto = ":examplepb_proto",
     deps = [
         "@org_golang_google_genproto_googleapis_api//annotations",
-        "@org_golang_google_protobuf//proto:go_default_library",  #keep
     ],
 )
 
