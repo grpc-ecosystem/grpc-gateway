@@ -115,7 +115,6 @@ go_proto_library(
         "@org_golang_google_genproto_googleapis_api//httpbody",
         "@org_golang_google_genproto_googleapis_api//visibility",
         "@org_golang_google_genproto_googleapis_rpc//status",
-        "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
 )
 
