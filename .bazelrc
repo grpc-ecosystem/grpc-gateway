@@ -1,3 +1,9 @@
-build --cxxopt=-std=c++14
-build --host_cxxopt=-std=c++14
-build --test_output=errors
+startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
+build --test_output errors
+build --features race
+# Protobuf v3.22.0+ requires C++14
+build --repo_env=BAZEL_CXXOPTS=-std=c++14
+# Workaround https://github.com/bazelbuild/bazel/issues/3645
+# See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+build --local_ram_resources=7168 # Github runners have 7G of memory
+build --local_cpu_resources=2    # Github runners have 2 vCPU
