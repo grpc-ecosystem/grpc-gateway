@@ -24,8 +24,6 @@ builds:
       - amd64
       - arm64
 archives:
-  - name_template: "{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}"
+  - name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{if eq .Arch "amd64"}}x86_64{{else}}{{ .Arch }}{{end}}'
     format: binary
-    replacements:
-      amd64: x86_64
 dist: _output
