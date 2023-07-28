@@ -27,7 +27,7 @@ jobs:
         id: args
         run: |
           set -euo pipefail
-          args='release --rm-dist'
+          args='release --clean'
           if [[ "$GITHUB_REF" != refs/tags/* ]]; then
             args+=' --snapshot'
           fi
