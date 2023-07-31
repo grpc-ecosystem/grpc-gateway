@@ -1038,20 +1038,20 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_baremetalsolution",
         importpath = "cloud.google.com/go/baremetalsolution",
-        sum = "h1:2AipdYXL0VxMboelTTw8c1UJ7gYu35LZYUbuRv9Q28s=",
-        version = "v0.5.0",
+        sum = "h1:0Ge9PQAy6cZ1tRrkc44UVgYV15nw2TVnzJzYsMHXF+E=",
+        version = "v1.1.1",
     )
     go_repository(
         name = "com_google_cloud_go_batch",
         importpath = "cloud.google.com/go/batch",
-        sum = "h1:YbMt0E6BtqeD5FvSv1d56jbVsWEzlGm55lYte+M6Mzs=",
-        version = "v0.7.0",
+        sum = "h1:uE0Q//W7FOGPjf7nuPiP0zoE8wOT3ngoIO2HIet0ilY=",
+        version = "v1.3.1",
     )
     go_repository(
         name = "com_google_cloud_go_beyondcorp",
         importpath = "cloud.google.com/go/beyondcorp",
-        sum = "h1:doSatyJyIY1ffqsHuv5DiPSYoXZRIUrJYLArWLZqE/E=",
-        version = "v0.6.1",
+        sum = "h1:VPg+fZXULQjs8LiMeWdLaB5oe8G9sEoZ0I0j6IMiG1Q=",
+        version = "v1.0.0",
     )
 
     go_repository(
@@ -1191,8 +1191,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_datastore",
         importpath = "cloud.google.com/go/datastore",
-        sum = "h1:e713dRZv/yyGRHJ4MQLhAcuxlSzqXlYvEYFMKM7q0u4=",
-        version = "v1.12.0",
+        sum = "h1:i8HMKsqg/Sl3ZlOTGl471Z8j2uKtbRDT9VXJUIVlMik=",
+        version = "v1.12.1",
     )
     go_repository(
         name = "com_google_cloud_go_datastream",
@@ -1286,8 +1286,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_gkebackup",
         importpath = "cloud.google.com/go/gkebackup",
-        sum = "h1:za3QZvw6ujR0uyqkhomKKKNoXDyqYGPJies3voUK8DA=",
-        version = "v0.4.0",
+        sum = "h1:lgyrpdhtJKV7l1GM15YFt+OCyHMxsQZuSydyNmS0Pxo=",
+        version = "v1.3.0",
     )
 
     go_repository(
@@ -1317,8 +1317,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_iam",
         importpath = "cloud.google.com/go/iam",
-        sum = "h1:67gSqaPukx7O8WLLHMa0PNs3EBGd2eE4d+psbO/CO94=",
-        version = "v1.1.0",
+        sum = "h1:lW7fzj15aVIXYHREOqjRBV9PsH0Z6u8Y46a1YGvQP4Y=",
+        version = "v1.1.1",
     )
     go_repository(
         name = "com_google_cloud_go_iap",
@@ -1379,8 +1379,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_maps",
         importpath = "cloud.google.com/go/maps",
-        sum = "h1:mv9YaczD4oZBZkM5XJl6fXQ984IkJNHPwkc8MUsdkBo=",
-        version = "v0.7.0",
+        sum = "h1:m4BlGu0qnPwuq5aToT3atcVckS+hf40jsRXveJhusJI=",
+        version = "v1.3.0",
     )
 
     go_repository(
@@ -1543,8 +1543,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_run",
         importpath = "cloud.google.com/go/run",
-        sum = "h1:ydJQo+k+MShYnBfhaRHSZYeD/SQKZzZLAROyfpeD9zw=",
-        version = "v0.9.0",
+        sum = "h1:kHeIG8q+N6Zv0nDkBjSOYfK2eWqa5FnaiDPH/7/HirE=",
+        version = "v1.2.0",
     )
 
     go_repository(
@@ -1823,20 +1823,20 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:Au6te5hbKUV8pIYWHqOUZ1pva5qK/rwbIhoXEUB9Lu8=",
-        version = "v0.0.0-20230706204954-ccb25ca9f130",
+        sum = "h1:xIXmWJ303kJCuogpj0bHq+dcjcZHU+XFyc1I0Yl9cRg=",
+        version = "v0.0.0-20230726155614-23370e0ffb3e",
     )
     go_repository(
         name = "org_golang_google_genproto_googleapis_api",
         importpath = "google.golang.org/genproto/googleapis/api",
-        sum = "h1:z3vDksarJxsAKM5dmEGv0GHwE2hKJ096wZra71Vs4sw=",
-        version = "v0.0.0-20230726155614-23370e0ffb3e",
+        sum = "h1:xkVZ5FdZJF4U82Q/JS+DcZA83s/GRVL+QrFMlexk9Yo=",
+        version = "v0.0.0-20230731193218-e0aa005b6bdf",
     )
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
         importpath = "google.golang.org/genproto/googleapis/rpc",
-        sum = "h1:S83+ibolgyZ0bqz7KEsUOPErxcv4VzlszxY+31OfB/E=",
-        version = "v0.0.0-20230726155614-23370e0ffb3e",
+        sum = "h1:pgIUhmqwKOUlnKna4r6amKdUngdL8DrkpFeV8+VBElY=",
+        version = "v0.0.0-20230731190214-cbb8c96f2d6d",
     )
 
     go_repository(
