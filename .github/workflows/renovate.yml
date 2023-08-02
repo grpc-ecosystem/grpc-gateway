@@ -25,13 +25,11 @@ jobs:
           key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
           restore-keys: v1-bazel-cache-
       - name: Configure bazel
-        run: |
-          cat > .bazelrc << EOF
+        run:
+          | # put .bazelrc in $HOME so that it's read before project's .bazelrc
+          cat > /home/vscode/.bazelrc << EOF
           startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
-          build --test_output errors
-          build --features race
-          # Protobuf v3.22.0+ requires C++14
-          build --repo_env=BAZEL_CXXOPTS=-std=c++14
+          build --@io_bazel_rules_go//go/config:race
           # Workaround https://github.com/bazelbuild/bazel/issues/3645
           # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
           build --local_ram_resources=7168 # Github runners have 7G of memory
