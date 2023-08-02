@@ -19,7 +19,7 @@ docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --r
     ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.19 -c '\
         bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
         bazel run :gazelle && \
-        BAZEL_CXXOPTS="-std=c++14" bazel run :buildifier'
+        bazel run :buildifier'
 ```
 
 You may need to authenticate with GitHub to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
