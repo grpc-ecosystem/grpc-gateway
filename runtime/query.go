@@ -139,11 +139,15 @@ func populateField(fieldDescriptor protoreflect.FieldDescriptor, msgValue protor
 
 func populateRepeatedField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, values []string) error {
 	for _, value := range values {
-		v, err := parseField(fieldDescriptor, value)
-		if err != nil {
-			return fmt.Errorf("parsing list %q: %w", fieldDescriptor.FullName().Name(), err)
+		// TODO: expose as customize feature via injecting flag or function
+		valueArr := strings.Split(value, ",")
+		for _, v := range valueArr {
+			v, err := parseField(fieldDescriptor, v)
+			if err != nil {
+				return fmt.Errorf("parsing list %q: %w", fieldDescriptor.FullName().Name(), err)
+			}
+			list.Append(v)
 		}
-		list.Append(v)
 	}
 
 	return nil
