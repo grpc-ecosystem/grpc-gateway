@@ -1658,10 +1658,10 @@ func TestApplyTemplateMultiService(t *testing.T) {
 
 	// Check that the two services have unique operation IDs even though they
 	// have the same method name.
-	if want, is := "ExampleService_Example", result.Paths["/v1/echo"].Get.OperationID; !reflect.DeepEqual(is, want) {
+	if want, is := "ExampleService_Example", result.getPathItemObject("/v1/echo").Get.OperationID; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", file, is, want)
 	}
-	if want, is := "OtherService_Example", result.Paths["/v1/ping"].Get.OperationID; !reflect.DeepEqual(is, want) {
+	if want, is := "OtherService_Example", result.getPathItemObject("/v1/ping").Get.OperationID; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", file, is, want)
 	}
 
@@ -1869,13 +1869,14 @@ func TestApplyTemplateOverrideWithOperation(t *testing.T) {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", *file, err)
 			return
 		}
-		if want, is := "MyExample", result.Paths["/v1/echo"].Get.OperationID; !reflect.DeepEqual(is, want) {
+
+		if want, is := "MyExample", result.getPathItemObject("/v1/echo").Get.OperationID; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", *file, is, want)
 		}
-		if want, is := []string{"application/xml"}, result.Paths["/v1/echo"].Get.Consumes; !reflect.DeepEqual(is, want) {
+		if want, is := []string{"application/xml"}, result.getPathItemObject("/v1/echo").Get.Consumes; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).Paths[0].Get.Consumes = %s want to be %s", *file, is, want)
 		}
-		if want, is := []string{"application/json", "application/xml"}, result.Paths["/v1/echo"].Get.Produces; !reflect.DeepEqual(is, want) {
+		if want, is := []string{"application/json", "application/xml"}, result.getPathItemObject("/v1/echo").Get.Produces; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).Paths[0].Get.Produces = %s want to be %s", *file, is, want)
 		}
 
@@ -2095,8 +2096,8 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		var operation *openapiOperationObject
 		var response openapiResponseObject
 		for _, v := range result.Paths {
-			operation = v.Get
-			response = v.Get.Responses["200"]
+			operation = v.PathItemObject.Get
+			response = v.PathItemObject.Get.Responses["200"]
 		}
 		if want, is, name := []extension{
 			{key: "x-op-foo", value: json.RawMessage("\"baz\"")},
@@ -2267,7 +2268,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 
 		var response openapiResponseObject
 		for _, v := range result.Paths {
-			response = v.Get.Responses["200"]
+			response = v.PathItemObject.Get.Responses["200"]
 		}
 		if want, is, name := []openapiHeadersObject{
 			{
@@ -3013,13 +3014,13 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
-	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
+	if _, ok := result.getPathItemObject("/v1/echo").Post.Responses["200"]; !ok {
 		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/echo"].Post.Responses["200"]`)
 	} else {
-		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+		if want, got, name := "A successful response.(streaming responses)", result.getPathItemObject("/v1/echo").Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
-		streamExampleExampleMessage := result.Paths["/v1/echo"].Post.Responses["200"].Schema
+		streamExampleExampleMessage := result.getPathItemObject("/v1/echo").Post.Responses["200"].Schema
 		if want, got, name := "object", streamExampleExampleMessage.Type, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Type`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
@@ -3197,13 +3198,13 @@ func TestApplyTemplateRequestWithServerStreamingAndNoStandardErrors(t *testing.T
 	if want, got, name := 1, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
-	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
+	if _, ok := result.getPathItemObject("/v1/echo").Post.Responses["200"]; !ok {
 		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/echo"].Post.Responses["200"]`)
 	} else {
-		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+		if want, got, name := "A successful response.(streaming responses)", result.getPathItemObject("/v1/echo").Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
-		streamExampleExampleMessage := result.Paths["/v1/echo"].Post.Responses["200"].Schema
+		streamExampleExampleMessage := result.getPathItemObject("/v1/echo").Post.Responses["200"].Schema
 		if want, got, name := "object", streamExampleExampleMessage.Type, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Type`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
@@ -3553,16 +3554,16 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 				return
 			}
 
-			if _, ok := result.Paths["/v1/{parent}/books"].Post.Responses["200"]; !ok {
+			if _, ok := result.getPathItemObject("/v1/{parent}/books").Post.Responses["200"]; !ok {
 				t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", tt.args.file, `result.Paths["/v1/{parent}/books"].Post.Responses["200"]`)
 			} else {
 
-				if want, got, name := 3, len(result.Paths["/v1/{parent}/books"].Post.Parameters), `len(result.Paths["/v1/{parent}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
+				if want, got, name := 3, len(result.getPathItemObject("/v1/{parent}/books").Post.Parameters), `len(result.Paths["/v1/{parent}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
 					t.Errorf("applyTemplate(%#v).%s = %d want to be %d", tt.args.file, name, got, want)
 				}
 
 				for i, want := range tt.want {
-					p := result.Paths["/v1/{parent}/books"].Post.Parameters[i]
+					p := result.getPathItemObject("/v1/{parent}/books").Post.Parameters[i]
 					if got, name := (paramOut{p.Name, p.In, p.Required}), `result.Paths["/v1/{parent}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
 						t.Errorf("applyTemplate(%#v).%s = %v want to be %v", tt.args.file, name, got, want)
 					}
@@ -6241,7 +6242,7 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 		return
 	}
 
-	defRsp, ok := result.Paths["/v1/echo"].Post.Responses["default"]
+	defRsp, ok := result.getPathItemObject("/v1/echo").Post.Responses["default"]
 	if !ok {
 		return
 	}
@@ -6497,7 +6498,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("Results path length differed, got %d want %d", got, want)
 	}
 
-	firstOpGet := result.Paths["/v1/{name}"].Get
+	firstOpGet := result.getPathItemObject("/v1/{name}").Get
 	if got, want := firstOpGet.OperationID, "Service1_GetFoo"; got != want {
 		t.Fatalf("First operation GET id differed, got %s want %s", got, want)
 	}
@@ -6514,7 +6515,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("First operation GET second param 'in' differed, got %s want %s", got, want)
 	}
 
-	firstOpDelete := result.Paths["/v1/{name}"].Delete
+	firstOpDelete := result.getPathItemObject("/v1/{name}").Delete
 	if got, want := firstOpDelete.OperationID, "Service1_DeleteFoo"; got != want {
 		t.Fatalf("First operation id DELETE differed, got %s want %s", got, want)
 	}
@@ -6531,7 +6532,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("First operation DELETE second param 'in' differed, got %s want %s", got, want)
 	}
 
-	secondOpGet := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"].Get
+	secondOpGet := result.getPathItemObject("/v1/{name" + pathParamUniqueSuffixDeliminator + "1}").Get
 	if got, want := secondOpGet.OperationID, "Service1_GetBar"; got != want {
 		t.Fatalf("Second operation id GET differed, got %s want %s", got, want)
 	}
@@ -6548,7 +6549,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("Second operation GET second param 'in' differed, got %s want %s", got, want)
 	}
 
-	secondOpDelete := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"].Delete
+	secondOpDelete := result.getPathItemObject("/v1/{name" + pathParamUniqueSuffixDeliminator + "1}").Delete
 	if got, want := secondOpDelete.OperationID, "Service1_DeleteBar"; got != want {
 		t.Fatalf("Second operation id differed, got %s want %s", got, want)
 	}
@@ -6740,7 +6741,7 @@ func TestSingleServiceTemplateWithDuplicateInAllSupportedHttp1Operations(t *test
 			t.Fatalf("Results path length differed, got %d want %d", got, want)
 		}
 
-		firstOpMethod := getOperation(result.Paths["/v1/{name}"], method)
+		firstOpMethod := getOperation(result.getPathItemObject("/v1/{name}"), method)
 		if got, want := firstOpMethod.OperationID, "Service1_"+method+"Foo"; got != want {
 			t.Fatalf("First operation %s id differed, got %s want %s", method, got, want)
 		}
@@ -6757,7 +6758,7 @@ func TestSingleServiceTemplateWithDuplicateInAllSupportedHttp1Operations(t *test
 			t.Fatalf("First operation %s second param 'in' differed, got %s want %s", method, got, want)
 		}
 
-		secondOpMethod := getOperation(result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"], method)
+		secondOpMethod := getOperation(result.getPathItemObject("/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"), method)
 		if got, want := secondOpMethod.OperationID, "Service1_"+method+"Bar"; got != want {
 			t.Fatalf("Second operation id %s differed, got %s want %s", method, got, want)
 		}
@@ -7179,7 +7180,7 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("Results path length differed, got %d want %d", got, want)
 	}
 
-	firstOp := result.Paths["/v1/{name}/{role}"].Get
+	firstOp := result.getPathItemObject("/v1/{name}/{role}").Get
 	if got, want := firstOp.OperationID, "Service1_Method1"; got != want {
 		t.Fatalf("First operation id differed, got %s want %s", got, want)
 	}
@@ -7202,7 +7203,7 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("First operation third param 'in' differed, got %s want %s", got, want)
 	}
 
-	secondOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}/{role}"].Get
+	secondOp := result.getPathItemObject("/v1/{name" + pathParamUniqueSuffixDeliminator + "1}/{role}").Get
 	if got, want := secondOp.OperationID, "Service1_Method2"; got != want {
 		t.Fatalf("Second operation id differed, got %s want %s", got, want)
 	}
@@ -7225,7 +7226,7 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("Second operation third param 'in' differed, got %s want %s", got, want)
 	}
 
-	thirdOp := result.Paths["/v1/{name}/roles"].Get
+	thirdOp := result.getPathItemObject("/v1/{name}/roles").Get
 	if got, want := thirdOp.OperationID, "Service2_Method3"; got != want {
 		t.Fatalf("Third operation id differed, got %s want %s", got, want)
 	}
@@ -7242,7 +7243,7 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		t.Fatalf("Third operation second param 'in' differed, got %s want %s", got, want)
 	}
 
-	forthOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"2}/{role}"].Get
+	forthOp := result.getPathItemObject("/v1/{name" + pathParamUniqueSuffixDeliminator + "2}/{role}").Get
 	if got, want := forthOp.OperationID, "Service2_Method4"; got != want {
 		t.Fatalf("Fourth operation id differed, got %s want %s", got, want)
 	}
@@ -7551,7 +7552,7 @@ func TestRenderServicesParameterDescriptionNoFieldBody(t *testing.T) {
 		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
 	}
 
-	got := result.Paths["/v1/projects/someotherpath"].Post.Parameters[0].Description
+	got := result.getPathItemObject("/v1/projects/someotherpath").Post.Parameters[0].Description
 	want := "aMessage description"
 
 	if got != want {
@@ -7701,7 +7702,7 @@ func TestRenderServicesWithBodyFieldNameInCamelCase(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.Paths["/v1/users/{userObject.name}"].Post
+	var operation = *result.getPathItemObject("/v1/users/{userObject.name}").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -7911,7 +7912,7 @@ func TestRenderServicesWithBodyFieldHasFieldMask(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.Paths["/v1/users/{userObject.name}"].Patch
+	var operation = *result.getPathItemObject("/v1/users/{userObject.name}").Patch
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8063,7 +8064,7 @@ func TestRenderServicesWithColonInPath(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.Paths["/my/{overrideField}:foo"].Post
+	var operation = *result.getPathItemObject("/my/{overrideField}:foo").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8210,7 +8211,7 @@ func TestRenderServicesWithDoubleColonInPath(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.Paths["/my/{field}:foo:bar"].Post
+	var operation = *result.getPathItemObject("/my/{field}:foo:bar").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8357,7 +8358,7 @@ func TestRenderServicesWithColonLastInPath(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.Paths["/my/{field}:"].Post
+	var operation = *result.getPathItemObject("/my/{field}:").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8504,7 +8505,7 @@ func TestRenderServicesWithColonInSegment(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.Paths["/my/{field}"].Post
+	var operation = *result.getPathItemObject("/my/{field}").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8751,7 +8752,7 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 				t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
 			}
 
-			params := result.Paths["/v1/echo"].Get.Parameters
+			params := result.getPathItemObject("/v1/echo").Get.Parameters
 
 			if !reflect.DeepEqual(params, test.parameters) {
 				t.Errorf("expected %+v, got %+v", test.parameters, params)
@@ -8763,8 +8764,8 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 func GetPaths(req *openapiSwaggerObject) []string {
 	paths := make([]string, len(req.Paths))
 	i := 0
-	for k := range req.Paths {
-		paths[i] = k
+	for _, k := range req.Paths {
+		paths[i] = k.Path
 		i++
 	}
 	return paths
@@ -9152,8 +9153,9 @@ func TestQueryParameterType(t *testing.T) {
 			},
 		},
 	}
-	expect := openapiPathsObject{
-		"/v1/echo": openapiPathItemObject{
+	expect := openapiPathsObject{{
+		Path: "/v1/echo",
+		PathItemObject: openapiPathItemObject{
 			Get: &openapiOperationObject{
 				Parameters: openapiParametersObject{
 					{
@@ -9165,7 +9167,8 @@ func TestQueryParameterType(t *testing.T) {
 				},
 			},
 		},
-	}
+	}}
+
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	if err := AddErrorDefs(reg); err != nil {
@@ -9199,7 +9202,8 @@ func TestQueryParameterType(t *testing.T) {
 	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := expect["/v1/echo"].Get.Parameters, result.Paths["/v1/echo"].Get.Parameters, "Produces"; !reflect.DeepEqual(is, want) {
+
+	if want, is, name := expect[0].PathItemObject.Get.Parameters, result.getPathItemObject("/v1/echo").Get.Parameters, "Produces"; !reflect.DeepEqual(is, want) {
 
 		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
 	}
@@ -9305,13 +9309,14 @@ func TestApplyTemplateRequestWithServerStreamingHttpBody(t *testing.T) {
 	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
-	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
+
+	if _, ok := result.getPathItemObject("/v1/echo").Post.Responses["200"]; !ok {
 		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/echo"].Post.Responses["200"]`)
 	} else {
-		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+		if want, got, name := "A successful response.(streaming responses)", result.getPathItemObject("/v1/echo").Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
-		streamExampleExampleMessage := result.Paths["/v1/echo"].Post.Responses["200"].Schema
+		streamExampleExampleMessage := result.getPathItemObject("/v1/echo").Post.Responses["200"].Schema
 		if want, got, name := "string", streamExampleExampleMessage.Type, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Type`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
@@ -9331,4 +9336,15 @@ func TestApplyTemplateRequestWithServerStreamingHttpBody(t *testing.T) {
 		t.Errorf("had: %s", file)
 		t.Errorf("got: %s", fmt.Sprint(result))
 	}
+}
+
+// Returns the openapiPathItemObject associated with a path.
+func (so openapiSwaggerObject) getPathItemObject(path string) openapiPathItemObject {
+	for _, pathData := range so.Paths {
+		if pathData.Path == path {
+			return pathData.PathItemObject
+		}
+	}
+
+	return openapiPathItemObject{}
 }
