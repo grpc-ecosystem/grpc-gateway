@@ -1677,6 +1677,8 @@ func getPathItemObject(paths openapiPathsObject, path string) (openapiPathItemOb
 	return openapiPathItemObject{}, false
 }
 
+// If a path already exists in openapiPathsObject, updates that path's openapiPathItemObject. If not,
+// appends a new path and openapiPathItemObject to the openapiPathsObject.
 func updatePaths(paths *openapiPathsObject, path string, pathItemObject openapiPathItemObject) {
 	for i, p := range *paths {
 		if p.Path == path {
@@ -1688,16 +1690,6 @@ func updatePaths(paths *openapiPathsObject, path string, pathItemObject openapiP
 		Path:           path,
 		PathItemObject: pathItemObject,
 	})
-}
-
-func isDuplicatePath(paths openapiPathsObject, path string, pathItemObject openapiPathItemObject) bool {
-	for _, p := range paths {
-		if p.Path == path && p.PathItemObject == pathItemObject {
-			return true
-		}
-	}
-
-	return false
 }
 
 func mergeDescription(schema openapiSchemaObject) string {

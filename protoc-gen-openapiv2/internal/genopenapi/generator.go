@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -341,6 +342,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 
 	if g.reg.IsAllowMerge() {
 		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
+		if !g.reg.IsPreserveRPCOrder() {
+			targetOpenAPI.swagger.sortPathsAlphabetically()
+		}
 		f, err := encodeOpenAPI(targetOpenAPI, g.format)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", g.reg.GetMergeFileName(), err)
@@ -351,6 +355,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 	} else {
 		for _, file := range openapis {
+			if !g.reg.IsPreserveRPCOrder() {
+				file.swagger.sortPathsAlphabetically()
+			}
 			f, err := encodeOpenAPI(file, g.format)
 			if err != nil {
 				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", file.fileName, err)
@@ -362,6 +369,12 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 	}
 	return files, nil
+}
+
+func (so openapiSwaggerObject) sortPathsAlphabetically() {
+	sort.Slice(so.Paths, func(i, j int) bool {
+		return so.Paths[i].Path < so.Paths[j].Path
+	})
 }
 
 // AddErrorDefs Adds google.rpc.Status and google.protobuf.Any
