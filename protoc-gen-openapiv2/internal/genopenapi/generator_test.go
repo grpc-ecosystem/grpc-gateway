@@ -1,6 +1,7 @@
 package genopenapi_test
 
 import (
+	"reflect"
 	"sort"
 	"strings"
 	"testing"
@@ -345,17 +346,13 @@ func TestGenerateRPCOrderPreserved(t *testing.T) {
 			contentsSlice := strings.Fields(content)
 			expectedPaths := []string{"/b/first", "/a/second", "/c/third"}
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -445,17 +442,13 @@ func TestGenerateRPCOrderNotPreserved(t *testing.T) {
 			contentsSlice := strings.Fields(content)
 			expectedPaths := []string{"/a/second", "/b/first", "/c/third"}
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -579,17 +572,13 @@ func TestGenerateRPCOrderPreservedMultipleServices(t *testing.T) {
 			contentsSlice := strings.Fields(content)
 			expectedPaths := []string{"/d/first", "/e/second", "/c/third", "/b/first", "/a/second", "/g/third"}
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -713,17 +702,13 @@ func TestGenerateRPCOrderNotPreservedMultipleServices(t *testing.T) {
 			expectedPaths := []string{"/d/first", "/e/second", "/c/third", "/b/first", "/a/second", "/g/third"}
 			sort.Strings(expectedPaths)
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -873,17 +858,13 @@ func TestGenerateRPCOrderPreservedMergeFiles(t *testing.T) {
 			contentsSlice := strings.Fields(content)
 			expectedPaths := []string{"/c/cpath", "/b/bpath", "/a/apath", "/f/fpath", "/e/epath", "/d/dpath"}
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -1034,17 +1015,13 @@ func TestGenerateRPCOrderNotPreservedMergeFiles(t *testing.T) {
 			expectedPaths := []string{"/c/cpath", "/b/bpath", "/a/apath", "/f/fpath", "/e/epath", "/d/dpath"}
 			sort.Strings(expectedPaths)
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -1143,17 +1120,13 @@ func TestGenerateRPCOrderPreservedAdditionalBindings(t *testing.T) {
 			contentsSlice := strings.Fields(content)
 			expectedPaths := []string{"/b/first", "/a/additional", "/a/second", "/z/zAdditional", "/c/third", "/b/bAdditional"}
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -1253,17 +1226,13 @@ func TestGenerateRPCOrderNotPreservedAdditionalBindings(t *testing.T) {
 			expectedPaths := []string{"/b/first", "/a/additional", "/a/second", "/z/zAdditional", "/c/third", "/b/bAdditional"}
 			sort.Strings(expectedPaths)
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -1457,17 +1426,13 @@ func TestGenerateRPCOrderPreservedMergeFilesAdditionalBindingsMultipleServices(t
 				"/b/first", "/a/second", "/g/third", "/b/bpath", "/a/additional",
 				"/a/apath", "/z/zAdditional", "/c/cpath", "/b/bAdditional"}
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -1662,17 +1627,13 @@ func TestGenerateRPCOrderNotPreservedMergeFilesAdditionalBindingsMultipleService
 				"/a/apath", "/z/zAdditional", "/c/cpath", "/b/bAdditional"}
 			sort.Strings(expectedPaths)
 
-			paths := []string{}
+			foundPaths := []string{}
 			for _, contentValue := range contentsSlice {
-				findExpectedPaths(&paths, expectedPaths, contentValue)
-			}
-			foundPathsSet := toStringSet(paths)
-			if missingPath, allPresent := allExpectedPathsPresent(foundPathsSet, expectedPaths); !allPresent {
-				t.Fatalf("Path %s missing from these expected paths: %#v", missingPath, expectedPaths)
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
 			}
 
-			if !isValidPathOrder(expectedPaths, paths) {
-				t.Fatalf("Got path order: %#v, want path order: %#v", paths, expectedPaths)
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
 			}
 		})
 	}
@@ -1688,32 +1649,60 @@ func isValidPathOrder(expectedOrder []string, actualOrder []string) bool {
 	return true
 }
 
+// Tries to find expected paths from a provided substring and store them in the foundPaths
+// slice.
 func findExpectedPaths(foundPaths *[]string, expectedPaths []string, potentialPath string) {
+	seenPaths := map[string]struct{}{}
+
 	for _, path := range expectedPaths {
-		if strings.Contains(potentialPath, path) {
+		_, pathAlreadySeen := seenPaths[path]
+		if strings.Contains(potentialPath, path) && !pathAlreadySeen {
 			*foundPaths = append(*foundPaths, path)
-			return
+			seenPaths[path] = struct{}{}
 		}
 	}
 }
 
-func toStringSet(slice []string) map[string]struct{} {
-	set := map[string]struct{}{}
+func TestFindExpectedPaths(t *testing.T) {
+	t.Parallel()
 
-	for _, str := range slice {
-		set[str] = struct{}{}
+	testCases := [...]struct {
+		testName           string
+		requiredPaths      []string
+		potentialPath      string
+		expectedPathsFound []string
+	}{
+		{
+			testName:           "One potential path present",
+			requiredPaths:      []string{"/d/first", "/e/second", "/c/third", "/b/first"},
+			potentialPath:      "[{\"path: \"/d/first\"",
+			expectedPathsFound: []string{"/d/first"},
+		},
+		{
+			testName:           "No potential Paths present",
+			requiredPaths:      []string{"/d/first", "/e/second", "/c/third", "/b/first"},
+			potentialPath:      "[{\"path: \"/z/zpath\"",
+			expectedPathsFound: []string{},
+		},
+		{
+			testName:           "Multiple potential paths present",
+			requiredPaths:      []string{"/d/first", "/e/second", "/c/third", "/b/first", "/d/first"},
+			potentialPath:      "[{\"path: \"/d/first\"someData\"/c/third\"someData\"/b/third\"",
+			expectedPathsFound: []string{"/d/first", "/c/third"},
+		},
 	}
 
-	return set
-}
+	for _, tc := range testCases {
+		tc := tc
 
-// Verifies whether all expected paths were found from generated files. If not, returns missing path and false.
-func allExpectedPathsPresent(foundPathsSet map[string]struct{}, expectedPaths []string) (string, bool) {
-	for _, path := range expectedPaths {
-		if _, isPathPresent := foundPathsSet[path]; !isPathPresent {
-			return path, false
-		}
+		t.Run(string(tc.testName), func(t *testing.T) {
+			t.Parallel()
+
+			foundPaths := []string{}
+			findExpectedPaths(&foundPaths, tc.requiredPaths, tc.potentialPath)
+			if correctPathsFound := reflect.DeepEqual(foundPaths, tc.expectedPathsFound); !correctPathsFound {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, tc.expectedPathsFound)
+			}
+		})
 	}
-
-	return "", true
 }
