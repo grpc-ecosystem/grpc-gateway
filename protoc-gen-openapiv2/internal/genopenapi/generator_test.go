@@ -1108,7 +1108,7 @@ func TestGenerateRPCOrderPreservedAdditionalBindings(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, true, true)
+			resp := requireGenerate(t, &req, format, true, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1213,7 +1213,7 @@ func TestGenerateRPCOrderNotPreservedAdditionalBindings(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, false, true)
+			resp := requireGenerate(t, &req, format, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
