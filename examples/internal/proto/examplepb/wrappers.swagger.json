@@ -15,376 +15,409 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/v1/example/wrappers": {
-      "post": {
-        "operationId": "WrappersService_Create",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbWrappers"
+  "paths": [
+    {
+      "Path": "/v1/example/wrappers",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_Create",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbWrappers"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/examplepbWrappers"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbWrappers"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testBool": {
-      "post": {
-        "operationId": "WrappersService_CreateBoolValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "boolean"
+    {
+      "Path": "/v1/testBool",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateBoolValue",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "boolean"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "boolean"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testBytes": {
-      "post": {
-        "operationId": "WrappersService_CreateBytesValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string",
-              "format": "byte"
+    {
+      "Path": "/v1/testBytes",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateBytesValue",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "byte"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "byte"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testDouble": {
-      "post": {
-        "operationId": "WrappersService_CreateDoubleValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "number",
-              "format": "double"
+    {
+      "Path": "/v1/testDouble",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateDoubleValue",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "number",
+                "format": "double"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "number",
-              "format": "double"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testEmpty": {
-      "post": {
-        "operationId": "WrappersService_CreateEmpty",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
+    {
+      "Path": "/v1/testEmpty",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateEmpty",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testFloat": {
-      "post": {
-        "operationId": "WrappersService_CreateFloatValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "number",
-              "format": "float"
+    {
+      "Path": "/v1/testFloat",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateFloatValue",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "number",
+                "format": "float"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "number",
-              "format": "float"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testInt32": {
-      "post": {
-        "operationId": "WrappersService_CreateInt32Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+    {
+      "Path": "/v1/testInt32",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateInt32Value",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testInt64": {
-      "post": {
-        "operationId": "WrappersService_CreateInt64Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string",
-              "format": "int64"
+    {
+      "Path": "/v1/testInt64",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateInt64Value",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "int64"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "int64"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testString": {
-      "post": {
-        "operationId": "WrappersService_CreateStringValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string"
+    {
+      "Path": "/v1/testString",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateStringValue",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testUint32": {
-      "post": {
-        "operationId": "WrappersService_CreateUInt32Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
+    {
+      "Path": "/v1/testUint32",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateUInt32Value",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     },
-    "/v1/testUint64": {
-      "post": {
-        "operationId": "WrappersService_CreateUInt64Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string",
-              "format": "uint64"
+    {
+      "Path": "/v1/testUint64",
+      "PathItemObject": {
+        "post": {
+          "operationId": "WrappersService_CreateUInt64Value",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "string",
+                "format": "uint64"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uint64"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uint64"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
+          ],
+          "tags": [
+            "WrappersService"
+          ]
+        }
       }
     }
-  },
+  ],
   "definitions": {
     "examplepbWrappers": {
       "type": "object",

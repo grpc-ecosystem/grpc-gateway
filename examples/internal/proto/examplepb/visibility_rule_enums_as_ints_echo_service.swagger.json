@@ -16,104 +16,107 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/v1/example/echo/{id}": {
-      "post": {
-        "summary": "Echo method receives a simple message and returns it.\nIt should always be visible in the open API output.",
-        "operationId": "VisibilityRuleEchoService_Echo",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
+  "paths": [
+    {
+      "Path": "/v1/example/echo/{id}",
+      "PathItemObject": {
+        "post": {
+          "summary": "Echo method receives a simple message and returns it.\nIt should always be visible in the open API output.",
+          "operationId": "VisibilityRuleEchoService_Echo",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "id",
+              "description": "Id represents the message identifier.",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "num",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "lineNum",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "lang",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "status.progress",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "status.note",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "en",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "no.progress",
+              "in": "query",
+              "required": false,
+              "type": "string",
+              "format": "int64"
+            },
+            {
+              "name": "no.note",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "anEnum",
+              "in": "query",
+              "required": false,
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ],
+              "default": 0
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Id represents the message identifier.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "num",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "lineNum",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "lang",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "status.progress",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "status.note",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "en",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "no.progress",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "no.note",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "anEnum",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "enum": [
-              0,
-              1
-            ],
-            "default": 0
-          }
-        ],
-        "tags": [
-          "VisibilityRuleEchoService"
-        ]
+          ],
+          "tags": [
+            "VisibilityRuleEchoService"
+          ]
+        }
       }
     }
-  },
+  ],
   "definitions": {
     "VisibilityRuleSimpleMessageVisibilityEnum": {
       "type": "integer",

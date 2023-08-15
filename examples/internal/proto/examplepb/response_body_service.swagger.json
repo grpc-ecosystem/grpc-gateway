@@ -15,144 +15,156 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/responsebodies/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_ListResponseBodies",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-              }
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsebody/stream/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_GetResponseBodyStream",
-        "responses": {
-          "200": {
-            "description": "(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbResponseBodyOutResponse"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
+  "paths": [
+    {
+      "Path": "/responsebodies/{data}",
+      "PathItemObject": {
+        "get": {
+          "operationId": "ResponseBodyService_ListResponseBodies",
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
                 }
-              },
-              "title": "Stream result of examplepbResponseBodyOut"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsebody/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_GetResponseBody",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/examplepbResponseBodyOutResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsestrings/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_ListResponseStrings",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
               }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "data",
+              "in": "path",
+              "required": true,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
-        ]
+          ],
+          "tags": [
+            "ResponseBodyService"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/responsebody/stream/{data}",
+      "PathItemObject": {
+        "get": {
+          "operationId": "ResponseBodyService_GetResponseBodyStream",
+          "responses": {
+            "200": {
+              "description": "(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
+                },
+                "title": "Stream result of examplepbResponseBodyOut"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "data",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ResponseBodyService"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/responsebody/{data}",
+      "PathItemObject": {
+        "get": {
+          "operationId": "ResponseBodyService_GetResponseBody",
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "data",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ResponseBodyService"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/responsestrings/{data}",
+      "PathItemObject": {
+        "get": {
+          "operationId": "ResponseBodyService_ListResponseStrings",
+          "responses": {
+            "200": {
+              "description": "",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "data",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "tags": [
+            "ResponseBodyService"
+          ]
+        }
       }
     }
-  },
+  ],
   "definitions": {
     "ResponseResponseType": {
       "type": "string",

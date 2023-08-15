@@ -15,1113 +15,1191 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/rpc/body/path/{a}/query/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc6",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+  "paths": [
+    {
+      "Path": "/rpc/body/path/{a}/query/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc6",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/path/{a}/query/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream6",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/body/path/{a}/query/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream6",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/path/{a}/{b}/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc4",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/body/path/{a}/{b}/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc4",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/rpc/body/path/{a}/{b}/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream4",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
+                },
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
           },
-          {
-            "name": "b",
-            "in": "path",
-            "required": true,
-            "type": "string"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/rpc/body/query/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc5",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
           },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "a",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/path/{a}/{b}/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream4",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/body/query/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream5",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "a",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/query/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc5",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/body/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/examplepbNonEmptyProto"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/rpc/body/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
+                },
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/examplepbNonEmptyProto"
+              }
+            }
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/rpc/empty/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcEmptyRpc",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "tags": [
+            "FlowCombination"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/rpc/empty/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcEmptyStream",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
+                },
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "tags": [
+            "FlowCombination"
+          ]
+        }
+      }
+    },
+    {
+      "Path": "/rpc/path-nested/{a.str}/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathSingleNestedRpc",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
+            }
+          },
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
               "type": "string"
             }
-          },
-          {
-            "name": "a",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/query/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream5",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested/{a.str}/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathSingleNestedStream",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
               "type": "string"
             }
-          },
-          {
-            "name": "a",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested/{a.str}/{b}/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathNestedRpc",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbNonEmptyProto"
-            }
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/body/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested/{a.str}/{b}/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathNestedStream",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbNonEmptyProto"
-            }
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/empty/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcEmptyRpc",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested1/{a.str}/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathNestedRpc2",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "FlowCombination"
-        ]
-      }
-    },
-    "/rpc/empty/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcEmptyStream",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "FlowCombination"
-        ]
-      }
-    },
-    "/rpc/path-nested/{a.str}/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathSingleNestedRpc",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
-      }
-    },
-    "/rpc/path-nested/{a.str}/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathSingleNestedStream",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
-      }
-    },
-    "/rpc/path-nested/{a.str}/{b}/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathNestedRpc",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path-nested/{a.str}/{b}/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathNestedStream",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested1/{a.str}/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathNestedStream2",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path-nested1/{a.str}/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathNestedRpc2",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested2/{a.str}/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathNestedRpc3",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
-      }
-    },
-    "/rpc/path-nested1/{a.str}/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathNestedStream2",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
-      }
-    },
-    "/rpc/path-nested2/{a.str}/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathNestedRpc3",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path-nested2/{a.str}/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcPathNestedStream3",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path-nested2/{a.str}/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcPathNestedStream3",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a.str",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "body",
-            "required": true,
-            "schema": {
+          "parameters": [
+            {
+              "name": "a.str",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
               "type": "string"
             }
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path/{a}/query/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc7",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path/{a}/query/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc7",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "query",
+              "required": false,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path/{a}/query/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream7",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path/{a}/query/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream7",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "query",
+              "required": false,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path/{a}/{b}/{c}/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc2",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path/{a}/{b}/{c}/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc2",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "path",
+              "required": true,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/path/{a}/{b}/{c}/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream2",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/path/{a}/{b}/{c}/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream2",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "path",
+              "required": true,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/query/rpc": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyRpc3",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/query/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyRpc3",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "query",
+              "required": false,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/rpc/query/stream": {
-      "post": {
-        "operationId": "FlowCombination_RpcBodyStream3",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/rpc/query/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_RpcBodyStream3",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "a",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "b",
+              "in": "query",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "c",
+              "in": "query",
+              "required": false,
+              "type": "string"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "a",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "c",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "FlowCombination"
-        ]
+          ],
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/stream/empty/rpc": {
-      "post": {
-        "operationId": "FlowCombination_StreamEmptyRpc",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/stream/empty/rpc",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_StreamEmptyRpc",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "$ref": "#/definitions/examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "FlowCombination"
-        ]
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     },
-    "/stream/empty/stream": {
-      "post": {
-        "operationId": "FlowCombination_StreamEmptyStream",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbEmptyProto"
+    {
+      "Path": "/stream/empty/stream",
+      "PathItemObject": {
+        "post": {
+          "operationId": "FlowCombination_StreamEmptyStream",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbEmptyProto"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbEmptyProto"
+                "title": "Stream result of examplepbEmptyProto"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "FlowCombination"
-        ]
+          "tags": [
+            "FlowCombination"
+          ]
+        }
       }
     }
-  },
+  ],
   "definitions": {
     "examplepbEmptyProto": {
       "type": "object"

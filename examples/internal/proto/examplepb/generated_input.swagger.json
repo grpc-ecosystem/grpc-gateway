@@ -15,42 +15,45 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/v1/example/a_bit_of_everything/generated_create": {
-      "post": {
-        "operationId": "GeneratedService_Create",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
+  "paths": [
+    {
+      "Path": "/v1/example/a_bit_of_everything/generated_create",
+      "PathItemObject": {
+        "post": {
+          "operationId": "GeneratedService_Create",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "description": "Intentionally complicated message type to cover many features of Protobuf.",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/examplepbABitOfEverything"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "description": "Intentionally complicated message type to cover many features of Protobuf.",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "GeneratedService"
-        ]
+          ],
+          "tags": [
+            "GeneratedService"
+          ]
+        }
       }
     }
-  },
+  ],
   "definitions": {
     "ABitOfEverythingNested": {
       "type": "object",

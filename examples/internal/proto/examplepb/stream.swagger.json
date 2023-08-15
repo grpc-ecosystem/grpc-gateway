@@ -15,156 +15,168 @@
   "produces": [
     "application/json"
   ],
-  "paths": {
-    "/v1/example/a_bit_of_everything": {
-      "get": {
-        "operationId": "StreamService_List",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbABitOfEverything"
+  "paths": [
+    {
+      "Path": "/v1/example/a_bit_of_everything",
+      "PathItemObject": {
+        "get": {
+          "operationId": "StreamService_List",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/examplepbABitOfEverything"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbABitOfEverything"
+                "title": "Stream result of examplepbABitOfEverything"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "error",
+              "in": "query",
+              "required": false,
+              "type": "boolean"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "error",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "tags": [
-          "StreamService"
-        ]
+          ],
+          "tags": [
+            "StreamService"
+          ]
+        }
       }
     },
-    "/v1/example/a_bit_of_everything/bulk": {
-      "post": {
-        "operationId": "StreamService_BulkCreate",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
+    {
+      "Path": "/v1/example/a_bit_of_everything/bulk",
+      "PathItemObject": {
+        "post": {
+          "operationId": "StreamService_BulkCreate",
+          "responses": {
+            "200": {
+              "description": "A successful response.",
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "description": "Intentionally complicated message type to cover many features of Protobuf. (streaming inputs)",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/examplepbABitOfEverything"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "description": "Intentionally complicated message type to cover many features of Protobuf. (streaming inputs)",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "StreamService"
-        ]
+          ],
+          "tags": [
+            "StreamService"
+          ]
+        }
       }
     },
-    "/v1/example/a_bit_of_everything/echo": {
-      "post": {
-        "operationId": "StreamService_BulkEcho",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/subStringMessage"
+    {
+      "Path": "/v1/example/a_bit_of_everything/echo",
+      "PathItemObject": {
+        "post": {
+          "operationId": "StreamService_BulkEcho",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "result": {
+                    "$ref": "#/definitions/subStringMessage"
+                  },
+                  "error": {
+                    "$ref": "#/definitions/rpcStatus"
+                  }
                 },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of subStringMessage"
+                "title": "Stream result of subStringMessage"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "body",
+              "description": " (streaming inputs)",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/subStringMessage"
+              }
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "description": " (streaming inputs)",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/subStringMessage"
-            }
-          }
-        ],
-        "tags": [
-          "StreamService"
-        ]
+          ],
+          "tags": [
+            "StreamService"
+          ]
+        }
       }
     },
-    "/v1/example/download": {
-      "get": {
-        "operationId": "StreamService_Download",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "string",
-              "format": "binary",
-              "properties": {},
-              "title": "Free form byte stream"
+    {
+      "Path": "/v1/example/download",
+      "PathItemObject": {
+        "get": {
+          "operationId": "StreamService_Download",
+          "responses": {
+            "200": {
+              "description": "A successful response.(streaming responses)",
+              "schema": {
+                "type": "string",
+                "format": "binary",
+                "properties": {},
+                "title": "Free form byte stream"
+              }
+            },
+            "default": {
+              "description": "An unexpected error response.",
+              "schema": {
+                "$ref": "#/definitions/rpcStatus"
+              }
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
+          "parameters": [
+            {
+              "name": "error",
+              "in": "query",
+              "required": false,
+              "type": "boolean"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "error",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "tags": [
-          "StreamService"
-        ]
+          ],
+          "tags": [
+            "StreamService"
+          ]
+        }
       }
     }
-  },
+  ],
   "definitions": {
     "ABitOfEverythingNested": {
       "type": "object",
