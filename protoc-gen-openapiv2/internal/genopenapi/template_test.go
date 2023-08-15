@@ -8771,6 +8771,494 @@ func GetPaths(req *openapiSwaggerObject) []string {
 	return paths
 }
 
+func TestRenderServicesOpenapiPathsOrderPreserved(t *testing.T) {
+	reqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("MyRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+
+	resDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("MyResponse"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod1"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod2"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("MyService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+	reqMsg := &descriptor.Message{
+		DescriptorProto: reqDesc,
+	}
+	resMsg := &descriptor.Message{
+		DescriptorProto: resDesc,
+	}
+	reqField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsg.GetField()[0],
+	}
+	resField := &descriptor.Field{
+		Message:              resMsg,
+		FieldDescriptorProto: resMsg.GetField()[0],
+	}
+	reqField.JsonName = proto.String("field")
+	resField.JsonName = proto.String("field")
+	reqMsg.Fields = []*descriptor.Field{reqField}
+	resMsg.Fields = []*descriptor.Field{resField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Package:        proto.String("example"),
+			Name:           proto.String(",my_service.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{reqDesc, resDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{reqMsg, resMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/c/cpath",
+								},
+							},
+						},
+					}, {
+						MethodDescriptorProto: meth2,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/b/bpath",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetPreserveRPCOrder(true)
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := result.Paths
+
+	firstRPCPath := file.Services[0].Methods[0].Bindings[0].PathTmpl.Template
+	secondRPCPath := file.Services[0].Methods[1].Bindings[0].PathTmpl.Template
+	for i, pathData := range paths {
+		switch i {
+		case 0:
+			if got, want := pathData.Path, firstRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		case 1:
+			if got, want := pathData.Path, secondRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		}
+	}
+}
+
+func TestRenderServicesOpenapiPathsOrderPreservedMultipleServices(t *testing.T) {
+	reqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("MyRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+
+	resDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("MyResponse"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod1"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod2"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+	meth3 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod3"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+	meth4 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod4"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("MyServiceOne"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+	svc2 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("MyServiceTwo"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth3, meth4},
+	}
+	reqMsg := &descriptor.Message{
+		DescriptorProto: reqDesc,
+	}
+	resMsg := &descriptor.Message{
+		DescriptorProto: resDesc,
+	}
+	reqField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsg.GetField()[0],
+	}
+	resField := &descriptor.Field{
+		Message:              resMsg,
+		FieldDescriptorProto: resMsg.GetField()[0],
+	}
+	reqField.JsonName = proto.String("field")
+	resField.JsonName = proto.String("field")
+	reqMsg.Fields = []*descriptor.Field{reqField}
+	resMsg.Fields = []*descriptor.Field{resField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Package:        proto.String("example"),
+			Name:           proto.String(",my_service.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{reqDesc, resDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1, svc2},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{reqMsg, resMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/g/gpath",
+								},
+							},
+						},
+					}, {
+						MethodDescriptorProto: meth2,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/f/fpath",
+								},
+							},
+						},
+					},
+				},
+			}, {
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth3,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/c/cpath",
+								},
+							},
+						},
+					}, {
+						MethodDescriptorProto: meth4,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/b/bpath",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetPreserveRPCOrder(true)
+	reg.SetUseJSONNamesForFields(true)
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := result.Paths
+
+	firstRPCPath := file.Services[0].Methods[0].Bindings[0].PathTmpl.Template
+	secondRPCPath := file.Services[0].Methods[1].Bindings[0].PathTmpl.Template
+	thirdRPCPath := file.Services[1].Methods[0].Bindings[0].PathTmpl.Template
+	fourthRPCPath := file.Services[1].Methods[1].Bindings[0].PathTmpl.Template
+	for i, pathData := range paths {
+		switch i {
+		case 0:
+			if got, want := pathData.Path, firstRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		case 1:
+			if got, want := pathData.Path, secondRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		case 2:
+			if got, want := pathData.Path, thirdRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		case 3:
+			if got, want := pathData.Path, fourthRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		}
+	}
+}
+
+func TestRenderServicesOpenapiPathsOrderPreservedAdditionalBindings(t *testing.T) {
+	reqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("MyRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+
+	resDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("MyResponse"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod1"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("MyMethod2"),
+		InputType:  proto.String("MyRequest"),
+		OutputType: proto.String("MyResponse"),
+	}
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("MyService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+	reqMsg := &descriptor.Message{
+		DescriptorProto: reqDesc,
+	}
+	resMsg := &descriptor.Message{
+		DescriptorProto: resDesc,
+	}
+	reqField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsg.GetField()[0],
+	}
+	resField := &descriptor.Field{
+		Message:              resMsg,
+		FieldDescriptorProto: resMsg.GetField()[0],
+	}
+	reqField.JsonName = proto.String("field")
+	resField.JsonName = proto.String("field")
+	reqMsg.Fields = []*descriptor.Field{reqField}
+	resMsg.Fields = []*descriptor.Field{resField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Package:        proto.String("example"),
+			Name:           proto.String(",my_service.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{reqDesc, resDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{reqMsg, resMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/c/cpath",
+								},
+							}, {
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/additionalbinding",
+								},
+							},
+						},
+					}, {
+						MethodDescriptorProto: meth2,
+						RequestType:           reqMsg,
+						ResponseType:          resMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/b/bpath",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetPreserveRPCOrder(true)
+	reg.SetUseJSONNamesForFields(true)
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := result.Paths
+	if err != nil {
+		t.Fatalf("failed to obtain extension paths: %v", err)
+	}
+
+	firstRPCPath := file.Services[0].Methods[0].Bindings[0].PathTmpl.Template
+	firstRPCPathAdditionalBinding := file.Services[0].Methods[0].Bindings[1].PathTmpl.Template
+	secondRPCPath := file.Services[0].Methods[1].Bindings[0].PathTmpl.Template
+	for i, pathData := range paths {
+		switch i {
+		case 0:
+			if got, want := pathData.Path, firstRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		case 1:
+			if got, want := pathData.Path, firstRPCPathAdditionalBinding; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		case 2:
+			if got, want := pathData.Path, secondRPCPath; got != want {
+				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
+			}
+		}
+	}
+}
+
 func TestArrayMessageItemsType(t *testing.T) {
 
 	msgDesc := &descriptorpb.DescriptorProto{

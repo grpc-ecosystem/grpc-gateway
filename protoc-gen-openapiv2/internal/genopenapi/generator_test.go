@@ -1,7 +1,6 @@
 package genopenapi_test
 
 import (
-	"encoding/json"
 	"sort"
 	"strings"
 	"testing"
@@ -345,9 +344,6 @@ func TestGenerateRPCOrderPreserved(t *testing.T) {
 
 			contentsSlice := strings.Fields(content)
 			expectedPaths := []string{"/b/first", "/a/second", "/c/third"}
-
-			var data map[interface{}]interface{}
-			json.Unmarshal([]byte(content), &data)
 
 			paths := []string{}
 			for _, contentValue := range contentsSlice {
