@@ -20,6 +20,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
+	"gopkg.in/yaml.v3"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
@@ -111,6 +112,56 @@ func (so openapiSwaggerObject) MarshalYAML() (interface{}, error) {
 		Extension: extensionsToMap(so.extensions),
 		Alias:     Alias(so),
 	}, nil
+}
+
+// Custom json marshaller for openapiPathsObject. Ensures
+// openapiPathsObject is marshalled into expected format in generated
+// swagger.json.
+func (po openapiPathsObject) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+
+	buf.WriteString("{")
+	for i, pd := range po {
+		if i != 0 {
+			buf.WriteString(",")
+		}
+		// marshal key
+		key, err := json.Marshal(pd.Path)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(key)
+		buf.WriteString(":")
+		// marshal value
+		val, err := json.Marshal(pd.PathItemObject)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(val)
+	}
+
+	buf.WriteString("}")
+	return buf.Bytes(), nil
+}
+
+// Custom yaml marshaller for openapiPathsObject. Ensures
+// openapiPathsObject is marshalled into expected format in generated
+// swagger.yaml.
+func (po openapiPathsObject) MarshalYAML() (interface{}, error) {
+	var pathObjectNode yaml.Node
+	pathObjectNode.Kind = yaml.MappingNode
+
+	for _, pathData := range po {
+		var path, pathItemObject yaml.Node
+		path.SetString(pathData.Path)
+		err := pathItemObject.Encode(pathData.PathItemObject)
+		if err != nil {
+			return nil, err
+		}
+		pathObjectNode.Content = append(pathObjectNode.Content, &path, &pathItemObject)
+	}
+
+	return pathObjectNode, nil
 }
 
 func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
