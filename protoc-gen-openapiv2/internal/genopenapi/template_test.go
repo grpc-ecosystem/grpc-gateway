@@ -9836,3 +9836,262 @@ func (so openapiSwaggerObject) getPathItemObject(path string) openapiPathItemObj
 
 	return openapiPathItemObject{}
 }
+
+func TestGetPathItemObjectSwaggerObjectMethod(t *testing.T) {
+	testCases := [...]struct {
+		testName               string
+		swaggerObject          openapiSwaggerObject
+		path                   string
+		expectedPathItemObject openapiPathItemObject
+	}{
+		{
+			testName: "Path present in swagger object",
+			swaggerObject: openapiSwaggerObject{Paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}}},
+			path: "a/path",
+			expectedPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "A testful description",
+				},
+			},
+		}, {
+			testName: "Path not present in swaggerObject",
+			swaggerObject: openapiSwaggerObject{Paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}}},
+			path:                   "b/path",
+			expectedPathItemObject: openapiPathItemObject{},
+		}, {
+			testName: "Path present in swaggerPathsObject with multiple paths",
+			swaggerObject: openapiSwaggerObject{Paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}, {
+				Path: "another/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "Another testful description",
+					},
+				},
+			}}},
+			path: "another/path",
+			expectedPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "Another testful description",
+				},
+			},
+		}, {
+			testName:               "Path not present in swaggerObject with no paths",
+			swaggerObject:          openapiSwaggerObject{},
+			path:                   "b/path",
+			expectedPathItemObject: openapiPathItemObject{},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(string(tc.testName), func(t *testing.T) {
+			actualPathItemObject := tc.swaggerObject.getPathItemObject(tc.path)
+			if isEqual := reflect.DeepEqual(actualPathItemObject, tc.expectedPathItemObject); !isEqual {
+				t.Fatalf("Got pathItemObject: %#v, want pathItemObject: %#v", actualPathItemObject, tc.expectedPathItemObject)
+			}
+		})
+	}
+}
+
+func TestGetPathItemObjectFunction(t *testing.T) {
+	testCases := [...]struct {
+		testName               string
+		paths                  openapiPathsObject
+		path                   string
+		expectedPathItemObject openapiPathItemObject
+		expectedIsPathPresent  bool
+	}{
+		{
+			testName: "Path present in openapiPathsObject",
+			paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}},
+			path: "a/path",
+			expectedPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "A testful description",
+				},
+			},
+			expectedIsPathPresent: true,
+		}, {
+			testName: "Path not present in openapiPathsObject",
+			paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}},
+			path:                   "b/path",
+			expectedPathItemObject: openapiPathItemObject{},
+			expectedIsPathPresent:  false,
+		}, {
+			testName: "Path present in openapiPathsObject with multiple paths",
+			paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}, {
+				Path: "another/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "Another testful description",
+					},
+				},
+			}},
+			path: "another/path",
+			expectedPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "Another testful description",
+				},
+			},
+			expectedIsPathPresent: true,
+		}, {
+			testName:               "Path not present in empty openapiPathsObject",
+			paths:                  openapiPathsObject{},
+			path:                   "b/path",
+			expectedPathItemObject: openapiPathItemObject{},
+			expectedIsPathPresent:  false,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(string(tc.testName), func(t *testing.T) {
+			actualPathItemObject, actualIsPathPresent := getPathItemObject(tc.paths, tc.path)
+			if isEqual := reflect.DeepEqual(actualPathItemObject, tc.expectedPathItemObject); !isEqual {
+				t.Fatalf("Got pathItemObject: %#v, want pathItemObject: %#v", actualPathItemObject, tc.expectedPathItemObject)
+			}
+			if actualIsPathPresent != tc.expectedIsPathPresent {
+				t.Fatalf("Got isPathPresent bool: %t, want isPathPresent bool: %t", actualIsPathPresent, tc.expectedIsPathPresent)
+			}
+		})
+	}
+}
+
+func TestUpdatePaths(t *testing.T) {
+	testCases := [...]struct {
+		testName             string
+		paths                openapiPathsObject
+		pathToUpdate         string
+		newPathItemObject    openapiPathItemObject
+		expectedUpdatedPaths openapiPathsObject
+	}{
+		{
+			testName: "Path present in openapiPathsObject, pathItemObject updated.",
+			paths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}},
+			pathToUpdate: "a/path",
+			newPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "A newly updated testful description",
+				},
+			},
+			expectedUpdatedPaths: openapiPathsObject{{
+				Path: "a/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A newly updated testful description",
+					},
+				},
+			}},
+		}, {
+			testName: "Path not present in openapiPathsObject, new path data appended.",
+			paths: openapiPathsObject{{
+				Path: "c/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}},
+			pathToUpdate: "b/path",
+			newPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "A new testful description to add",
+				},
+			},
+			expectedUpdatedPaths: openapiPathsObject{{
+				Path: "c/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A testful description",
+					},
+				},
+			}, {
+				Path: "b/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A new testful description to add",
+					},
+				},
+			}},
+		}, {
+			testName:     "No paths present in openapiPathsObject, new path data appended.",
+			paths:        openapiPathsObject{},
+			pathToUpdate: "b/path",
+			newPathItemObject: openapiPathItemObject{
+				Get: &openapiOperationObject{
+					Description: "A new testful description to add",
+				},
+			},
+			expectedUpdatedPaths: openapiPathsObject{{
+				Path: "b/path",
+				PathItemObject: openapiPathItemObject{
+					Get: &openapiOperationObject{
+						Description: "A new testful description to add",
+					},
+				},
+			}},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(string(tc.testName), func(t *testing.T) {
+			updatePaths(&tc.paths, tc.pathToUpdate, tc.newPathItemObject)
+			if pathsCorrectlyUpdated := reflect.DeepEqual(tc.paths, tc.expectedUpdatedPaths); !pathsCorrectlyUpdated {
+				t.Fatalf("Paths not correctly updated. Want %#v, got %#v", tc.expectedUpdatedPaths, tc.paths)
+			}
+		})
+	}
+}

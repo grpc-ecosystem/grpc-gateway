@@ -1665,8 +1665,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 	return nil
 }
 
-// Returns openapiPathItemObject from openapiPathsObject for a path. If path not
-// present in openapiPathsObject, returns empty openapiPathItemObject and false.
+// Returns the openapiPathItemObject associated with a path. If path is not present, returns
+// empty openapiPathItemObject and false.
 func getPathItemObject(paths openapiPathsObject, path string) (openapiPathItemObject, bool) {
 	for _, pathData := range paths {
 		if pathData.Path == path {
