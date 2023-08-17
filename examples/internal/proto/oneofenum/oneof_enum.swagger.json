@@ -10,7 +10,7 @@
   "produces": [
     "application/json"
   ],
-  "paths": [],
+  "paths": {},
   "definitions": {
     "protobufAny": {
       "type": "object",

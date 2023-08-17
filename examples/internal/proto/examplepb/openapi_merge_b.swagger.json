@@ -16,84 +16,78 @@
   "produces": [
     "application/json"
   ],
-  "paths": [
-    {
-      "Path": "/v1/example/b/1",
-      "PathItemObject": {
-        "post": {
-          "summary": "ServiceB.MethodOne receives InMessageB and returns OutMessageB",
-          "description": "Here is the detail explanation about ServiceB.MethodOne.",
-          "operationId": "ServiceB_MethodOne",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbOutMessageB"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+  "paths": {
+    "/v1/example/b/1": {
+      "post": {
+        "summary": "ServiceB.MethodOne receives InMessageB and returns OutMessageB",
+        "description": "Here is the detail explanation about ServiceB.MethodOne.",
+        "operationId": "ServiceB_MethodOne",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOutMessageB"
             }
           },
-          "parameters": [
-            {
-              "name": "body",
-              "description": "InMessageB represents a message to ServiceB.",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/examplepbInMessageB"
-              }
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "ServiceB"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "InMessageB represents a message to ServiceB.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbInMessageB"
+            }
+          }
+        ],
+        "tags": [
+          "ServiceB"
+        ]
       }
     },
-    {
-      "Path": "/v1/example/b/2",
-      "PathItemObject": {
-        "post": {
-          "summary": "ServiceB.MethodTwo receives OutMessageB and returns InMessageB",
-          "description": "Here is the detail explanation about ServiceB.MethodTwo.",
-          "operationId": "ServiceB_MethodTwo",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbInMessageB"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+    "/v1/example/b/2": {
+      "post": {
+        "summary": "ServiceB.MethodTwo receives OutMessageB and returns InMessageB",
+        "description": "Here is the detail explanation about ServiceB.MethodTwo.",
+        "operationId": "ServiceB_MethodTwo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbInMessageB"
             }
           },
-          "parameters": [
-            {
-              "name": "body",
-              "description": "OutMessageB represents a message returned from ServiceB.",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/examplepbOutMessageB"
-              }
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "ServiceB"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "OutMessageB represents a message returned from ServiceB.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbOutMessageB"
+            }
+          }
+        ],
+        "tags": [
+          "ServiceB"
+        ]
       }
     }
-  ],
+  },
   "definitions": {
     "examplepbInMessageB": {
       "type": "object",

@@ -15,80 +15,74 @@
   "produces": [
     "application/json"
   ],
-  "paths": [
-    {
-      "Path": "/v1/example/non_standard/update",
-      "PathItemObject": {
-        "patch": {
-          "summary": "Apply field mask to empty NonStandardMessage and return result.",
-          "operationId": "NonStandardService_Update",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbNonStandardMessage"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+  "paths": {
+    "/v1/example/non_standard/update": {
+      "patch": {
+        "summary": "Apply field mask to empty NonStandardMessage and return result.",
+        "operationId": "NonStandardService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
             }
           },
-          "parameters": [
-            {
-              "name": "body",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/examplepbNonStandardMessage"
-              }
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "NonStandardService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
+            }
+          }
+        ],
+        "tags": [
+          "NonStandardService"
+        ]
       }
     },
-    {
-      "Path": "/v1/example/non_standard/update_with_json_names",
-      "PathItemObject": {
-        "patch": {
-          "summary": "Apply field mask to empty NonStandardMessageWithJSONNames and return result.",
-          "operationId": "NonStandardService_UpdateWithJSONNames",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+    "/v1/example/non_standard/update_with_json_names": {
+      "patch": {
+        "summary": "Apply field mask to empty NonStandardMessageWithJSONNames and return result.",
+        "operationId": "NonStandardService_UpdateWithJSONNames",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
             }
           },
-          "parameters": [
-            {
-              "name": "body",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
-              }
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "NonStandardService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
+            }
+          }
+        ],
+        "tags": [
+          "NonStandardService"
+        ]
       }
     }
-  ],
+  },
   "definitions": {
     "examplepbNonStandardMessage": {
       "type": "object",

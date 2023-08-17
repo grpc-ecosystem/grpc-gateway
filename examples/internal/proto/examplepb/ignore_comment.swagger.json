@@ -15,43 +15,40 @@
   "produces": [
     "application/json"
   ],
-  "paths": [
-    {
-      "Path": "/v1/example/foo",
-      "PathItemObject": {
-        "post": {
-          "operationId": "FooService_Foo",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbFooReply"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+  "paths": {
+    "/v1/example/foo": {
+      "post": {
+        "operationId": "FooService_Foo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbFooReply"
             }
           },
-          "parameters": [
-            {
-              "name": "body",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/examplepbFooRequest"
-              }
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "FooService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbFooRequest"
+            }
+          }
+        ],
+        "tags": [
+          "FooService"
+        ]
       }
     }
-  ],
+  },
   "definitions": {
     "examplepbFooReply": {
       "type": "object"

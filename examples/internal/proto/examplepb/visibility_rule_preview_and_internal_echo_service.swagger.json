@@ -19,693 +19,678 @@
   "produces": [
     "application/json"
   ],
-  "paths": [
-    {
-      "Path": "/v1/example/echo/{id}",
-      "PathItemObject": {
-        "post": {
-          "summary": "Echo method receives a simple message and returns it.\nIt should always be visible in the open API output.",
-          "operationId": "VisibilityRuleEchoService_Echo",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+  "paths": {
+    "/v1/example/echo/{id}": {
+      "post": {
+        "summary": "Echo method receives a simple message and returns it.\nIt should always be visible in the open API output.",
+        "operationId": "VisibilityRuleEchoService_Echo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
             }
           },
-          "parameters": [
-            {
-              "name": "id",
-              "description": "Id represents the message identifier.",
-              "in": "path",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "name": "num",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lineNum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lang",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "status.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "en",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "anEnum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "enum": [
-                "VISIBILITY_ENUM_UNSPECIFIED",
-                "VISIBILITY_ENUM_VISIBLE",
-                "VISIBILITY_ENUM_INTERNAL",
-                "VISIBILITY_ENUM_PREVIEW"
-              ],
-              "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "VisibilityRuleEchoService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_INTERNAL",
+              "VISIBILITY_ENUM_PREVIEW"
+            ],
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
       }
     },
-    {
-      "Path": "/v1/example/echo_internal",
-      "PathItemObject": {
-        "get": {
-          "summary": "EchoInternal is an internal API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"INTERNAL\".",
-          "operationId": "VisibilityRuleEchoService_EchoInternal",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+    "/v1/example/echo_internal": {
+      "get": {
+        "summary": "EchoInternal is an internal API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"INTERNAL\".",
+        "operationId": "VisibilityRuleEchoService_EchoInternal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
             }
           },
-          "parameters": [
-            {
-              "name": "id",
-              "description": "Id represents the message identifier.",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "num",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lineNum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lang",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "status.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "en",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "anEnum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "enum": [
-                "VISIBILITY_ENUM_UNSPECIFIED",
-                "VISIBILITY_ENUM_VISIBLE",
-                "VISIBILITY_ENUM_INTERNAL",
-                "VISIBILITY_ENUM_PREVIEW"
-              ],
-              "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "VisibilityRuleEchoService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_INTERNAL",
+              "VISIBILITY_ENUM_PREVIEW"
+            ],
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
       }
     },
-    {
-      "Path": "/v1/example/echo_internal_and_preview",
-      "PathItemObject": {
-        "get": {
-          "summary": "EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\" or \"INTERNAL\".",
-          "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+    "/v1/example/echo_internal_and_preview": {
+      "get": {
+        "summary": "EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\" or \"INTERNAL\".",
+        "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
             }
           },
-          "parameters": [
-            {
-              "name": "id",
-              "description": "Id represents the message identifier.",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "num",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lineNum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lang",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "status.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "en",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "anEnum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "enum": [
-                "VISIBILITY_ENUM_UNSPECIFIED",
-                "VISIBILITY_ENUM_VISIBLE",
-                "VISIBILITY_ENUM_INTERNAL",
-                "VISIBILITY_ENUM_PREVIEW"
-              ],
-              "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "VisibilityRuleEchoService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_INTERNAL",
+              "VISIBILITY_ENUM_PREVIEW"
+            ],
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
       }
     },
-    {
-      "Path": "/v1/example/echo_preview",
-      "PathItemObject": {
-        "get": {
-          "summary": "EchoPreview is a preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\".",
-          "operationId": "VisibilityRuleEchoService_EchoPreview",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbVisibilityRuleMessageInPreviewMethod"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+    "/v1/example/echo_preview": {
+      "get": {
+        "summary": "EchoPreview is a preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\".",
+        "operationId": "VisibilityRuleEchoService_EchoPreview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbVisibilityRuleMessageInPreviewMethod"
             }
           },
-          "parameters": [
-            {
-              "name": "id",
-              "description": "Id represents the message identifier.",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "num",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lineNum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lang",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "status.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "en",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "anEnum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "enum": [
-                "VISIBILITY_ENUM_UNSPECIFIED",
-                "VISIBILITY_ENUM_VISIBLE",
-                "VISIBILITY_ENUM_INTERNAL",
-                "VISIBILITY_ENUM_PREVIEW"
-              ],
-              "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "VisibilityRuleEchoService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_INTERNAL",
+              "VISIBILITY_ENUM_PREVIEW"
+            ],
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
       }
     },
-    {
-      "Path": "/v1/example/internal/echo/{id}",
-      "PathItemObject": {
-        "post": {
-          "summary": "Echo method receives a simple message and returns it.\nIt should not be visible in the open API output.",
-          "operationId": "VisibilityRuleInternalEchoService_Echo",
-          "responses": {
-            "200": {
-              "description": "A successful response.",
-              "schema": {
-                "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
-              }
-            },
-            "default": {
-              "description": "An unexpected error response.",
-              "schema": {
-                "$ref": "#/definitions/rpcStatus"
-              }
+    "/v1/example/internal/echo/{id}": {
+      "post": {
+        "summary": "Echo method receives a simple message and returns it.\nIt should not be visible in the open API output.",
+        "operationId": "VisibilityRuleInternalEchoService_Echo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
             }
           },
-          "parameters": [
-            {
-              "name": "id",
-              "description": "Id represents the message identifier.",
-              "in": "path",
-              "required": true,
-              "type": "string"
-            },
-            {
-              "name": "num",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lineNum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "lang",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "status.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "status.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "en",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.progress",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "format": "int64"
-            },
-            {
-              "name": "no.note",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "no.previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "internalField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "previewField",
-              "in": "query",
-              "required": false,
-              "type": "string"
-            },
-            {
-              "name": "anEnum",
-              "in": "query",
-              "required": false,
-              "type": "string",
-              "enum": [
-                "VISIBILITY_ENUM_UNSPECIFIED",
-                "VISIBILITY_ENUM_VISIBLE",
-                "VISIBILITY_ENUM_INTERNAL",
-                "VISIBILITY_ENUM_PREVIEW"
-              ],
-              "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
             }
-          ],
-          "tags": [
-            "VisibilityRuleInternalEchoService"
-          ]
-        }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "no.previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_INTERNAL",
+              "VISIBILITY_ENUM_PREVIEW"
+            ],
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "VisibilityRuleInternalEchoService"
+        ]
       }
     }
-  ],
+  },
   "definitions": {
     "VisibilityRuleSimpleMessageVisibilityEnum": {
       "type": "string",
