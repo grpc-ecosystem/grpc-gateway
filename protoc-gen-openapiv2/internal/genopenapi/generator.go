@@ -152,13 +152,15 @@ func (po openapiPathsObject) MarshalYAML() (interface{}, error) {
 	pathObjectNode.Kind = yaml.MappingNode
 
 	for _, pathData := range po {
-		var path, pathItemObject yaml.Node
-		path.SetString(pathData.Path)
-		err := pathItemObject.Encode(pathData.PathItemObject)
+		var pathNode, pathItemObjectNode yaml.Node
+
+		pathNode.SetString(pathData.Path)
+		b, err := yaml.Marshal(pathData.PathItemObject)
 		if err != nil {
 			return nil, err
 		}
-		pathObjectNode.Content = append(pathObjectNode.Content, &path, &pathItemObject)
+		pathItemObjectNode.SetString(string(b))
+		pathObjectNode.Content = append(pathObjectNode.Content, &pathNode, &pathItemObjectNode)
 	}
 
 	return pathObjectNode, nil
