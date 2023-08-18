@@ -213,7 +213,7 @@ type LogoutReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Message that tells you whether your
-	// logout was succesful or not
+	// logout was successful or not
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 }
 
