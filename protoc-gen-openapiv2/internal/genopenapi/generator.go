@@ -9,18 +9,16 @@ import (
 	"reflect"
 	"strings"
 
-	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
-	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	openapioptions "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
-
-	//nolint:staticcheck // Known issue, will be replaced when possible
-	legacydescriptor "github.com/golang/protobuf/descriptor"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
@@ -73,6 +71,7 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 	return mergedTarget
 }
 
+// MarshalJSON ...
 // Q: What's up with the alias types here?
 // A: We don't want to completely override how these structs are marshaled into
 // JSON, we only want to add fields (see below, extensionMarshalJSON).
@@ -300,7 +299,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		var mergedTarget *descriptor.File
 		// try to find proto leader
 		for _, f := range targets {
-			if proto.HasExtension(f.Options, openapi_options.E_Openapiv2Swagger) {
+			if proto.HasExtension(f.Options, openapioptions.E_Openapiv2Swagger) {
 				mergedTarget = f
 				break
 			}
@@ -370,13 +369,8 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 // to registry (used for error-related API responses)
 func AddErrorDefs(reg *descriptor.Registry) error {
 	// load internal protos
-	any, _ := legacydescriptor.MessageDescriptorProto(&anypb.Any{})
-	any.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
-	status, _ := legacydescriptor.MessageDescriptorProto(&statuspb.Status{})
-	status.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
-	// TODO(johanbrandhorst): Use new conversion later when possible
-	// any := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())
-	// status := protodesc.ToFileDescriptorProto((&statuspb.Status{}).ProtoReflect().Descriptor().ParentFile())
+	any := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())
+	status := protodesc.ToFileDescriptorProto((&statuspb.Status{}).ProtoReflect().Descriptor().ParentFile())
 	return reg.Load(&pluginpb.CodeGeneratorRequest{
 		ProtoFile: []*descriptorpb.FileDescriptorProto{
 			any,
