@@ -467,27 +467,27 @@ plugin generation looks like this:
 ```yaml
 version: v1
 plugins:
-  - remote: buf.build/library/plugins/go:v1.27.1-1
+  - plugin: buf.build/protocolbuffers/go:v1.31.0
     out: gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
+  - plugin: buf.build/grpc/go:v1.3.0
     out: gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.0-1
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.16.2
     out: gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.6.0-1
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.16.2
     out: gen/openapiv2
 ```
 
 This requires no local installation of any plugins. Be careful to use the same
-version of the generator as the runtime library, i.e. if using `v2.6.0-1`, run
+version of the generator as the runtime library, i.e. if using `v2.16.2`, run
 
 ```shell
-$ go get github.com/grpc-ecosystem/grpc-gateway/v2@v2.6.0
+$ go get github.com/grpc-ecosystem/grpc-gateway/v2@v2.16.2
 ```
 
 To get the same version of the runtime in your `go.mod`.
