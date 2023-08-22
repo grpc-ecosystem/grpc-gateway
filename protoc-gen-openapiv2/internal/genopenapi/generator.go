@@ -61,12 +61,10 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 			for k, v := range f.swagger.Definitions {
 				mergedTarget.swagger.Definitions[k] = v
 			}
-			for k, v := range f.swagger.Paths {
-				mergedTarget.swagger.Paths[k] = v
-			}
 			for k, v := range f.swagger.SecurityDefinitions {
 				mergedTarget.swagger.SecurityDefinitions[k] = v
 			}
+			copy(mergedTarget.swagger.Paths, f.swagger.Paths)
 			mergedTarget.swagger.Security = append(mergedTarget.swagger.Security, f.swagger.Security...)
 		}
 	}

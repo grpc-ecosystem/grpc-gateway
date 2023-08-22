@@ -1639,16 +1639,6 @@ func TestGenerateRPCOrderNotPreservedMergeFilesAdditionalBindingsMultipleService
 	}
 }
 
-func isValidPathOrder(expectedOrder []string, actualOrder []string) bool {
-	for i, path := range expectedOrder {
-		if actualOrder[i] != path {
-			return false
-		}
-	}
-
-	return true
-}
-
 // Tries to find expected paths from a provided substring and store them in the foundPaths
 // slice.
 func findExpectedPaths(foundPaths *[]string, expectedPaths []string, potentialPath string) {
