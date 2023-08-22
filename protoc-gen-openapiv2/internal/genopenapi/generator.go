@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -19,6 +20,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
+	"gopkg.in/yaml.v3"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
@@ -59,12 +61,10 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 			for k, v := range f.swagger.Definitions {
 				mergedTarget.swagger.Definitions[k] = v
 			}
-			for k, v := range f.swagger.Paths {
-				mergedTarget.swagger.Paths[k] = v
-			}
 			for k, v := range f.swagger.SecurityDefinitions {
 				mergedTarget.swagger.SecurityDefinitions[k] = v
 			}
+			copy(mergedTarget.swagger.Paths, f.swagger.Paths)
 			mergedTarget.swagger.Security = append(mergedTarget.swagger.Security, f.swagger.Security...)
 		}
 	}
@@ -110,6 +110,58 @@ func (so openapiSwaggerObject) MarshalYAML() (interface{}, error) {
 		Extension: extensionsToMap(so.extensions),
 		Alias:     Alias(so),
 	}, nil
+}
+
+// Custom json marshaller for openapiPathsObject. Ensures
+// openapiPathsObject is marshalled into expected format in generated
+// swagger.json.
+func (po openapiPathsObject) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+
+	buf.WriteString("{")
+	for i, pd := range po {
+		if i != 0 {
+			buf.WriteString(",")
+		}
+		// marshal key
+		key, err := json.Marshal(pd.Path)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(key)
+		buf.WriteString(":")
+		// marshal value
+		val, err := json.Marshal(pd.PathItemObject)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(val)
+	}
+
+	buf.WriteString("}")
+	return buf.Bytes(), nil
+}
+
+// Custom yaml marshaller for openapiPathsObject. Ensures
+// openapiPathsObject is marshalled into expected format in generated
+// swagger.yaml.
+func (po openapiPathsObject) MarshalYAML() (interface{}, error) {
+	var pathObjectNode yaml.Node
+	pathObjectNode.Kind = yaml.MappingNode
+
+	for _, pathData := range po {
+		var pathNode, pathItemObjectNode yaml.Node
+
+		pathNode.SetString(pathData.Path)
+		b, err := yaml.Marshal(pathData.PathItemObject)
+		if err != nil {
+			return nil, err
+		}
+		pathItemObjectNode.SetString(string(b))
+		pathObjectNode.Content = append(pathObjectNode.Content, &pathNode, &pathItemObjectNode)
+	}
+
+	return pathObjectNode, nil
 }
 
 func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
@@ -341,6 +393,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 
 	if g.reg.IsAllowMerge() {
 		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
+		if !g.reg.IsPreserveRPCOrder() {
+			targetOpenAPI.swagger.sortPathsAlphabetically()
+		}
 		f, err := encodeOpenAPI(targetOpenAPI, g.format)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", g.reg.GetMergeFileName(), err)
@@ -351,6 +406,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 	} else {
 		for _, file := range openapis {
+			if !g.reg.IsPreserveRPCOrder() {
+				file.swagger.sortPathsAlphabetically()
+			}
 			f, err := encodeOpenAPI(file, g.format)
 			if err != nil {
 				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", file.fileName, err)
@@ -362,6 +420,12 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 	}
 	return files, nil
+}
+
+func (so openapiSwaggerObject) sortPathsAlphabetically() {
+	sort.Slice(so.Paths, func(i, j int) bool {
+		return so.Paths[i].Path < so.Paths[j].Path
+	})
 }
 
 // AddErrorDefs Adds google.rpc.Status and google.protobuf.Any

@@ -1109,7 +1109,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
-func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
+func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
@@ -1330,7 +1330,9 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				parameters = append(parameters, queryParams...)
 
 				path := partsToOpenAPIPath(parts, pathParamNames)
-				pathItemObject, ok := paths[path]
+
+				pathItemObject, ok := getPathItemObject(*paths, path)
+
 				if !ok {
 					pathItemObject = openapiPathItemObject{}
 				} else {
@@ -1362,14 +1364,15 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 								newPathCount += 1
 								newPathElement = firstPathParameter.Name + pathParamUniqueSuffixDeliminator + strconv.Itoa(newPathCount)
 								newPath = strings.ReplaceAll(path, "{"+firstPathParameter.Name+"}", "{"+newPathElement+"}")
-								if newPathItemObject, ok := paths[newPath]; ok {
+
+								if newPathItemObject, ok := getPathItemObject(*paths, newPath); ok {
 									existingOperationObject = operationFunc(&newPathItemObject)
 								} else {
 									existingOperationObject = nil
 								}
 							}
 							// update the pathItemObject we are adding to with the new path
-							pathItemObject = paths[newPath]
+							pathItemObject, _ = getPathItemObject(*paths, newPath)
 							firstPathParameter.Name = newPathElement
 							path = newPath
 							parameters[firstParamIndex] = *firstPathParameter
@@ -1652,13 +1655,41 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				case "OPTIONS":
 					pathItemObject.Options = operationObject
 				}
-				paths[path] = pathItemObject
+
+				updatePaths(paths, path, pathItemObject)
 			}
 		}
 	}
 
 	// Success! return nil on the error object
 	return nil
+}
+
+// Returns the openapiPathItemObject associated with a path. If path is not present, returns
+// empty openapiPathItemObject and false.
+func getPathItemObject(paths openapiPathsObject, path string) (openapiPathItemObject, bool) {
+	for _, pathData := range paths {
+		if pathData.Path == path {
+			return pathData.PathItemObject, true
+		}
+	}
+
+	return openapiPathItemObject{}, false
+}
+
+// If a path already exists in openapiPathsObject, updates that path's openapiPathItemObject. If not,
+// appends a new path and openapiPathItemObject to the openapiPathsObject.
+func updatePaths(paths *openapiPathsObject, path string, pathItemObject openapiPathItemObject) {
+	for i, p := range *paths {
+		if p.Path == path {
+			(*paths)[i].PathItemObject = pathItemObject
+			return
+		}
+	}
+	*paths = append(*paths, pathData{
+		Path:           path,
+		PathItemObject: pathItemObject,
+	})
 }
 
 func mergeDescription(schema openapiSchemaObject) string {
@@ -1699,7 +1730,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		Swagger:     "2.0",
 		Consumes:    []string{"application/json"},
 		Produces:    []string{"application/json"},
-		Paths:       make(openapiPathsObject),
+		Paths:       openapiPathsObject{},
 		Definitions: make(openapiDefinitionsObject),
 		Info: openapiInfoObject{
 			Title:   *p.File.Name,
@@ -1711,7 +1742,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
+	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
 		panic(err)
 	}
 
@@ -1920,20 +1951,20 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		if spb.Responses != nil {
 			for _, verbs := range s.Paths {
 				var maps []openapiResponsesObject
-				if verbs.Delete != nil {
-					maps = append(maps, verbs.Delete.Responses)
+				if verbs.PathItemObject.Delete != nil {
+					maps = append(maps, verbs.PathItemObject.Delete.Responses)
 				}
-				if verbs.Get != nil {
-					maps = append(maps, verbs.Get.Responses)
+				if verbs.PathItemObject.Get != nil {
+					maps = append(maps, verbs.PathItemObject.Get.Responses)
 				}
-				if verbs.Post != nil {
-					maps = append(maps, verbs.Post.Responses)
+				if verbs.PathItemObject.Post != nil {
+					maps = append(maps, verbs.PathItemObject.Post.Responses)
 				}
-				if verbs.Put != nil {
-					maps = append(maps, verbs.Put.Responses)
+				if verbs.PathItemObject.Put != nil {
+					maps = append(maps, verbs.PathItemObject.Put.Responses)
 				}
-				if verbs.Patch != nil {
-					maps = append(maps, verbs.Patch.Responses)
+				if verbs.PathItemObject.Patch != nil {
+					maps = append(maps, verbs.PathItemObject.Patch.Responses)
 				}
 
 				for k, v := range spb.Responses {
