@@ -71,7 +71,6 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 	return mergedTarget
 }
 
-// MarshalJSON ...
 // Q: What's up with the alias types here?
 // A: We don't want to completely override how these structs are marshaled into
 // JSON, we only want to add fields (see below, extensionMarshalJSON).
