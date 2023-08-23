@@ -3858,6 +3858,7 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 		{"test/{ab_c}", "test/{abC}"},
 		{"test/{json_name}", "test/{jsonNAME}"},
 		{"test/{field_abc.field_newName}", "test/{fieldAbc.RESERVEDJSONNAME}"},
+		{"/item/search:items/{item_no_query}", "/item/search:items/{itemNoQuery}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
@@ -3918,7 +3919,6 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 		{"/{user.name=prefix/*}:customMethod", "/{user.name}:customMethod"},
 		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name}:customMethod"},
 		{"/{parent=prefix/*}/children:customMethod", "/{parent}/children:customMethod"},
-		{"/item/search:items/{item_no_query}", "/item/search:items/{item_no_query}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
