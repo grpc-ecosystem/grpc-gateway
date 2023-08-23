@@ -987,13 +987,6 @@ pathLoop:
 				jsonBuffer = ""
 			}
 		case '/':
-			if depth == 0 {
-				parts = append(parts, buffer)
-				buffer = ""
-				// Since the stack was empty when we hit the '/' we are done with this
-				// section.
-				continue
-			}
 			buffer += string(char)
 			jsonBuffer += string(char)
 		case ':':
