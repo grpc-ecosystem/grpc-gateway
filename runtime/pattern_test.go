@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -181,7 +182,7 @@ func TestNewPatternWithWrongOp(t *testing.T) {
 			t.Errorf("NewPattern(%d, %v, %q, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, ErrInvalidPattern)
 			continue
 		}
-		if err != ErrInvalidPattern {
+		if !errors.Is(err, ErrInvalidPattern) {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, err, ErrInvalidPattern)
 			continue
 		}
@@ -207,7 +208,7 @@ func TestNewPatternWithStackUnderflow(t *testing.T) {
 			t.Errorf("NewPattern(%d, %v, %q, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, ErrInvalidPattern)
 			continue
 		}
-		if err != ErrInvalidPattern {
+		if !errors.Is(err, ErrInvalidPattern) {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, err, ErrInvalidPattern)
 			continue
 		}
@@ -354,7 +355,7 @@ func TestMatch(t *testing.T) {
 				t.Errorf("pat.Match(%q) succeeded; want failure with %v; pattern = (%v, %q)", path, ErrNotMatch, spec.ops, spec.pool)
 				continue
 			}
-			if err != ErrNotMatch {
+			if !errors.Is(err, ErrNotMatch) {
 				t.Errorf("pat.Match(%q) failed with %v; want failure with %v; pattern = (%v, %q)", spec.notMatch, err, ErrNotMatch, spec.ops, spec.pool)
 			}
 		}

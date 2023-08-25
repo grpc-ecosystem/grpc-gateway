@@ -22,6 +22,7 @@ func getUniqueFields(schemaFieldsRequired []string, fieldsRequired []string) []s
 	for j, schemaFieldRequired := range schemaFieldsRequired {
 		index = nil
 		for i, fieldRequired := range fieldsRequired {
+			i := i
 			if schemaFieldRequired == fieldRequired {
 				index = &i
 				break

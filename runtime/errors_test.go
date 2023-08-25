@@ -73,7 +73,7 @@ func TestDefaultHTTPError(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("", "", nil) // Pass in an empty request to match the signature
+			req, _ := http.NewRequestWithContext(ctx, "", "", nil) // Pass in an empty request to match the signature
 			mux := runtime.NewServeMux()
 			marshaler := &runtime.JSONPb{}
 			runtime.HTTPError(ctx, mux, marshaler, w, req, spec.err)
