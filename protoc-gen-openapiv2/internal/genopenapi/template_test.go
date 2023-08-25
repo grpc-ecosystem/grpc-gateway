@@ -3537,6 +3537,7 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			reg := descriptor.NewRegistry()
 			if err := AddErrorDefs(reg); err != nil {
@@ -3802,8 +3803,8 @@ func TestApplyTemplateProtobufAny(t *testing.T) {
 
 func generateFieldsForJSONReservedName() []*descriptor.Field {
 	fields := make([]*descriptor.Field, 0)
-	fieldName := string("json_name")
-	fieldJSONName := string("jsonNAME")
+	fieldName := "json_name"
+	fieldJSONName := "jsonNAME"
 	fieldDescriptor := descriptorpb.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJSONName}
 	field := &descriptor.Field{FieldDescriptorProto: &fieldDescriptor}
 	return append(fields, field)
@@ -9906,7 +9907,7 @@ func TestGetPathItemObjectSwaggerObjectMethod(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 
-		t.Run(string(tc.testName), func(t *testing.T) {
+		t.Run(tc.testName, func(t *testing.T) {
 			actualPathItemObject := tc.swaggerObject.getPathItemObject(tc.path)
 			if isEqual := reflect.DeepEqual(actualPathItemObject, tc.expectedPathItemObject); !isEqual {
 				t.Fatalf("Got pathItemObject: %#v, want pathItemObject: %#v", actualPathItemObject, tc.expectedPathItemObject)
@@ -9989,7 +9990,7 @@ func TestGetPathItemObjectFunction(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 
-		t.Run(string(tc.testName), func(t *testing.T) {
+		t.Run(tc.testName, func(t *testing.T) {
 			actualPathItemObject, actualIsPathPresent := getPathItemObject(tc.paths, tc.path)
 			if isEqual := reflect.DeepEqual(actualPathItemObject, tc.expectedPathItemObject); !isEqual {
 				t.Fatalf("Got pathItemObject: %#v, want pathItemObject: %#v", actualPathItemObject, tc.expectedPathItemObject)
@@ -10087,7 +10088,7 @@ func TestUpdatePaths(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 
-		t.Run(string(tc.testName), func(t *testing.T) {
+		t.Run(tc.testName, func(t *testing.T) {
 			updatePaths(&tc.paths, tc.pathToUpdate, tc.newPathItemObject)
 			if pathsCorrectlyUpdated := reflect.DeepEqual(tc.paths, tc.expectedUpdatedPaths); !pathsCorrectlyUpdated {
 				t.Fatalf("Paths not correctly updated. Want %#v, got %#v", tc.expectedUpdatedPaths, tc.paths)

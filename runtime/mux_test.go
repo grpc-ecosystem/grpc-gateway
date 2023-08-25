@@ -584,7 +584,8 @@ func TestMuxServeHTTP(t *testing.T) {
 			}
 
 			reqUrl := fmt.Sprintf("https://host.example%s", spec.reqPath)
-			r, err := http.NewRequest(spec.reqMethod, reqUrl, bytes.NewReader(nil))
+			ctx := context.Background()
+			r, err := http.NewRequestWithContext(ctx, spec.reqMethod, reqUrl, bytes.NewReader(nil))
 			if err != nil {
 				t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", spec.reqMethod, reqUrl, err)
 			}

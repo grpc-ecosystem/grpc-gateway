@@ -40,7 +40,7 @@ func TestRawExample(t *testing.T) {
 		t.Run(string(tc.In), func(t *testing.T) {
 			t.Parallel()
 
-			ex := RawExample(tc.In)
+			ex := tc.In
 
 			out, err := yaml.Marshal(ex)
 			switch {
