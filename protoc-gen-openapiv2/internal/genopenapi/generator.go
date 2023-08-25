@@ -433,7 +433,9 @@ func (so openapiSwaggerObject) sortPathsAlphabetically() {
 func AddErrorDefs(reg *descriptor.Registry) error {
 	// load internal protos
 	any := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())
+	any.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
 	status := protodesc.ToFileDescriptorProto((&statuspb.Status{}).ProtoReflect().Descriptor().ParentFile())
+	status.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
 	return reg.Load(&pluginpb.CodeGeneratorRequest{
 		ProtoFile: []*descriptorpb.FileDescriptorProto{
 			any,
