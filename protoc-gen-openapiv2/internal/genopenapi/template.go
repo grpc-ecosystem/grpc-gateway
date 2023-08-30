@@ -2204,6 +2204,37 @@ func processHeaders(inputHdrs map[string]*openapi_options.Header) (openapiHeader
 	return hdrs, nil
 }
 
+func removeInternalComments(comment string) string {
+	c := []string{}
+	for len(comment) > 0 {
+		open := strings.SplitN(comment, "(--", 2)
+		if len(open) == 1 {
+			c = append(c, open[0])
+			break
+		}
+		ex := strings.TrimRight(open[0], " \t")
+		// Trim only one line prior to all spaces
+		switch {
+		case strings.HasSuffix(ex, "\r\n"):
+			ex = strings.TrimSuffix(ex, "\r\n")
+		case strings.HasSuffix(ex, "\n"):
+			ex = strings.TrimSuffix(ex, "\n")
+		}
+		if ex != "" {
+			c = append(c, ex)
+		}
+		comment = open[1]
+
+		close := strings.SplitN(comment, "--)", 2)
+		if len(close) > 1 {
+			comment = close[1]
+		} else {
+			break
+		}
+	}
+	return strings.Join(c, "")
+}
+
 // updateOpenAPIDataFromComments updates a OpenAPI object based on a comment
 // from the proto file.
 //
@@ -2224,6 +2255,11 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	// Checks whether the "ignore_comments" flag is set to true
 	if reg.GetIgnoreComments() {
 		return nil
+	}
+
+	// Checks whether the "remove_internal_comments" flag is set to true
+	if reg.GetRemoveInternalComments() {
+		comment = removeInternalComments(comment)
 	}
 
 	// Checks whether the "use_go_templates" flag is set to true

@@ -847,6 +847,11 @@ or with `protoc`:
 protoc --openapiv2_out=. --openapiv2_opt=ignore_comments=true ./path/to/file.proto
 ```
 
+### Removing internal comments
+
+If you want to remove internal comments from the from OpenAPI output (such as `TODO` and `FIXME` directives) you can use the `remove_internal_comments` option.
+If set to `true`, this will remove all comment text located between `(--` and `--)` as per [AIP 192: Internal comments](https://google.aip.dev/192#internal-comments).
+
 ### Preserve RPC Path Order
 
 By default, generated Swagger files emit paths found in proto files in alphabetical order. If you would like to 
