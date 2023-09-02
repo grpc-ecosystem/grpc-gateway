@@ -16,17 +16,17 @@ info:
     url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"
   x-something-something: "yadda"
 tags:
+- name: "Echo"
+  description: "Echo description"
+- name: "Internal"
+  description: "Internal description"
+  x-traitTag: true
 - name: "UnannotatedEchoService"
   description: "UnannotatedEchoService description -- which should not be used in\
     \ place of the documentation comment!"
   externalDocs:
     description: "Find out more about UnannotatedEchoService"
     url: "https://github.com/grpc-ecosystem/grpc-gateway"
-- name: "Echo"
-  description: "Echo description"
-- name: "Internal"
-  description: "Internal description"
-  x-traitTag: true
 schemes:
 - "http"
 - "https"

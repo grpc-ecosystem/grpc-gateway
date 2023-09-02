@@ -1746,10 +1746,6 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		panic(err)
 	}
 
-	if !p.reg.GetDisableServiceTags() {
-		s.Tags = append(s.Tags, renderServiceTags(p.Services, p.reg)...)
-	}
-
 	messages := messageMap{}
 	streamingMessages := messageMap{}
 	enums := enumMap{}
@@ -2017,6 +2013,10 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		// should be added here, once supported in the proto.
 	}
 
+	if !p.reg.GetDisableServiceTags() {
+		s.Tags = mergeTags(s.Tags, renderServiceTags(p.Services, p.reg))
+	}
+
 	// Finally add any references added by users that aren't
 	// otherwise rendered.
 	if err := addCustomRefs(s.Definitions, p.reg, customRefs); err != nil {
@@ -2024,6 +2024,51 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	}
 
 	return &s, nil
+}
+
+func mergeTags(existingTags []openapiTagObject, tags []openapiTagObject) []openapiTagObject {
+	for _, tag := range tags {
+		matched := false
+		for i, existingTag := range existingTags {
+			if existingTag.Name == tag.Name {
+				if existingTag.Description == "" {
+					existingTags[i].Description = tag.Description
+				}
+				if existingTag.ExternalDocs == nil {
+					existingTags[i].ExternalDocs = tag.ExternalDocs
+				} else if tag.ExternalDocs != nil {
+					if existingTag.ExternalDocs.Description == "" {
+						existingTags[i].ExternalDocs.Description = tag.ExternalDocs.Description
+					}
+					if existingTag.ExternalDocs.URL == "" {
+						existingTags[i].ExternalDocs.URL = tag.ExternalDocs.URL
+					}
+				}
+				if existingTag.extensions == nil {
+					existingTags[i].extensions = tag.extensions
+				} else if tag.extensions != nil {
+					for _, ext := range tag.extensions {
+						matchedExt := false
+						for _, existingExt := range existingTag.extensions {
+							if existingExt.key == ext.key {
+								matchedExt = true
+								break
+							}
+						}
+						if !matchedExt {
+							existingTags[i].extensions = append(existingTags[i].extensions, ext)
+						}
+					}
+				}
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			existingTags = append(existingTags, tag)
+		}
+	}
+	return existingTags
 }
 
 func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error) {
