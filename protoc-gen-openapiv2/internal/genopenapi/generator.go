@@ -163,6 +163,15 @@ func (po openapiPathsObject) MarshalYAML() (interface{}, error) {
 	return pathObjectNode, nil
 }
 
+// We can simplify this implementation once the go-yaml bug is resolved. See: https://github.com/go-yaml/yaml/issues/643.
+//
+//	func (pio *openapiPathItemObject) toYAMLNode() (*yaml.Node, error) {
+//		var node yaml.Node
+//		if err := node.Encode(pio); err != nil {
+//			return nil, err
+//		}
+//		return &node, nil
+//	}
 func (pio *openapiPathItemObject) toYAMLNode() (*yaml.Node, error) {
 	var doc yaml.Node
 	var buf bytes.Buffer
