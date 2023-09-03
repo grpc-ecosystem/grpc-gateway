@@ -150,16 +150,31 @@ func (po openapiPathsObject) MarshalYAML() (interface{}, error) {
 	pathObjectNode.Kind = yaml.MappingNode
 
 	for _, pathData := range po {
-		var pathNode, pathItemObjectNode yaml.Node
+		var pathNode yaml.Node
 
 		pathNode.SetString(pathData.Path)
-		if err := pathItemObjectNode.Encode(pathData.PathItemObject); err != nil {
+		pathItemObjectNode, err := pathData.PathItemObject.toYAMLNode()
+		if err != nil {
 			return nil, err
 		}
-		pathObjectNode.Content = append(pathObjectNode.Content, &pathNode, &pathItemObjectNode)
+		pathObjectNode.Content = append(pathObjectNode.Content, &pathNode, pathItemObjectNode)
 	}
 
 	return pathObjectNode, nil
+}
+
+func (pio *openapiPathItemObject) toYAMLNode() (*yaml.Node, error) {
+	var doc yaml.Node
+	var buf bytes.Buffer
+	ec := yaml.NewEncoder(&buf)
+	ec.SetIndent(2)
+	if err := ec.Encode(pio); err != nil {
+		return nil, err
+	}
+	if err := yaml.Unmarshal(buf.Bytes(), &doc); err != nil {
+		return nil, err
+	}
+	return doc.Content[0], nil
 }
 
 func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
