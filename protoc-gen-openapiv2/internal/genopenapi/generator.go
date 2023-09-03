@@ -183,6 +183,9 @@ func (pio *openapiPathItemObject) toYAMLNode() (*yaml.Node, error) {
 	if err := yaml.Unmarshal(buf.Bytes(), &doc); err != nil {
 		return nil, err
 	}
+	if len(doc.Content) == 0 {
+		return nil, errors.New("unexpected number of yaml nodes")
+	}
 	return doc.Content[0], nil
 }
 
