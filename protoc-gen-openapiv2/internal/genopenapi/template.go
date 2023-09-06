@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"net/textproto"
 	"os"
@@ -2330,8 +2331,7 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 
 func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
 	if file.SourceCodeInfo == nil {
-		fmt.Fprintln(os.Stderr, file.GetName(), "descriptor.File should not contain nil SourceCodeInfo")
-		return ""
+		log.Fatalf("%s: descriptor.File should not contain nil SourceCodeInfo", file.GetName())
 	}
 
 	outerPaths := make([]int32, len(outers))
