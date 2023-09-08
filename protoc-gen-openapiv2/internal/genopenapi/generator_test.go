@@ -126,15 +126,15 @@ func TestGenerateYAML(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name             string
-		requestFileName  string
-		responseFileName string
+		name           string
+		inputProtoText string
+		wantYAML       string
 	}{
 		{
 			// It tests https://github.com/grpc-ecosystem/grpc-gateway/issues/3557.
-			name:             "path_item_object",
-			requestFileName:  "testdata/generator/path_item_object.prototext",
-			responseFileName: "testdata/generator/path_item_object.swagger.yaml",
+			name:           "path item object",
+			inputProtoText: "testdata/generator/path_item_object.prototext",
+			wantYAML:       "testdata/generator/path_item_object.swagger.yaml",
 		},
 	}
 
@@ -143,7 +143,7 @@ func TestGenerateYAML(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			b, err := os.ReadFile(tt.requestFileName)
+			b, err := os.ReadFile(tt.inputProtoText)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -158,7 +158,7 @@ func TestGenerateYAML(t *testing.T) {
 			}
 			got := resp[0].GetContent()
 
-			want, err := os.ReadFile(tt.responseFileName)
+			want, err := os.ReadFile(tt.wantYAML)
 			if err != nil {
 				t.Fatal(err)
 			}
