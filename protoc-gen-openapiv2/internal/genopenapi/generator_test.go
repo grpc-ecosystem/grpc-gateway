@@ -1,11 +1,13 @@
 package genopenapi_test
 
 import (
+	"os"
 	"reflect"
 	"sort"
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"gopkg.in/yaml.v3"
@@ -115,6 +117,53 @@ func TestGenerateExtension(t *testing.T) {
 
 			if !strings.Contains(content, "x-go-default") {
 				t.Fatal("x-go-default not found in content message")
+			}
+		})
+	}
+}
+
+func TestGenerateYAML(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name             string
+		requestFileName  string
+		responseFileName string
+	}{
+		{
+			name:             "path_item_object",
+			requestFileName:  "testdata/generator/path_item_object.prototext",
+			responseFileName: "testdata/generator/path_item_object.swagger.yaml",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			b, err := os.ReadFile(tt.requestFileName)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var req pluginpb.CodeGeneratorRequest
+			if err := prototext.Unmarshal(b, &req); err != nil {
+				t.Fatal(err)
+			}
+
+			resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, true)
+			if len(resp) != 1 {
+				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+			}
+			got := resp[0].GetContent()
+
+			want, err := os.ReadFile(tt.responseFileName)
+			if err != nil {
+				t.Fatal(err)
+			}
+			diff := cmp.Diff(string(want), got)
+			if diff != "" {
+				t.Fatalf("content not match\n%s", diff)
 			}
 		})
 	}
