@@ -131,6 +131,7 @@ func TestGenerateYAML(t *testing.T) {
 		responseFileName string
 	}{
 		{
+			// It tests https://github.com/grpc-ecosystem/grpc-gateway/issues/3557.
 			name:             "path_item_object",
 			requestFileName:  "testdata/generator/path_item_object.prototext",
 			responseFileName: "testdata/generator/path_item_object.swagger.yaml",
