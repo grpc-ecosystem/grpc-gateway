@@ -150,18 +150,43 @@ func (po openapiPathsObject) MarshalYAML() (interface{}, error) {
 	pathObjectNode.Kind = yaml.MappingNode
 
 	for _, pathData := range po {
-		var pathNode, pathItemObjectNode yaml.Node
+		var pathNode yaml.Node
 
 		pathNode.SetString(pathData.Path)
-		b, err := yaml.Marshal(pathData.PathItemObject)
+		pathItemObjectNode, err := pathData.PathItemObject.toYAMLNode()
 		if err != nil {
 			return nil, err
 		}
-		pathItemObjectNode.SetString(string(b))
-		pathObjectNode.Content = append(pathObjectNode.Content, &pathNode, &pathItemObjectNode)
+		pathObjectNode.Content = append(pathObjectNode.Content, &pathNode, pathItemObjectNode)
 	}
 
 	return pathObjectNode, nil
+}
+
+// We can simplify this implementation once the go-yaml bug is resolved. See: https://github.com/go-yaml/yaml/issues/643.
+//
+//	func (pio *openapiPathItemObject) toYAMLNode() (*yaml.Node, error) {
+//		var node yaml.Node
+//		if err := node.Encode(pio); err != nil {
+//			return nil, err
+//		}
+//		return &node, nil
+//	}
+func (pio *openapiPathItemObject) toYAMLNode() (*yaml.Node, error) {
+	var doc yaml.Node
+	var buf bytes.Buffer
+	ec := yaml.NewEncoder(&buf)
+	ec.SetIndent(2)
+	if err := ec.Encode(pio); err != nil {
+		return nil, err
+	}
+	if err := yaml.Unmarshal(buf.Bytes(), &doc); err != nil {
+		return nil, err
+	}
+	if len(doc.Content) == 0 {
+		return nil, errors.New("unexpected number of yaml nodes")
+	}
+	return doc.Content[0], nil
 }
 
 func (so openapiInfoObject) MarshalJSON() ([]byte, error) {

@@ -49,6 +49,7 @@ go_test(
         "template_test.go",
         "types_test.go",
     ],
+    data = glob(["testdata/**"]),
     embed = [":genopenapi"],
     deps = [
         "//internal/descriptor",
