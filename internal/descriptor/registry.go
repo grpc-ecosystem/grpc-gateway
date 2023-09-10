@@ -81,6 +81,10 @@ type Registry struct {
 	// ignoreComments determines whether all protofile comments should be excluded from output
 	ignoreComments bool
 
+	// removeInternalComments determines whether to remove substrings in comments that begin with
+	// `(--` and end with `--)` as specified in https://google.aip.dev/192#internal-comments.
+	removeInternalComments bool
+
 	// enumsAsInts render enum as integer, as opposed to string
 	enumsAsInts bool
 
@@ -579,6 +583,16 @@ func (r *Registry) SetIgnoreComments(ignore bool) {
 // GetIgnoreComments returns ignoreComments
 func (r *Registry) GetIgnoreComments() bool {
 	return r.ignoreComments
+}
+
+// SetRemoveInternalComments sets removeInternalComments
+func (r *Registry) SetRemoveInternalComments(remove bool) {
+	r.removeInternalComments = remove
+}
+
+// GetRemoveInternalComments returns removeInternalComments
+func (r *Registry) GetRemoveInternalComments() bool {
+	return r.removeInternalComments
 }
 
 // SetEnumsAsInts set enumsAsInts

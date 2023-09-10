@@ -31,6 +31,7 @@ var (
 	openAPINamingStrategy          = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
 	useGoTemplate                  = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
 	ignoreComments                 = flag.Bool("ignore_comments", false, "if set, all protofile comments are excluded from output")
+	removeInternalComments         = flag.Bool("remove_internal_comments", false, "if set, removes all substrings in comments that start with `(--` and end with `--)` as specified in https://google.aip.dev/192#internal-comments")
 	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
 	enumsAsInts                    = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 	simpleOperationIDs             = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation. Can introduce duplicate operationIDs, use with caution.")
@@ -130,6 +131,7 @@ func main() {
 	}
 	reg.SetUseGoTemplate(*useGoTemplate)
 	reg.SetIgnoreComments(*ignoreComments)
+	reg.SetRemoveInternalComments(*removeInternalComments)
 
 	reg.SetOpenAPINamingStrategy(namingStrategy)
 	reg.SetEnumsAsInts(*enumsAsInts)
