@@ -2110,10 +2110,11 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 		}
 
-		var tag openapiTagObject
-		for _, v := range result.Tags {
-			tag = v
+		if len(result.Tags) == 0 {
+			t.Errorf("No tags found in result")
+			return
 		}
+		tag := result.Tags[0]
 		if want, is, name := []extension{
 			{key: "x-traitTag", value: json.RawMessage("true")},
 		}, tag.extensions, "Tags[0].Extensions"; !reflect.DeepEqual(is, want) {
@@ -10092,6 +10093,207 @@ func TestUpdatePaths(t *testing.T) {
 			updatePaths(&tc.paths, tc.pathToUpdate, tc.newPathItemObject)
 			if pathsCorrectlyUpdated := reflect.DeepEqual(tc.paths, tc.expectedUpdatedPaths); !pathsCorrectlyUpdated {
 				t.Fatalf("Paths not correctly updated. Want %#v, got %#v", tc.expectedUpdatedPaths, tc.paths)
+			}
+		})
+	}
+}
+
+func MustMarshal(v interface{}) []byte {
+	b, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
+func TestMergeTags(t *testing.T) {
+	testCases := [...]struct {
+		testName           string
+		existingTags       []openapiTagObject
+		newTags            []openapiTagObject
+		expectedMergedTags []openapiTagObject
+	}{
+		{
+			testName: "Simple merge.",
+			existingTags: []openapiTagObject{{
+				Name:        "tag1",
+				Description: "tag1 description",
+			}},
+			newTags: []openapiTagObject{{
+				Name:        "tag2",
+				Description: "tag2 description",
+			}},
+			expectedMergedTags: []openapiTagObject{{
+				Name:        "tag1",
+				Description: "tag1 description",
+			}, {
+				Name:        "tag2",
+				Description: "tag2 description",
+			}},
+		},
+		{
+			testName: "Merge description",
+			existingTags: []openapiTagObject{{
+				Name:        "tag1",
+				Description: "tag1 description",
+			}, {
+				Name: "tag2",
+			}, {
+				Name:        "tag3",
+				Description: "tag3 description",
+			}},
+			newTags: []openapiTagObject{{
+				Name:        "tag2",
+				Description: "tag2 description",
+			}},
+			expectedMergedTags: []openapiTagObject{{
+				Name:        "tag1",
+				Description: "tag1 description",
+			}, {
+				Name:        "tag2",
+				Description: "tag2 description",
+			}, {
+				Name:        "tag3",
+				Description: "tag3 description",
+			}},
+		},
+		{
+			testName: "Merge external docs",
+			existingTags: []openapiTagObject{{
+				Name:         "tag1",
+				ExternalDocs: &openapiExternalDocumentationObject{},
+			}, {
+				Name: "tag2",
+			}, {
+				Name: "tag3",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag3 description",
+				},
+			}, {
+				Name: "tag4",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					URL: "tag4 url",
+				},
+			}},
+			newTags: []openapiTagObject{{
+				Name: "tag1",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag1 description",
+				},
+			}, {
+				Name: "tag2",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag2 description",
+					URL:         "tag2 url",
+				},
+			}, {
+				Name: "tag3",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "ignored tag3 description",
+					URL:         "tag3 url",
+				},
+			}, {
+				Name: "tag4",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag4 description",
+				},
+			}},
+			expectedMergedTags: []openapiTagObject{{
+				Name: "tag1",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag1 description",
+				},
+			}, {
+				Name: "tag2",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag2 description",
+					URL:         "tag2 url",
+				},
+			}, {
+				Name: "tag3",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag3 description",
+					URL:         "tag3 url",
+				},
+			}, {
+				Name: "tag4",
+				ExternalDocs: &openapiExternalDocumentationObject{
+					Description: "tag4 description",
+					URL:         "tag4 url",
+				},
+			}},
+		},
+		{
+			testName: "Merge extensions",
+			existingTags: []openapiTagObject{{
+				Name:       "tag1",
+				extensions: []extension{{key: "x-key1", value: MustMarshal("key1 extension")}},
+			}, {
+				Name: "tag2",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+					{key: "x-key2", value: MustMarshal("key2 extension")},
+				},
+			}, {
+				Name: "tag3",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+				},
+			}, {
+				Name:       "tag4",
+				extensions: nil,
+			}},
+			newTags: []openapiTagObject{{
+				Name:       "tag1",
+				extensions: []extension{{key: "x-key2", value: MustMarshal("key2 extension")}},
+			}, {
+				Name: "tag2",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+					{key: "x-key2", value: MustMarshal("ignored key2 extension")},
+					{key: "x-key3", value: MustMarshal("key3 extension")},
+				},
+			}, {
+				Name:       "tag3",
+				extensions: nil,
+			}, {
+				Name: "tag4",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+				},
+			}},
+			expectedMergedTags: []openapiTagObject{{
+				Name: "tag1",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+					{key: "x-key2", value: MustMarshal("key2 extension")},
+				},
+			}, {
+				Name: "tag2",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+					{key: "x-key2", value: MustMarshal("key2 extension")},
+					{key: "x-key3", value: MustMarshal("key3 extension")},
+				},
+			}, {
+				Name: "tag3",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+				},
+			}, {
+				Name: "tag4",
+				extensions: []extension{
+					{key: "x-key1", value: MustMarshal("key1 extension")},
+				},
+			}},
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.testName, func(t *testing.T) {
+			mergedTags := mergeTags(tc.existingTags, tc.newTags)
+			if !reflect.DeepEqual(tc.expectedMergedTags, mergedTags) {
+				t.Fatalf("%s: Tags not correctly merged. Want %#v, got %#v", tc.testName, tc.expectedMergedTags, mergedTags)
 			}
 		})
 	}
