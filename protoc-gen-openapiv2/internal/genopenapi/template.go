@@ -1096,10 +1096,16 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 		}
 		if opts != nil {
 			tag.Description = opts.Description
+			if reg.GetUseGoTemplate() {
+				tag.Description = goTemplateComments(tag.Description, svc, reg)
+			}
 			if opts.ExternalDocs != nil {
 				tag.ExternalDocs = &openapiExternalDocumentationObject{
 					Description: opts.ExternalDocs.Description,
 					URL:         opts.ExternalDocs.Url,
+				}
+				if reg.GetUseGoTemplate() {
+					tag.ExternalDocs.Description = goTemplateComments(opts.ExternalDocs.Description, svc, reg)
 				}
 			}
 		}
@@ -1992,10 +1998,16 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 				newTag := openapiTagObject{}
 				newTag.Name = v.Name
 				newTag.Description = v.Description
+				if p.reg.GetUseGoTemplate() {
+					newTag.Description = goTemplateComments(newTag.Description, nil, p.reg)
+				}
 				if v.ExternalDocs != nil {
 					newTag.ExternalDocs = &openapiExternalDocumentationObject{
 						Description: v.ExternalDocs.Description,
 						URL:         v.ExternalDocs.Url,
+					}
+					if p.reg.GetUseGoTemplate() {
+						newTag.ExternalDocs.Description = goTemplateComments(v.ExternalDocs.Description, nil, p.reg)
 					}
 				}
 				if v.Extensions != nil {

@@ -6171,6 +6171,82 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 	}
 }
 
+func TestTagsWithGoTemplate(t *testing.T) {
+	reg := descriptor.NewRegistry()
+	reg.SetUseGoTemplate(true)
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:    proto.String("ExampleService"),
+		Options: &descriptorpb.ServiceOptions{},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency:     []string{},
+			MessageType:    []*descriptorpb.DescriptorProto{},
+			EnumType:       []*descriptorpb.EnumDescriptorProto{},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		Messages: []*descriptor.Message{},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+			},
+		},
+	}
+
+	// Set tag through service extension
+	proto.SetExtension(file.GetService()[0].Options, openapi_options.E_Openapiv2Tag, &openapi_options.Tag{
+		Name:        "service tag",
+		Description: "{{ .Name }}!"})
+
+	// Set tags through file extension
+	swagger := openapi_options.Swagger{
+		Tags: []*openapi_options.Tag{
+			{
+				Name:        "not a service tag",
+				Description: "{{ import \"file\" }}",
+			},
+			{
+				Name: "ExampleService",
+			},
+			{
+				Name:        "not a service tag 2",
+				Description: "{{ import \"file\" }}",
+			},
+		},
+	}
+	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &swagger)
+
+	actual, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+	expectedTags := []openapiTagObject{
+		{
+			Name:        "not a service tag",
+			Description: "open file: no such file or directory",
+		},
+		{
+			Name:        "ExampleService",
+			Description: "ExampleService!",
+		},
+		{
+			Name:        "not a service tag 2",
+			Description: "open file: no such file or directory",
+		},
+	}
+	if !reflect.DeepEqual(actual.Tags, expectedTags) {
+		t.Errorf("Expected tags %+v, not %+v", expectedTags, actual.Tags)
+	}
+}
+
 func TestTemplateWithoutErrorDefinition(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name:  proto.String("ExampleMessage"),
