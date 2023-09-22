@@ -13,17 +13,17 @@ http_archive(
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "850357336189c470e429e9bdffca92229d8cd5b7f84aa2f3b4c5fdb80ce8351b",
-    strip_prefix = "protobuf-24.0",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v24.0.tar.gz"],
+    sha256 = "07d69502e58248927b58c7d7e7424135272ba5b2852a753ab6b67e62d2d29355",
+    strip_prefix = "protobuf-24.3",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v24.3.tar.gz"],
 )
 
 http_archive(
     name = "googleapis",
-    sha256 = "5a3878a2fb13daa83838b92eb9fcfb12f6834c68d18d4028d665cfe3421bb0e9",
-    strip_prefix = "googleapis-e85662e798a0a9495a035839f66d0c037c481e2c",
+    sha256 = "17632ffdea6e2ec08ae75d594fb8bccfb40a21e9c6e2f9a4be1b19acb6167406",
+    strip_prefix = "googleapis-10516ee4b1e1242d97f9ce0e509137e72d7126d2",
     urls = [
-        "https://github.com/googleapis/googleapis/archive/e85662e798a0a9495a035839f66d0c037c481e2c.zip",
+        "https://github.com/googleapis/googleapis/archive/10516ee4b1e1242d97f9ce0e509137e72d7126d2.zip",
     ],
 )
 
@@ -78,10 +78,10 @@ go_register_toolchains(version = "1.20.6")
 
 http_archive(
     name = "bazel_gazelle",
-    sha256 = "29218f8e0cebe583643cbf93cae6f971be8a2484cdcfa1e45057658df8d54002",
+    sha256 = "d3fa66a39028e97d76f9e2db8f1b0c11c099e8e01bf363a923074784e451f809",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.32.0/bazel-gazelle-v0.32.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.32.0/bazel-gazelle-v0.32.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.33.0/bazel-gazelle-v0.33.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.33.0/bazel-gazelle-v0.33.0.tar.gz",
     ],
 )
 
@@ -104,9 +104,9 @@ protobuf_deps()
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "977a0bd4593c8d4c8f45e056d181c35e48aa01ad4f8090bdb84f78dca42f47dc",
-    strip_prefix = "buildtools-6.1.2",
-    urls = ["https://github.com/bazelbuild/buildtools/archive/v6.1.2.tar.gz"],
+    sha256 = "42968f9134ba2c75c03bb271bd7bb062afb7da449f9b913c96e5be4ce890030a",
+    strip_prefix = "buildtools-6.3.3",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/v6.3.3.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")

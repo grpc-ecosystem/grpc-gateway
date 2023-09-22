@@ -103,7 +103,12 @@ type openapiScopesObject map[string]string
 type openapiSecurityRequirementObject map[string][]string
 
 // http://swagger.io/specification/#pathsObject
-type openapiPathsObject map[string]openapiPathItemObject
+type openapiPathsObject []pathData
+
+type pathData struct {
+	Path           string
+	PathItemObject openapiPathItemObject
+}
 
 // http://swagger.io/specification/#pathItemObject
 type openapiPathItemObject struct {

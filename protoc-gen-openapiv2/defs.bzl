@@ -60,6 +60,8 @@ def _run_proto_gen_openapi(
         fqn_for_openapi_name,
         openapi_naming_strategy,
         use_go_templates,
+        ignore_comments,
+        remove_internal_comments,
         disable_default_errors,
         disable_service_tags,
         enums_as_ints,
@@ -109,6 +111,12 @@ def _run_proto_gen_openapi(
 
     if use_go_templates:
         args.add("--openapiv2_opt", "use_go_templates=true")
+
+    if ignore_comments:
+        args.add("--openapiv2_opt", "ignore_comments=true")
+
+    if remove_internal_comments:
+        args.add("--openapiv2_opt", "remove_internal_comments=true")
 
     if disable_default_errors:
         args.add("--openapiv2_opt", "disable_default_errors=true")
@@ -226,6 +234,8 @@ def _proto_gen_openapi_impl(ctx):
                     fqn_for_openapi_name = ctx.attr.fqn_for_openapi_name,
                     openapi_naming_strategy = ctx.attr.openapi_naming_strategy,
                     use_go_templates = ctx.attr.use_go_templates,
+                    ignore_comments = ctx.attr.ignore_comments,
+                    remove_internal_comments = ctx.attr.remove_internal_comments,
                     disable_default_errors = ctx.attr.disable_default_errors,
                     disable_service_tags = ctx.attr.disable_service_tags,
                     enums_as_ints = ctx.attr.enums_as_ints,
@@ -303,6 +313,18 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "if set, you can use Go templates in protofile comments",
+        ),
+        "ignore_comments": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, all protofile comments are excluded from output",
+        ),
+        "remove_internal_comments": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, removes all substrings in comments that start with " +
+                  "`(--` and end with `--)` as specified in " +
+                  "https://google.aip.dev/192#internal-comments",
         ),
         "disable_default_errors": attr.bool(
             default = False,

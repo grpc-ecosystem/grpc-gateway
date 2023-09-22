@@ -1,0 +1,101 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "examples/internal/proto/examplepb/remove_internal_comment.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Foo2Service"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/foo": {
+      "post": {
+        "summary": "Foo Summary",
+        "description": "Description",
+        "operationId": "Foo2Service_Foo2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbFoo2Reply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbFoo2Request"
+            }
+          }
+        ],
+        "tags": [
+          "Foo2Service"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "examplepbFoo2Reply": {
+      "type": "object"
+    },
+    "examplepbFoo2Request": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Username.\nSame row, single line break doesn't count on markdown."
+        },
+        "password": {
+          "type": "string",
+          "description": "Password.\n\nNew row."
+        }
+      },
+      "title": "Foo2Request"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

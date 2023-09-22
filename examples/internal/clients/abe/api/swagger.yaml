@@ -12,6 +12,9 @@ info:
     url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"
   x-something-something: "yadda"
 tags:
+- name: "echo rpc"
+  description: "Echo Rpc description"
+  x-traitTag: true
 - name: "ABitOfEverythingService"
   description: "ABitOfEverythingService description -- which should not be used in\
     \ place of the documentation comment!"
@@ -21,9 +24,6 @@ tags:
 - name: "camelCaseServiceName"
 - name: "AnotherServiceWithNoBindings"
 - name: "SnakeEnumService"
-- name: "echo rpc"
-  description: "Echo Rpc description"
-  x-traitTag: true
 schemes:
 - "http"
 - "https"

@@ -1,0 +1,16 @@
+linters:
+  enable:
+    - bodyclose
+    - contextcheck
+    - errcheck
+    - errorlint
+    - exportloopref
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - noctx
+    - staticcheck
+    - unconvert
+    - unused

@@ -847,5 +847,37 @@ or with `protoc`:
 protoc --openapiv2_out=. --openapiv2_opt=ignore_comments=true ./path/to/file.proto
 ```
 
+### Removing internal comments
+
+If you want to remove internal comments from the from OpenAPI output (such as `TODO` and `FIXME` directives) you can use the `remove_internal_comments` option.
+If set to `true`, this will remove all comment text located between `(--` and `--)` as per [AIP 192: Internal comments](https://google.aip.dev/192#internal-comments).
+
+### Preserve RPC Path Order
+
+By default, generated Swagger files emit paths found in proto files in alphabetical order. If you would like to 
+preserve the order of emitted paths to mirror the path order found in proto files, you can use the `preserve_rpc_order` option. If set to `true`, this option will ensure path ordering is preserved for Swagger files with both json and yaml formats.
+
+This option will also ensure path ordering is preserved in the following scenarios:
+
+1. When using additional bindings, paths will preserve their ordering within an RPC.
+2. When using multiple services, paths will preserve their ordering between RPCs in the whole protobuf file.
+3. When merging protobuf files, paths will preserve their ordering depending on the order of files specified on the command line.
+
+`preserve_rpc_order` can be passed via the `protoc` CLI:
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=preserve_rpc_order=true ./path/to/file.proto
+```
+
+Or, with `buf` in `buf.gen.yaml`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - preserve_rpc_order=true
+```
 
 {% endraw %}

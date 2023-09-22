@@ -16,6 +16,11 @@
   },
   "tags": [
     {
+      "name": "echo rpc",
+      "description": "Echo Rpc description",
+      "x-traitTag": true
+    },
+    {
       "name": "ABitOfEverythingService",
       "description": "ABitOfEverythingService description -- which should not be used in place of the documentation comment!",
       "externalDocs": {
@@ -31,11 +36,6 @@
     },
     {
       "name": "SnakeEnumService"
-    },
-    {
-      "name": "echo rpc",
-      "description": "Echo Rpc description",
-      "x-traitTag": true
     }
   ],
   "schemes": [

@@ -1,6 +1,7 @@
 package runtime_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -11,7 +12,8 @@ import (
 )
 
 func TestMarshalerForRequest(t *testing.T) {
-	r, err := http.NewRequest("GET", "http://example.com", nil)
+	ctx := context.Background()
+	r, err := http.NewRequestWithContext(ctx, "GET", "http://example.com", nil)
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil) failed with %v; want success`, err)
 	}

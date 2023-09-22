@@ -1,0 +1,32 @@
+file_to_generate:  "your/service/v1/your_service.proto"
+proto_file:  {
+ name:  "your/service/v1/your_service.proto"
+ package:  "your.service.v1"
+ message_type:  {
+  name:  "StringMessage"
+  field:  {
+   name:  "value"
+   number:  1
+   label:  LABEL_OPTIONAL
+   type:  TYPE_STRING
+   json_name:  "value"
+  }
+ }
+ service:  {
+  name:  "YourService"
+  method:  {
+   name:  "Echo"
+   input_type:  ".your.service.v1.StringMessage"
+   output_type:  ".your.service.v1.StringMessage"
+   options:  {
+    [google.api.http]:  {
+     post:  "/api/echo"
+    }
+   }
+  }
+ }
+ options:  {
+  go_package:  "github.com/yourorg/yourprotos/gen/go/your/service/v1"
+ }
+ syntax:  "proto3"
+}

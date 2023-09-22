@@ -119,6 +119,9 @@ proto:
 		--template ./examples/internal/proto/examplepb/ignore_comment.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/ignore_comment.proto
 	buf generate \
+		--template ./examples/internal/proto/examplepb/remove_internal_comment.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/remove_internal_comment.proto
+	buf generate \
 		--template ./examples/internal/proto/examplepb/visibility_rule_preview_echo_service.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/visibility_rule_echo_service.proto
 	mv examples/internal/proto/examplepb/visibility_rule_echo_service.swagger.json examples/internal/proto/examplepb/visibility_rule_preview_echo_service.swagger.json

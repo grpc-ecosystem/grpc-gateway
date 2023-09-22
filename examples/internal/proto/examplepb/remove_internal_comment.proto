@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+// Foo2Service (-- This comment should be excluded from OpenAPI output --)
+service Foo2Service {
+  // Foo Summary (-- This comment should be excluded from OpenAPI output --)
+  //
+  // (-- This comment should be excluded from OpenAPI output --)
+  // Description
+  rpc Foo2(Foo2Request) returns (Foo2Reply) {
+    option (google.api.http) = {
+      post: "/v1/example/foo"
+      body: "*"
+    };
+  }
+}
+
+// Foo2Request (-- This comment should be excluded from OpenAPI output --)
+message Foo2Request {
+  // Username.
+  // (-- This comment should be excluded
+  // from OpenAPI output --)
+  // Same row, single line break doesn't count on markdown.
+  string username = 1;
+  // Password.
+  // (-- This comment should be excluded
+  // from OpenAPI output --)
+  //
+  // New row.
+  string password = 2;
+}
+
+// (-- This comment should be excluded from OpenAPI output --)
+message Foo2Reply {}

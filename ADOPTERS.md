@@ -12,6 +12,7 @@ production users that have added themselves (in alphabetical order):
 - [Conduit](https://github.com/ConduitIO/conduit), a data streaming tool written in Go,
   uses the gRPC-Gateway since its very beginning to provide an HTTP API in addition to its gRPC API. 
   This makes it easier to integrate with Conduit, and the generated OpenAPI data is used in the documentation.
+- [PITS Global Data Recovery Services](https://www.pitsdatarecovery.net/) uses the gRPC-Gateway to generate efficient reverse-proxy servers for internal needs. 
 - [Scaleway](https://www.scaleway.com/en/) uses the gRPC-Gateway since 2018 to
   serve millions of API requests per day [1].
 - [SpiceDB](https://github.com/authzed/spicedb) uses the gRPC-Gateway to handle

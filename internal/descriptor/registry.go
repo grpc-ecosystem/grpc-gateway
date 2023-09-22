@@ -81,6 +81,10 @@ type Registry struct {
 	// ignoreComments determines whether all protofile comments should be excluded from output
 	ignoreComments bool
 
+	// removeInternalComments determines whether to remove substrings in comments that begin with
+	// `(--` and end with `--)` as specified in https://google.aip.dev/192#internal-comments.
+	removeInternalComments bool
+
 	// enumsAsInts render enum as integer, as opposed to string
 	enumsAsInts bool
 
@@ -146,6 +150,10 @@ type Registry struct {
 
 	// allowPatchFeature determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).
 	allowPatchFeature bool
+
+	// preserveRPCOrder, if true, will ensure the order of paths emitted in openapi swagger files mirror
+	// the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.
+	preserveRPCOrder bool
 }
 
 type repeatedFieldSeparator struct {
@@ -577,6 +585,16 @@ func (r *Registry) GetIgnoreComments() bool {
 	return r.ignoreComments
 }
 
+// SetRemoveInternalComments sets removeInternalComments
+func (r *Registry) SetRemoveInternalComments(remove bool) {
+	r.removeInternalComments = remove
+}
+
+// GetRemoveInternalComments returns removeInternalComments
+func (r *Registry) GetRemoveInternalComments() bool {
+	return r.removeInternalComments
+}
+
 // SetEnumsAsInts set enumsAsInts
 func (r *Registry) SetEnumsAsInts(enumsAsInts bool) {
 	r.enumsAsInts = enumsAsInts
@@ -810,4 +828,14 @@ func (r *Registry) SetAllowPatchFeature(allow bool) {
 // GetAllowPatchFeature returns allowPatchFeature
 func (r *Registry) GetAllowPatchFeature() bool {
 	return r.allowPatchFeature
+}
+
+// SetPreserveRPCOrder sets preserveRPCOrder
+func (r *Registry) SetPreserveRPCOrder(preserve bool) {
+	r.preserveRPCOrder = preserve
+}
+
+// IsPreserveRPCOrder returns preserveRPCOrder
+func (r *Registry) IsPreserveRPCOrder() bool {
+	return r.preserveRPCOrder
 }
