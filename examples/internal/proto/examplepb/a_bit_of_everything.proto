@@ -28,7 +28,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     };
     license: {
       name: "BSD 3-Clause License";
-      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
+      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
     };
     extensions: {
       key: "x-something-something";

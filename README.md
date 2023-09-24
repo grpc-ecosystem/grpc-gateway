@@ -5,7 +5,7 @@ gRPC to JSON proxy generator following the gRPC HTTP spec
 </p>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/actions/workflows/main.yml"><img src="https://img.shields.io/github/workflow/status/grpc-ecosystem/grpc-gateway/main?color=379c9c&label=build&logo=github&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://app.slack.com/client/T029RQSE6/CBATURP1D"><img src="https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square"/></a>
-<a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/releases"><img src="https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/stargazers"><img src="https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 <a href="https://slsa.dev/images/gh-badge-level3.svg"><img src="https://slsa.dev/images/gh-badge-level3.svg"/></a>
@@ -58,6 +58,7 @@ that's needed to generate a reverse-proxy with this library.
 ## Installation
 
 ### Compile from source
+
 The following instructions assume you are using
 [Go Modules](https://github.com/golang/go/wiki/Modules) for dependency
 management. Use a
@@ -100,9 +101,11 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
 You may alternatively download the binaries from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
 We generate [SLSA3 signatures](slsa.dev) using the OpenSSF's [slsa-framework/slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) during the release process. To verify a release binary:
+
 1. Install the verification tool from [slsa-framework/slsa-verifier#installation](https://github.com/slsa-framework/slsa-verifier#installation).
 2. Download the provenance file `attestation.intoto.jsonl` from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
 3. Run the verifier:
+
 ```shell
 slsa-verifier -artifact-path <the-binary> -provenance attestation.intoto.jsonl -source github.com/grpc-ecosystem/grpc-gateway -tag <the-tag>
 ```
@@ -113,349 +116,352 @@ Alternatively, see the section on remotely managed plugin versions below.
 
 ### 1.Define your [gRPC](https://grpc.io/docs/) service using protocol buffers
 
-   `your_service.proto`:
+`your_service.proto`:
 
-   ```protobuf
-    syntax = "proto3";
-    package your.service.v1;
-    option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
+```protobuf
+ syntax = "proto3";
+ package your.service.v1;
+ option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
 
-    message StringMessage {
-      string value = 1;
-    }
+ message StringMessage {
+   string value = 1;
+ }
 
-    service YourService {
-      rpc Echo(StringMessage) returns (StringMessage) {}
-    }
-   ```
+ service YourService {
+   rpc Echo(StringMessage) returns (StringMessage) {}
+ }
+```
 
 ### 2. Generate gRPC stubs
 
-   This step generates the gRPC stubs that you can use to implement the service and consume from clients:
+This step generates the gRPC stubs that you can use to implement the service and consume from clients:
 
-   Here's an example `buf.gen.yaml` you can use to generate the stubs with [buf](https://github.com/bufbuild/buf):
+Here's an example `buf.gen.yaml` you can use to generate the stubs with [buf](https://github.com/bufbuild/buf):
 
-   ```yaml
-   version: v1
-   plugins:
-     - plugin: go
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: go-grpc
-       out: gen/go
-       opt:
-         - paths=source_relative
-   ```
+```yaml
+version: v1
+plugins:
+  - plugin: go
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: gen/go
+    opt:
+      - paths=source_relative
+```
 
-   With this file in place, you can generate your files using `buf generate`.
+With this file in place, you can generate your files using `buf generate`.
 
-   > For a complete example of using `buf generate` to generate protobuf stubs, see
-   > [the boilerplate repo](https://github.com/johanbrandhorst/grpc-gateway-boilerplate).
-   > For more information on generating the stubs with buf, see
-   > [the official documentation](https://docs.buf.build/generate-usage).
+> For a complete example of using `buf generate` to generate protobuf stubs, see
+> [the boilerplate repo](https://github.com/johanbrandhorst/grpc-gateway-boilerplate).
+> For more information on generating the stubs with buf, see
+> [the official documentation](https://docs.buf.build/generate-usage).
 
-   If you are using `protoc` to generate stubs, here's an example of what a command
-   might look like:
+If you are using `protoc` to generate stubs, here's an example of what a command
+might look like:
 
-   ```sh
-   protoc -I . \
-       --go_out ./gen/go/ --go_opt paths=source_relative \
-       --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
-       your/service/v1/your_service.proto
-   ```
+```sh
+protoc -I . \
+    --go_out ./gen/go/ --go_opt paths=source_relative \
+    --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
+    your/service/v1/your_service.proto
+```
 
 ### 3. Implement your service in gRPC as usual.
 
 ### 4. Generate reverse-proxy using `protoc-gen-grpc-gateway`
 
-   At this point, you have 3 options:
+At this point, you have 3 options:
 
-   - no further modifications, use the default mapping to HTTP semantics (method, path, etc.)
-     - this will work on any `.proto` file, but will not allow setting HTTP paths, request parameters or similar
-   - additional `.proto` modifications to use a custom mapping
-     - relies on parameters in the `.proto` file to set custom HTTP mappings
-   - no `.proto` modifications, but use an external configuration file
-     - relies on an external configuration file to set custom HTTP mappings
-     - mostly useful when the source proto file isn't under your control
+- no further modifications, use the default mapping to HTTP semantics (method, path, etc.)
+  - this will work on any `.proto` file, but will not allow setting HTTP paths, request parameters or similar
+- additional `.proto` modifications to use a custom mapping
+  - relies on parameters in the `.proto` file to set custom HTTP mappings
+- no `.proto` modifications, but use an external configuration file
+  - relies on an external configuration file to set custom HTTP mappings
+  - mostly useful when the source proto file isn't under your control
 
-   #### 1. Using the default mapping
+#### 1. Using the default mapping
 
-   This requires no additional modification to the `.proto` file but does require enabling a specific option when executing the plugin.
-   The `generate_unbound_methods` should be enabled.
+This requires no additional modification to the `.proto` file but does require enabling a specific option when executing the plugin.
+The `generate_unbound_methods` should be enabled.
 
-   Here's what a `buf.gen.yaml` file might look like with this option enabled:
+Here's what a `buf.gen.yaml` file might look like with this option enabled:
 
-   ```yaml
-   version: v1
-   plugins:
-     - plugin: go
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: go-grpc
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: grpc-gateway
-       out: gen/go
-       opt:
-         - paths=source_relative
-         - generate_unbound_methods=true
-   ```
+```yaml
+version: v1
+plugins:
+  - plugin: go
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
+```
 
-   With `protoc` (just the grpc-gateway stubs):
+With `protoc` (just the grpc-gateway stubs):
 
-   ```sh
-   protoc -I . --grpc-gateway_out ./gen/go \
-       --grpc-gateway_opt logtostderr=true \
-       --grpc-gateway_opt paths=source_relative \
-       --grpc-gateway_opt generate_unbound_methods=true \
-       your/service/v1/your_service.proto
-   ```
+```sh
+protoc -I . --grpc-gateway_out ./gen/go \
+    --grpc-gateway_opt logtostderr=true \
+    --grpc-gateway_opt paths=source_relative \
+    --grpc-gateway_opt generate_unbound_methods=true \
+    your/service/v1/your_service.proto
+```
 
-  #### 2. With custom annotations
+#### 2. With custom annotations
 
-   Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
-   annotation to your .proto file
+Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
+annotation to your .proto file
 
-   `your_service.proto`:
+`your_service.proto`:
 
-   ```diff
-    syntax = "proto3";
-    package your.service.v1;
-    option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
-   +
-   +import "google/api/annotations.proto";
-   +
-    message StringMessage {
-      string value = 1;
-    }
+```diff
+ syntax = "proto3";
+ package your.service.v1;
+ option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
++
++import "google/api/annotations.proto";
++
+ message StringMessage {
+   string value = 1;
+ }
 
-    service YourService {
-   -  rpc Echo(StringMessage) returns (StringMessage) {}
-   +  rpc Echo(StringMessage) returns (StringMessage) {
-   +    option (google.api.http) = {
-   +      post: "/v1/example/echo"
-   +      body: "*"
-   +    };
-   +  }
-    }
-   ```
+ service YourService {
+-  rpc Echo(StringMessage) returns (StringMessage) {}
++  rpc Echo(StringMessage) returns (StringMessage) {
++    option (google.api.http) = {
++      post: "/v1/example/echo"
++      body: "*"
++    };
++  }
+ }
+```
 
-   > You will need to provide the required third party protobuf files to the protobuf compiler.
-   > If you are using [buf](https://github.com/bufbuild/buf), this dependency can
-   > be added to the `deps` array in your `buf.yaml` under the name
-   > `buf.build/googleapis/googleapis`:
-   > ```yaml
-   > version: v1
-   > name: buf.build/yourorg/myprotos
-   > deps:
-   >   - buf.build/googleapis/googleapis
-   > ```
-   > Always run `buf mod update` after adding a dependency to your `buf.yaml`.
+> You will need to provide the required third party protobuf files to the protobuf compiler.
+> If you are using [buf](https://github.com/bufbuild/buf), this dependency can
+> be added to the `deps` array in your `buf.yaml` under the name
+> `buf.build/googleapis/googleapis`:
+>
+> ```yaml
+> version: v1
+> name: buf.build/yourorg/myprotos
+> deps:
+>   - buf.build/googleapis/googleapis
+> ```
+>
+> Always run `buf mod update` after adding a dependency to your `buf.yaml`.
 
-   See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
-   for examples of more annotations you can add to customize gateway behavior
-   and generated OpenAPI output.
+See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
+for examples of more annotations you can add to customize gateway behavior
+and generated OpenAPI output.
 
-   Here's what a `buf.gen.yaml` file might look like:
+Here's what a `buf.gen.yaml` file might look like:
 
-   ```yaml
-   version: v1
-   plugins:
-     - plugin: go
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: go-grpc
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: grpc-gateway
-       out: gen/go
-       opt:
-         - paths=source_relative
-   ```
+```yaml
+version: v1
+plugins:
+  - plugin: go
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
+```
 
-   If you are using `protoc` to generate stubs, you need to ensure the required
-   dependencies are available to the compiler at compile time. These can be found
-   by manually cloning and copying the relevant files from the
-   [googleapis repository](https://github.com/googleapis/googleapis), and providing
-   them to `protoc` when running. The files you will need are:
+If you are using `protoc` to generate stubs, you need to ensure the required
+dependencies are available to the compiler at compile time. These can be found
+by manually cloning and copying the relevant files from the
+[googleapis repository](https://github.com/googleapis/googleapis), and providing
+them to `protoc` when running. The files you will need are:
 
-   ```
-   google/api/annotations.proto
-   google/api/field_behavior.proto
-   google/api/http.proto
-   google/api/httpbody.proto
-   ```
+```
+google/api/annotations.proto
+google/api/field_behavior.proto
+google/api/http.proto
+google/api/httpbody.proto
+```
 
-   Here's what a `protoc` execution might look like:
+Here's what a `protoc` execution might look like:
 
-   ```sh
-   protoc -I . --grpc-gateway_out ./gen/go \
-       --grpc-gateway_opt logtostderr=true \
-       --grpc-gateway_opt paths=source_relative \
-       your/service/v1/your_service.proto
-   ```
+```sh
+protoc -I . --grpc-gateway_out ./gen/go \
+    --grpc-gateway_opt logtostderr=true \
+    --grpc-gateway_opt paths=source_relative \
+    your/service/v1/your_service.proto
+```
 
-   #### 3. External configuration
+#### 3. External configuration
 
-   If you do not want to (or cannot) modify the proto file for use with gRPC-Gateway you can
-   alternatively use an external
-   [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
-   [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/grpc_api_configuration/)
-   for more information. This is best combined with the `standalone=true` option
-   to generate a file that can live in its own package, separate from the files
-   generated by the source protobuf file.
+If you do not want to (or cannot) modify the proto file for use with gRPC-Gateway you can
+alternatively use an external
+[gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
+[Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/grpc_api_configuration/)
+for more information. This is best combined with the `standalone=true` option
+to generate a file that can live in its own package, separate from the files
+generated by the source protobuf file.
 
-   Here's what a `buf.gen.yaml` file might look like with this option enabled:
+Here's what a `buf.gen.yaml` file might look like with this option enabled:
 
-   ```yaml
-   version: v1
-   plugins:
-     - plugin: go
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: go-grpc
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: grpc-gateway
-       out: gen/go
-       opt:
-         - paths=source_relative
-         - grpc_api_configuration=path/to/config.yaml
-         - standalone=true
-   ```
+```yaml
+version: v1
+plugins:
+  - plugin: go
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
+      - grpc_api_configuration=path/to/config.yaml
+      - standalone=true
+```
 
-   With `protoc` (just the grpc-gateway stubs):
+With `protoc` (just the grpc-gateway stubs):
 
-   ```sh
-   protoc -I . --grpc-gateway_out ./gen/go \
-       --grpc-gateway_opt logtostderr=true \
-       --grpc-gateway_opt paths=source_relative \
-       --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
-       --grpc-gateway_opt standalone=true \
-       your/service/v1/your_service.proto
-   ```
+```sh
+protoc -I . --grpc-gateway_out ./gen/go \
+    --grpc-gateway_opt logtostderr=true \
+    --grpc-gateway_opt paths=source_relative \
+    --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
+    --grpc-gateway_opt standalone=true \
+    your/service/v1/your_service.proto
+```
 
 ### 5. Write an entrypoint for the HTTP reverse-proxy server
 
-   ```go
-   package main
+```go
+package main
 
-   import (
-     "context"
-     "flag"
-     "net/http"
+import (
+  "context"
+  "flag"
+  "net/http"
 
-     "github.com/golang/glog"
-     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-     "google.golang.org/grpc"
-     "google.golang.org/grpc/credentials/insecure"
+  "github.com/golang/glog"
+  "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+  "google.golang.org/grpc"
+  "google.golang.org/grpc/credentials/insecure"
 
-     gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
-   )
+  gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
+)
 
-   var (
-     // command-line options:
-     // gRPC server endpoint
-     grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:9090", "gRPC server endpoint")
-   )
+var (
+  // command-line options:
+  // gRPC server endpoint
+  grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:9090", "gRPC server endpoint")
+)
 
-   func run() error {
-     ctx := context.Background()
-     ctx, cancel := context.WithCancel(ctx)
-     defer cancel()
+func run() error {
+  ctx := context.Background()
+  ctx, cancel := context.WithCancel(ctx)
+  defer cancel()
 
-     // Register gRPC server endpoint
-     // Note: Make sure the gRPC server is running properly and accessible
-     mux := runtime.NewServeMux()
-     opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-     err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
-     if err != nil {
-       return err
-     }
+  // Register gRPC server endpoint
+  // Note: Make sure the gRPC server is running properly and accessible
+  mux := runtime.NewServeMux()
+  opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+  err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
+  if err != nil {
+    return err
+  }
 
-     // Start HTTP server (and proxy calls to gRPC server endpoint)
-     return http.ListenAndServe(":8081", mux)
-   }
+  // Start HTTP server (and proxy calls to gRPC server endpoint)
+  return http.ListenAndServe(":8081", mux)
+}
 
-   func main() {
-     flag.Parse()
-     defer glog.Flush()
+func main() {
+  flag.Parse()
+  defer glog.Flush()
 
-     if err := run(); err != nil {
-       glog.Fatal(err)
-     }
-   }
-   ```
+  if err := run(); err != nil {
+    glog.Fatal(err)
+  }
+}
+```
 
 ### 6. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
 
-   Here's what a `buf.gen.yaml` file might look like:
+Here's what a `buf.gen.yaml` file might look like:
 
-   ```yaml
-   version: v1
-   plugins:
-     - plugin: go
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: go-grpc
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: grpc-gateway
-       out: gen/go
-       opt:
-         - paths=source_relative
-     - plugin: openapiv2
-       out: gen/openapiv2
-   ```
+```yaml
+version: v1
+plugins:
+  - plugin: go
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - plugin: openapiv2
+    out: gen/openapiv2
+```
 
-   To use the custom protobuf annotations supported by `protoc-gen-openapiv2`, we need
-   another dependency added to our protobuf generation step. If you are using
-   `buf`, you can add the `buf.build/grpc-ecosystem/grpc-gateway` dependency
-   to your `deps` array:
-   ```yaml
-   version: v1
-   name: buf.build/yourorg/myprotos
-   deps:
-     - buf.build/googleapis/googleapis
-     - buf.build/grpc-ecosystem/grpc-gateway
-   ```
+To use the custom protobuf annotations supported by `protoc-gen-openapiv2`, we need
+another dependency added to our protobuf generation step. If you are using
+`buf`, you can add the `buf.build/grpc-ecosystem/grpc-gateway` dependency
+to your `deps` array:
 
-   With `protoc` (just the swagger file):
+```yaml
+version: v1
+name: buf.build/yourorg/myprotos
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+```
 
-   ```sh
-   protoc -I . --openapiv2_out ./gen/openapiv2 \
-       --openapiv2_opt logtostderr=true \
-       your/service/v1/your_service.proto
-   ```
+With `protoc` (just the swagger file):
 
-   If you are using `protoc` to generate stubs, you will need to copy the protobuf
-   files from the `protoc-gen-openapiv2/options` directory of this repository,
-   and providing them to `protoc` when running.
+```sh
+protoc -I . --openapiv2_out ./gen/openapiv2 \
+    --openapiv2_opt logtostderr=true \
+    your/service/v1/your_service.proto
+```
 
-   Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
-   use the `generate_unbound_methods` option to enable this.
+If you are using `protoc` to generate stubs, you will need to copy the protobuf
+files from the `protoc-gen-openapiv2/options` directory of this repository,
+and providing them to `protoc` when running.
 
-   It is possible with the HTTP mapping for a gRPC service method to create duplicate mappings
-   with the only difference being constraints on the path parameter.
+Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
+use the `generate_unbound_methods` option to enable this.
 
-   `/v1/{name=projects/*}` and `/v1/{name=organizations/*}` both become `/v1/{name}`.  When
-   this occurs the plugin will rename the path parameter with a "_1" (or "_2" etc) suffix
-   to differentiate the different operations. So in the above example, the 2nd path would become
-   `/v1/{name_1=organizations/*}`.  This can also cause OpenAPI clients to URL encode the "/" that is
-   part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to
-   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or
-   UnescapingModeLegacy (which is the default currently though may change in future versions). See
-   [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/)
-   for more information.
+It is possible with the HTTP mapping for a gRPC service method to create duplicate mappings
+with the only difference being constraints on the path parameter.
+
+`/v1/{name=projects/*}` and `/v1/{name=organizations/*}` both become `/v1/{name}`. When
+this occurs the plugin will rename the path parameter with a "\_1" (or "\_2" etc) suffix
+to differentiate the different operations. So in the above example, the 2nd path would become
+`/v1/{name_1=organizations/*}`. This can also cause OpenAPI clients to URL encode the "/" that is
+part of the path parameter as that is what OpenAPI defines in the specification. To allow gRPC gateway to
+accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or
+UnescapingModeLegacy (which is the default currently though may change in future versions). See
+[Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/)
+for more information.
 
 ## Usage with remote plugins
 
@@ -613,4 +619,4 @@ See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/main/CO
 ## License
 
 gRPC-Gateway is licensed under the BSD 3-Clause License.
-See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt) for more details.
+See [LICENSE](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE) for more details.

@@ -20,7 +20,7 @@ gRPC-Gateway is a plugin of [protoc](https://github.com/protocolbuffers/protobuf
 
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/actions/workflows/main.yml"><img src="https://img.shields.io/github/workflow/status/grpc-ecosystem/grpc-gateway/main?color=379c9c&label=build&logo=github&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://app.slack.com/client/T029RQSE6/CBATURP1D"><img src="https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square"/></a>
-<a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/releases"><img src="https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/stargazers"><img src="https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 
@@ -40,7 +40,7 @@ See [CONTRIBUTING.md](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/C
 
 gRPC-Gateway is licensed under the BSD 3-Clause License.
 
-See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt) for more details.
+See [LICENSE](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE) for more details.
 
 ### Thank you to the contributors of gRPC-Gateway
 
