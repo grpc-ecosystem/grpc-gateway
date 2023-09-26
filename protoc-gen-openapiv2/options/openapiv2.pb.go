@@ -378,7 +378,7 @@ func (SecurityScheme_Flow) EnumDescriptor() ([]byte, []int) {
 //	    };
 //	    license: {
 //	      name: "BSD 3-Clause License";
-//	      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
+//	      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
 //	    };
 //	  };
 //	  schemes: HTTPS;
@@ -1113,7 +1113,7 @@ func (x *Response) GetExtensions() map[string]*structpb.Value {
 //	    };
 //	    license: {
 //	      name: "BSD 3-Clause License";
-//	      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
+//	      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
 //	    };
 //	  };
 //	  ...
@@ -1321,7 +1321,7 @@ func (x *Contact) GetEmail() string {
 //	    ...
 //	    license: {
 //	      name: "BSD 3-Clause License";
-//	      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt";
+//	      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
 //	    };
 //	    ...
 //	  };
