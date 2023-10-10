@@ -2,12 +2,11 @@ package httprule
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"reflect"
 	"testing"
 
-	"github.com/golang/glog"
+	"google.golang.org/grpc/grpclog"
 )
 
 func TestTokenize(t *testing.T) {
@@ -133,10 +132,6 @@ func TestTokenize(t *testing.T) {
 }
 
 func TestParseSegments(t *testing.T) {
-	err := flag.Set("v", "3")
-	if err != nil {
-		t.Fatalf("failed to set flag: %v", err)
-	}
 	for _, spec := range []struct {
 		tokens []string
 		want   []segment
@@ -374,10 +369,6 @@ func TestParseError(t *testing.T) {
 }
 
 func TestParseSegmentsWithErrors(t *testing.T) {
-	err := flag.Set("v", "3")
-	if err != nil {
-		t.Fatalf("failed to set flag: %v", err)
-	}
 	for _, spec := range []struct {
 		tokens []string
 	}{
@@ -440,6 +431,8 @@ func TestParseSegmentsWithErrors(t *testing.T) {
 			t.Errorf("parser{%q}.segments() succeeded; want InvalidTemplateError; accepted %#v", spec.tokens, segs)
 			continue
 		}
-		glog.V(1).Info(err)
+		if grpclog.V(1) {
+			grpclog.Info(err)
+		}
 	}
 }

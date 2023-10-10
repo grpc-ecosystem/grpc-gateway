@@ -357,10 +357,10 @@ import (
   "flag"
   "net/http"
 
-  "github.com/golang/glog"
   "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
   "google.golang.org/grpc"
   "google.golang.org/grpc/credentials/insecure"
+  "google.golang.org/grpc/grpclog"
 
   gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
 )
@@ -391,10 +391,9 @@ func run() error {
 
 func main() {
   flag.Parse()
-  defer glog.Flush()
 
   if err := run(); err != nil {
-    glog.Fatal(err)
+    grpclog.Fatal(err)
   }
 }
 ```

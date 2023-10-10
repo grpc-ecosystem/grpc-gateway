@@ -8,8 +8,8 @@ import (
 	"context"
 	"flag"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/server"
+	"google.golang.org/grpc/grpclog"
 )
 
 var (
@@ -19,10 +19,9 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
 
 	ctx := context.Background()
 	if err := server.Run(ctx, *network, *addr); err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 }
