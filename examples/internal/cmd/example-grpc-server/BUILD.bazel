@@ -8,7 +8,7 @@ go_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/cmd/example-grpc-server",
     deps = [
         "//examples/internal/server",
-        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//grpclog",
     ],
 )
 
