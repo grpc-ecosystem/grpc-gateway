@@ -1835,8 +1835,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto_googleapis_api",
         importpath = "google.golang.org/genproto/googleapis/api",
-        sum = "h1:0RtEmmHjemvUXloH7+RuBSIw7n+GEHMOMY1CkGYnWq4=",
-        version = "v0.0.0-20231009173412-8bfb1ae86b6c",
+        sum = "h1:jm1DGnE7ghoa+foVcGzgPIUULOiFLbu7fLnJ5xpG/sQ=",
+        version = "v0.0.0-20231012181858-378ed827a749",
     )
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
@@ -1905,8 +1905,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_net",
         importpath = "golang.org/x/net",
-        sum = "h1:7eBu7KsSvFDtSXUIDbh3aqlK4DPsZ1rByC8PFfBThos=",
-        version = "v0.16.0",
+        sum = "h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM=",
+        version = "v0.17.0",
     )
     go_repository(
         name = "org_golang_x_oauth2",
