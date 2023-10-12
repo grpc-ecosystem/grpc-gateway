@@ -9,7 +9,7 @@ baseurl: "/grpc-gateway" # the subpath of your site, e.g. /blog
 url: "https://grpc-ecosystem.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 repository: grpc-ecosystem/grpc-gateway
-remote_theme: pmarsceill/just-the-docs
+remote_theme: pmarsceill/just-the-docs@v0.6.2
 
 permalink: pretty
 exclude: ["run.sh"]
