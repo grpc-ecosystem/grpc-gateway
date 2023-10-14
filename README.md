@@ -211,7 +211,6 @@ With `protoc` (just the grpc-gateway stubs):
 
 ```sh
 protoc -I . --grpc-gateway_out ./gen/go \
-    --grpc-gateway_opt logtostderr=true \
     --grpc-gateway_opt paths=source_relative \
     --grpc-gateway_opt generate_unbound_methods=true \
     your/service/v1/your_service.proto
@@ -300,7 +299,6 @@ Here's what a `protoc` execution might look like:
 
 ```sh
 protoc -I . --grpc-gateway_out ./gen/go \
-    --grpc-gateway_opt logtostderr=true \
     --grpc-gateway_opt paths=source_relative \
     your/service/v1/your_service.proto
 ```
@@ -340,7 +338,6 @@ With `protoc` (just the grpc-gateway stubs):
 
 ```sh
 protoc -I . --grpc-gateway_out ./gen/go \
-    --grpc-gateway_opt logtostderr=true \
     --grpc-gateway_opt paths=source_relative \
     --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
     --grpc-gateway_opt standalone=true \
@@ -438,7 +435,6 @@ With `protoc` (just the swagger file):
 
 ```sh
 protoc -I . --openapiv2_out ./gen/openapiv2 \
-    --openapiv2_opt logtostderr=true \
     your/service/v1/your_service.proto
 ```
 
@@ -531,19 +527,15 @@ through `protoc` using one of 2 patterns:
 - as part of the `--<tool_suffix>_out` `protoc` parameter: `--<tool_suffix>_out=<flags>:<path>`
 
 ```sh
---grpc-gateway_out=logtostderr=true,repeated_path_param_separator=ssv:.
---openapiv2_out=logtostderr=true,repeated_path_param_separator=ssv:.
+--grpc-gateway_out=repeated_path_param_separator=ssv:.
+--openapiv2_out=repeated_path_param_separator=ssv:.
 ```
 
 - using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
 
 ```sh
---grpc-gateway_opt logtostderr=true,repeated_path_param_separator=ssv
-# or separately
---grpc-gateway_opt logtostderr=true --grpc-gateway_opt repeated_path_param_separator=ssv
---openapiv2_opt logtostderr=true,repeated_path_param_separator=ssv
-# or separately
---openapiv2_opt logtostderr=true --openapiv2_opt repeated_path_param_separator=ssv
+--grpc-gateway_opt repeated_path_param_separator=ssv
+--openapiv2_opt repeated_path_param_separator=ssv
 ```
 
 ## More examples
