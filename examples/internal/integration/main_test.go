@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/gateway"
-	server "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/server"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/server"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc/grpclog"
 )
 
 var (
@@ -42,7 +42,7 @@ func waitForGateway(ctx context.Context, port uint16) error {
 			return nil
 		}
 
-		glog.Infof("Waiting for localhost:%d to get ready", port)
+		grpclog.Infof("Waiting for localhost:%d to get ready", port)
 		select {
 		case <-ctx.Done():
 			return err
@@ -75,7 +75,6 @@ func runServers(ctx context.Context) <-chan error {
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	defer glog.Flush()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -84,7 +83,7 @@ func TestMain(m *testing.M) {
 	ch := make(chan int, 1)
 	go func() {
 		if err := waitForGateway(ctx, 8088); err != nil {
-			glog.Errorf("waitForGateway(ctx, 8088) failed with %v; want success", err)
+			grpclog.Errorf("waitForGateway(ctx, 8088) failed with %v; want success", err)
 		}
 		ch <- m.Run()
 	}()

@@ -8,8 +8,8 @@ import (
 	"context"
 	"flag"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/gateway"
+	"google.golang.org/grpc/grpclog"
 )
 
 var (
@@ -20,7 +20,6 @@ var (
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
 
 	ctx := context.Background()
 	opts := gateway.Options{
@@ -32,6 +31,6 @@ func main() {
 		OpenAPIDir: *openAPIDir,
 	}
 	if err := gateway.Run(ctx, opts); err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 }

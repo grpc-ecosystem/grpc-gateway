@@ -5,13 +5,13 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -283,7 +283,9 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 		}
 		file.Messages = append(file.Messages, m)
 		r.msgs[m.FQMN()] = m
-		glog.V(1).Infof("register name: %s", m.FQMN())
+		if grpclog.V(1) {
+			grpclog.Infof("Register name: %s", m.FQMN())
+		}
 
 		var outers []string
 		outers = append(outers, outerPath...)
@@ -304,14 +306,18 @@ func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descrip
 		}
 		file.Enums = append(file.Enums, e)
 		r.enums[e.FQEN()] = e
-		glog.V(1).Infof("register enum name: %s", e.FQEN())
+		if grpclog.V(1) {
+			grpclog.Infof("Register enum name: %s", e.FQEN())
+		}
 	}
 }
 
 // LookupMsg looks up a message type by "name".
 // It tries to resolve "name" from "location" if "name" is a relative message name.
 func (r *Registry) LookupMsg(location, name string) (*Message, error) {
-	glog.V(1).Infof("lookup %s from %s", name, location)
+	if grpclog.V(1) {
+		grpclog.Infof("Lookup %s from %s", name, location)
+	}
 	if strings.HasPrefix(name, ".") {
 		m, ok := r.msgs[name]
 		if !ok {
@@ -337,7 +343,9 @@ func (r *Registry) LookupMsg(location, name string) (*Message, error) {
 // LookupEnum looks up a enum type by "name".
 // It tries to resolve "name" from "location" if "name" is a relative enum name.
 func (r *Registry) LookupEnum(location, name string) (*Enum, error) {
-	glog.V(1).Infof("lookup enum %s from %s", name, location)
+	if grpclog.V(1) {
+		grpclog.Infof("Lookup enum %s from %s", name, location)
+	}
 	if strings.HasPrefix(name, ".") {
 		e, ok := r.enums[name]
 		if !ok {

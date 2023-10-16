@@ -54,7 +54,6 @@ This will probably fail with a similar output to this:
 To fix this you need to run the `go get -u -v` commands and look for all lines starting with `# cd .;`. Copy and paste these lines into your shell and change the clone destination directories.
 
     git clone https://github.com/grpc-ecosystem/grpc-gateway $(cygpath -u $GOPATH)/src/github.com/grpc-ecosystem/grpc-gateway
-    git clone https://github.com/golang/glog $(cygpath -u $GOPATH)/src/github.com/golang/glog
     git clone https://github.com/golang/protobuf $(cygpath -u $GOPATH)/src/github.com/golang/protobuf
     git clone https://github.com/google/go-genproto $(cygpath -u $GOPATH)/src/google.golang.org/genproto
 
@@ -67,8 +66,8 @@ Follow the [instructions](https://github.com/grpc-ecosystem/grpc-gateway#usage) 
 Adjust steps 3, 5 and 7 like this. `protoc` expects native Windows paths.
 
     protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src --go_out=. --go-grpc_out=. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src --grpc-gateway_out=logtostderr=true:. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src --openapiv2_out=logtostderr=true:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src ./path/to/your_service.proto
 
 Then `cd` into the directory where your entry-point `main.go` file is located and run:
 

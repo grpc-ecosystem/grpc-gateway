@@ -162,9 +162,8 @@ Example of a bash script with the `use_go_templates` flag set to true:
 ```sh
 $ protoc -I. \
     --go_out . --go-grpc_out . \
-    --grpc-gateway_out . --grpc-gateway_opt logtostderr=true \
+    --grpc-gateway_out . \
     --openapiv2_out . \
-    --openapiv2_opt logtostderr=true \
     --openapiv2_opt use_go_templates=true \
     path/to/my/proto/v1/myproto.proto
 ```
