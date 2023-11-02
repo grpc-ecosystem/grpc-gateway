@@ -12,8 +12,8 @@ import (
 // MIMEWildcard is the fallback MIME type used for requests which do not match
 // a registered MIME type.
 const (
-	MIMEWildcard   = "*"
-	FormURLEncoded = "application/x-www-form-urlencoded"
+	MIMEWildcard       = "*"
+	MIMEFormURLEncoded = "application/x-www-form-urlencoded"
 )
 
 var (
@@ -98,8 +98,8 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 func makeMarshalerMIMERegistry() marshalerRegistry {
 	return marshalerRegistry{
 		mimeMap: map[string]Marshaler{
-			MIMEWildcard:   defaultMarshaler,
-			FormURLEncoded: defaultFormMarshaler,
+			MIMEWildcard:       defaultMarshaler,
+			MIMEFormURLEncoded: defaultFormMarshaler,
 		},
 	}
 }
