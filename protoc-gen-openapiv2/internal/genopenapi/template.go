@@ -1114,7 +1114,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
-func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
+func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message, defs openapiDefinitionsObject) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
@@ -1129,11 +1129,13 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 		}
 
 		for methIdx, meth := range svc.Methods {
+			grpclog.Errorf("METHOD:\n%+v\n\n", meth)
 			if !isVisible(getMethodVisibilityOption(meth), reg) {
 				continue
 			}
 
 			for bIdx, b := range meth.Bindings {
+				grpclog.Errorf("BINDINGS:\n%v\n\n", b)
 				operationFunc := operationForMethod(b.HTTPMethod)
 				// Iterate over all the OpenAPI parameters
 				parameters := openapiParametersObject{}
@@ -1144,7 +1146,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				// Keep track of path parameter overrides
 				var pathParamNames = make(map[string]string)
 				for _, parameter := range b.PathParams {
-
+					grpclog.Errorf("Path Param:\n%v\n\n", parameter)
 					var paramType, paramFormat, desc, collectionFormat string
 					var defaultValue interface{}
 					var enumNames interface{}
@@ -1185,6 +1187,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						defaultValue = schema.Default
 						extensions = schema.extensions
 					default:
+						grpclog.Errorf("Type:\n%v\n\n", pt)
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
 						if !ok {
@@ -1255,6 +1258,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				if b.Body != nil {
 					// Recursively render fields as definitions as long as they contain path parameters.
 					// Special case for top level body if we don't have a body field.
+					grpclog.Errorf("BODY:\n%v\n\n", b.Body)
 					var schema openapiSchemaObject
 					desc := ""
 					var bodyFieldName string
@@ -1276,15 +1280,26 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							if err != nil {
 								return err
 							}
+							grpclog.Errorf("MessageSchema:\n%#v\n\n", messageSchema)
+							grpclog.Errorf("MessageSchema Properties:\n%#v\n\n", messageSchema.Properties)
+							grpclog.Errorf("meth.RequestType.FQMN:\n%v\n\n", meth.RequestType.FQMN())
+							grpclog.Errorf("registry:\n%v\n\n", reg)
 							if len(b.PathParams) == 0 {
 								if err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg); err != nil {
 									return err
 								}
 								desc = messageSchema.Description
 							} else {
-								schema = messageSchema
-								if schema.Properties == nil || len(*schema.Properties) == 0 {
-									grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+								if meth.Name != nil {
+									grpclog.Errorf("method name:\n%v\n\n", *meth.Name)
+									defName := fmt.Sprintf("%sBody", *meth.Name)
+									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
+									defs[defName] = messageSchema
+								} else {
+									schema = messageSchema
+									if schema.Properties == nil || len(*schema.Properties) == 0 {
+										grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+									}
 								}
 							}
 						}
@@ -1335,6 +1350,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				parameters = append(parameters, queryParams...)
 
 				path := partsToOpenAPIPath(parts, pathParamNames)
+				grpclog.Errorf("%v\n", path)
 
 				pathItemObject, ok := getPathItemObject(*paths, path)
 
@@ -1748,7 +1764,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
+	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages, s.Definitions); err != nil {
 		panic(err)
 	}
 
