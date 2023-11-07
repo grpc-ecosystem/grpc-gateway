@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_ServiceA_MethodOne_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceAClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ServiceA_MethodOne_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ServiceAClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InMessageA
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_ServiceA_MethodOne_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_ServiceA_MethodOne_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceAServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ServiceA_MethodOne_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ServiceAServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InMessageA
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_ServiceA_MethodOne_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_ServiceA_MethodTwo_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceAClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ServiceA_MethodTwo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ServiceAClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OutMessageA
 	var metadata runtime.ServerMetadata
 
@@ -82,7 +82,7 @@ func request_ServiceA_MethodTwo_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_ServiceA_MethodTwo_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceAServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ServiceA_MethodTwo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ServiceAServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OutMessageA
 	var metadata runtime.ServerMetadata
 
@@ -99,7 +99,7 @@ func local_request_ServiceA_MethodTwo_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_ServiceC_MethodOne_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceCClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ServiceC_MethodOne_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ServiceCClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InMessageA
 	var metadata runtime.ServerMetadata
 
@@ -116,7 +116,7 @@ func request_ServiceC_MethodOne_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_ServiceC_MethodOne_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceCServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ServiceC_MethodOne_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ServiceCServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InMessageA
 	var metadata runtime.ServerMetadata
 
@@ -133,7 +133,7 @@ func local_request_ServiceC_MethodOne_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_ServiceC_MethodTwo_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceCClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ServiceC_MethodTwo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ServiceCClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OutMessageA
 	var metadata runtime.ServerMetadata
 
@@ -150,7 +150,7 @@ func request_ServiceC_MethodTwo_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_ServiceC_MethodTwo_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceCServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ServiceC_MethodTwo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ServiceCServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OutMessageA
 	var metadata runtime.ServerMetadata
 

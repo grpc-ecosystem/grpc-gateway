@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_FooService_Foo_0(ctx context.Context, marshaler runtime.Marshaler, client FooServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_FooService_Foo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client FooServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq FooRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_FooService_Foo_0(ctx context.Context, marshaler runtime.Marshaler, 
 
 }
 
-func local_request_FooService_Foo_0(ctx context.Context, marshaler runtime.Marshaler, server FooServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_FooService_Foo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server FooServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq FooRequest
 	var metadata runtime.ServerMetadata
 

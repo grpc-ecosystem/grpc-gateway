@@ -35,7 +35,7 @@ var (
 	filter_VisibilityRuleEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_VisibilityRuleEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_VisibilityRuleEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -68,7 +68,7 @@ func request_VisibilityRuleEchoService_Echo_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_VisibilityRuleEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_VisibilityRuleEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -105,7 +105,7 @@ var (
 	filter_VisibilityRuleEchoService_EchoInternal_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_VisibilityRuleEchoService_EchoInternal_0(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_VisibilityRuleEchoService_EchoInternal_0 = func(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -121,7 +121,7 @@ func request_VisibilityRuleEchoService_EchoInternal_0(ctx context.Context, marsh
 
 }
 
-func local_request_VisibilityRuleEchoService_EchoInternal_0(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_VisibilityRuleEchoService_EchoInternal_0 = func(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -141,7 +141,7 @@ var (
 	filter_VisibilityRuleEchoService_EchoPreview_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_VisibilityRuleEchoService_EchoPreview_0(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_VisibilityRuleEchoService_EchoPreview_0 = func(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -157,7 +157,7 @@ func request_VisibilityRuleEchoService_EchoPreview_0(ctx context.Context, marsha
 
 }
 
-func local_request_VisibilityRuleEchoService_EchoPreview_0(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_VisibilityRuleEchoService_EchoPreview_0 = func(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -177,7 +177,7 @@ var (
 	filter_VisibilityRuleEchoService_EchoInternalAndPreview_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_VisibilityRuleEchoService_EchoInternalAndPreview_0(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_VisibilityRuleEchoService_EchoInternalAndPreview_0 = func(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -193,7 +193,7 @@ func request_VisibilityRuleEchoService_EchoInternalAndPreview_0(ctx context.Cont
 
 }
 
-func local_request_VisibilityRuleEchoService_EchoInternalAndPreview_0(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_VisibilityRuleEchoService_EchoInternalAndPreview_0 = func(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -213,7 +213,7 @@ var (
 	filter_VisibilityRuleInternalEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_VisibilityRuleInternalEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleInternalEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_VisibilityRuleInternalEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client VisibilityRuleInternalEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -246,7 +246,7 @@ func request_VisibilityRuleInternalEchoService_Echo_0(ctx context.Context, marsh
 
 }
 
-func local_request_VisibilityRuleInternalEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleInternalEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_VisibilityRuleInternalEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server VisibilityRuleInternalEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq VisibilityRuleSimpleMessage
 	var metadata runtime.ServerMetadata
 

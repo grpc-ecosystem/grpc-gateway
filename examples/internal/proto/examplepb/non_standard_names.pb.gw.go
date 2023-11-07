@@ -35,7 +35,7 @@ var (
 	filter_NonStandardService_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_NonStandardService_Update_0 = func(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonStandardUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -66,7 +66,7 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 
 }
 
-func local_request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_NonStandardService_Update_0 = func(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonStandardUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -101,7 +101,7 @@ var (
 	filter_NonStandardService_UpdateWithJSONNames_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_NonStandardService_UpdateWithJSONNames_0 = func(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonStandardWithJSONNamesUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -132,7 +132,7 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 
 }
 
-func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_NonStandardService_UpdateWithJSONNames_0 = func(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonStandardWithJSONNamesUpdateRequest
 	var metadata runtime.ServerMetadata
 

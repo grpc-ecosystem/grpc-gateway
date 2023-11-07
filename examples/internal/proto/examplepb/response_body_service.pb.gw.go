@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ResponseBodyService_GetResponseBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -57,7 +57,7 @@ func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshale
 
 }
 
-func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ResponseBodyService_GetResponseBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -83,7 +83,7 @@ func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, ma
 
 }
 
-func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ResponseBodyService_ListResponseBodies_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -109,7 +109,7 @@ func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marsh
 
 }
 
-func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ResponseBodyService_ListResponseBodies_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -135,7 +135,7 @@ func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context,
 
 }
 
-func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ResponseBodyService_ListResponseStrings_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -161,7 +161,7 @@ func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, mars
 
 }
 
-func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ResponseBodyService_ListResponseStrings_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -187,7 +187,7 @@ func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context
 
 }
 
-func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (ResponseBodyService_GetResponseBodyStreamClient, runtime.ServerMetadata, error) {
+var request_ResponseBodyService_GetResponseBodyStream_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (ResponseBodyService_GetResponseBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 

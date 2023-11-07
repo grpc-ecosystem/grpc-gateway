@@ -35,7 +35,7 @@ var (
 	filter_UnannotatedEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -68,7 +68,7 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -105,7 +105,7 @@ var (
 	filter_UnannotatedEchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
-func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_1 = func(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -148,7 +148,7 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_1 = func(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -191,7 +191,7 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 
 }
 
-func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_EchoBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -208,7 +208,7 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_EchoBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -229,7 +229,7 @@ var (
 	filter_UnannotatedEchoService_EchoDelete_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_EchoDelete_0 = func(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -245,7 +245,7 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_EchoDelete_0 = func(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 

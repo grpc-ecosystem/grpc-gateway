@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_GenerateUnboundMethodsEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateUnboundMethodsSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marsh
 
 }
 
-func local_request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_GenerateUnboundMethodsEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateUnboundMethodsSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context,
 
 }
 
-func request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_GenerateUnboundMethodsEchoService_EchoBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateUnboundMethodsSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -82,7 +82,7 @@ func request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, m
 
 }
 
-func local_request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_GenerateUnboundMethodsEchoService_EchoBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateUnboundMethodsSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -99,7 +99,7 @@ func local_request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Cont
 
 }
 
-func request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_GenerateUnboundMethodsEchoService_EchoDelete_0 = func(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateUnboundMethodsSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -116,7 +116,7 @@ func request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context,
 
 }
 
-func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_GenerateUnboundMethodsEchoService_EchoDelete_0 = func(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateUnboundMethodsSimpleMessage
 	var metadata runtime.ServerMetadata
 

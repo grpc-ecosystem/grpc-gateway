@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_ServiceB_MethodOne_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceBClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ServiceB_MethodOne_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ServiceBClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InMessageB
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_ServiceB_MethodOne_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_ServiceB_MethodOne_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceBServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ServiceB_MethodOne_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ServiceBServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InMessageB
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_ServiceB_MethodOne_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_ServiceB_MethodTwo_0(ctx context.Context, marshaler runtime.Marshaler, client ServiceBClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ServiceB_MethodTwo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ServiceBClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OutMessageB
 	var metadata runtime.ServerMetadata
 
@@ -82,7 +82,7 @@ func request_ServiceB_MethodTwo_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_ServiceB_MethodTwo_0(ctx context.Context, marshaler runtime.Marshaler, server ServiceBServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ServiceB_MethodTwo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ServiceBServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OutMessageB
 	var metadata runtime.ServerMetadata
 

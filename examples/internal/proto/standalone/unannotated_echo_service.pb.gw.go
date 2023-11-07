@@ -36,7 +36,7 @@ var (
 	filter_UnannotatedEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -69,7 +69,7 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -106,7 +106,7 @@ var (
 	filter_UnannotatedEchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
-func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_1 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -149,7 +149,7 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_1 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -196,7 +196,7 @@ var (
 	filter_UnannotatedEchoService_Echo_2 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1, "lang": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
 )
 
-func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_2 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -254,7 +254,7 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_2 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -316,7 +316,7 @@ var (
 	filter_UnannotatedEchoService_Echo_3 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "line_num": 1, "lineNum": 2, "status": 3, "note": 4}, Base: []int{1, 2, 3, 4, 6, 7, 0, 0, 0, 0, 6, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 2, 2, 3, 4, 5, 11, 6}}
 )
 
-func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_3 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -374,7 +374,7 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_3 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -436,7 +436,7 @@ var (
 	filter_UnannotatedEchoService_Echo_4 = &utilities.DoubleArray{Encoding: map[string]int{"no": 0, "note": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
 )
 
-func request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_Echo_4 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -469,7 +469,7 @@ func request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_Echo_4 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -502,7 +502,7 @@ func local_request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler 
 
 }
 
-func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_EchoBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -519,7 +519,7 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_EchoBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -540,7 +540,7 @@ var (
 	filter_UnannotatedEchoService_EchoDelete_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_UnannotatedEchoService_EchoDelete_0 = func(ctx context.Context, marshaler runtime.Marshaler, client extExamplepb.UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -556,7 +556,7 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_UnannotatedEchoService_EchoDelete_0 = func(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 

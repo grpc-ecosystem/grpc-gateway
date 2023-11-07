@@ -40,7 +40,7 @@ var (
 	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "floatValue": 1, "double_value": 2, "doubleValue": 3, "int64_value": 4, "int64Value": 5, "uint64_value": 6, "uint64Value": 7, "int32_value": 8, "int32Value": 9, "fixed64_value": 10, "fixed64Value": 11, "fixed32_value": 12, "fixed32Value": 13, "bool_value": 14, "boolValue": 15, "string_value": 16, "stringValue": 17, "uint32_value": 18, "uint32Value": 19, "sfixed32_value": 20, "sfixed32Value": 21, "sfixed64_value": 22, "sfixed64Value": 23, "sint32_value": 24, "sint32Value": 25, "sint64_value": 26, "sint64Value": 27, "nonConventionalNameValue": 28, "enum_value": 29, "enumValue": 30, "path_enum_value": 31, "pathEnumValue": 32, "nested_path_enum_value": 33, "nestedPathEnumValue": 34, "enum_value_annotation": 35, "enumValueAnnotation": 36}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 30, 31, 32, 33, 34, 35, 36, 37, 38}}
 )
 
-func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Create_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -262,7 +262,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Create_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -484,7 +484,7 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 
 }
 
-func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CreateBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -501,7 +501,7 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 
 }
 
-func local_request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CreateBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -522,7 +522,7 @@ var (
 	filter_ABitOfEverythingService_CreateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "parent": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
-func request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CreateBook_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateBookRequest
 	var metadata runtime.ServerMetadata
 
@@ -563,7 +563,7 @@ func request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler
 
 }
 
-func local_request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CreateBook_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateBookRequest
 	var metadata runtime.ServerMetadata
 
@@ -608,7 +608,7 @@ var (
 	filter_ABitOfEverythingService_UpdateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "name": 1}, Base: []int{1, 4, 5, 2, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 4, 2, 2, 3}}
 )
 
-func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_UpdateBook_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateBookRequest
 	var metadata runtime.ServerMetadata
 
@@ -656,7 +656,7 @@ func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler
 
 }
 
-func local_request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_UpdateBook_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateBookRequest
 	var metadata runtime.ServerMetadata
 
@@ -704,7 +704,7 @@ func local_request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, mar
 
 }
 
-func request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Lookup_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
@@ -730,7 +730,7 @@ func request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Lookup_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
@@ -760,7 +760,7 @@ var (
 	filter_ABitOfEverythingService_Custom_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_ABitOfEverythingService_Custom_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Custom_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -793,7 +793,7 @@ func request_ABitOfEverythingService_Custom_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_ABitOfEverythingService_Custom_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Custom_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -830,7 +830,7 @@ var (
 	filter_ABitOfEverythingService_DoubleColon_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_ABitOfEverythingService_DoubleColon_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_DoubleColon_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -863,7 +863,7 @@ func request_ABitOfEverythingService_DoubleColon_0(ctx context.Context, marshale
 
 }
 
-func local_request_ABitOfEverythingService_DoubleColon_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_DoubleColon_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -896,7 +896,7 @@ func local_request_ABitOfEverythingService_DoubleColon_0(ctx context.Context, ma
 
 }
 
-func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Update_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -930,7 +930,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Update_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -968,7 +968,7 @@ var (
 	filter_ABitOfEverythingService_UpdateV2_0 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 4, 5, 2, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 4, 2, 2, 3}}
 )
 
-func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_UpdateV2_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -1009,7 +1009,7 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_UpdateV2_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -1054,7 +1054,7 @@ var (
 	filter_ABitOfEverythingService_UpdateV2_1 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 4, 5, 2, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 4, 2, 2, 3}}
 )
 
-func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_UpdateV2_1 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -1102,7 +1102,7 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 
 }
 
-func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_UpdateV2_1 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -1150,7 +1150,7 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 
 }
 
-func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_UpdateV2_2 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -1184,7 +1184,7 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 
 }
 
-func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_UpdateV2_2 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -1218,7 +1218,7 @@ func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marsh
 
 }
 
-func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Delete_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
@@ -1244,7 +1244,7 @@ func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Delete_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
@@ -1274,7 +1274,7 @@ var (
 	filter_ABitOfEverythingService_GetQuery_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_GetQuery_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -1307,7 +1307,7 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_GetQuery_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -1340,7 +1340,7 @@ func local_request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marsh
 
 }
 
-func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_GetRepeatedQuery_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverythingRepeated
 	var metadata runtime.ServerMetadata
 
@@ -1523,7 +1523,7 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 
 }
 
-func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_GetRepeatedQuery_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverythingRepeated
 	var metadata runtime.ServerMetadata
 
@@ -1706,7 +1706,7 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 
 }
 
-func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -1732,7 +1732,7 @@ func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runti
 
 }
 
-func local_request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Echo_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -1758,7 +1758,7 @@ func local_request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler
 
 }
 
-func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Echo_1 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -1775,7 +1775,7 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 
 }
 
-func local_request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Echo_1 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -1796,7 +1796,7 @@ var (
 	filter_ABitOfEverythingService_Echo_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Echo_2 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -1812,7 +1812,7 @@ func request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runti
 
 }
 
-func local_request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Echo_2 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -1828,7 +1828,7 @@ func local_request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler
 
 }
 
-func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_DeepPathEcho_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -1862,7 +1862,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 
 }
 
-func local_request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_DeepPathEcho_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -1896,7 +1896,7 @@ func local_request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, m
 
 }
 
-func request_ABitOfEverythingService_Timeout_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Timeout_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -1905,7 +1905,7 @@ func request_ABitOfEverythingService_Timeout_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_ABitOfEverythingService_Timeout_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Timeout_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -1914,7 +1914,7 @@ func local_request_ABitOfEverythingService_Timeout_0(ctx context.Context, marsha
 
 }
 
-func request_ABitOfEverythingService_ErrorWithDetails_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_ErrorWithDetails_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -1923,7 +1923,7 @@ func request_ABitOfEverythingService_ErrorWithDetails_0(ctx context.Context, mar
 
 }
 
-func local_request_ABitOfEverythingService_ErrorWithDetails_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_ErrorWithDetails_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -1932,7 +1932,7 @@ func local_request_ABitOfEverythingService_ErrorWithDetails_0(ctx context.Contex
 
 }
 
-func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_GetMessageWithBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq MessageWithBody
 	var metadata runtime.ServerMetadata
 
@@ -1966,7 +1966,7 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 
 }
 
-func local_request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_GetMessageWithBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq MessageWithBody
 	var metadata runtime.ServerMetadata
 
@@ -2000,7 +2000,7 @@ func local_request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Cont
 
 }
 
-func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_PostWithEmptyBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
@@ -2034,7 +2034,7 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 
 }
 
-func local_request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_PostWithEmptyBody_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
@@ -2072,7 +2072,7 @@ var (
 	filter_ABitOfEverythingService_CheckGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "name": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
 )
 
-func request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CheckGetQueryParams_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2105,7 +2105,7 @@ func request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, 
 
 }
 
-func local_request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CheckGetQueryParams_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2142,7 +2142,7 @@ var (
 	filter_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "ok": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
 )
 
-func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2183,7 +2183,7 @@ func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context
 
 }
 
-func local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2228,7 +2228,7 @@ var (
 	filter_ABitOfEverythingService_CheckPostQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "singleNested": 1, "string_value": 2, "stringValue": 3}, Base: []int{1, 1, 2, 3, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 2, 3, 4, 5}}
 )
 
-func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CheckPostQueryParams_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2269,7 +2269,7 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 
 }
 
-func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CheckPostQueryParams_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2310,7 +2310,7 @@ func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Co
 
 }
 
-func request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_OverwriteRequestContentType_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
@@ -2327,7 +2327,7 @@ func request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.C
 
 }
 
-func local_request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_OverwriteRequestContentType_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
@@ -2344,7 +2344,7 @@ func local_request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx con
 
 }
 
-func request_ABitOfEverythingService_OverwriteResponseContentType_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_OverwriteResponseContentType_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -2353,7 +2353,7 @@ func request_ABitOfEverythingService_OverwriteResponseContentType_0(ctx context.
 
 }
 
-func local_request_ABitOfEverythingService_OverwriteResponseContentType_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_OverwriteResponseContentType_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -2362,7 +2362,7 @@ func local_request_ABitOfEverythingService_OverwriteResponseContentType_0(ctx co
 
 }
 
-func request_ABitOfEverythingService_CheckExternalPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CheckExternalPathEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq pathenum.MessageWithPathEnum
 	var metadata runtime.ServerMetadata
 
@@ -2391,7 +2391,7 @@ func request_ABitOfEverythingService_CheckExternalPathEnum_0(ctx context.Context
 
 }
 
-func local_request_ABitOfEverythingService_CheckExternalPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CheckExternalPathEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq pathenum.MessageWithPathEnum
 	var metadata runtime.ServerMetadata
 
@@ -2420,7 +2420,7 @@ func local_request_ABitOfEverythingService_CheckExternalPathEnum_0(ctx context.C
 
 }
 
-func request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CheckExternalNestedPathEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq pathenum.MessageWithNestedPathEnum
 	var metadata runtime.ServerMetadata
 
@@ -2449,7 +2449,7 @@ func request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx context.C
 
 }
 
-func local_request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CheckExternalNestedPathEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq pathenum.MessageWithNestedPathEnum
 	var metadata runtime.ServerMetadata
 
@@ -2478,7 +2478,7 @@ func local_request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx con
 
 }
 
-func request_ABitOfEverythingService_CheckStatus_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CheckStatus_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -2487,7 +2487,7 @@ func request_ABitOfEverythingService_CheckStatus_0(ctx context.Context, marshale
 
 }
 
-func local_request_ABitOfEverythingService_CheckStatus_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CheckStatus_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -2500,7 +2500,7 @@ var (
 	filter_ABitOfEverythingService_Exists_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_ABitOfEverythingService_Exists_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_Exists_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2533,7 +2533,7 @@ func request_ABitOfEverythingService_Exists_0(ctx context.Context, marshaler run
 
 }
 
-func local_request_ABitOfEverythingService_Exists_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_Exists_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2570,7 +2570,7 @@ var (
 	filter_ABitOfEverythingService_CustomOptionsRequest_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_ABitOfEverythingService_CustomOptionsRequest_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_CustomOptionsRequest_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2603,7 +2603,7 @@ func request_ABitOfEverythingService_CustomOptionsRequest_0(ctx context.Context,
 
 }
 
-func local_request_ABitOfEverythingService_CustomOptionsRequest_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_CustomOptionsRequest_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2640,7 +2640,7 @@ var (
 	filter_ABitOfEverythingService_TraceRequest_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
-func request_ABitOfEverythingService_TraceRequest_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_TraceRequest_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2673,7 +2673,7 @@ func request_ABitOfEverythingService_TraceRequest_0(ctx context.Context, marshal
 
 }
 
-func local_request_ABitOfEverythingService_TraceRequest_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_TraceRequest_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -2706,7 +2706,7 @@ func local_request_ABitOfEverythingService_TraceRequest_0(ctx context.Context, m
 
 }
 
-func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_PostOneofEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq oneofenum.OneofEnumMessage
 	var metadata runtime.ServerMetadata
 
@@ -2728,7 +2728,7 @@ func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marsha
 
 }
 
-func local_request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_PostOneofEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq oneofenum.OneofEnumMessage
 	var metadata runtime.ServerMetadata
 
@@ -2750,7 +2750,7 @@ func local_request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, 
 
 }
 
-func request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_ABitOfEverythingService_PostRequiredMessageType_0 = func(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RequiredMessageTypeRequest
 	var metadata runtime.ServerMetadata
 
@@ -2767,7 +2767,7 @@ func request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Conte
 
 }
 
-func local_request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_ABitOfEverythingService_PostRequiredMessageType_0 = func(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RequiredMessageTypeRequest
 	var metadata runtime.ServerMetadata
 
@@ -2784,7 +2784,7 @@ func local_request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context
 
 }
 
-func request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime.Marshaler, client CamelCaseServiceNameClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_CamelCaseServiceName_Empty_0 = func(ctx context.Context, marshaler runtime.Marshaler, client CamelCaseServiceNameClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -2793,7 +2793,7 @@ func request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime.Marshaler, server CamelCaseServiceNameServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_CamelCaseServiceName_Empty_0 = func(ctx context.Context, marshaler runtime.Marshaler, server CamelCaseServiceNameServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
@@ -2802,7 +2802,7 @@ func local_request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler r
 
 }
 
-func request_SnakeEnumService_SnakeEnum_0(ctx context.Context, marshaler runtime.Marshaler, client SnakeEnumServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var request_SnakeEnumService_SnakeEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, client SnakeEnumServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SnakeEnumRequest
 	var metadata runtime.ServerMetadata
 
@@ -2855,7 +2855,7 @@ func request_SnakeEnumService_SnakeEnum_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_SnakeEnumService_SnakeEnum_0(ctx context.Context, marshaler runtime.Marshaler, server SnakeEnumServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+var local_request_SnakeEnumService_SnakeEnum_0 = func(ctx context.Context, marshaler runtime.Marshaler, server SnakeEnumServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SnakeEnumRequest
 	var metadata runtime.ServerMetadata
 
