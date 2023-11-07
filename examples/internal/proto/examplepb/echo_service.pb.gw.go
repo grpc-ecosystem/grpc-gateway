@@ -575,11 +575,7 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -592,11 +588,7 @@ func local_request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -613,16 +605,12 @@ func request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marsh
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
 	if protoReq.Ext == nil {
 		protoReq.Ext = &SimpleMessage_No{}
 	} else if _, ok := protoReq.Ext.(*SimpleMessage_No); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_No, but: %t\n", protoReq.Ext)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -659,16 +647,12 @@ func local_request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
 	if protoReq.Ext == nil {
 		protoReq.Ext = &SimpleMessage_No{}
 	} else if _, ok := protoReq.Ext.(*SimpleMessage_No); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_No, but: %t\n", protoReq.Ext)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -709,11 +693,7 @@ func request_EchoService_EchoBody_2(ctx context.Context, marshaler runtime.Marsh
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.ResourceId); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.ResourceId); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -750,11 +730,7 @@ func local_request_EchoService_EchoBody_2(ctx context.Context, marshaler runtime
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.ResourceId); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.ResourceId); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
