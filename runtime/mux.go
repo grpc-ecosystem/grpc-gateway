@@ -57,6 +57,7 @@ type ServeMux struct {
 	marshalers                marshalerRegistry
 	incomingHeaderMatcher     HeaderMatcherFunc
 	outgoingHeaderMatcher     HeaderMatcherFunc
+	outgoingTrailerMatcher    HeaderMatcherFunc
 	metadataAnnotators        []func(context.Context, *http.Request) metadata.MD
 	errorHandler              ErrorHandlerFunc
 	streamErrorHandler        StreamErrorHandlerFunc
@@ -114,6 +115,14 @@ func DefaultHeaderMatcher(key string) (string, bool) {
 	return "", false
 }
 
+func defaultOutgoingHeaderMatcher(key string) (string, bool) {
+	return fmt.Sprintf("%s%s", MetadataHeaderPrefix, key), true
+}
+
+func defaultOutgoingTrailerMatcher(key string) (string, bool) {
+	return fmt.Sprintf("%s%s", MetadataTrailerPrefix, key), true
+}
+
 // WithIncomingHeaderMatcher returns a ServeMuxOption representing a headerMatcher for incoming request to gateway.
 //
 // This matcher will be called with each header in http.Request. If matcher returns true, that header will be
@@ -151,6 +160,17 @@ func (fn HeaderMatcherFunc) matchedMalformedHeaders() []string {
 func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.outgoingHeaderMatcher = fn
+	}
+}
+
+// WithOutgoingTrailerMatcher returns a ServeMuxOption representing a headerMatcher for outgoing response from gateway.
+//
+// This matcher will be called with each header in response trailer metadata. If matcher returns true, that header will be
+// passed to http response returned from gateway. To transform the header before passing to response,
+// matcher should return modified header.
+func WithOutgoingTrailerMatcher(fn HeaderMatcherFunc) ServeMuxOption {
+	return func(mux *ServeMux) {
+		mux.outgoingTrailerMatcher = fn
 	}
 }
 
@@ -270,13 +290,13 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		opt(serveMux)
 	}
 
-	if serveMux.incomingHeaderMatcher == nil {
-		serveMux.incomingHeaderMatcher = DefaultHeaderMatcher
-	}
-
-	if serveMux.outgoingHeaderMatcher == nil {
-		serveMux.outgoingHeaderMatcher = func(key string) (string, bool) {
-			return fmt.Sprintf("%s%s", MetadataHeaderPrefix, key), true
+	for matcher, fallback := range map[*HeaderMatcherFunc]HeaderMatcherFunc{
+		&serveMux.incomingHeaderMatcher:  DefaultHeaderMatcher,
+		&serveMux.outgoingHeaderMatcher:  defaultOutgoingHeaderMatcher,
+		&serveMux.outgoingTrailerMatcher: defaultOutgoingTrailerMatcher,
+	} {
+		if *matcher == nil {
+			*matcher = fallback
 		}
 	}
 
