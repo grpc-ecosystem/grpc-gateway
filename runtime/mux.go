@@ -126,7 +126,7 @@ func defaultOutgoingTrailerMatcher(key string) (string, bool) {
 // WithIncomingHeaderMatcher returns a ServeMuxOption representing a headerMatcher for incoming request to gateway.
 //
 // This matcher will be called with each header in http.Request. If matcher returns true, that header will be
-// passed to gRPC context. To transform the header before passing to gRPC context, matcher should return modified header.
+// passed to gRPC context. To transform the header before passing to gRPC context, matcher should return the modified header.
 func WithIncomingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 	for _, header := range fn.matchedMalformedHeaders() {
 		grpclog.Warningf("The configured forwarding filter would allow %q to be sent to the gRPC server, which will likely cause errors. See https://github.com/grpc/grpc-go/pull/4803#issuecomment-986093310 for more information.", header)
@@ -156,7 +156,7 @@ func (fn HeaderMatcherFunc) matchedMalformedHeaders() []string {
 //
 // This matcher will be called with each header in response header metadata. If matcher returns true, that header will be
 // passed to http response returned from gateway. To transform the header before passing to response,
-// matcher should return modified header.
+// matcher should return the modified header.
 func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.outgoingHeaderMatcher = fn
@@ -167,7 +167,7 @@ func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 //
 // This matcher will be called with each header in response trailer metadata. If matcher returns true, that header will be
 // passed to http response returned from gateway. To transform the header before passing to response,
-// matcher should return modified header.
+// matcher should return the modified header.
 func WithOutgoingTrailerMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.outgoingTrailerMatcher = fn
