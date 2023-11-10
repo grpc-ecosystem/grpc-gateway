@@ -290,14 +290,14 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		opt(serveMux)
 	}
 
-	for matcher, fallback := range map[*HeaderMatcherFunc]HeaderMatcherFunc{
-		&serveMux.incomingHeaderMatcher:  DefaultHeaderMatcher,
-		&serveMux.outgoingHeaderMatcher:  defaultOutgoingHeaderMatcher,
-		&serveMux.outgoingTrailerMatcher: defaultOutgoingTrailerMatcher,
-	} {
-		if *matcher == nil {
-			*matcher = fallback
-		}
+	if serveMux.incomingHeaderMatcher == nil {
+		serveMux.incomingHeaderMatcher = DefaultHeaderMatcher
+	}
+	if serveMux.outgoingHeaderMatcher == nil {
+		serveMux.outgoingHeaderMatcher = defaultOutgoingHeaderMatcher
+	}
+	if serveMux.outgoingTrailerMatcher == nil {
+		serveMux.outgoingTrailerMatcher = defaultOutgoingTrailerMatcher
 	}
 
 	return serveMux
