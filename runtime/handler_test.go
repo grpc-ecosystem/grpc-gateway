@@ -5,11 +5,13 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	pb "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
@@ -314,6 +316,170 @@ func TestForwardResponseMessage(t *testing.T) {
 
 			if string(body) != string(want) {
 				t.Errorf("ForwardResponseMessage() = \"%s\" want \"%s\"", body, want)
+			}
+		})
+	}
+}
+
+func TestOutgoingHeaderMatcher(t *testing.T) {
+	t.Parallel()
+	msg := &pb.SimpleMessage{Id: "foo"}
+	for _, tc := range []struct {
+		name    string
+		md      runtime.ServerMetadata
+		headers http.Header
+		matcher runtime.HeaderMatcherFunc
+	}{
+		{
+			name: "default matcher",
+			md: runtime.ServerMetadata{
+				HeaderMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			headers: http.Header{
+				"Content-Type":      []string{"application/json"},
+				"Grpc-Metadata-Foo": []string{"bar"},
+				"Grpc-Metadata-Baz": []string{"qux"},
+			},
+		},
+		{
+			name: "custom matcher",
+			md: runtime.ServerMetadata{
+				HeaderMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			headers: http.Header{
+				"Content-Type": []string{"application/json"},
+				"Custom-Foo":   []string{"bar"},
+			},
+			matcher: func(key string) (string, bool) {
+				switch key {
+				case "foo":
+					return "custom-foo", true
+				default:
+					return "", false
+				}
+			},
+		},
+	} {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := runtime.NewServerMetadataContext(context.Background(), tc.md)
+
+			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+			resp := httptest.NewRecorder()
+
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(runtime.WithOutgoingHeaderMatcher(tc.matcher)), &runtime.JSONPb{}, resp, req, msg)
+
+			w := resp.Result()
+			defer w.Body.Close()
+			if w.StatusCode != http.StatusOK {
+				t.Fatalf("StatusCode %d want %d", w.StatusCode, http.StatusOK)
+			}
+
+			if !reflect.DeepEqual(w.Header, tc.headers) {
+				t.Fatalf("Header %v want %v", w.Header, tc.headers)
+			}
+		})
+	}
+}
+
+func TestOutgoingTrailerMatcher(t *testing.T) {
+	t.Parallel()
+	msg := &pb.SimpleMessage{Id: "foo"}
+	for _, tc := range []struct {
+		name    string
+		md      runtime.ServerMetadata
+		caller  http.Header
+		headers http.Header
+		trailer http.Header
+		matcher runtime.HeaderMatcherFunc
+	}{
+		{
+			name: "default matcher, caller accepts",
+			md: runtime.ServerMetadata{
+				TrailerMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			caller: http.Header{
+				"Te": []string{"trailers"},
+			},
+			headers: http.Header{
+				"Content-Type": []string{"application/json"},
+				"Trailer":      []string{"Grpc-Trailer-Foo,Grpc-Trailer-Baz"},
+			},
+			trailer: http.Header{
+				"Grpc-Trailer-Foo": []string{"bar"},
+				"Grpc-Trailer-Baz": []string{"qux"},
+			},
+		},
+		{
+			name: "default matcher, caller rejects",
+			md: runtime.ServerMetadata{
+				TrailerMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			headers: http.Header{
+				"Content-Type": []string{"application/json"},
+			},
+		},
+		{
+			name: "custom matcher",
+			md: runtime.ServerMetadata{
+				TrailerMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			caller: http.Header{
+				"Te": []string{"trailers"},
+			},
+			headers: http.Header{
+				"Content-Type": []string{"application/json"},
+				"Trailer":      []string{"Custom-Trailer-Foo"},
+			},
+			trailer: http.Header{
+				"Custom-Trailer-Foo": []string{"bar"},
+			},
+			matcher: func(key string) (string, bool) {
+				switch key {
+				case "foo":
+					return "custom-trailer-foo", true
+				default:
+					return "", false
+				}
+			},
+		},
+	} {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := runtime.NewServerMetadataContext(context.Background(), tc.md)
+
+			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+			req.Header = tc.caller
+			resp := httptest.NewRecorder()
+
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(runtime.WithOutgoingTrailerMatcher(tc.matcher)), &runtime.JSONPb{}, resp, req, msg)
+
+			w := resp.Result()
+			_, _ = io.Copy(io.Discard, w.Body)
+			defer w.Body.Close()
+			if w.StatusCode != http.StatusOK {
+				t.Fatalf("StatusCode %d want %d", w.StatusCode, http.StatusOK)
+			}
+
+			if !reflect.DeepEqual(w.Trailer, tc.trailer) {
+				t.Fatalf("Trailer %v want %v", w.Trailer, tc.trailer)
 			}
 		})
 	}
