@@ -1258,10 +1258,10 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				if b.Body != nil {
 					// Recursively render fields as definitions as long as they contain path parameters.
 					// Special case for top level body if we don't have a body field.
-					var schema openapiSchemaObject
+					var schema *openapiSchemaObject
 					desc := ""
 					var bodyFieldName string
-					schema = openapiSchemaObject{
+					schema = &openapiSchemaObject{
 						schemaCore: schemaCore{},
 					}
 					if len(b.Body.FieldPath) == 0 {
@@ -1279,27 +1279,26 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							if err != nil {
 								return err
 							}
+
 							if len(b.PathParams) == 0 {
 								if err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg); err != nil {
 									return err
 								}
 								desc = messageSchema.Description
 							} else {
-								if meth.Name != nil {
+								if messageSchema.Properties != nil && len(*messageSchema.Properties) != 0 {
 									// Combine the proto filepath and the method name for the definition's name
 									protoFilePath := lastFile.GetName()
 									protoFilePath = strings.TrimSuffix(protoFilePath, filepath.Ext(protoFilePath))
 									protoFilePath = nonAlphanumeric.ReplaceAllString(protoFilePath, "_")
 
-									defName := fmt.Sprintf("%s_%sBody", protoFilePath, *meth.Name)
+									defName := fmt.Sprintf("%s_%sBody", protoFilePath, meth.GetName())
 
 									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
 									defs[defName] = messageSchema
 								} else {
-									schema = messageSchema
-									if schema.Properties == nil || len(*schema.Properties) == 0 {
-										grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
-									}
+									schema = nil
+									grpclog.Warningf("skipping a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
 								}
 							}
 						}
@@ -1319,27 +1318,31 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						// Align pathParams with body field path.
 						pathParams := subPathParams(bodyField.Name, b.PathParams)
 						var err error
-						schema, err = renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
+						fieldSchema, err := renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
 						if err != nil {
 							return err
 						}
 						if schema.Title != "" {
-							desc = mergeDescription(schema)
+							desc = mergeDescription(fieldSchema)
 						} else {
 							desc = fieldProtoComments(reg, bodyField.Target.Message, bodyField.Target)
 						}
+
+						schema = &fieldSchema
 					}
 
 					if meth.GetClientStreaming() {
 						desc += " (streaming inputs)"
 					}
-					parameters = append(parameters, openapiParameterObject{
-						Name:        bodyFieldName,
-						Description: desc,
-						In:          "body",
-						Required:    true,
-						Schema:      &schema,
-					})
+					if schema != nil {
+						parameters = append(parameters, openapiParameterObject{
+							Name:        bodyFieldName,
+							Description: desc,
+							In:          "body",
+							Required:    true,
+							Schema:      schema,
+						})
+					}
 				}
 
 				// add the parameters to the query string
