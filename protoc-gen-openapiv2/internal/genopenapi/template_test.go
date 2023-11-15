@@ -3583,6 +3583,187 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 
 }
 
+func TestApplyTemplateWithRequestAndBodyParameters(t *testing.T) {
+	bookDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Book"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("id"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	createDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("CreateBookRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("parent"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("book"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+			{
+				Name:   proto.String("book_id"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(3),
+			},
+		},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("CreateBook"),
+		InputType:  proto.String("CreateBookRequest"),
+		OutputType: proto.String("Book"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("BookService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	bookMsg := &descriptor.Message{
+		DescriptorProto: bookDesc,
+	}
+	createMsg := &descriptor.Message{
+		DescriptorProto: createDesc,
+	}
+
+	parentField := &descriptor.Field{
+		Message:              createMsg,
+		FieldDescriptorProto: createMsg.GetField()[0],
+	}
+	bookField := &descriptor.Field{
+		Message:              createMsg,
+		FieldMessage:         bookMsg,
+		FieldDescriptorProto: createMsg.GetField()[1],
+	}
+	bookIDField := &descriptor.Field{
+		Message:              createMsg,
+		FieldDescriptorProto: createMsg.GetField()[2],
+	}
+
+	createMsg.Fields = []*descriptor.Field{parentField, bookField, bookIDField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("book.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{bookDesc, createDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/book.pb",
+			Name: "book_pb",
+		},
+		Messages: []*descriptor.Message{bookMsg, createMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           createMsg,
+						ResponseType:          bookMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{parent=publishers/*}/books",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "parent",
+												Target: parentField,
+											},
+										}),
+										Target: parentField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: []descriptor.FieldPathComponent{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := "", result.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := ([]string)(nil), result.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, result.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	if want, is, name := 1, len(result.Paths), "len(result.Paths)"; !reflect.DeepEqual(is, want) {
+		t.Errorf("%s = %d want to be %d", name, want, is)
+	}
+	if want, is, name := 4, len(result.Paths[0].PathItemObject.Post.Parameters), "len(result.Paths[0].PathItemObject.Post.Parameters)"; !reflect.DeepEqual(is, want) {
+		t.Errorf("%s = %d want to be %d", name, want, is)
+	}
+	if want, is, name := "#/definitions/book_CreateBookBody", result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref, "result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref"; !reflect.DeepEqual(is, want) {
+		t.Errorf("%s = %s want to be %s", name, want, is)
+	}
+
+	_, found := result.Definitions["book_CreateBookBody"]
+	if !found {
+		t.Error("expecting definition to contain book_CreateBookBody")
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
 // TestApplyTemplateProtobufAny tests that the protobufAny definition is correctly rendered with the @type field and
 // allowing additional properties.
 func TestApplyTemplateProtobufAny(t *testing.T) {
