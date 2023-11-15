@@ -7,6 +7,7 @@ import (
 	"math"
 	"net/textproto"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"sort"
@@ -38,6 +39,8 @@ import (
 const pathParamUniqueSuffixDeliminator = "_"
 
 const paragraphDeliminator = "\n\n"
+
+var nonAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9 ]+")
 
 // wktSchemas are the schemas of well-known-types.
 // The schemas must match with the behavior of the JSON unmarshaler in
@@ -1114,7 +1117,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
-func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
+func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message, defs openapiDefinitionsObject) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
@@ -1282,9 +1285,21 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								}
 								desc = messageSchema.Description
 							} else {
-								schema = messageSchema
-								if schema.Properties == nil || len(*schema.Properties) == 0 {
-									grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+								if meth.Name != nil {
+									// Combine the proto filepath and the method name for the definition's name
+									protoFilePath := lastFile.GetName()
+									protoFilePath = strings.TrimSuffix(protoFilePath, filepath.Ext(protoFilePath))
+									protoFilePath = nonAlphanumeric.ReplaceAllString(protoFilePath, "_")
+
+									defName := fmt.Sprintf("%s_%sBody", protoFilePath, *meth.Name)
+
+									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
+									defs[defName] = messageSchema
+								} else {
+									schema = messageSchema
+									if schema.Properties == nil || len(*schema.Properties) == 0 {
+										grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+									}
 								}
 							}
 						}
@@ -1748,7 +1763,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
+	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages, s.Definitions); err != nil {
 		panic(err)
 	}
 
