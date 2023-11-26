@@ -2486,6 +2486,12 @@ func goTemplateComments(comment string, data interface{}, reg *descriptor.Regist
 		"fieldcomments": func(msg *descriptor.Message, field *descriptor.Field) string {
 			return strings.ReplaceAll(fieldProtoComments(reg, msg, field), "\n", "<br>")
 		},
+		"arg": func(name string) string {
+			if v, f := reg.GetGoTemplateArgs()[name]; f {
+				return v
+			}
+			return fmt.Sprintf("goTemplateArg %s not found", name)
+		},
 	}).Parse(comment)
 	if err != nil {
 		// If there is an error parsing the templating insert the error as string in the comment

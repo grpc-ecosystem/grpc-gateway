@@ -78,6 +78,9 @@ type Registry struct {
 	// in your protofile comments
 	useGoTemplate bool
 
+	// goTemplateArgs specifies a list of key value pair inputs to be displayed in Go templates
+	goTemplateArgs map[string]string
+
 	// ignoreComments determines whether all protofile comments should be excluded from output
 	ignoreComments bool
 
@@ -581,6 +584,19 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+func (r *Registry) SetGoTemplateArgs(kvs []string) {
+	r.goTemplateArgs = make(map[string]string)
+	for _, kv := range kvs {
+		if key, value, found := strings.Cut(kv, "="); found {
+			r.goTemplateArgs[key] = value
+		}
+	}
+}
+
+func (r *Registry) GetGoTemplateArgs() map[string]string {
+	return r.goTemplateArgs
 }
 
 // SetIgnoreComments sets ignoreComments

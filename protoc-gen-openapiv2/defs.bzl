@@ -60,6 +60,7 @@ def _run_proto_gen_openapi(
         fqn_for_openapi_name,
         openapi_naming_strategy,
         use_go_templates,
+        go_template_args,
         ignore_comments,
         remove_internal_comments,
         disable_default_errors,
@@ -109,6 +110,9 @@ def _run_proto_gen_openapi(
 
     if use_go_templates:
         args.add("--openapiv2_opt", "use_go_templates=true")
+
+    for go_template_arg in go_template_args:
+        args.add("--openapiv2_opt", "go_template_args=%s" % go_template_arg)
 
     if ignore_comments:
         args.add("--openapiv2_opt", "ignore_comments=true")
@@ -232,6 +236,7 @@ def _proto_gen_openapi_impl(ctx):
                     fqn_for_openapi_name = ctx.attr.fqn_for_openapi_name,
                     openapi_naming_strategy = ctx.attr.openapi_naming_strategy,
                     use_go_templates = ctx.attr.use_go_templates,
+                    go_template_args = ctx.attr.go_template_args,
                     ignore_comments = ctx.attr.ignore_comments,
                     remove_internal_comments = ctx.attr.remove_internal_comments,
                     disable_default_errors = ctx.attr.disable_default_errors,
@@ -311,6 +316,12 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "if set, you can use Go templates in protofile comments",
+        ),
+        "go_template_args": attr.string_list(
+            mandatory = False,
+            doc = "specify a key value pair as inputs to the Go template of the protofile" +
+                  " comments. Repeat this option to specify multiple template arguments." +
+                  " Requires the `use_go_templates` option to be set.",
         ),
         "ignore_comments": attr.bool(
             default = False,
