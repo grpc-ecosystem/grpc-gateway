@@ -30,6 +30,7 @@ var (
 	useFQNForOpenAPIName           = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualified names from the proto definition (ie my.package.MyMessage.MyInnerMessage). DEPRECATED: prefer `openapi_naming_strategy=fqn`")
 	openAPINamingStrategy          = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
 	useGoTemplate                  = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
+	goTemplateArgs                 = utilities.StringArrayFlag(flag.CommandLine, "go_template_args", "provide a custom value that can override a key in the Go template. Requires the `use_go_templates` option to be set")
 	ignoreComments                 = flag.Bool("ignore_comments", false, "if set, all protofile comments are excluded from output")
 	removeInternalComments         = flag.Bool("remove_internal_comments", false, "if set, removes all substrings in comments that start with `(--` and end with `--)` as specified in https://google.aip.dev/192#internal-comments")
 	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
@@ -134,6 +135,12 @@ func main() {
 	reg.SetUseGoTemplate(*useGoTemplate)
 	reg.SetIgnoreComments(*ignoreComments)
 	reg.SetRemoveInternalComments(*removeInternalComments)
+
+	if len(*goTemplateArgs) > 0 && !*useGoTemplate {
+		emitError(fmt.Errorf("`go_template_args` requires `use_go_templates` to be enabled"))
+		return
+	}
+	reg.SetGoTemplateArgs(*goTemplateArgs)
 
 	reg.SetOpenAPINamingStrategy(namingStrategy)
 	reg.SetEnumsAsInts(*enumsAsInts)

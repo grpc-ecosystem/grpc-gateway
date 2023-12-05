@@ -5841,6 +5841,7 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 		expectedError         error
 		expectedOpenAPIObject interface{}
 		useGoTemplate         bool
+		goTemplateArgs        []string
 	}{
 		{
 			descr:                 "empty comments",
@@ -5968,6 +5969,33 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 			expectedError: nil,
 			useGoTemplate: true,
 		},
+		{
+			descr:                "template with use_go_template and go_template_args",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
+				Title:       "Template",
+				Description: `Description "which means nothing" for environment test with value my_value`,
+			},
+			comments: "Template\n\nDescription {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} for " +
+				"environment {{arg \"environment\"}} with value {{arg \"my_key\"}}",
+			expectedError:  nil,
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"my_key=my_value", "environment=test"},
+		},
+		{
+			descr:                "template with use_go_template and undefined go_template_args",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
+				Title: "Template",
+				Description: `Description "which means nothing" for environment test with value ` +
+					`goTemplateArg something_undefined not found`,
+			},
+			comments: "Template\n\nDescription {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} for " +
+				"environment {{arg \"environment\"}} with value {{arg \"something_undefined\"}}",
+			expectedError:  nil,
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"environment=test"},
+		},
 	}
 
 	for _, test := range tests {
@@ -5975,6 +6003,9 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 			reg := descriptor.NewRegistry()
 			if test.useGoTemplate {
 				reg.SetUseGoTemplate(true)
+			}
+			if len(test.goTemplateArgs) > 0 {
+				reg.SetGoTemplateArgs(test.goTemplateArgs)
 			}
 			err := updateOpenAPIDataFromComments(reg, test.openapiSwaggerObject, nil, test.comments, false)
 			if test.expectedError == nil {
@@ -6007,6 +6038,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
 		useGoTemplate  bool
+		goTemplateArgs []string
 	}{
 		{
 			descr: "external docs option",
@@ -6069,6 +6101,39 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			useGoTemplate: false,
 		},
 		{
+			descr: "external docs option with go template args",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]*openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title: "{{.Name}}",
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+							"{{arg \"my_key\"}}",
+					},
+					ExternalDocs: &openapi_options.ExternalDocumentation{
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+							"{{arg \"my_key\"}}",
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "Message",
+					Description: `Description "which means nothing" too`,
+					ExternalDocs: &openapiExternalDocumentationObject{
+						Description: `Description "which means nothing" too`,
+					},
+				},
+			},
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"my_key=too"},
+		},
+		{
 			descr: "registered OpenAPIOption",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
@@ -6103,6 +6168,44 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			},
 			useGoTemplate: true,
 		},
+		{
+			descr: "registered OpenAPIOption with go template args",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Message: []*openapiconfig.OpenAPIMessageOption{
+					{
+						Message: "example.Message",
+						Option: &openapi_options.Schema{
+							JsonSchema: &openapi_options.JSONSchema{
+								Title: "{{.Name}}",
+								Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+									"{{arg \"my_key\"}}",
+							},
+							ExternalDocs: &openapi_options.ExternalDocumentation{
+								Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+									"{{arg \"my_key\"}}",
+							},
+						},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "Message",
+					Description: `Description "which means nothing" too`,
+					ExternalDocs: &openapiExternalDocumentationObject{
+						Description: `Description "which means nothing" too`,
+					},
+				},
+			},
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"my_key=too"},
+		},
 	}
 
 	for _, test := range tests {
@@ -6116,6 +6219,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 			reg := descriptor.NewRegistry()
 			reg.SetUseGoTemplate(test.useGoTemplate)
+			reg.SetGoTemplateArgs(test.goTemplateArgs)
 			file := descriptor.File{
 				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -6174,6 +6278,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 func TestTagsWithGoTemplate(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseGoTemplate(true)
+	reg.SetGoTemplateArgs([]string{"my_key=my_value"})
 
 	svc := &descriptorpb.ServiceDescriptorProto{
 		Name:    proto.String("ExampleService"),
@@ -6220,6 +6325,10 @@ func TestTagsWithGoTemplate(t *testing.T) {
 				Name:        "not a service tag 2",
 				Description: "{{ import \"file\" }}",
 			},
+			{
+				Name:        "Service with my_key",
+				Description: "the {{arg \"my_key\"}}",
+			},
 		},
 	}
 	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &swagger)
@@ -6240,6 +6349,10 @@ func TestTagsWithGoTemplate(t *testing.T) {
 		{
 			Name:        "not a service tag 2",
 			Description: "open file: no such file or directory",
+		},
+		{
+			Name:        "Service with my_key",
+			Description: "the my_value",
 		},
 	}
 	if !reflect.DeepEqual(actual.Tags, expectedTags) {

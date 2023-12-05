@@ -231,6 +231,61 @@ This is how the OpenAPI file would be rendered in [Postman](https://www.getpostm
 
 For a more detailed example of a proto file that has Go, templates enabled, [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/examples/internal/proto/examplepb/use_go_template.proto).
 
+### Using custom values
+
+Custom values can be specified in the [Go templates](https://golang.org/pkg/text/template/) that generate your proto file comments.
+
+A use case might be to interpolate different external documentation URLs when rendering documentation for different environments.
+
+#### How to use it
+
+The `use_go_templates` option has to be enabled as a prerequisite.
+
+Provide customized values in the format of `go_template_args=my_key=my_value`. `{{arg "my_key"}}` will be replaced with `my_value` in the Go template.
+
+Specify the `go_template_args` option multiple times if needed.
+
+```sh
+--openapiv2_out . --openapiv2_opt use_go_templates=true --openapiv2_opt go_template_args=my_key1=my_value1 --openapiv2_opt go_template_args=my_key2=my_value2
+...
+```
+
+#### Example script
+
+Example of a bash script with the `use_go_templates` flag set to true and custom template values set:
+
+```sh
+$ protoc -I. \
+    --go_out . --go-grpc_out . \
+    --grpc-gateway_out . \
+    --openapiv2_out . \
+    --openapiv2_opt use_go_templates=true \
+    --openapiv2_opt go_template_args=environment=test1 \
+    --openapiv2_opt go_template_args=environment_label=Test1 \
+    path/to/my/proto/v1/myproto.proto
+```
+
+#### Example proto file
+
+Example of a proto file with Go templates and custom values:
+
+```protobuf
+service LoginService {
+    // Login (Environment: {{arg "environment_label"}})
+    //
+    // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+    // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+    // This only works in the {{arg "environment"}} domain.
+    //
+    rpc Login (LoginRequest) returns (LoginReply) {
+        option (google.api.http) = {
+            post: "/v1/example/login"
+            body: "*"
+        };
+    }
+}
+```
+
 ## Other plugin options
 
 A comprehensive list of OpenAPI plugin options can be found [here](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/protoc-gen-openapiv2/main.go). Options can be passed via `protoc` CLI:
