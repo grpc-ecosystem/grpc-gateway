@@ -182,7 +182,7 @@ func NewRegistry() *Registry {
 		openAPINamingStrategy:          "legacy",
 		visibilityRestrictionSelectors: make(map[string]bool),
 		repeatedPathParamSeparator: repeatedFieldSeparator{
-			name: "csv",
+			name: "multi",
 			sep:  ',',
 		},
 		fileOptions:    make(map[string]*options.Swagger),
