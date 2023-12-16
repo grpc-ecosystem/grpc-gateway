@@ -355,11 +355,15 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			} else {
 				param.Type = "string"
 				param.Enum = listEnumNames(reg, enum)
-				param.Default = getEnumDefault(reg, enum)
+				if !reg.GetDoNotSetEnumDefaultValue() {
+					param.Default = getEnumDefault(reg, enum)
+				}
 				if reg.GetEnumsAsInts() {
 					param.Type = "integer"
 					param.Enum = listEnumNumbers(reg, enum)
-					param.Default = getEnumDefaultNumber(reg, enum)
+					if !reg.GetDoNotSetEnumDefaultValue() {
+						param.Default = getEnumDefaultNumber(reg, enum)
+					}
 				}
 			}
 			valueComments := enumValueProtoComments(reg, enum)
@@ -879,22 +883,28 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 
 		// it may be necessary to sort the result of the GetValue function.
 		enumNames := listEnumNames(reg, enum)
-		defaultValue := getEnumDefault(reg, enum)
 		valueComments := enumValueProtoComments(reg, enum)
 		if valueComments != "" {
 			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
 		}
+
+		schema := schemaCore{
+			Type: "string",
+			Enum: enumNames,
+		}
+
+		if !reg.GetDoNotSetEnumDefaultValue() {
+			schema.Default = getEnumDefault(reg, enum)
+		}
 		enumSchemaObject := openapiSchemaObject{
-			schemaCore: schemaCore{
-				Type:    "string",
-				Enum:    enumNames,
-				Default: defaultValue,
-			},
+			schemaCore: schema,
 		}
 		if reg.GetEnumsAsInts() {
 			enumSchemaObject.Type = "integer"
 			enumSchemaObject.Format = "int32"
-			enumSchemaObject.Default = getEnumDefaultNumber(reg, enum)
+			if !reg.GetDoNotSetEnumDefaultValue() {
+				enumSchemaObject.Default = getEnumDefaultNumber(reg, enum)
+			}
 			enumSchemaObject.Enum = listEnumNumbers(reg, enum)
 		}
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {

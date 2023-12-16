@@ -87,6 +87,9 @@ type Registry struct {
 	// omitEnumDefaultValue omits default value of enum
 	omitEnumDefaultValue bool
 
+	// doNotSetEnumDefaultValue disables setting default value of enum
+	doNotSetEnumDefaultValue bool
+
 	// disableDefaultErrors disables the generation of the default error types.
 	// This is useful for users who have defined custom error handling.
 	disableDefaultErrors bool
@@ -595,6 +598,16 @@ func (r *Registry) SetOmitEnumDefaultValue(omit bool) {
 // GetOmitEnumDefaultValue returns omitEnumDefaultValue
 func (r *Registry) GetOmitEnumDefaultValue() bool {
 	return r.omitEnumDefaultValue
+}
+
+// SetDoNotSetEnumDefaultValue sets doNotSetEnumDefaultValue
+func (r *Registry) SetDoNotSetEnumDefaultValue(set bool) {
+	r.doNotSetEnumDefaultValue = set
+}
+
+// GetDoNotSetEnumDefaultValue returns doNotSetEnumDefaultValue
+func (r *Registry) GetDoNotSetEnumDefaultValue() bool {
+	return r.doNotSetEnumDefaultValue
 }
 
 // SetVisibilityRestrictionSelectors sets the visibility restriction selectors.
