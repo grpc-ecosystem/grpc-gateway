@@ -495,6 +495,7 @@ message UpdateBookRequest {
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    name: "ABitOfEverything"
     description: "ABitOfEverythingService description -- which should not be used in place of the documentation comment!"
     external_docs: {
       url: "https://github.com/grpc-ecosystem/grpc-gateway";
