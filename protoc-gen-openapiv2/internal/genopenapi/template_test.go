@@ -3748,13 +3748,13 @@ func TestApplyTemplateWithRequestAndBodyParameters(t *testing.T) {
 	if want, is, name := 4, len(result.Paths[0].PathItemObject.Post.Parameters), "len(result.Paths[0].PathItemObject.Post.Parameters)"; !reflect.DeepEqual(is, want) {
 		t.Errorf("%s = %d want to be %d", name, want, is)
 	}
-	if want, is, name := "#/definitions/book_CreateBookBody", result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref, "result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref"; !reflect.DeepEqual(is, want) {
+	if want, is, name := "#/definitions/BookService_CreateBookBody", result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref, "result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref"; !reflect.DeepEqual(is, want) {
 		t.Errorf("%s = %s want to be %s", name, want, is)
 	}
 
-	_, found := result.Definitions["book_CreateBookBody"]
+	_, found := result.Definitions["BookService_CreateBookBody"]
 	if !found {
-		t.Error("expecting definition to contain book_CreateBookBody")
+		t.Error("expecting definition to contain BookService_CreateBookBody")
 	}
 
 	// If there was a failure, print out the input and the json result for debugging.

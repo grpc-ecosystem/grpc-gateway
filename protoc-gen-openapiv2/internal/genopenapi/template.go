@@ -7,7 +7,6 @@ import (
 	"math"
 	"net/textproto"
 	"os"
-	"path/filepath"
 	"reflect"
 	"regexp"
 	"sort"
@@ -39,8 +38,6 @@ import (
 const pathParamUniqueSuffixDeliminator = "_"
 
 const paragraphDeliminator = "\n\n"
-
-var nonAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9 ]+")
 
 // wktSchemas are the schemas of well-known-types.
 // The schemas must match with the behavior of the JSON unmarshaler in
@@ -1258,10 +1255,9 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				if b.Body != nil {
 					// Recursively render fields as definitions as long as they contain path parameters.
 					// Special case for top level body if we don't have a body field.
-					var schema *openapiSchemaObject
 					desc := ""
 					var bodyFieldName string
-					schema = &openapiSchemaObject{
+					schema := &openapiSchemaObject{
 						schemaCore: schemaCore{},
 					}
 					if len(b.Body.FieldPath) == 0 {
@@ -1279,7 +1275,6 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							if err != nil {
 								return err
 							}
-
 							if len(b.PathParams) == 0 {
 								if err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg); err != nil {
 									return err
@@ -1287,12 +1282,12 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								desc = messageSchema.Description
 							} else {
 								if messageSchema.Properties != nil && len(*messageSchema.Properties) != 0 {
-									// Combine the proto filepath and the method name for the definition's name
-									protoFilePath := lastFile.GetName()
-									protoFilePath = strings.TrimSuffix(protoFilePath, filepath.Ext(protoFilePath))
-									protoFilePath = nonAlphanumeric.ReplaceAllString(protoFilePath, "_")
+									packagePrefix := lastFile.FileDescriptorProto.GetPackage()
+									if packagePrefix != "" {
+										packagePrefix = packagePrefix + "_"
+									}
 
-									defName := fmt.Sprintf("%s_%sBody", protoFilePath, meth.GetName())
+									defName := fmt.Sprintf("%s%s_%sBody", packagePrefix, svc.GetName(), meth.GetName())
 
 									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
 									defs[defName] = messageSchema
