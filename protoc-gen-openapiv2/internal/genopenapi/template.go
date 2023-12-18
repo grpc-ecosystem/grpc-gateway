@@ -1282,13 +1282,12 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								desc = messageSchema.Description
 							} else {
 								if messageSchema.Properties != nil && len(*messageSchema.Properties) != 0 {
-									packagePrefix := lastFile.FileDescriptorProto.GetPackage()
-									if packagePrefix != "" {
-										packagePrefix = packagePrefix + "_"
+									strategyFn := LookupNamingStrategy(reg.GetOpenAPINamingStrategy())
+									if strategyFn == nil {
+										panic(fmt.Errorf("could not find OpenAPI naming lookup naming strategy '%s'", reg.GetOpenAPINamingStrategy()))
 									}
-
-									defName := fmt.Sprintf("%s%s_%sBody", packagePrefix, svc.GetName(), meth.GetName())
-
+									strats := strategyFn([]string{meth.FQMN(), svc.FQSN()})
+									defName := fmt.Sprintf("%sBody", strats[meth.FQMN()])
 									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
 									defs[defName] = messageSchema
 								} else {
