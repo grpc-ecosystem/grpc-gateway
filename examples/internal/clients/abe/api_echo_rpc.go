@@ -203,7 +203,7 @@ Description Echo
 
 @return SubStringMessage
 */
-func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, value string) (SubStringMessage, *http.Response, error) {
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, value interface{}) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
