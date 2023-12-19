@@ -913,7 +913,7 @@ func fullyQualifiedNameToOpenAPIName(fqn string, reg *descriptor.Registry) (stri
 		ret, ok := mapping[fqn]
 		return ret, ok
 	}
-	mapping := resolveFullyQualifiedNameToOpenAPINames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetOpenAPINamingStrategy())
+	mapping := resolveFullyQualifiedNameToOpenAPINames(append(reg.GetAllFQMNs(), append(reg.GetAllFQENs(), reg.GetAllFQMethNs()...)...), reg.GetOpenAPINamingStrategy())
 	registriesSeen[reg] = mapping
 	ret, ok := mapping[fqn]
 	return ret, ok
@@ -1282,12 +1282,11 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								desc = messageSchema.Description
 							} else {
 								if messageSchema.Properties != nil && len(*messageSchema.Properties) != 0 {
-									strategyFn := LookupNamingStrategy(reg.GetOpenAPINamingStrategy())
-									if strategyFn == nil {
-										panic(fmt.Errorf("could not find OpenAPI naming lookup naming strategy '%s'", reg.GetOpenAPINamingStrategy()))
+									methFQN, ok := fullyQualifiedNameToOpenAPIName(meth.FQMN(), reg)
+									if !ok {
+										panic(fmt.Errorf("failed to resolve method FQN: '%s'", meth.FQMN()))
 									}
-									strats := strategyFn([]string{meth.FQMN(), svc.FQSN()})
-									defName := fmt.Sprintf("%sBody", strats[meth.FQMN()])
+									defName := methFQN + "Body"
 									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
 									defs[defName] = messageSchema
 								} else {
