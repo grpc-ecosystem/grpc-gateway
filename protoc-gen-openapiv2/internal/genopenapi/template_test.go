@@ -6319,7 +6319,8 @@ func TestTagsWithGoTemplate(t *testing.T) {
 				Description: "{{ import \"file\" }}",
 			},
 			{
-				Name: "ExampleService",
+				Name:        "ExampleService",
+				Description: "ExampleService!",
 			},
 			{
 				Name:        "not a service tag 2",
@@ -6353,6 +6354,10 @@ func TestTagsWithGoTemplate(t *testing.T) {
 		{
 			Name:        "Service with my_key",
 			Description: "the my_value",
+		},
+		{
+			Name:        "service tag",
+			Description: "ExampleService!",
 		},
 	}
 	if !reflect.DeepEqual(actual.Tags, expectedTags) {
