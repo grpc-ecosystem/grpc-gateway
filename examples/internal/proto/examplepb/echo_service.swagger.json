@@ -621,7 +621,9 @@
             "name": "no",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbEmbedded"
+            }
           },
           {
             "name": "num",
@@ -705,7 +707,9 @@
             "name": "resourceId",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "num",
@@ -880,7 +884,9 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbDynamicMessage"
+            }
           }
         ],
         "tags": [

@@ -1028,7 +1028,7 @@ type EchoServiceEchoBody2Opts struct {
 	ResourceId optional.String
 }
 
-func (a *EchoServiceApiService) EchoServiceEchoBody2(ctx context.Context, id string, no interface{}, localVarOptionals *EchoServiceEchoBody2Opts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoBody2(ctx context.Context, id string, no ExamplepbEmbedded, localVarOptionals *EchoServiceEchoBody2Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -1172,7 +1172,7 @@ type EchoServiceEchoBody3Opts struct {
 	NoNote optional.String
 }
 
-func (a *EchoServiceApiService) EchoServiceEchoBody3(ctx context.Context, id string, resourceId interface{}, localVarOptionals *EchoServiceEchoBody3Opts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoBody3(ctx context.Context, id string, resourceId string, localVarOptionals *EchoServiceEchoBody3Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -1449,7 +1449,7 @@ EchoServiceApiService EchoPatch method receives a NonStandardUpdateRequest and r
 
 @return ExamplepbDynamicMessageUpdate
 */
-func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body interface{}) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body ExamplepbDynamicMessage) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

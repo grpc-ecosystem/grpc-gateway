@@ -525,7 +525,8 @@ paths:
       - in: "body"
         name: "no"
         required: true
-        schema: {}
+        schema:
+          $ref: "#/definitions/examplepbEmbedded"
         x-exportParamName: "No"
       - name: "num"
         in: "query"
@@ -598,7 +599,8 @@ paths:
       - in: "body"
         name: "resourceId"
         required: true
-        schema: {}
+        schema:
+          type: "string"
         x-exportParamName: "ResourceId"
       - name: "num"
         in: "query"
@@ -754,7 +756,8 @@ paths:
       - in: "body"
         name: "body"
         required: true
-        schema: {}
+        schema:
+          $ref: "#/definitions/examplepbDynamicMessage"
         x-exportParamName: "Body"
       responses:
         200:

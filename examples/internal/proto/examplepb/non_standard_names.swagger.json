@@ -39,7 +39,9 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
+            }
           }
         ],
         "tags": [
@@ -70,7 +72,9 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
+            }
           }
         ],
         "tags": [
