@@ -1108,6 +1108,9 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 					tag.ExternalDocs.Description = goTemplateComments(opts.ExternalDocs.Description, svc, reg)
 				}
 			}
+			if opts.GetName() != "" {
+				tag.Name = opts.GetName()
+			}
 		}
 		tags = append(tags, tag)
 	}

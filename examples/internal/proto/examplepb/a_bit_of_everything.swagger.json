@@ -21,7 +21,7 @@
       "x-traitTag": true
     },
     {
-      "name": "ABitOfEverythingService",
+      "name": "ABitOfEverything",
       "description": "ABitOfEverythingService description -- which should not be used in place of the documentation comment!",
       "externalDocs": {
         "description": "Find out more about EchoService",
