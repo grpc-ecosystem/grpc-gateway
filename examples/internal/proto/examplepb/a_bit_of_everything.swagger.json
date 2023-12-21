@@ -104,6 +104,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -627,6 +628,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -1087,6 +1089,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -1536,6 +1539,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -2003,6 +2007,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ],
         "deprecated": true,
@@ -2474,6 +2479,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -2790,6 +2796,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       },
@@ -3232,6 +3239,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       },
@@ -3674,6 +3682,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -4140,6 +4149,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -4606,6 +4616,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -4659,6 +4670,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       },
@@ -4711,6 +4723,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ],
         "security": [
@@ -4962,6 +4975,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -5007,6 +5021,7 @@
           }
         },
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -5343,6 +5358,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -5399,6 +5415,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -5455,6 +5472,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -5618,6 +5636,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -5690,6 +5709,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -6014,6 +6034,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       },
@@ -6329,6 +6350,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -6559,6 +6581,7 @@
           }
         },
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -6615,6 +6638,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ],
         "consumes": [
@@ -6663,6 +6687,7 @@
           }
         },
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ],
         "produces": [
@@ -6728,6 +6753,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -6774,6 +6800,7 @@
           }
         },
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -6836,6 +6863,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -6894,6 +6922,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -7220,6 +7249,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }
@@ -7278,6 +7308,7 @@
           }
         ],
         "tags": [
+          "ABitOfEverythingService",
           "ABitOfEverything"
         ]
       }

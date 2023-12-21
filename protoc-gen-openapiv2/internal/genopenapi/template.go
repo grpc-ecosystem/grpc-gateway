@@ -1488,13 +1488,13 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						return err
 					}
 					tag := svc.GetName()
-					if opts.GetName() != "" {
-						tag = opts.GetName()
-					}
 					if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
 						tag = pkg + "." + tag
 					}
 					operationObject.Tags = []string{tag}
+					if opts.GetName() != "" {
+						operationObject.Tags = append(operationObject.Tags, opts.GetName())
+					}
 				}
 
 				if !reg.GetDisableDefaultErrors() {
