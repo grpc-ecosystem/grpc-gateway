@@ -6857,7 +6857,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -7100,7 +7100,7 @@ func TestSingleServiceTemplateWithDuplicateInAllSupportedHttp1Operations(t *test
 			},
 		}
 		reg := descriptor.NewRegistry()
-		err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+		err := reg.Load(reqFromFile(&file))
 		if err != nil {
 			t.Fatalf("failed to reg.Load(): %v", err)
 		}
@@ -7286,7 +7286,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1UnsupportedOperations(t *testing
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -7539,7 +7539,7 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8418,7 +8418,7 @@ func TestRenderServicesWithColonInPath(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8565,7 +8565,7 @@ func TestRenderServicesWithDoubleColonInPath(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8712,7 +8712,7 @@ func TestRenderServicesWithColonLastInPath(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8859,7 +8859,7 @@ func TestRenderServicesWithColonInSegment(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
