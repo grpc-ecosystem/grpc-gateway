@@ -1485,11 +1485,11 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					opts, err := getServiceOpenAPIOption(reg, svc)
 					if err != nil {
 						grpclog.Error(err)
-						return nil
+						return err
 					}
 					tag := svc.GetName()
-					if opts.Name != "" {
-						tag = opts.Name
+					if opts.GetName() != "" {
+						tag = opts.GetName()
 					}
 					if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
 						tag = pkg + "." + tag
