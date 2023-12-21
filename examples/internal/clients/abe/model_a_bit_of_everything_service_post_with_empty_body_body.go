@@ -10,7 +10,5 @@
 
 package abe
 
-type ExamplepbRequiredMessageTypeRequest struct {
-	Id string `json:"id"`
-	Foo *ProtoexamplepbFoo `json:"foo"`
+type ABitOfEverythingServicePostWithEmptyBodyBody struct {
 }

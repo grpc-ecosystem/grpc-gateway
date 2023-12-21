@@ -913,7 +913,7 @@ func fullyQualifiedNameToOpenAPIName(fqn string, reg *descriptor.Registry) (stri
 		ret, ok := mapping[fqn]
 		return ret, ok
 	}
-	mapping := resolveFullyQualifiedNameToOpenAPINames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetOpenAPINamingStrategy())
+	mapping := resolveFullyQualifiedNameToOpenAPINames(append(reg.GetAllFQMNs(), append(reg.GetAllFQENs(), reg.GetAllFQMethNs()...)...), reg.GetOpenAPINamingStrategy())
 	registriesSeen[reg] = mapping
 	ret, ok := mapping[fqn]
 	return ret, ok
@@ -1117,7 +1117,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
-func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
+func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message, defs openapiDefinitionsObject) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
@@ -1285,9 +1285,19 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								}
 								desc = messageSchema.Description
 							} else {
-								schema = messageSchema
-								if schema.Properties == nil || len(*schema.Properties) == 0 {
-									grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+								if meth.Name != nil {
+									methFQN, ok := fullyQualifiedNameToOpenAPIName(meth.FQMN(), reg)
+									if !ok {
+										panic(fmt.Errorf("failed to resolve method FQN: '%s'", meth.FQMN()))
+									}
+									defName := methFQN + "Body"
+									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
+									defs[defName] = messageSchema
+								} else {
+									schema = messageSchema
+									if schema.Properties == nil || len(*schema.Properties) == 0 {
+										grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+									}
 								}
 							}
 						}
@@ -1751,7 +1761,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
+	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages, s.Definitions); err != nil {
 		panic(err)
 	}
 

@@ -10,7 +10,9 @@
 
 package abe
 
-type ExamplepbRequiredMessageTypeRequest struct {
-	Id string `json:"id"`
-	Foo *ProtoexamplepbFoo `json:"foo"`
+// Nested is nested type.
+type ABitOfEverythingServiceDeepPathEchoBodySingleNested struct {
+	Amount int64 `json:"amount,omitempty"`
+	// DeepEnum description.
+	Ok *NestedDeepEnum `json:"ok,omitempty"`
 }

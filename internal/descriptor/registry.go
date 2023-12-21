@@ -28,6 +28,9 @@ type Registry struct {
 	// files is a mapping from file path to descriptor
 	files map[string]*File
 
+	// meths is a mapping from fully-qualified method name to descriptor
+	meths map[string]*Method
+
 	// prefix is a prefix to be inserted to golang package paths generated from proto package names.
 	prefix string
 
@@ -175,6 +178,7 @@ func NewRegistry() *Registry {
 	return &Registry{
 		msgs:                           make(map[string]*Message),
 		enums:                          make(map[string]*Enum),
+		meths:                          make(map[string]*Method),
 		files:                          make(map[string]*File),
 		pkgMap:                         make(map[string]string),
 		pkgAliases:                     make(map[string]string),
@@ -466,6 +470,14 @@ func (r *Registry) GetAllFQMNs() []string {
 func (r *Registry) GetAllFQENs() []string {
 	keys := make([]string, 0, len(r.enums))
 	for k := range r.enums {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (r *Registry) GetAllFQMethNs() []string {
+	keys := make([]string, 0, len(r.meths))
+	for k := range r.meths {
 		keys = append(keys, k)
 	}
 	return keys

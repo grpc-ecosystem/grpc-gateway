@@ -3057,7 +3057,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ABitOfEverything1) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ABitOfEverythingServiceDeepPathEchoBody) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -5819,7 +5819,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body interface{}) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body ABitOfEverythingServicePostWithEmptyBodyBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -6132,7 +6132,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuidName string, body ABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuidName string, body ExamplepbABitOfEverythingServiceUpdateBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -6467,7 +6467,7 @@ type ABitOfEverythingServiceUpdateV2Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -6629,7 +6629,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything3) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything1) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -6788,7 +6788,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, uuidName string, body UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, uuidName string, body ABitOfEverythingServiceUpdateV2Body) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

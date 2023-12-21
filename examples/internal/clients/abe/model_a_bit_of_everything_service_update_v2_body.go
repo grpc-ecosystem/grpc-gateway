@@ -10,7 +10,8 @@
 
 package abe
 
-type ExamplepbRequiredMessageTypeRequest struct {
-	Id string `json:"id"`
-	Foo *ProtoexamplepbFoo `json:"foo"`
+type ABitOfEverythingServiceUpdateV2Body struct {
+	Abe *ABitOfEverything2 `json:"abe,omitempty"`
+	// The paths to update.
+	UpdateMask string `json:"updateMask,omitempty"`
 }
