@@ -104,7 +104,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -627,7 +627,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -1087,7 +1087,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -1536,7 +1536,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -2003,7 +2003,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "deprecated": true,
         "security": [],
@@ -2474,7 +2474,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -2790,7 +2790,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       },
       "head": {
@@ -3232,7 +3232,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       },
       "options": {
@@ -3674,7 +3674,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -4140,7 +4140,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -4606,7 +4606,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -4659,7 +4659,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       },
       "delete": {
@@ -4711,7 +4711,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "security": [
           {
@@ -4962,7 +4962,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -5007,7 +5007,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -5343,7 +5343,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -5399,7 +5399,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -5455,7 +5455,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -5618,7 +5618,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -5690,7 +5690,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -6014,7 +6014,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       },
       "patch": {
@@ -6329,7 +6329,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -6559,7 +6559,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -6615,7 +6615,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "consumes": [
           "application/x-bar-mime"
@@ -6663,7 +6663,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "produces": [
           "application/text"
@@ -6728,7 +6728,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -6774,7 +6774,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -6836,7 +6836,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -6894,7 +6894,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -7220,7 +7220,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     },
@@ -7278,7 +7278,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ]
       }
     }
@@ -7898,11 +7898,11 @@
         "code": {
           "type": "integer",
           "format": "int32",
-          "description": "The status code, which should be an enum value of\n[google.rpc.Code][google.rpc.Code]."
+          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
         },
         "message": {
           "type": "string",
-          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized\nby the client."
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
         },
         "details": {
           "type": "array",

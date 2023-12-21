@@ -45,7 +45,7 @@ paths:
   /v1/example/a_bit_of_everything:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CreateBody"
       parameters:
       - in: "body"
@@ -134,7 +134,7 @@ paths:
   /v1/example/a_bit_of_everything/params/get/nested_enum/{singleNested.ok}:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CheckNestedEnumGetQueryParams"
       parameters:
       - name: "singleNested.ok"
@@ -556,7 +556,7 @@ paths:
   /v1/example/a_bit_of_everything/params/get/{singleNested.name}:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CheckGetQueryParams"
       parameters:
       - name: "singleNested.name"
@@ -985,7 +985,7 @@ paths:
   /v1/example/a_bit_of_everything/params/post/{stringValue}:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CheckPostQueryParams"
       parameters:
       - name: "stringValue"
@@ -1401,7 +1401,7 @@ paths:
   /v1/example/a_bit_of_everything/query/{uuidName}:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_GetQuery"
       parameters:
       - name: "uuidName"
@@ -1842,7 +1842,7 @@ paths:
   ? /v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}
   : post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       summary: "Create a new ABitOfEverything"
       description: "This API creates a new ABitOfEverything"
       operationId: "ABitOfEverythingService_Create"
@@ -2260,7 +2260,7 @@ paths:
   /v1/example/a_bit_of_everything/{uuidName}:
     head:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Exists"
       parameters:
       - name: "uuidName"
@@ -2678,7 +2678,7 @@ paths:
             $ref: "#/definitions/rpcStatus"
     put:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Update"
       parameters:
       - name: "uuidName"
@@ -2722,7 +2722,7 @@ paths:
             $ref: "#/definitions/rpcStatus"
     options:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CustomOptionsRequest"
       parameters:
       - name: "uuidName"
@@ -3141,7 +3141,7 @@ paths:
   /v1/example/a_bit_of_everything/{uuidName}:custom:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Custom"
       parameters:
       - name: "uuidName"
@@ -3577,7 +3577,7 @@ paths:
   /v1/example/a_bit_of_everything/{uuidName}:custom:custom:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_DoubleColon"
       parameters:
       - name: "uuidName"
@@ -4013,7 +4013,7 @@ paths:
   /v1/example/a_bit_of_everything/{uuid}:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Lookup"
       parameters:
       - name: "uuid"
@@ -4049,7 +4049,7 @@ paths:
             $ref: "#/definitions/rpcStatus"
     delete:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Delete"
       parameters:
       - name: "uuid"
@@ -4092,7 +4092,7 @@ paths:
   ? /v1/example/a_bit_of_everything_repeated/{pathRepeatedFloatValue}/{pathRepeatedDoubleValue}/{pathRepeatedInt64Value}/{pathRepeatedUint64Value}/{pathRepeatedInt32Value}/{pathRepeatedFixed64Value}/{pathRepeatedFixed32Value}/{pathRepeatedBoolValue}/{pathRepeatedStringValue}/{pathRepeatedBytesValue}/{pathRepeatedUint32Value}/{pathRepeatedEnumValue}/{pathRepeatedSfixed32Value}/{pathRepeatedSfixed64Value}/{pathRepeatedSint32Value}/{pathRepeatedSint64Value}
   : get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_GetRepeatedQuery"
       parameters:
       - name: "pathRepeatedFloatValue"
@@ -4286,7 +4286,7 @@ paths:
   /v1/example/checkStatus:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CheckStatus"
       parameters: []
       responses:
@@ -4318,7 +4318,7 @@ paths:
   /v1/example/deep_path/{singleNested.name}:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_DeepPathEcho"
       parameters:
       - name: "singleNested.name"
@@ -4362,7 +4362,7 @@ paths:
   /v1/example/oneofenum:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_PostOneofEnum"
       parameters:
       - in: "body"
@@ -4400,7 +4400,7 @@ paths:
   /v1/example/requiredmessagetype:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_PostRequiredMessageType"
       parameters:
       - in: "body"
@@ -4494,7 +4494,7 @@ paths:
   /v1/{book.name}:
     patch:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_UpdateBook"
       parameters:
       - name: "book.name"
@@ -4550,7 +4550,7 @@ paths:
   /v1/{parent}/books:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       summary: "Create a book."
       operationId: "ABitOfEverythingService_CreateBook"
       parameters:
@@ -4606,7 +4606,7 @@ paths:
   /v2/example/a_bit_of_everything/{uuidName}:
     put:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_UpdateV2"
       parameters:
       - name: "uuidName"
@@ -4659,7 +4659,7 @@ paths:
             $ref: "#/definitions/rpcStatus"
     patch:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_UpdateV22"
       parameters:
       - name: "uuidName"
@@ -4837,7 +4837,7 @@ paths:
   /v2/example/errorwithdetails:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_ErrorWithDetails"
       parameters: []
       responses:
@@ -4869,7 +4869,7 @@ paths:
   /v2/example/overwriterequestcontenttype:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_OverwriteRequestContentType"
       consumes:
       - "application/x-bar-mime"
@@ -4909,7 +4909,7 @@ paths:
   /v2/example/overwriteresponsecontenttype:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_OverwriteResponseContentType"
       produces:
       - "application/text"
@@ -4943,7 +4943,7 @@ paths:
   /v2/example/postwithemptybody/{name}:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_PostWithEmptyBody"
       parameters:
       - name: "name"
@@ -4986,7 +4986,7 @@ paths:
   /v2/example/timeout:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Timeout"
       parameters: []
       responses:
@@ -5018,7 +5018,7 @@ paths:
   /v2/example/withbody/{id}:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_GetMessageWithBody"
       parameters:
       - name: "id"
@@ -5061,7 +5061,7 @@ paths:
   /v2/{value}:check:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CheckExternalPathEnum"
       parameters:
       - name: "value"
@@ -5101,7 +5101,7 @@ paths:
   /v2a/example/a_bit_of_everything/{uuidName}:
     patch:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_UpdateV23"
       parameters:
       - name: "uuidName"
@@ -5147,7 +5147,7 @@ paths:
   /v3/{value}:check:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_CheckExternalNestedPathEnum"
       parameters:
       - name: "value"
@@ -5727,12 +5727,12 @@ definitions:
       code:
         type: "integer"
         format: "int32"
-        description: "The status code, which should be an enum value of\n[google.rpc.Code][google.rpc.Code]."
+        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
       message:
         type: "string"
         description: "A developer-facing error message, which should be in English.\
           \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
-          \ field, or localized\nby the client."
+          \ field, or localized by the client."
       details:
         type: "array"
         description: "A list of messages that carry the error details.  There is a\
