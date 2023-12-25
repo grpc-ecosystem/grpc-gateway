@@ -6344,7 +6344,7 @@ func TestTagsWithGoTemplate(t *testing.T) {
 		},
 		{
 			Name:        "ExampleService",
-			Description: "",
+			Description: "ExampleService!",
 		},
 		{
 			Name:        "not a service tag 2",
