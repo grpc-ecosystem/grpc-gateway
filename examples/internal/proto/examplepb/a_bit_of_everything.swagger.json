@@ -2003,7 +2003,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "deprecated": true,
         "security": [],
@@ -4459,7 +4459,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "security": [
           {
@@ -6089,7 +6089,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "consumes": [
           "application/x-bar-mime"
@@ -6137,7 +6137,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "ABitOfEverything"
         ],
         "produces": [
           "application/text"

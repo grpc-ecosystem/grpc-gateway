@@ -1401,7 +1401,7 @@ paths:
   /v1/example/a_bit_of_everything/query/{uuidName}:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_GetQuery"
       parameters:
       - name: "uuidName"
@@ -4049,7 +4049,7 @@ paths:
             $ref: "#/definitions/rpcStatus"
     delete:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_Delete"
       parameters:
       - name: "uuid"
@@ -4869,7 +4869,7 @@ paths:
   /v2/example/overwriterequestcontenttype:
     post:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_OverwriteRequestContentType"
       consumes:
       - "application/x-bar-mime"
@@ -4909,7 +4909,7 @@ paths:
   /v2/example/overwriteresponsecontenttype:
     get:
       tags:
-      - "ABitOfEverythingService"
+      - "ABitOfEverything"
       operationId: "ABitOfEverythingService_OverwriteResponseContentType"
       produces:
       - "application/text"

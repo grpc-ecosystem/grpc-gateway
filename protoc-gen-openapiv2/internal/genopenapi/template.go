@@ -1534,6 +1534,11 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					panic(err)
 				}
 
+				svcOpts, err := getServiceOpenAPIOption(reg, svc)
+				if err != nil {
+					grpclog.Error(err)
+					return err
+				}
 				opts, err := getMethodOpenAPIOption(reg, meth)
 				if opts != nil {
 					if err != nil {
@@ -1552,6 +1557,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					if len(opts.Tags) > 0 {
 						operationObject.Tags = make([]string, len(opts.Tags))
 						copy(operationObject.Tags, opts.Tags)
+					} else if svcOpts.GetName() != "" {
+						operationObject.Tags = []string{svcOpts.GetName()}
 					}
 					if opts.OperationId != "" {
 						operationObject.OperationID = opts.OperationId
