@@ -156,12 +156,6 @@
             "in": "query",
             "required": false,
             "type": "string"
-          },
-          {
-            "name": "resourceId",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -278,12 +272,6 @@
           },
           {
             "name": "no.note",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resourceId",
             "in": "query",
             "required": false,
             "type": "string"
@@ -440,12 +428,6 @@
             "in": "query",
             "required": false,
             "type": "string"
-          },
-          {
-            "name": "resourceId",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -503,9 +485,6 @@
         },
         "no": {
           "$ref": "#/definitions/examplepbUnannotatedEmbedded"
-        },
-        "resourceId": {
-          "type": "string"
         }
       },
       "description": "A simple message with many types",
