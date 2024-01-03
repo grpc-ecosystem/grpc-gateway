@@ -388,7 +388,7 @@ func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -432,7 +432,7 @@ func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -510,7 +510,7 @@ func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -580,7 +580,7 @@ func local_request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -650,7 +650,7 @@ func local_request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context,
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 2, 5, 5, 7, 0, 0, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 2, 2, 3, 8, 4, 5, 5}}
+	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
 func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -748,7 +748,7 @@ func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marsh
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -818,7 +818,7 @@ func local_request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marsh
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 2, 4, 5, 0, 0, 4, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 7, 4}}
+	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
 func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1047,7 +1047,7 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
@@ -1079,7 +1079,7 @@ func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
@@ -1128,7 +1128,7 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
@@ -1173,7 +1173,7 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, runtime.ServerMetadata, error) {
@@ -1218,7 +1218,7 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, ma
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 2, 5, 5, 7, 0, 0, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 2, 2, 3, 8, 4, 5, 5}}
+	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
 func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
@@ -1277,7 +1277,7 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
@@ -1322,7 +1322,7 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshale
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 2, 4, 5, 0, 0, 4, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 7, 4}}
+	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
 func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
