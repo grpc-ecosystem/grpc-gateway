@@ -837,7 +837,6 @@ EchoServiceApiService EchoBody method receives a simple message and returns it.
      * @param "Lang" (optional.String) - 
      * @param "StatusProgress" (optional.String) - 
      * @param "StatusNote" (optional.String) - 
-     * @param "En" (optional.String) - 
 
 @return ExamplepbSimpleMessage
 */
@@ -848,7 +847,6 @@ type EchoServiceEchoBody2Opts struct {
 	Lang optional.String
 	StatusProgress optional.String
 	StatusNote optional.String
-	En optional.String
 }
 
 func (a *EchoServiceApiService) EchoServiceEchoBody2(ctx context.Context, id string, no ExamplepbEmbedded, localVarOptionals *EchoServiceEchoBody2Opts) (ExamplepbSimpleMessage, *http.Response, error) {
@@ -882,9 +880,6 @@ func (a *EchoServiceApiService) EchoServiceEchoBody2(ctx context.Context, id str
 	}
 	if localVarOptionals != nil && localVarOptionals.StatusNote.IsSet() {
 		localVarQueryParams.Add("status.note", parameterToString(localVarOptionals.StatusNote.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
-		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json"}
