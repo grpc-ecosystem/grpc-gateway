@@ -1796,7 +1796,7 @@ func TestGenerateRPCOrderNotPreservedMergeFilesAdditionalBindingsMultipleService
 func findExpectedPaths(foundPaths *[]string, expectedPaths []string, potentialPath string) {
 	seenPaths := map[string]struct{}{}
 
-	// foundPaths may bot be empty when this function is called multiple times.
+	// foundPaths may not be empty when this function is called multiple times,
 	// so we add them to seenPaths map to avoid duplicates.
 	for _, path := range *foundPaths {
 		seenPaths[path] = struct{}{}
