@@ -2476,6 +2476,7 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 			// - trim every line only if that is the case
 			// - join by \n
 			comments = strings.ReplaceAll(comments, "\n ", "\n")
+			comments = removeInternalComments(comments)
 		}
 		if loc.TrailingComments != nil {
 			trailing := strings.TrimSpace(*loc.TrailingComments)

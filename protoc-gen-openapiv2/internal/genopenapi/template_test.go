@@ -10473,6 +10473,36 @@ func TestUpdatePaths(t *testing.T) {
 	}
 }
 
+// Test that enum values have internal comments removed
+func TestEnumValueProtoComments(t *testing.T) {
+	reg := descriptor.NewRegistry()
+	name := "kind"
+	comments := "(-- this is a comment --)"
+
+	enum := &descriptor.Enum{
+		EnumDescriptorProto: &descriptorpb.EnumDescriptorProto{
+			Name: &name,
+		},
+		File: &descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				Name:    new(string),
+				Package: new(string),
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+					Location: []*descriptorpb.SourceCodeInfo_Location{
+						&descriptorpb.SourceCodeInfo_Location{
+							LeadingComments: &comments,
+						},
+					},
+				},
+			},
+		},
+	}
+	comments = enumValueProtoComments(reg, enum)
+	if comments != "" {
+		t.Errorf("expected '', got '%v'", comments)
+	}
+}
+
 func MustMarshal(v interface{}) []byte {
 	b, err := json.Marshal(v)
 	if err != nil {
