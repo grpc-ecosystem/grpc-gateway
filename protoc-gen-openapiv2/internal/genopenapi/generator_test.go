@@ -1182,6 +1182,108 @@ func TestGenerateRPCOrderPreservedAdditionalBindings(t *testing.T) {
 	}
 }
 
+func TestGenerateRPCOneOfFieldBodyAdditionalBindings(t *testing.T) {
+	t.Parallel()
+
+	const in = `
+	file_to_generate: "exampleproto/v1/example.proto"
+	parameter: "output_format=yaml,allow_delete_body=true"
+	proto_file: {
+		name: "exampleproto/v1/example.proto"
+		package: "example.v1"
+		message_type: {
+			name: "Foo"
+			oneof_decl: {
+				name: "foo"
+			}
+			field: {
+				name: "bar"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "bar"
+				oneof_index: 0
+			}
+			field: {
+				name: "baz"
+				number: 2
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "bar"
+				oneof_index: 0
+			}
+		}
+		service: {
+			name: "TestService"
+			method: {
+				name: "Test1"
+				input_type: ".example.v1.Foo"
+				output_type: ".example.v1.Foo"
+				options: {
+					[google.api.http]: {
+						post: "/b/foo"
+						body: "*"
+						additional_bindings {
+							post: "/b/foo/bar"
+							body: "bar"
+						}
+						additional_bindings {
+							post: "/b/foo/baz"
+							body: "baz"
+						}
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "exampleproto/v1;exampleproto"
+		}
+	}`
+
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+		t.Fatalf("failed to marshall yaml: %s", err)
+	}
+
+	formats := [...]genopenapi.Format{
+		genopenapi.FormatJSON,
+		genopenapi.FormatYAML,
+	}
+
+	for _, format := range formats {
+		format := format
+		t.Run(string(format), func(t *testing.T) {
+			t.Parallel()
+
+			resp := requireGenerate(t, &req, format, true, false)
+			if len(resp) != 1 {
+				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+			}
+
+			content := resp[0].GetContent()
+
+			t.Log(content)
+
+			contentsSlice := strings.Fields(content)
+			expectedPaths := []string{"/b/foo", "/b/foo/bar", "/b/foo/baz"}
+
+			foundPaths := []string{}
+			for _, contentValue := range contentsSlice {
+				findExpectedPaths(&foundPaths, expectedPaths, contentValue)
+			}
+
+			if allPresent := reflect.DeepEqual(foundPaths, expectedPaths); !allPresent {
+				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, expectedPaths)
+			}
+
+			// The input message only contains oneof fields, so no other fields should be mapped to the query.
+			if strings.Contains(content, "query") {
+				t.Fatalf("Found query in content, expected not to find any")
+			}
+		})
+	}
+}
+
 func TestGenerateRPCOrderNotPreservedAdditionalBindings(t *testing.T) {
 	t.Parallel()
 
@@ -1693,6 +1795,12 @@ func TestGenerateRPCOrderNotPreservedMergeFilesAdditionalBindingsMultipleService
 // slice.
 func findExpectedPaths(foundPaths *[]string, expectedPaths []string, potentialPath string) {
 	seenPaths := map[string]struct{}{}
+
+	// foundPaths may not be empty when this function is called multiple times,
+	// so we add them to seenPaths map to avoid duplicates.
+	for _, path := range *foundPaths {
+		seenPaths[path] = struct{}{}
+	}
 
 	for _, path := range expectedPaths {
 		_, pathAlreadySeen := seenPaths[path]

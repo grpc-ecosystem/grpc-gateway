@@ -167,6 +167,11 @@ func getEnumDefaultNumber(reg *descriptor.Registry, enum *descriptor.Enum) inter
 // messageToQueryParameters converts a message to a list of OpenAPI query parameters.
 func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, httpMethod string) (params []openapiParameterObject, err error) {
 	for _, field := range message.Fields {
+		// When body is set to oneof field, we want to skip other fields in the oneof group.
+		if isBodySameOneOf(body, field) {
+			continue
+		}
+
 		if !isVisible(getFieldVisibilityOption(field), reg) {
 			continue
 		}
@@ -181,6 +186,22 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 		params = append(params, p...)
 	}
 	return params, nil
+}
+
+func isBodySameOneOf(body *descriptor.Body, field *descriptor.Field) bool {
+	if field.OneofIndex == nil {
+		return false
+	}
+
+	if body == nil || len(body.FieldPath) == 0 {
+		return false
+	}
+
+	if body.FieldPath[0].Target.OneofIndex == nil {
+		return false
+	}
+
+	return *body.FieldPath[0].Target.OneofIndex == *field.OneofIndex
 }
 
 // queryParams converts a field to a list of OpenAPI query parameters recursively through the use of nestedQueryParams.

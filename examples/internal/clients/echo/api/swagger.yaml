@@ -449,13 +449,6 @@ paths:
         type: "string"
         x-exportParamName: "StatusNote"
         x-optionalDataType: "String"
-      - name: "en"
-        in: "query"
-        required: false
-        type: "string"
-        format: "int64"
-        x-exportParamName: "En"
-        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
