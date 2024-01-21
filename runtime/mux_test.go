@@ -213,6 +213,28 @@ func TestMuxServeHTTP(t *testing.T) {
 					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type":      "application/x-www-form-urlencoded",
+				"X-Method-Override": "GET",
+			},
+			respStatus:  http.StatusOK,
+			respContent: "GET /foo",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
 			},
 			reqMethod: "POST",
 			reqPath:   "/foo",
