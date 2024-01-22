@@ -607,6 +607,19 @@ func TestMuxServeHTTP(t *testing.T) {
 	}
 }
 
+func TestServeHTTP_WithMethodOverrideAndFormParsing(t *testing.T) {
+	r := httptest.NewRequest("POST", "/foo", strings.NewReader("bar=hoge"))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Set("X-HTTP-Method-Override", "GET")
+	w := httptest.NewRecorder()
+
+	runtime.NewServeMux().ServeHTTP(w, r)
+
+	if r.FormValue("bar") != "hoge" {
+		t.Error("form is not parsed")
+	}
+}
+
 var defaultHeaderMatcherTests = []struct {
 	name     string
 	in       string
