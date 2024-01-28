@@ -47,8 +47,7 @@ var wktSchemas = map[string]schemaCore{
 		Type: "string",
 	},
 	".google.protobuf.Timestamp": {
-		Type:   "string",
-		Format: "date-time",
+		Type: "object",
 	},
 	".google.protobuf.Duration": {
 		Type: "string",
