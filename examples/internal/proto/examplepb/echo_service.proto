@@ -41,7 +41,6 @@ message SimpleMessage {
   }
   string resource_id = 8;
   NestedMessage n_id = 9;
-
 }
 
 // DynamicMessage represents a message which can have its structure

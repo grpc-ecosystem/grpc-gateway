@@ -100,40 +100,6 @@ func normalizeFieldPath(msgValue protoreflect.Message, fieldPath []string) []str
 	return newFieldPath
 }
 
-func findFieldFromPath(msgValue protoreflect.Message, fieldPath []string) (protoreflect.Message, protoreflect.FieldDescriptor, []string, error) {
-	if len(fieldPath) < 1 {
-		return nil, nil, nil, errors.New("no field path")
-	}
-
-	newFieldPath := make([]string, 0, len(fieldPath))
-	for i, fieldName := range fieldPath {
-		fields := msgValue.Descriptor().Fields()
-		fieldDesc := fields.ByTextName(fieldName)
-		if fieldDesc == nil {
-			fieldDesc = fields.ByJSONName(fieldName)
-		}
-		if fieldDesc == nil {
-			return nil, nil, fieldPath, nil
-		}
-
-		newFieldPath = append(newFieldPath, string(fieldDesc.Name()))
-
-		// If this is the last element, we're done
-		if i == len(fieldPath)-1 {
-			return msgValue, fieldDesc, newFieldPath, nil
-		}
-
-		if fieldDesc.Message() == nil || fieldDesc.Cardinality() == protoreflect.Repeated {
-			return nil, nil, nil, fmt.Errorf("invalid path %v: %q is not a message", fieldPath, fieldName)
-		}
-
-		// Get the nested message
-		msgValue = msgValue.Mutable(fieldDesc).Message()
-	}
-
-	return nil, nil, nil, fmt.Errorf("invalid path %v", fieldPath)
-}
-
 func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
 	if len(fieldPath) < 1 {
 		return errors.New("no field path")
