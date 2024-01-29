@@ -156,6 +156,24 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nId.nId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nId.val",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -272,6 +290,24 @@
           },
           {
             "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nId.nId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nId.val",
             "in": "query",
             "required": false,
             "type": "string"
@@ -428,6 +464,24 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nId.nId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nId.val",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -449,6 +503,17 @@
         }
       },
       "description": "Embedded represents a message embedded in SimpleMessage."
+    },
+    "examplepbUnannotatedNestedMessage": {
+      "type": "object",
+      "properties": {
+        "nId": {
+          "type": "string"
+        },
+        "val": {
+          "type": "string"
+        }
+      }
     },
     "examplepbUnannotatedSimpleMessage": {
       "type": "object",
@@ -485,6 +550,12 @@
         },
         "no": {
           "$ref": "#/definitions/examplepbUnannotatedEmbedded"
+        },
+        "resourceId": {
+          "type": "string"
+        },
+        "nId": {
+          "$ref": "#/definitions/examplepbUnannotatedNestedMessage"
         }
       },
       "description": "A simple message with many types",

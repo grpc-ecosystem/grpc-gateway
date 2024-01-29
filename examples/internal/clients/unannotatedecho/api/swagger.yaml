@@ -119,6 +119,24 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
+      - name: "nId.nId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NIdNId"
+        x-optionalDataType: "String"
+      - name: "nId.val"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NIdVal"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -220,6 +238,24 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
+      - name: "nId.nId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NIdNId"
+        x-optionalDataType: "String"
+      - name: "nId.val"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
         200:
@@ -355,6 +391,24 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
+      - name: "nId.nId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NIdNId"
+        x-optionalDataType: "String"
+      - name: "nId.val"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NIdVal"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -394,6 +448,13 @@ definitions:
       note:
         type: "string"
     description: "Embedded represents a message embedded in SimpleMessage."
+  examplepbUnannotatedNestedMessage:
+    type: "object"
+    properties:
+      nId:
+        type: "string"
+      val:
+        type: "string"
   examplepbUnannotatedSimpleMessage:
     type: "object"
     required:
@@ -422,6 +483,10 @@ definitions:
         format: "int64"
       "no":
         $ref: "#/definitions/examplepbUnannotatedEmbedded"
+      resourceId:
+        type: "string"
+      nId:
+        $ref: "#/definitions/examplepbUnannotatedNestedMessage"
     externalDocs:
       description: "Find out more about UnannotatedSimpleMessage"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
