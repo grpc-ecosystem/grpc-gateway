@@ -79,6 +79,7 @@ func normalizeFieldPath(msgValue protoreflect.Message, fieldPath []string) []str
 			fieldDesc = fields.ByJSONName(fieldName)
 		}
 		if fieldDesc == nil {
+			// return initial field path values if no matching  message field was found
 			return fieldPath
 		}
 
@@ -89,6 +90,7 @@ func normalizeFieldPath(msgValue protoreflect.Message, fieldPath []string) []str
 			break
 		}
 
+		// Only singular message fields are allowed
 		if fieldDesc.Message() == nil || fieldDesc.Cardinality() == protoreflect.Repeated {
 			return fieldPath
 		}
