@@ -1150,8 +1150,7 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 					Name:     "a_timestamp",
 					In:       "query",
 					Required: false,
-					Type:     "string",
-					Format:   "date-time",
+					Type:     "object",
 				},
 			},
 		},
@@ -4413,8 +4412,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type:   "string",
-					Format: "date-time",
+					Type: "object",
 				},
 			},
 		},
