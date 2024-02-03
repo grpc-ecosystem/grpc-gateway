@@ -3,7 +3,7 @@ package runtime_test
 import (
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/davidhong1/grpc-gateway/v2/runtime"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/timestamppb"

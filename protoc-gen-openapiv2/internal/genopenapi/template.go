@@ -16,9 +16,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	"github.com/davidhong1/grpc-gateway/v2/internal/casing"
+	"github.com/davidhong1/grpc-gateway/v2/internal/descriptor"
+	openapi_options "github.com/davidhong1/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/grpc/grpclog"

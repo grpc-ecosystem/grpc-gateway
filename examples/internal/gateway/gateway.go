@@ -3,13 +3,14 @@ package gateway
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
-	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone"
-	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/davidhong1/grpc-gateway/v2/examples/internal/proto/examplepb"
+	standalone "github.com/davidhong1/grpc-gateway/v2/examples/internal/proto/standalone"
+	gwruntime "github.com/davidhong1/grpc-gateway/v2/runtime"
 	_ "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 )

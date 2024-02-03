@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho"
+	"github.com/davidhong1/grpc-gateway/v2/examples/internal/clients/abe"
+	"github.com/davidhong1/grpc-gateway/v2/examples/internal/clients/echo"
+	"github.com/davidhong1/grpc-gateway/v2/examples/internal/clients/unannotatedecho"
 	"github.com/rogpeppe/fastuuid"
 )
 

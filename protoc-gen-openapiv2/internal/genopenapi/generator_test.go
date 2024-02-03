@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/davidhong1/grpc-gateway/v2/internal/descriptor"
+	"github.com/davidhong1/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"github.com/google/go-cmp/cmp"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"gopkg.in/yaml.v3"
 
 	"google.golang.org/protobuf/encoding/prototext"

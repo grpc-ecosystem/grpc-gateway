@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	examples "github.com/davidhong1/grpc-gateway/v2/examples/internal/proto/examplepb"
 )
 
 // Implements of ResponseBodyServiceServer

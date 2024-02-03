@@ -7,9 +7,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"github.com/davidhong1/grpc-gateway/v2/internal/casing"
+	"github.com/davidhong1/grpc-gateway/v2/internal/descriptor"
+	"github.com/davidhong1/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc/grpclog"
 )
 

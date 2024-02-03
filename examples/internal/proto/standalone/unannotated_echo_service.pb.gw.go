@@ -13,7 +13,7 @@ import (
 	"io"
 	"net/http"
 
-	extExamplepb "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	extExamplepb "github.com/davidhong1/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc"
