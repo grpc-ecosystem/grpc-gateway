@@ -432,6 +432,10 @@ func getMapParamKey(t descriptorpb.FieldDescriptorProto_Type) (string, error) {
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
 func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, ms messageMap, e enumMap, refs refMap) {
 	for _, svc := range s {
+		if !isVisible(getServiceVisibilityOption(svc), reg) {
+			continue
+		}
+
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
 			{
