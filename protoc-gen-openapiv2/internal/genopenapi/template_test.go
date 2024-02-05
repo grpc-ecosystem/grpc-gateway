@@ -10703,3 +10703,89 @@ func TestMergeTags(t *testing.T) {
 		})
 	}
 }
+
+func TestApiVisibilityOption(t *testing.T) {
+	reg := descriptor.NewRegistry()
+
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	methodExample := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+
+	serviceOptions := &descriptorpb.ServiceOptions{}
+	proto.SetExtension(serviceOptions, visibility.E_ApiVisibility, &visibility.VisibilityRule{
+		Restriction: "INTERNAL",
+	})
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:    proto.String("ExampleService"),
+		Options: serviceOptions,
+		Method:  []*descriptorpb.MethodDescriptorProto{methodExample},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: methodExample,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/example",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+	})
+	if err != nil {
+		t.Errorf("failed to reg.Load(req): %v", err)
+	}
+
+	actual, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	if len(actual.Definitions) != 0 {
+		t.Fatal("Definition should be excluded by api visibility option")
+	}
+}
