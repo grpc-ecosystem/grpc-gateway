@@ -12,7 +12,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
-	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -222,56 +221,6 @@ func WithDisablePathLengthFallback() ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.disablePathLengthFallback = true
 	}
-}
-
-// WithHealthEndpointAt returns a ServeMuxOption that will add an endpoint to the created ServeMux at the path specified by endpointPath.
-// When called the handler will forward the request to the upstream grpc service health check (defined in the
-// gRPC Health Checking Protocol).
-//
-// See here https://grpc-ecosystem.github.io/grpc-gateway/docs/operations/health_check/ for more information on how
-// to setup the protocol in the grpc server.
-//
-// If you define a service as query parameter, this will also be forwarded as service in the HealthCheckRequest.
-func WithHealthEndpointAt(healthCheckClient grpc_health_v1.HealthClient, endpointPath string) ServeMuxOption {
-	return func(s *ServeMux) {
-		// error can be ignored since pattern is definitely valid
-		_ = s.HandlePath(
-			http.MethodGet, endpointPath, func(w http.ResponseWriter, r *http.Request, _ map[string]string,
-			) {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
-
-				resp, err := healthCheckClient.Check(r.Context(), &grpc_health_v1.HealthCheckRequest{
-					Service: r.URL.Query().Get("service"),
-				})
-				if err != nil {
-					s.errorHandler(r.Context(), s, outboundMarshaler, w, r, err)
-					return
-				}
-
-				w.Header().Set("Content-Type", "application/json")
-
-				if resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
-					switch resp.GetStatus() {
-					case grpc_health_v1.HealthCheckResponse_NOT_SERVING, grpc_health_v1.HealthCheckResponse_UNKNOWN:
-						err = status.Error(codes.Unavailable, resp.String())
-					case grpc_health_v1.HealthCheckResponse_SERVICE_UNKNOWN:
-						err = status.Error(codes.NotFound, resp.String())
-					}
-
-					s.errorHandler(r.Context(), s, outboundMarshaler, w, r, err)
-					return
-				}
-
-				_ = outboundMarshaler.NewEncoder(w).Encode(resp)
-			})
-	}
-}
-
-// WithHealthzEndpoint returns a ServeMuxOption that will add a /healthz endpoint to the created ServeMux.
-//
-// See WithHealthEndpointAt for the general implementation.
-func WithHealthzEndpoint(healthCheckClient grpc_health_v1.HealthClient) ServeMuxOption {
-	return WithHealthEndpointAt(healthCheckClient, "/healthz")
 }
 
 // NewServeMux returns a new ServeMux whose internal mapping is empty.
