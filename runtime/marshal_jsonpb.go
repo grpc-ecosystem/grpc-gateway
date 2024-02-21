@@ -156,7 +156,13 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 		return json.Marshal(m)
 	}
 	if enum, ok := rv.Interface().(protoEnum); ok && !j.UseEnumNumbers {
+		if j.Indent != "" {
+			return json.MarshalIndent(enum.String(), "", j.Indent)
+		}
 		return json.Marshal(enum.String())
+	}
+	if j.Indent != "" {
+		return json.MarshalIndent(rv.Interface(), "", j.Indent)
 	}
 	return json.Marshal(rv.Interface())
 }
