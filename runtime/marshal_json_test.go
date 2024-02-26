@@ -154,7 +154,9 @@ func TestJSONBuiltinEncoderFields(t *testing.T) {
 			if e, ok := enc.(*json.Encoder); ok {
 				e.SetIndent("", fixt.indent)
 			} else {
-				continue
+				// By default, JSONBuiltin.NewEncoder returns *json.Encoder as runtime.Encoder. Otherwise it's better to fail the tests
+				// than skip fixtures with non empty indent
+				t.Errorf("enc is not *json.Encoder, unable to set indentation settings; it is necessary to implement the encoder configuration")
 			}
 		}
 
