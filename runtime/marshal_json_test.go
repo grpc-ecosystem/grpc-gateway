@@ -285,6 +285,11 @@ var (
 			data: (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
 			json: "1",
 		},
+		{
+			data:   (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
+			indent: defaultIndent,
+			json:   "1",
+		},
 		{data: map[string]int{"FOO": 0, "BAR": -1}, json: "{\"BAR\":-1,\"FOO\":0}"},
 		{data: map[string]int{"FOO": 0, "BAR": -1}, indent: defaultIndent, json: "{\n  \"BAR\": -1,\n  \"FOO\": 0\n}"},
 		{data: struct {
