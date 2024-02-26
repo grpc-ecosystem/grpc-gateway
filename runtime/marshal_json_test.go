@@ -47,12 +47,16 @@ func TestJSONBuiltinMarshalField(t *testing.T) {
 	for _, fixt := range builtinFieldFixtures {
 		if len(fixt.indent) == 0 {
 			buf, err = m.Marshal(fixt.data)
+			if err != nil {
+				t.Errorf("m.Marshal(%v) failed with %v; want success", fixt.data, err)
+			}
 		} else {
 			buf, err = m.MarshalIndent(fixt.data, "", fixt.indent)
+			if err != nil {
+				t.Errorf("m.MarshalIndent(%v, \"\", \"%s\") failed with %v; want success", fixt.data, fixt.indent, err)
+			}
 		}
-		if err != nil {
-			t.Errorf("m.Marshal(%v) failed with %v; want success", fixt.data, err)
-		}
+
 		if got, want := string(buf), fixt.json; got != want {
 			t.Errorf("got = %q; want %q; data = %#v", got, want, fixt.data)
 		}
@@ -154,9 +158,10 @@ func TestJSONBuiltinEncoderFields(t *testing.T) {
 			if e, ok := enc.(*json.Encoder); ok {
 				e.SetIndent("", fixt.indent)
 			} else {
-				// By default, JSONBuiltin.NewEncoder returns *json.Encoder as runtime.Encoder. Otherwise it's better to fail the tests
-				// than skip fixtures with non empty indent
-				t.Errorf("enc is not *json.Encoder, unable to set indentation settings; it is necessary to implement the encoder configuration")
+				// By default, JSONBuiltin.NewEncoder returns *json.Encoder as runtime.Encoder.
+				// Otherwise it's better to fail the tests than skip fixtures with non empty indent
+				t.Errorf("enc is not *json.Encoder, unable to set indentation settings. " +
+					"This failure prevents testing the correctness of indentation in JSON output.")
 			}
 		}
 
