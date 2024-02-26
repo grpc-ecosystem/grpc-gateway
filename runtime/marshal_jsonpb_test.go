@@ -146,6 +146,7 @@ func TestJSONPbMarshalFields(t *testing.T) {
 		}
 	}
 
+	// Reset m.Indent to ensure no unintended indentation settings carry over to subsequent tests
 	m.Indent = ""
 
 	nums := []examplepb.NumericEnum{examplepb.NumericEnum_ZERO, examplepb.NumericEnum_ONE}

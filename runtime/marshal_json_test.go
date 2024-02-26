@@ -280,9 +280,17 @@ var (
 		},
 		{data: map[string]int{"FOO": 0, "BAR": -1}, json: "{\"BAR\":-1,\"FOO\":0}"},
 		{data: map[string]int{"FOO": 0, "BAR": -1}, indent: defaultIndent, json: "{\n  \"BAR\": -1,\n  \"FOO\": 0\n}"},
-		{data: struct{A string;	B int; C map[string]int}{A: "Go", B: 3, C: map[string]int{"FOO": 0, "BAR": -1}},
+		{data: struct {
+			A string
+			B int
+			C map[string]int
+		}{A: "Go", B: 3, C: map[string]int{"FOO": 0, "BAR": -1}},
 			json: "{\"A\":\"Go\",\"B\":3,\"C\":{\"BAR\":-1,\"FOO\":0}}"},
-		{data: struct{A string;	B int; C map[string]int}{A: "Go", B: 3, C: map[string]int{"FOO": 0, "BAR": -1}}, indent: defaultIndent,
+		{data: struct {
+			A string
+			B int
+			C map[string]int
+		}{A: "Go", B: 3, C: map[string]int{"FOO": 0, "BAR": -1}}, indent: defaultIndent,
 			json: "{\n  \"A\": \"Go\",\n  \"B\": 3,\n  \"C\": {\n    \"BAR\": -1,\n    \"FOO\": 0\n  }\n}"},
 	}
 	builtinKnownErrors = []struct {
