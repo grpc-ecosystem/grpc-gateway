@@ -30,10 +30,6 @@ func (*JSONPb) ContentType(_ interface{}) string {
 
 // Marshal marshals "v" into JSON.
 func (j *JSONPb) Marshal(v interface{}) ([]byte, error) {
-	if _, ok := v.(proto.Message); !ok {
-		return j.marshalNonProtoField(v)
-	}
-
 	var buf bytes.Buffer
 	if err := j.marshalTo(&buf, v); err != nil {
 		return nil, err
@@ -48,9 +44,17 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 		if err != nil {
 			return err
 		}
+		if j.Indent != "" {
+			b := &bytes.Buffer{}
+			if err := json.Indent(b, buf, "", j.Indent); err != nil {
+				return err
+			}
+			buf = b.Bytes()
+		}
 		_, err = w.Write(buf)
 		return err
 	}
+
 	b, err := j.MarshalOptions.Marshal(p)
 	if err != nil {
 		return err
@@ -150,19 +154,10 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 			}
 			m[fmt.Sprintf("%v", k.Interface())] = (*json.RawMessage)(&buf)
 		}
-		if j.Indent != "" {
-			return json.MarshalIndent(m, "", j.Indent)
-		}
 		return json.Marshal(m)
 	}
 	if enum, ok := rv.Interface().(protoEnum); ok && !j.UseEnumNumbers {
-		if j.Indent != "" {
-			return json.MarshalIndent(enum.String(), "", j.Indent)
-		}
 		return json.Marshal(enum.String())
-	}
-	if j.Indent != "" {
-		return json.MarshalIndent(rv.Interface(), "", j.Indent)
 	}
 	return json.Marshal(rv.Interface())
 }
