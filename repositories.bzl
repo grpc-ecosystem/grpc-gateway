@@ -1091,8 +1091,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_compute",
         importpath = "cloud.google.com/go/compute",
-        sum = "h1:phWcR2eWzRJaL/kOiJwfFsPs4BaKq1j6vnpZrc1YlVg=",
-        version = "v1.24.0",
+        sum = "h1:6sVlXXBmbd7jNX0Ipq0trII3e4n1/MsADLK6a+aiVlk=",
+        version = "v1.23.3",
     )
     go_repository(
         name = "com_google_cloud_go_compute_metadata",
@@ -1781,20 +1781,20 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:9+tzLLstTlPTRyJTh+ah5wIMsBW5c4tQwGTN3thOW9Y=",
-        version = "v0.0.0-20240213162025-012b6fc9bca9",
+        sum = "h1:KAeGQVN3M9nD0/bQXnr/ClcEMJ968gUXJQ9pwfSynuQ=",
+        version = "v0.0.0-20240123012728-ef4313101c80",
     )
     go_repository(
         name = "org_golang_google_genproto_googleapis_api",
         importpath = "google.golang.org/genproto/googleapis/api",
-        sum = "h1:jFNzHPIeuzhdRwVhbZdiym9q0ory/xY3sA+v2wPg8I0=",
-        version = "v0.0.0-20240227224415-6ceb2ff114de",
+        sum = "h1:SO1wX9btGFrwj9EzH3ocqfwiPVOxfv4ggAJajzlHA5s=",
+        version = "v0.0.0-20240228224816-df926f6c8641",
     )
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
         importpath = "google.golang.org/genproto/googleapis/rpc",
-        sum = "h1:cZGRis4/ot9uVm639a+rHCUaG0JJHEsdyzSQTMX+suY=",
-        version = "v0.0.0-20240227224415-6ceb2ff114de",
+        sum = "h1:tq9lBHtxIekiS924gvyj9nEwSKrkvcpIKLl2zA46pyk=",
+        version = "v0.0.0-20240228201840-1f18d85a4ec2",
     )
     go_repository(
         name = "org_golang_google_grpc",
