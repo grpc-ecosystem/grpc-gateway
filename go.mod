@@ -8,8 +8,8 @@ require (
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.17.0
 	golang.org/x/text v0.14.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de
+	google.golang.org/genproto/googleapis/api v0.0.0-20240228224816-df926f6c8641
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240228201840-1f18d85a4ec2
 	google.golang.org/grpc v1.62.0
 	google.golang.org/protobuf v1.32.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -21,6 +21,5 @@ require (
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/genproto v0.0.0-20240213162025-012b6fc9bca9 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
