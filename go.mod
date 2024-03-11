@@ -9,7 +9,7 @@ require (
 	golang.org/x/oauth2 v0.18.0
 	golang.org/x/text v0.14.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240311132316-a219d84964c2
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240308144416-29370a3891b7
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240311132316-a219d84964c2
 	google.golang.org/grpc v1.62.1
 	google.golang.org/protobuf v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
