@@ -92,7 +92,6 @@ func logRequestBody(h http.Handler) http.Handler {
 			return
 		}
 		clonedR := r.Clone(r.Context())
-		r.Body = io.NopCloser(bytes.NewReader(body))
 		clonedR.Body = io.NopCloser(bytes.NewReader(body))
 
 		h.ServeHTTP(lw, clonedR)
