@@ -1,7 +1,9 @@
 package gateway
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"path"
 	"strings"
@@ -27,7 +29,7 @@ func openAPIServer(dir string) http.HandlerFunc {
 	}
 }
 
-// allowCORS allows Cross Origin Resoruce Sharing from any origin.
+// allowCORS allows Cross Origin Resource Sharing from any origin.
 // Don't do this without consideration in production systems.
 func allowCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -63,4 +65,39 @@ func healthzServer(conn *grpc.ClientConn) http.HandlerFunc {
 		}
 		fmt.Fprintln(w, "ok")
 	}
+}
+
+type logResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rsp *logResponseWriter) WriteHeader(code int) {
+	rsp.statusCode = code
+	rsp.ResponseWriter.WriteHeader(code)
+}
+
+func newLogResponseWriter(w http.ResponseWriter) *logResponseWriter {
+	return &logResponseWriter{w, http.StatusOK}
+}
+
+// logRequestBody logs the request body when the response status code is not 200.
+// This addresses the issue of being unable to retrieve the request body in the customErrorHandler middleware.
+func logRequestBody(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		lw := newLogResponseWriter(w)
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("grpc server read request body err %+v", err), http.StatusBadRequest)
+			return
+		}
+		clonedR := r.Clone(r.Context())
+		clonedR.Body = io.NopCloser(bytes.NewReader(body))
+
+		h.ServeHTTP(lw, clonedR)
+
+		if lw.statusCode != http.StatusOK {
+			grpclog.Errorf("http error %+v request body %+v", lw.statusCode, string(body))
+		}
+	})
 }

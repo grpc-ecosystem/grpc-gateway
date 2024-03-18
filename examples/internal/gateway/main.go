@@ -58,7 +58,7 @@ func Run(ctx context.Context, opts Options) error {
 
 	s := &http.Server{
 		Addr:    opts.Addr,
-		Handler: allowCORS(mux),
+		Handler: logRequestBody(allowCORS(mux)),
 	}
 	go func() {
 		<-ctx.Done()
