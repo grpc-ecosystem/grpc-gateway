@@ -17,13 +17,8 @@ import (
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
-	f, ok := w.(http.Flusher)
-	if !ok {
-		grpclog.Infof("Flush not supported in %T", w)
-		http.Error(w, "unexpected type of web server", http.StatusInternalServerError)
-		return
-	}
-
+	// nolint: bodyclose
+	rc := http.NewResponseController(w)
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
 		grpclog.Infof("Failed to extract ServerMetadata from context")
@@ -94,7 +89,16 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			grpclog.Infof("Failed to send delimiter chunk: %v", err)
 			return
 		}
-		f.Flush()
+		err = rc.Flush()
+		if err != nil {
+			if errors.Is(err, http.ErrNotSupported) {
+				grpclog.Infof("Flush not supported in %T", w)
+				http.Error(w, "unexpected type of web server", http.StatusInternalServerError)
+				return
+			}
+			grpclog.Infof("Failed to flush response to client: %v", err)
+			return
+		}
 	}
 }
 

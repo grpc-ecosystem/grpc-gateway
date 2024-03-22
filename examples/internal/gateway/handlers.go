@@ -77,6 +77,12 @@ func (rsp *logResponseWriter) WriteHeader(code int) {
 	rsp.ResponseWriter.WriteHeader(code)
 }
 
+// Unwrap returns the original http.ResponseWriter. This is necessary
+// to expose Flush() and Push() on the underlying response writer.
+func (rsp *logResponseWriter) Unwrap() http.ResponseWriter {
+	return rsp.ResponseWriter
+}
+
 func newLogResponseWriter(w http.ResponseWriter) *logResponseWriter {
 	return &logResponseWriter{w, http.StatusOK}
 }
