@@ -408,7 +408,7 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
             doc = "if set, disables generation of default responses. Useful" +
                   " if you have to support custom response codes that are" +
-                  " not 200."
+                  " not 200.",
         ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
