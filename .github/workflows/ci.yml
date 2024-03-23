@@ -125,7 +125,7 @@ jobs:
         with:
           go-version: 1.22
           check-latest: true
-      - uses: dominikh/staticcheck-action@v1.3.0
+      - uses: dominikh/staticcheck-action@ba605356b4b29a60e87ab9404b712f3461e566dc # v1.3.0
         with:
           install-go: false
   fuzz:
