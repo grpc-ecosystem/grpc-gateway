@@ -192,7 +192,6 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 	}
 
 	if timeout != 0 {
-		//nolint:govet  // The context outlives this function
 		ctx, _ = context.WithTimeout(ctx, timeout)
 	}
 	if len(pairs) == 0 {

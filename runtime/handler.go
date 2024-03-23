@@ -17,7 +17,6 @@ import (
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
-	// nolint: bodyclose
 	rc := http.NewResponseController(w)
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {

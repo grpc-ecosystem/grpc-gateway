@@ -117,15 +117,17 @@ jobs:
       - run: PATH=$PATH:~/go/bin buf lint
       - run: PATH=$PATH:~/go/bin buf format -w && git diff --exit-code
       - run: PATH=$PATH:~/go/bin buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=main'
-  golangci:
-    permissions:
-      pull-requests: read # for golangci/golangci-lint-action to fetch pull requests
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: golangci/golangci-lint-action@3cfe3a4abbb849e10058ce4af15d205b6da42804 # v4
+      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # v5
         with:
-          version: v1.54.2
+          go-version: 1.22
+          check-latest: true
+      - uses: dominikh/staticcheck-action@v1.3.0
+        with:
+          install-go: false
   fuzz:
     runs-on: ubuntu-latest
     steps:
