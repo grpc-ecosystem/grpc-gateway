@@ -36,6 +36,9 @@ jobs:
           build --local_cpu_resources=2    # Github runners have 2 vCPU
           EOF
       - run: bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
+        # Required with newer versions of Git
+        # https://github.com/actions/checkout/issues/766
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: |
           git add .
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then
@@ -65,6 +68,9 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
+        # Required with newer versions of Git
+        # https://github.com/actions/checkout/issues/766
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: |
           git add .
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then
