@@ -510,7 +510,6 @@ message JSONSchema {
   // field 18 is reserved for 'additionalItems', omitted from OpenAPI v2.
   reserved 18;
   // field 19 is reserved for 'items', but in OpenAPI-specific way.
-  // TODO(ivucica): add 'items'?
   reserved 19;
   uint64 max_items = 20;
   uint64 min_items = 21;
@@ -578,6 +577,45 @@ message JSONSchema {
   // extra functionality that is not covered by the standard OpenAPI Specification.
   // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 48;
+
+  // `items` is used exclusively for when `type` is `ARRAY`.
+  // This is useful when using `disable_default_responses=true` so the default response object is not generated and the array responses are not automatically handled.
+  // See https://swagger.io/specification/v2/#response-object-examples
+  // For example:
+  // ```
+  // responses: {
+  //   key: "200",
+  //   value: {
+  //     description: "List Foos"
+  //     schema: {
+  //       json_schema: {
+  //         type: ARRAY;
+  //         items: {
+  //           ref: ".some.package.v1.Foo";
+  //         };
+  //       }
+  //     }
+  //   };
+  // };
+  // ```
+  // Note: For the gateway you should still define the `response_body` parameter on the google.api.http option for the operation, for example:
+  // ```
+  // message Foo {
+  //   string bar = 1;
+  // }
+  //
+  // message ListFoosResponse {
+  //   repeated Foo foos = 1;
+  // }
+  //
+  // rpc ListFoos(google.protobuf.Empty) returns (ListFoosResponse) {
+  //   option (google.api.http) = {
+  //     get: "/foo";
+  //     response_body: "foos";
+  //   };
+  // };
+  // ```
+  JSONSchema items = 50;
 }
 
 // `Tag` is a representation of OpenAPI v2 specification's Tag object.
