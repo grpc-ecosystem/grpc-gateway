@@ -94,7 +94,7 @@ func RegisterFoo2ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // RegisterFoo2ServiceHandlerFromEndpoint is same as RegisterFoo2ServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterFoo2ServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}

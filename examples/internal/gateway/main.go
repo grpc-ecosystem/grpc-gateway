@@ -35,7 +35,7 @@ func Run(ctx context.Context, opts Options) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	conn, err := dial(ctx, opts.GRPCServer.Network, opts.GRPCServer.Addr)
+	conn, err := dial(opts.GRPCServer.Network, opts.GRPCServer.Addr)
 	if err != nil {
 		return err
 	}
