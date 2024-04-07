@@ -106,7 +106,8 @@ var wktSchemas = map[string]schemaCore{
 	},
 }
 
-func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []string) {
+func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) interface{} {
+	var names []string
 	for _, value := range enum.GetValue() {
 		if !isVisible(getEnumValueVisibilityOption(value), reg) {
 			continue
@@ -124,7 +125,8 @@ func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []str
 	return nil
 }
 
-func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) (numbers []int) {
+func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) interface{} {
+	var numbers []int
 	for _, value := range enum.GetValue() {
 		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
 			continue
