@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/example/foo": {
+    "/v1/example/enum-with-single-value/echo": {
       "post": {
         "operationId": "EnumWithSingleValueService_Echo",
         "responses": {

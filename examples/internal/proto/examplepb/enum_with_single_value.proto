@@ -10,7 +10,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 service EnumWithSingleValueService {
   rpc Echo(EnumWithSingleValueEchoRequest) returns (EnumWithSingleValueEchoResponse) {
     option (google.api.http) = {
-      post: "/v1/example/foo"
+      post: "/v1/example/enum-with-single-value/echo"
       body: "*"
     };
   }
