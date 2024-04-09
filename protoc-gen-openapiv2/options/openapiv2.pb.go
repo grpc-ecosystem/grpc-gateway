@@ -78,7 +78,7 @@ func (Scheme) EnumDescriptor() ([]byte, []int) {
 	return file_protoc_gen_openapiv2_options_openapiv2_proto_rawDescGZIP(), []int{0}
 }
 
-// `Type` is a a supported HTTP header type.
+// `Type` is a supported HTTP header type.
 // See https://swagger.io/specification/v2/#parameterType.
 type HeaderParameter_Type int32
 
