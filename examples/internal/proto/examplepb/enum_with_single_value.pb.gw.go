@@ -71,7 +71,7 @@ func RegisterEnumWithSingleValueServiceHandlerServer(ctx context.Context, mux *r
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueService/Echo", runtime.WithHTTPPathPattern("/v1/example/foo"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueService/Echo", runtime.WithHTTPPathPattern("/v1/example/enum-with-single-value/echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -135,7 +135,7 @@ func RegisterEnumWithSingleValueServiceHandlerClient(ctx context.Context, mux *r
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueService/Echo", runtime.WithHTTPPathPattern("/v1/example/foo"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueService/Echo", runtime.WithHTTPPathPattern("/v1/example/enum-with-single-value/echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -155,7 +155,7 @@ func RegisterEnumWithSingleValueServiceHandlerClient(ctx context.Context, mux *r
 }
 
 var (
-	pattern_EnumWithSingleValueService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "foo"}, ""))
+	pattern_EnumWithSingleValueService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "enum-with-single-value", "echo"}, ""))
 )
 
 var (
