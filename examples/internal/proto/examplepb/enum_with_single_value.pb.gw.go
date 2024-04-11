@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_EnumWithSingleValueService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client EnumWithSingleValueServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq EnumWithSingleValueEchoRequest
+	var protoReq EnumWithSingleValueServiceEchoRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
@@ -45,7 +45,7 @@ func request_EnumWithSingleValueService_Echo_0(ctx context.Context, marshaler ru
 }
 
 func local_request_EnumWithSingleValueService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server EnumWithSingleValueServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq EnumWithSingleValueEchoRequest
+	var protoReq EnumWithSingleValueServiceEchoRequest
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {

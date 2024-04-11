@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/examplepbEnumWithSingleValueEchoResponse"
+              "$ref": "#/definitions/examplepbEnumWithSingleValueServiceEchoResponse"
             }
           },
           "default": {
@@ -39,7 +39,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/examplepbEnumWithSingleValueEchoRequest"
+              "$ref": "#/definitions/examplepbEnumWithSingleValueServiceEchoRequest"
             }
           }
         ],
@@ -54,7 +54,7 @@
       "type": "string",
       "description": "EnumWithSingleValue is an enum with a single value. Since it has just a single value\nthe `enum` field should be omitted in the generated OpenAPI spec for the type when\nthe omit_enum_default_value option is set to true."
     },
-    "examplepbEnumWithSingleValueEchoRequest": {
+    "examplepbEnumWithSingleValueServiceEchoRequest": {
       "type": "object",
       "properties": {
         "value": {
@@ -62,7 +62,7 @@
         }
       }
     },
-    "examplepbEnumWithSingleValueEchoResponse": {
+    "examplepbEnumWithSingleValueServiceEchoResponse": {
       "type": "object"
     },
     "protobufAny": {

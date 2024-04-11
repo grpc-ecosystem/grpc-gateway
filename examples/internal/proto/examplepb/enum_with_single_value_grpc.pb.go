@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EnumWithSingleValueServiceClient interface {
-	Echo(ctx context.Context, in *EnumWithSingleValueEchoRequest, opts ...grpc.CallOption) (*EnumWithSingleValueEchoResponse, error)
+	Echo(ctx context.Context, in *EnumWithSingleValueServiceEchoRequest, opts ...grpc.CallOption) (*EnumWithSingleValueServiceEchoResponse, error)
 }
 
 type enumWithSingleValueServiceClient struct {
@@ -33,8 +33,8 @@ func NewEnumWithSingleValueServiceClient(cc grpc.ClientConnInterface) EnumWithSi
 	return &enumWithSingleValueServiceClient{cc}
 }
 
-func (c *enumWithSingleValueServiceClient) Echo(ctx context.Context, in *EnumWithSingleValueEchoRequest, opts ...grpc.CallOption) (*EnumWithSingleValueEchoResponse, error) {
-	out := new(EnumWithSingleValueEchoResponse)
+func (c *enumWithSingleValueServiceClient) Echo(ctx context.Context, in *EnumWithSingleValueServiceEchoRequest, opts ...grpc.CallOption) (*EnumWithSingleValueServiceEchoResponse, error) {
+	out := new(EnumWithSingleValueServiceEchoResponse)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,14 +46,14 @@ func (c *enumWithSingleValueServiceClient) Echo(ctx context.Context, in *EnumWit
 // All implementations should embed UnimplementedEnumWithSingleValueServiceServer
 // for forward compatibility
 type EnumWithSingleValueServiceServer interface {
-	Echo(context.Context, *EnumWithSingleValueEchoRequest) (*EnumWithSingleValueEchoResponse, error)
+	Echo(context.Context, *EnumWithSingleValueServiceEchoRequest) (*EnumWithSingleValueServiceEchoResponse, error)
 }
 
 // UnimplementedEnumWithSingleValueServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedEnumWithSingleValueServiceServer struct {
 }
 
-func (UnimplementedEnumWithSingleValueServiceServer) Echo(context.Context, *EnumWithSingleValueEchoRequest) (*EnumWithSingleValueEchoResponse, error) {
+func (UnimplementedEnumWithSingleValueServiceServer) Echo(context.Context, *EnumWithSingleValueServiceEchoRequest) (*EnumWithSingleValueServiceEchoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
 
@@ -69,7 +69,7 @@ func RegisterEnumWithSingleValueServiceServer(s grpc.ServiceRegistrar, srv EnumW
 }
 
 func _EnumWithSingleValueService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EnumWithSingleValueEchoRequest)
+	in := new(EnumWithSingleValueServiceEchoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func _EnumWithSingleValueService_Echo_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueService/Echo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EnumWithSingleValueServiceServer).Echo(ctx, req.(*EnumWithSingleValueEchoRequest))
+		return srv.(EnumWithSingleValueServiceServer).Echo(ctx, req.(*EnumWithSingleValueServiceEchoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

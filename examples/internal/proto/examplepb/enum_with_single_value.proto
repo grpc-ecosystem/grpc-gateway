@@ -3,12 +3,11 @@ syntax = "proto3";
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 service EnumWithSingleValueService {
-  rpc Echo(EnumWithSingleValueEchoRequest) returns (EnumWithSingleValueEchoResponse) {
+  rpc Echo(EnumWithSingleValueServiceEchoRequest) returns (EnumWithSingleValueServiceEchoResponse) {
     option (google.api.http) = {
       post: "/v1/example/enum-with-single-value/echo"
       body: "*"
@@ -20,12 +19,12 @@ service EnumWithSingleValueService {
 // the `enum` field should be omitted in the generated OpenAPI spec for the type when
 // the omit_enum_default_value option is set to true.
 enum EnumWithSingleValue {
-  ONLY_VALUE = 0;
+  ENUM_WITH_SINGLE_VALUE_UNSPECIFIED = 0;
 }
 
 
-message EnumWithSingleValueEchoRequest {
+message EnumWithSingleValueServiceEchoRequest {
   EnumWithSingleValue value = 1;
 }
 
-message EnumWithSingleValueEchoResponse {}
+message EnumWithSingleValueServiceEchoResponse {}
