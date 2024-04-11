@@ -22,7 +22,6 @@ enum EnumWithSingleValue {
   ENUM_WITH_SINGLE_VALUE_UNSPECIFIED = 0;
 }
 
-
 message EnumWithSingleValueServiceEchoRequest {
   EnumWithSingleValue value = 1;
 }
