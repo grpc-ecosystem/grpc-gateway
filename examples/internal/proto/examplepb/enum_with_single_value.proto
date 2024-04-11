@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+service EnumWithSingleValueService {
+  rpc Echo(EnumWithSingleValueServiceEchoRequest) returns (EnumWithSingleValueServiceEchoResponse) {
+    option (google.api.http) = {
+      post: "/v1/example/enum-with-single-value/echo"
+      body: "*"
+    };
+  }
+}
+
+// EnumWithSingleValue is an enum with a single value. Since it has just a single value
+// the `enum` field should be omitted in the generated OpenAPI spec for the type when
+// the omit_enum_default_value option is set to true.
+enum EnumWithSingleValue {
+  ENUM_WITH_SINGLE_VALUE_UNSPECIFIED = 0;
+}
+
+message EnumWithSingleValueServiceEchoRequest {
+  EnumWithSingleValue value = 1;
+}
+
+message EnumWithSingleValueServiceEchoResponse {}
