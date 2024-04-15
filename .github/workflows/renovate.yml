@@ -64,13 +64,13 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
+        # Required with newer versions of Git
+        # https://github.com/actions/checkout/issues/766
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: make install
       - run: make clean
       - run: make generate
       - run: go mod tidy
-        # Required with newer versions of Git
-        # https://github.com/actions/checkout/issues/766
-      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: |
           git add .
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then
