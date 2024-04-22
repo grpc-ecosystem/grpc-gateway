@@ -177,7 +177,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		return
 	}
 
-	if mux.writeContentLength {
+	if !doForwardTrailers && mux.writeContentLength {
 		w.Header().Set("Content-Length", strconv.Itoa(len(buf)))
 	}
 
