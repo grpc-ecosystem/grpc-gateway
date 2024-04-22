@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/textproto"
+	"strconv"
 	"strings"
 
 	"google.golang.org/genproto/googleapis/api/httpbody"
@@ -174,6 +175,10 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		grpclog.Infof("Marshal error: %v", err)
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
+	}
+
+	if mux.writeContentLength {
+		w.Header().Set("Content-Length", strconv.Itoa(len(buf)))
 	}
 
 	if _, err = w.Write(buf); err != nil {
