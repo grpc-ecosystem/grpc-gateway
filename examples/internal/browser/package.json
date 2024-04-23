@@ -20,7 +20,7 @@
     "jasmine": "^2.4.1",
     "mout": "^1.2.4",
     "phantomjs": "^2.1.7",
-    "swagger-client": "^2.1.28",
+    "swagger-client": "^3.27.0",
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
