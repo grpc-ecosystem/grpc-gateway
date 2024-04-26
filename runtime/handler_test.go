@@ -339,6 +339,7 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 				),
 			},
 			headers: http.Header{
+				"Content-Length":    []string{"12"},
 				"Content-Type":      []string{"application/json"},
 				"Grpc-Metadata-Foo": []string{"bar"},
 				"Grpc-Metadata-Baz": []string{"qux"},
@@ -353,8 +354,9 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 				),
 			},
 			headers: http.Header{
-				"Content-Type": []string{"application/json"},
-				"Custom-Foo":   []string{"bar"},
+				"Content-Length": []string{"12"},
+				"Content-Type":   []string{"application/json"},
+				"Custom-Foo":     []string{"bar"},
 			},
 			matcher: func(key string) (string, bool) {
 				switch key {
@@ -412,8 +414,9 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 				"Te": []string{"trailers"},
 			},
 			headers: http.Header{
-				"Content-Type": []string{"application/json"},
-				"Trailer":      []string{"Grpc-Trailer-Foo,Grpc-Trailer-Baz"},
+				"Transfer-Encoding": []string{"chunked"},
+				"Content-Type":      []string{"application/json"},
+				"Trailer":           []string{"Grpc-Trailer-Foo", "Grpc-Trailer-Baz"},
 			},
 			trailer: http.Header{
 				"Grpc-Trailer-Foo": []string{"bar"},
@@ -429,7 +432,8 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 				),
 			},
 			headers: http.Header{
-				"Content-Type": []string{"application/json"},
+				"Content-Length": []string{"12"},
+				"Content-Type":   []string{"application/json"},
 			},
 		},
 		{
@@ -444,8 +448,9 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 				"Te": []string{"trailers"},
 			},
 			headers: http.Header{
-				"Content-Type": []string{"application/json"},
-				"Trailer":      []string{"Custom-Trailer-Foo"},
+				"Transfer-Encoding": []string{"chunked"},
+				"Content-Type":      []string{"application/json"},
+				"Trailer":           []string{"Custom-Trailer-Foo"},
 			},
 			trailer: http.Header{
 				"Custom-Trailer-Foo": []string{"bar"},
@@ -476,6 +481,10 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 			defer w.Body.Close()
 			if w.StatusCode != http.StatusOK {
 				t.Fatalf("StatusCode %d want %d", w.StatusCode, http.StatusOK)
+			}
+
+			if !reflect.DeepEqual(w.Header, tc.headers) {
+				t.Fatalf("Header %v want %v", w.Header, tc.headers)
 			}
 
 			if !reflect.DeepEqual(w.Trailer, tc.trailer) {
