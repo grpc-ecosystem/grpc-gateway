@@ -2,6 +2,8 @@ package runtime
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"io"
 	"net/http"
@@ -181,8 +183,25 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		w.Header().Set("Content-Length", strconv.Itoa(len(buf)))
 	}
 
-	if _, err = w.Write(buf); err != nil {
-		grpclog.Infof("Failed to write response: %v", err)
+	// Generate an Etag for any messages larger than 100 bytes.
+	// Writing the Etag in the response takes 39 bytes, so it's not worth doing for smaller messages.
+	etag := ""
+	if len(buf) > 100 {
+		h := md5.New()
+		h.Write(buf)
+		etag = hex.EncodeToString(h.Sum(nil))
+		w.Header().Set("Etag", etag)
+	}
+
+	// Check if the client has provided an Etag and if it matches the generated Etag.
+	// If it does, send a 304 Not Modified response.
+	ifNoneMatch := req.Header.Get("If-None-Match")
+	if ifNoneMatch != "" && ifNoneMatch == etag {
+		w.WriteHeader(http.StatusNotModified)
+	} else {
+		if _, err = w.Write(buf); err != nil {
+			grpclog.Infof("Failed to write response: %v", err)
+		}
 	}
 
 	if doForwardTrailers {

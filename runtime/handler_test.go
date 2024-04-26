@@ -321,16 +321,82 @@ func TestForwardResponseMessage(t *testing.T) {
 	}
 }
 
+func TestOutgoingEtagIfNoneMatch(t *testing.T) {
+	t.Parallel()
+	for _, tc := range []struct {
+		msg            *pb.SimpleMessage
+		requestHeaders http.Header
+		name           string
+		headers        http.Header
+		expectedStatus int
+	}{
+		{
+			msg:  &pb.SimpleMessage{Id: "foo"},
+			name: "small message",
+			headers: http.Header{
+				"Content-Length": []string{"12"},
+				"Content-Type":   []string{"application/json"},
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			name: "large message",
+			headers: http.Header{
+				"Content-Length": []string{"129"},
+				"Content-Type":   []string{"application/json"},
+				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			msg: &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			requestHeaders: http.Header{
+				"If-None-Match": []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			name: "large message with If-None-Match header",
+			headers: http.Header{
+				"Content-Length": []string{"129"},
+				"Content-Type":   []string{"application/json"},
+				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			expectedStatus: http.StatusNotModified,
+		},
+	} {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+			req.Header = tc.requestHeaders
+			resp := httptest.NewRecorder()
+
+			runtime.ForwardResponseMessage(context.Background(), runtime.NewServeMux(), &runtime.JSONPb{}, resp, req, tc.msg)
+
+			w := resp.Result()
+			defer w.Body.Close()
+			if w.StatusCode != tc.expectedStatus {
+				t.Fatalf("StatusCode %d want %d", w.StatusCode, http.StatusOK)
+			}
+
+			if !reflect.DeepEqual(w.Header, tc.headers) {
+				t.Fatalf("Header %v want %v", w.Header, tc.headers)
+			}
+		})
+	}
+}
+
 func TestOutgoingHeaderMatcher(t *testing.T) {
 	t.Parallel()
-	msg := &pb.SimpleMessage{Id: "foo"}
 	for _, tc := range []struct {
+		msg     *pb.SimpleMessage
 		name    string
 		md      runtime.ServerMetadata
 		headers http.Header
 		matcher runtime.HeaderMatcherFunc
 	}{
 		{
+			msg:  &pb.SimpleMessage{Id: "foo"},
 			name: "default matcher",
 			md: runtime.ServerMetadata{
 				HeaderMD: metadata.Pairs(
@@ -346,6 +412,7 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 			},
 		},
 		{
+			msg:  &pb.SimpleMessage{Id: "foo"},
 			name: "custom matcher",
 			md: runtime.ServerMetadata{
 				HeaderMD: metadata.Pairs(
@@ -367,6 +434,47 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 				}
 			},
 		},
+		{
+			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			name: "default matcher, large message",
+			md: runtime.ServerMetadata{
+				HeaderMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			headers: http.Header{
+				"Content-Length":    []string{"129"},
+				"Content-Type":      []string{"application/json"},
+				"Grpc-Metadata-Foo": []string{"bar"},
+				"Grpc-Metadata-Baz": []string{"qux"},
+				"Etag":              []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+		},
+		{
+			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			name: "custom matcher, large message",
+			md: runtime.ServerMetadata{
+				HeaderMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			headers: http.Header{
+				"Content-Length": []string{"129"},
+				"Content-Type":   []string{"application/json"},
+				"Custom-Foo":     []string{"bar"},
+				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			matcher: func(key string) (string, bool) {
+				switch key {
+				case "foo":
+					return "custom-foo", true
+				default:
+					return "", false
+				}
+			},
+		},
 	} {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
@@ -376,7 +484,7 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
 			resp := httptest.NewRecorder()
 
-			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(runtime.WithOutgoingHeaderMatcher(tc.matcher)), &runtime.JSONPb{}, resp, req, msg)
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(runtime.WithOutgoingHeaderMatcher(tc.matcher)), &runtime.JSONPb{}, resp, req, tc.msg)
 
 			w := resp.Result()
 			defer w.Body.Close()
@@ -393,8 +501,8 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 
 func TestOutgoingTrailerMatcher(t *testing.T) {
 	t.Parallel()
-	msg := &pb.SimpleMessage{Id: "foo"}
 	for _, tc := range []struct {
+		msg     *pb.SimpleMessage
 		name    string
 		md      runtime.ServerMetadata
 		caller  http.Header
@@ -403,6 +511,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 		matcher runtime.HeaderMatcherFunc
 	}{
 		{
+			msg:  &pb.SimpleMessage{Id: "foo"},
 			name: "default matcher, caller accepts",
 			md: runtime.ServerMetadata{
 				TrailerMD: metadata.Pairs(
@@ -424,6 +533,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 			},
 		},
 		{
+			msg:  &pb.SimpleMessage{Id: "foo"},
 			name: "default matcher, caller rejects",
 			md: runtime.ServerMetadata{
 				TrailerMD: metadata.Pairs(
@@ -437,6 +547,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 			},
 		},
 		{
+			msg:  &pb.SimpleMessage{Id: "foo"},
 			name: "custom matcher",
 			md: runtime.ServerMetadata{
 				TrailerMD: metadata.Pairs(
@@ -464,6 +575,74 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 				}
 			},
 		},
+		{
+			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			name: "default matcher, caller accepts, large message",
+			md: runtime.ServerMetadata{
+				TrailerMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			caller: http.Header{
+				"Te": []string{"trailers"},
+			},
+			headers: http.Header{
+				"Transfer-Encoding": []string{"chunked"},
+				"Content-Type":      []string{"application/json"},
+				"Trailer":           []string{"Grpc-Trailer-Foo", "Grpc-Trailer-Baz"},
+				"Etag":              []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			trailer: http.Header{
+				"Grpc-Trailer-Foo": []string{"bar"},
+				"Grpc-Trailer-Baz": []string{"qux"},
+			},
+		},
+		{
+			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			name: "default matcher, caller rejects, large message",
+			md: runtime.ServerMetadata{
+				TrailerMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			headers: http.Header{
+				"Content-Length": []string{"129"},
+				"Content-Type":   []string{"application/json"},
+				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+		},
+		{
+			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			name: "custom matcher, large message",
+			md: runtime.ServerMetadata{
+				TrailerMD: metadata.Pairs(
+					"foo", "bar",
+					"baz", "qux",
+				),
+			},
+			caller: http.Header{
+				"Te": []string{"trailers"},
+			},
+			headers: http.Header{
+				"Transfer-Encoding": []string{"chunked"},
+				"Content-Type":      []string{"application/json"},
+				"Trailer":           []string{"Custom-Trailer-Foo"},
+				"Etag":              []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			trailer: http.Header{
+				"Custom-Trailer-Foo": []string{"bar"},
+			},
+			matcher: func(key string) (string, bool) {
+				switch key {
+				case "foo":
+					return "custom-trailer-foo", true
+				default:
+					return "", false
+				}
+			},
+		},
 	} {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
@@ -474,7 +653,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 			req.Header = tc.caller
 			resp := httptest.NewRecorder()
 
-			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(runtime.WithOutgoingTrailerMatcher(tc.matcher)), &runtime.JSONPb{}, resp, req, msg)
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(runtime.WithOutgoingTrailerMatcher(tc.matcher)), &runtime.JSONPb{}, resp, req, tc.msg)
 
 			w := resp.Result()
 			_, _ = io.Copy(io.Discard, w.Body)
