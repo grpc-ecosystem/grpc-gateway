@@ -326,13 +326,15 @@ func TestOutgoingEtagIfNoneMatch(t *testing.T) {
 	for _, tc := range []struct {
 		msg            *pb.SimpleMessage
 		requestHeaders http.Header
+		method         string
 		name           string
 		headers        http.Header
 		expectedStatus int
 	}{
 		{
-			msg:  &pb.SimpleMessage{Id: "foo"},
-			name: "small message",
+			msg:    &pb.SimpleMessage{Id: "foo"},
+			method: http.MethodGet,
+			name:   "small message",
 			headers: http.Header{
 				"Content-Length": []string{"12"},
 				"Content-Type":   []string{"application/json"},
@@ -340,17 +342,19 @@ func TestOutgoingEtagIfNoneMatch(t *testing.T) {
 			expectedStatus: http.StatusOK,
 		},
 		{
-			msg:  &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
-			name: "large message",
+			msg:    &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			method: http.MethodGet,
+			name:   "large message",
 			headers: http.Header{
 				"Content-Length": []string{"129"},
 				"Content-Type":   []string{"application/json"},
-				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":           []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 			expectedStatus: http.StatusOK,
 		},
 		{
-			msg: &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			msg:    &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			method: http.MethodGet,
 			requestHeaders: http.Header{
 				"If-None-Match": []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
 			},
@@ -358,16 +362,29 @@ func TestOutgoingEtagIfNoneMatch(t *testing.T) {
 			headers: http.Header{
 				"Content-Length": []string{"129"},
 				"Content-Type":   []string{"application/json"},
-				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":           []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 			expectedStatus: http.StatusNotModified,
+		},
+		{
+			msg:    &pb.SimpleMessage{Id: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam rhoncus magna ante, sed malesuada nibh vehicula in nec."},
+			method: http.MethodPost,
+			requestHeaders: http.Header{
+				"If-None-Match": []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+			},
+			name: "large message with If-None-Match header",
+			headers: http.Header{
+				"Content-Length": []string{"129"},
+				"Content-Type":   []string{"application/json"},
+			},
+			expectedStatus: http.StatusOK,
 		},
 	} {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+			req := httptest.NewRequest(tc.method, "http://example.com/foo", nil)
 			req.Header = tc.requestHeaders
 			resp := httptest.NewRecorder()
 
@@ -448,7 +465,7 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 				"Content-Type":      []string{"application/json"},
 				"Grpc-Metadata-Foo": []string{"bar"},
 				"Grpc-Metadata-Baz": []string{"qux"},
-				"Etag":              []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":              []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 		},
 		{
@@ -464,7 +481,7 @@ func TestOutgoingHeaderMatcher(t *testing.T) {
 				"Content-Length": []string{"129"},
 				"Content-Type":   []string{"application/json"},
 				"Custom-Foo":     []string{"bar"},
-				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":           []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 			matcher: func(key string) (string, bool) {
 				switch key {
@@ -591,7 +608,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 				"Transfer-Encoding": []string{"chunked"},
 				"Content-Type":      []string{"application/json"},
 				"Trailer":           []string{"Grpc-Trailer-Foo", "Grpc-Trailer-Baz"},
-				"Etag":              []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":              []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 			trailer: http.Header{
 				"Grpc-Trailer-Foo": []string{"bar"},
@@ -610,7 +627,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 			headers: http.Header{
 				"Content-Length": []string{"129"},
 				"Content-Type":   []string{"application/json"},
-				"Etag":           []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":           []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 		},
 		{
@@ -629,7 +646,7 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 				"Transfer-Encoding": []string{"chunked"},
 				"Content-Type":      []string{"application/json"},
 				"Trailer":           []string{"Custom-Trailer-Foo"},
-				"Etag":              []string{"41bf5d28a47f59b2a649e44f2607b0ea"},
+				"Etag":              []string{"\"41bf5d28a47f59b2a649e44f2607b0ea\""},
 			},
 			trailer: http.Header{
 				"Custom-Trailer-Foo": []string{"bar"},

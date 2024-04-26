@@ -183,14 +183,14 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		w.Header().Set("Content-Length", strconv.Itoa(len(buf)))
 	}
 
-	// Generate an Etag for any messages larger than 100 bytes.
+	// Generate an Etag for any GET requests with messages larger than 100 bytes.
 	// Writing the Etag in the response takes 39 bytes, so it's not worth doing for smaller messages.
 	etag := ""
-	if len(buf) > 100 {
+	if len(buf) > 100 && req.Method == http.MethodGet {
 		h := md5.New()
 		h.Write(buf)
 		etag = hex.EncodeToString(h.Sum(nil))
-		w.Header().Set("Etag", etag)
+		w.Header().Set("Etag", "\""+etag+"\"")
 	}
 
 	// Check if the client has provided an Etag and if it matches the generated Etag.
