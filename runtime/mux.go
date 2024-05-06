@@ -48,11 +48,15 @@ var encodedPathSplitter = regexp.MustCompile("(/|%2F)")
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
 
+// A Middleware handler is simply an HandlerFunc that wraps another HandlerFunc to do some pre- and/or post-processing of the request
+type Middleware func(HandlerFunc) HandlerFunc
+
 // ServeMux is a request multiplexer for grpc-gateway.
 // It matches http requests to patterns and invokes the corresponding handler.
 type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.
 	handlers                  map[string][]handler
+	middlewares               []Middleware
 	forwardResponseOptions    []func(context.Context, http.ResponseWriter, proto.Message) error
 	marshalers                marshalerRegistry
 	incomingHeaderMatcher     HeaderMatcherFunc
@@ -64,6 +68,7 @@ type ServeMux struct {
 	routingErrorHandler       RoutingErrorHandlerFunc
 	disablePathLengthFallback bool
 	unescapingMode            UnescapingMode
+	injectHTTPPattern         bool
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -86,6 +91,20 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 func WithUnescapingMode(mode UnescapingMode) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.unescapingMode = mode
+	}
+}
+
+// WithMiddlewares sets server middleware for all handlers
+func WithMiddlewares(middlewares ...Middleware) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.middlewares = append(serveMux.middlewares, middlewares...)
+	}
+}
+
+// WithInjectHTTPPattern sets the current HTTP Pattern in the request context
+func WithInjectHTTPPattern() ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.injectHTTPPattern = true
 	}
 }
 
@@ -305,6 +324,9 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
+	if len(s.middlewares) > 0 {
+		h = chainMiddlewares(s.middlewares)(h)
+	}
 	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
 }
 
@@ -405,7 +427,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			continue
 		}
-		h.h(w, r, pathParams)
+		s.handleHandler(h, w, r, pathParams)
 		return
 	}
 
@@ -458,7 +480,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
 					return
 				}
-				h.h(w, r, pathParams)
+				s.handleHandler(h, w, r, pathParams)
 				return
 			}
 			_, outboundMarshaler := MarshalerForRequest(s, r)
@@ -483,4 +505,20 @@ func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
 type handler struct {
 	pat Pattern
 	h   HandlerFunc
+}
+
+func (s *ServeMux) handleHandler(h handler, w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	if s.injectHTTPPattern {
+		r = r.WithContext(withHTTPPattern(r.Context(), h.pat))
+	}
+	h.h(w, r, pathParams)
+}
+
+func chainMiddlewares(mws []Middleware) Middleware {
+	return func(next HandlerFunc) HandlerFunc {
+		for i := len(mws); i > 0; i-- {
+			next = mws[i-1](next)
+		}
+		return next
+	}
 }
