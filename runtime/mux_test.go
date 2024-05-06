@@ -900,14 +900,20 @@ func TestServeMux_HandleMiddlewares(t *testing.T) {
 	r := httptest.NewRequest("GET", "/test", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
+	if w.Code != 200 {
+		t.Errorf("request not processed")
+	}
 }
 
 func TestServeMux_InjectPattern(t *testing.T) {
 	mux := runtime.NewServeMux(runtime.WithInjectHTTPPattern())
 	err := mux.HandlePath("GET", "/test", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		p, ok := runtime.HTTPPattern(r.Context())
-		if !ok || p.String() == "" {
+		if !ok {
 			t.Errorf("pattern is not injected")
+		}
+		if p.String() != "/test" {
+			t.Errorf("pattern not /test")
 		}
 	})
 	if err != nil {
@@ -917,4 +923,7 @@ func TestServeMux_InjectPattern(t *testing.T) {
 	r := httptest.NewRequest("GET", "/test", nil)
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, r)
+	if w.Code != 200 {
+		t.Errorf("request not processed")
+	}
 }
