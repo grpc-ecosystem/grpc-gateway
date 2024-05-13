@@ -1793,8 +1793,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
         importpath = "google.golang.org/genproto/googleapis/rpc",
-        sum = "h1:umK/Ey0QEzurTNlsV3R+MfxHAb78HCEX/IkuR+zH4WQ=",
-        version = "v0.0.0-20240509183442-62759503f434",
+        sum = "h1:mxSlqyb8ZAHsYDCfiXN1EDdNTdvjUJSLY+OnAUtYNYA=",
+        version = "v0.0.0-20240513163218-0867130af1f8",
     )
     go_repository(
         name = "org_golang_google_grpc",
