@@ -21,7 +21,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	rc := http.NewResponseController(w)
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
-		grpclog.Infof("Failed to extract ServerMetadata from context")
+		grpclog.Error("Failed to extract ServerMetadata from context")
 		http.Error(w, "unexpected error", http.StatusInternalServerError)
 		return
 	}
@@ -76,27 +76,27 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		}
 
 		if err != nil {
-			grpclog.Infof("Failed to marshal response chunk: %v", err)
+			grpclog.Errorf("Failed to marshal response chunk: %v", err)
 			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err, delimiter)
 			return
 		}
 		if _, err := w.Write(buf); err != nil {
-			grpclog.Infof("Failed to send response chunk: %v", err)
+			grpclog.Errorf("Failed to send response chunk: %v", err)
 			return
 		}
 		wroteHeader = true
 		if _, err := w.Write(delimiter); err != nil {
-			grpclog.Infof("Failed to send delimiter chunk: %v", err)
+			grpclog.Errorf("Failed to send delimiter chunk: %v", err)
 			return
 		}
 		err = rc.Flush()
 		if err != nil {
 			if errors.Is(err, http.ErrNotSupported) {
-				grpclog.Infof("Flush not supported in %T", w)
+				grpclog.Errorf("Flush not supported in %T", w)
 				http.Error(w, "unexpected type of web server", http.StatusInternalServerError)
 				return
 			}
-			grpclog.Infof("Failed to flush response to client: %v", err)
+			grpclog.Errorf("Failed to flush response to client: %v", err)
 			return
 		}
 	}
@@ -140,7 +140,7 @@ type responseBody interface {
 func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
-		grpclog.Infof("Failed to extract ServerMetadata from context")
+		grpclog.Error("Failed to extract ServerMetadata from context")
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
@@ -172,7 +172,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		buf, err = marshaler.Marshal(resp)
 	}
 	if err != nil {
-		grpclog.Infof("Marshal error: %v", err)
+		grpclog.Errorf("Marshal error: %v", err)
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
 	}
@@ -182,7 +182,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 	}
 
 	if _, err = w.Write(buf); err != nil {
-		grpclog.Infof("Failed to write response: %v", err)
+		grpclog.Errorf("Failed to write response: %v", err)
 	}
 
 	if doForwardTrailers {
@@ -201,7 +201,7 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 	}
 	for _, opt := range opts {
 		if err := opt(ctx, w, resp); err != nil {
-			grpclog.Infof("Error handling ForwardResponseOptions: %v", err)
+			grpclog.Errorf("Error handling ForwardResponseOptions: %v", err)
 			return err
 		}
 	}
@@ -217,15 +217,15 @@ func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, mar
 	}
 	buf, err := marshaler.Marshal(msg)
 	if err != nil {
-		grpclog.Infof("Failed to marshal an error: %v", err)
+		grpclog.Errorf("Failed to marshal an error: %v", err)
 		return
 	}
 	if _, err := w.Write(buf); err != nil {
-		grpclog.Infof("Failed to notify error to client: %v", err)
+		grpclog.Errorf("Failed to notify error to client: %v", err)
 		return
 	}
 	if _, err := w.Write(delimiter); err != nil {
-		grpclog.Infof("Failed to send delimiter chunk: %v", err)
+		grpclog.Errorf("Failed to send delimiter chunk: %v", err)
 		return
 	}
 }
