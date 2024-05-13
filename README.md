@@ -60,9 +60,9 @@ that's needed to generate a reverse-proxy with this library.
 ### Compile from source
 
 The following instructions assume you are using
-[Go Modules](https://github.com/golang/go/wiki/Modules) for dependency
+[Go Modules](https://go.dev/wiki/Modules) for dependency
 management. Use a
-[tool dependency](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module)
+[tool dependency](https://go.dev/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module)
 to track the versions of the following executable packages:
 
 ```go
