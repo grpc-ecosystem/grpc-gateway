@@ -48,7 +48,9 @@ var encodedPathSplitter = regexp.MustCompile("(/|%2F)")
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
 
-// A Middleware handler is simply an HandlerFunc that wraps another HandlerFunc to do some pre- and/or post-processing of the request
+// A Middleware handler wraps another HandlerFunc to do some pre- and/or post-processing of the request. This is used as an alternative to gRPC interceptors when using the direct-to-implementation
+// registration methods. It is generally recommended to use gRPC client or server interceptors instead
+// where possible.
 type Middleware func(HandlerFunc) HandlerFunc
 
 // ServeMux is a request multiplexer for grpc-gateway.
