@@ -94,7 +94,9 @@ func WithUnescapingMode(mode UnescapingMode) ServeMuxOption {
 	}
 }
 
-// WithMiddlewares sets server middleware for all handlers
+// WithMiddlewares sets server middleware for all handlers. This is useful as an alternative to gRPC
+// interceptors when using the direct-to-implementation registration methods and cannot rely
+// on gRPC interceptors. It's recommended to use gRPC interceptors instead if possible.
 func WithMiddlewares(middlewares ...Middleware) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.middlewares = append(serveMux.middlewares, middlewares...)
