@@ -70,7 +70,6 @@ type ServeMux struct {
 	routingErrorHandler       RoutingErrorHandlerFunc
 	disablePathLengthFallback bool
 	unescapingMode            UnescapingMode
-	injectHTTPPattern         bool
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -102,13 +101,6 @@ func WithUnescapingMode(mode UnescapingMode) ServeMuxOption {
 func WithMiddlewares(middlewares ...Middleware) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.middlewares = append(serveMux.middlewares, middlewares...)
-	}
-}
-
-// WithInjectHTTPPattern sets the current HTTP Pattern in the request context
-func WithInjectHTTPPattern() ServeMuxOption {
-	return func(serveMux *ServeMux) {
-		serveMux.injectHTTPPattern = true
 	}
 }
 
@@ -512,10 +504,7 @@ type handler struct {
 }
 
 func (s *ServeMux) handleHandler(h handler, w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-	if s.injectHTTPPattern {
-		r = r.WithContext(withHTTPPattern(r.Context(), h.pat))
-	}
-	h.h(w, r, pathParams)
+	h.h(w, r.WithContext(withHTTPPattern(r.Context(), h.pat)), pathParams)
 }
 
 func chainMiddlewares(mws []Middleware) Middleware {

@@ -906,7 +906,7 @@ func TestServeMux_HandleMiddlewares(t *testing.T) {
 }
 
 func TestServeMux_InjectPattern(t *testing.T) {
-	mux := runtime.NewServeMux(runtime.WithInjectHTTPPattern())
+	mux := runtime.NewServeMux()
 	err := mux.HandlePath("GET", "/test", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		p, ok := runtime.HTTPPattern(r.Context())
 		if !ok {
