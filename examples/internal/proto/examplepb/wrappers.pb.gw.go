@@ -323,6 +323,7 @@ func local_request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler 
 // UnaryRPC     :call WrappersServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterWrappersServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server WrappersServiceServer) error {
 
 	mux.Handle("POST", pattern_WrappersService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -638,7 +639,7 @@ func RegisterWrappersServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "WrappersServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "WrappersServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "WrappersServiceClient" to call the correct interceptors.
+// "WrappersServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client WrappersServiceClient) error {
 
 	mux.Handle("POST", pattern_WrappersService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

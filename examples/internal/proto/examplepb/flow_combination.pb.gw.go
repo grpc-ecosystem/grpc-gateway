@@ -1374,6 +1374,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 // UnaryRPC     :call FlowCombinationServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterFlowCombinationHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationServer) error {
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1812,7 +1813,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "FlowCombinationClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "FlowCombinationClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "FlowCombinationClient" to call the correct interceptors.
+// "FlowCombinationClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.ServeMux, client FlowCombinationClient) error {
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
