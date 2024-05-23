@@ -113,6 +113,7 @@ func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Co
 // UnaryRPC     :call GenerateUnboundMethodsEchoServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterGenerateUnboundMethodsEchoServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GenerateUnboundMethodsEchoServiceServer) error {
 
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -228,7 +229,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandler(ctx context.Context, mux *
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "GenerateUnboundMethodsEchoServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GenerateUnboundMethodsEchoServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "GenerateUnboundMethodsEchoServiceClient" to call the correct interceptors.
+// "GenerateUnboundMethodsEchoServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GenerateUnboundMethodsEchoServiceClient) error {
 
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

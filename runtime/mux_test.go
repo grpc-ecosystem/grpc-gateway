@@ -867,3 +867,63 @@ func (g *dummyHealthCheckClient) Check(ctx context.Context, r *grpc_health_v1.He
 func (g *dummyHealthCheckClient) Watch(ctx context.Context, r *grpc_health_v1.HealthCheckRequest, opts ...grpc.CallOption) (grpc_health_v1.Health_WatchClient, error) {
 	return nil, status.Error(codes.Unimplemented, "unimplemented")
 }
+
+func TestServeMux_HandleMiddlewares(t *testing.T) {
+	var mws []int
+	mux := runtime.NewServeMux(runtime.WithMiddlewares(
+		func(next runtime.HandlerFunc) runtime.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+				mws = append(mws, 1)
+				next(w, r, pathParams)
+			}
+		},
+		func(next runtime.HandlerFunc) runtime.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+				mws = append(mws, 2)
+				next(w, r, pathParams)
+			}
+		},
+	))
+	err := mux.HandlePath("GET", "/test", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		if len(mws) == 0 {
+			t.Errorf("middlewares not called")
+		} else if mws[0] != 1 {
+			t.Errorf("first middleware is not called first")
+		} else if mws[1] != 2 {
+			t.Errorf("second middleware is not called the second")
+		}
+	})
+	if err != nil {
+		t.Errorf("The route test with method GET and path /test invalid, got %v", err)
+	}
+
+	r := httptest.NewRequest("GET", "/test", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+	if w.Code != 200 {
+		t.Errorf("request not processed")
+	}
+}
+
+func TestServeMux_InjectPattern(t *testing.T) {
+	mux := runtime.NewServeMux()
+	err := mux.HandlePath("GET", "/test", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		p, ok := runtime.HTTPPattern(r.Context())
+		if !ok {
+			t.Errorf("pattern is not injected")
+		}
+		if p.String() != "/test" {
+			t.Errorf("pattern not /test")
+		}
+	})
+	if err != nil {
+		t.Errorf("The route test with method GET and path /test invalid, got %v", err)
+	}
+
+	r := httptest.NewRequest("GET", "/test", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+	if w.Code != 200 {
+		t.Errorf("request not processed")
+	}
+}

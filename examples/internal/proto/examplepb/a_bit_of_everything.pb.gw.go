@@ -2808,6 +2808,7 @@ func local_request_SnakeEnumService_SnakeEnum_0(ctx context.Context, marshaler r
 // UnaryRPC     :call ABitOfEverythingServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterABitOfEverythingServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -3692,6 +3693,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 // UnaryRPC     :call CamelCaseServiceNameServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterCamelCaseServiceNameHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer) error {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -3726,6 +3728,7 @@ func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime
 // UnaryRPC     :call SnakeEnumServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterSnakeEnumServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterSnakeEnumServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server SnakeEnumServiceServer) error {
 
 	mux.Handle("GET", pattern_SnakeEnumService_SnakeEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -3791,7 +3794,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ABitOfEverythingServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ABitOfEverythingServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ABitOfEverythingServiceClient" to call the correct interceptors.
+// "ABitOfEverythingServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ABitOfEverythingServiceClient) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -4746,7 +4749,7 @@ func RegisterCamelCaseServiceNameHandler(ctx context.Context, mux *runtime.Serve
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "CamelCaseServiceNameClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "CamelCaseServiceNameClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "CamelCaseServiceNameClient" to call the correct interceptors.
+// "CamelCaseServiceNameClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterCamelCaseServiceNameHandlerClient(ctx context.Context, mux *runtime.ServeMux, client CamelCaseServiceNameClient) error {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -4817,7 +4820,7 @@ func RegisterSnakeEnumServiceHandler(ctx context.Context, mux *runtime.ServeMux,
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "SnakeEnumServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "SnakeEnumServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "SnakeEnumServiceClient" to call the correct interceptors.
+// "SnakeEnumServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterSnakeEnumServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client SnakeEnumServiceClient) error {
 
 	mux.Handle("GET", pattern_SnakeEnumService_SnakeEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
