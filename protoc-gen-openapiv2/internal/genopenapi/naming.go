@@ -70,6 +70,10 @@ func resolveNamesPackage(messages []string) map[string]string {
 	return resolveNamesUniqueWithContext(messages, 0, ".", true)
 }
 
+// For the "package" naming strategy, we rely on the convention that package names are lowercase
+// but message names are capitalized.
+var pkgEndRegexp = regexp.MustCompile(`\.[A-Z]`)
+
 // Take the names of every proto message and generates a unique reference by:
 // first, separating each message name into its components by splitting at dots. Then,
 // take the shortest suffix slice from each components slice that is unique among all
@@ -83,9 +87,7 @@ func resolveNamesUniqueWithContext(messages []string, extraContext int, componen
 		if !qualifyNestedMessages {
 			return strings.Split(pkg, ".")
 		}
-		// We rely on the convention that package names are lowercase but message names are
-		// capitalized.
-		pkgEnd := regexp.MustCompile(`\.[A-Z]`).FindStringIndex(pkg)
+		pkgEnd := pkgEndRegexp.FindStringIndex(pkg)
 		if pkgEnd == nil {
 			// Fall back to non-qualified behavior if search based on convention fails.
 			return strings.Split(pkg, ".")
