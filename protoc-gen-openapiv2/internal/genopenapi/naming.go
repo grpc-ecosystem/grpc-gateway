@@ -93,7 +93,7 @@ func resolveNamesUniqueWithContext(messages []string, extraContext int, componen
 			return strings.Split(pkg, ".")
 		}
 		// Return each package component as an element, followed by the full message name
-		// (potentially qualified, if nested) as a single component.
+		// (potentially qualified, if nested) as a single element.
 		qualifiedPkgName := pkg[:pkgEnd[0]]
 		nestedTypeName := pkg[pkgEnd[0]+1:]
 		return append(strings.Split(qualifiedPkgName, "."), nestedTypeName)
