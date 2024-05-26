@@ -311,9 +311,9 @@ protoc_gen_openapiv2 = rule(
         "openapi_naming_strategy": attr.string(
             default = "",
             mandatory = False,
-            values = ["", "simple", "legacy", "fqn"],
+            values = ["", "simple", "package", "legacy", "fqn"],
             doc = "configures how OpenAPI names are determined." +
-                  " Allowed values are `` (empty), `simple`, `legacy` and `fqn`." +
+                  " Allowed values are `` (empty), `simple`, `package`, `legacy` and `fqn`." +
                   " If unset, either `legacy` or `fqn` are selected, depending" +
                   " on the value of the `fqn_for_openapi_name` setting",
         ),
