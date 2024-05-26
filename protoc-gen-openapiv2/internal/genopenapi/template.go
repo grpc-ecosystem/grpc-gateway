@@ -1163,6 +1163,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				continue
 			}
 
+			deprecated := meth.GetOptions().GetDeprecated()
+
 			for bIdx, b := range meth.Bindings {
 				operationFunc := operationForMethod(b.HTTPMethod)
 				// Iterate over all the OpenAPI parameters
@@ -1508,6 +1510,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				operationObject := &openapiOperationObject{
 					Parameters: parameters,
 					Responses:  openapiResponsesObject{},
+					Deprecated: deprecated,
 				}
 
 				if !reg.GetDisableDefaultResponses() {
@@ -1566,14 +1569,17 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					grpclog.Error(err)
 					return err
 				}
+
 				opts, err := getMethodOpenAPIOption(reg, meth)
 				if opts != nil {
 					if err != nil {
 						panic(err)
 					}
 					operationObject.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(opts.ExternalDocs, reg, meth)
-					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
-					operationObject.Deprecated = opts.Deprecated
+
+					if opts.Deprecated {
+						operationObject.Deprecated = true
+					}
 
 					if opts.Summary != "" {
 						operationObject.Summary = opts.Summary
