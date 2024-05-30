@@ -1163,7 +1163,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				continue
 			}
 
-			deprecated := meth.GetOptions().GetDeprecated()
+			deprecated := reg.GetEnableRpcDeprecation() && meth.GetOptions().GetDeprecated()
 
 			for bIdx, b := range meth.Bindings {
 				operationFunc := operationForMethod(b.HTTPMethod)

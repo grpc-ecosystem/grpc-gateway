@@ -10894,6 +10894,7 @@ func TestRenderServicesOptionDeprecated(t *testing.T) {
 			}
 
 			reg := descriptor.NewRegistry()
+			reg.SetEnableRpcDeprecation(true)
 			fileCL := crossLinkFixture(&file)
 
 			if err := reg.Load(reqFromFile(fileCL)); err != nil {
