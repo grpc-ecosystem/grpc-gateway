@@ -161,7 +161,7 @@ type Registry struct {
 	// the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.
 	preserveRPCOrder bool
 
-	// enableRpcDeprecation whether to process grpc method'd deprecated option
+	// enableRpcDeprecation whether to process grpc method's deprecated option
 	enableRpcDeprecation bool
 }
 
