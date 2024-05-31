@@ -934,4 +934,113 @@ plugins:
       - preserve_rpc_order=true
 ```
 
+### Enable RPC deprecation
+
+With `enable_rpc_deprecation` option you can deprecate openapi method using standard method's option. Allowed values are: `true`, `false`.
+
+For example, if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - enable_rpc_deprecation=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=enable_rpc_deprecation=true ./path/to/file.proto
+```
+
+Input example:
+
+```protobuf
+syntax = "proto3";
+
+package helloproto.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "helloproto/v1;helloproto";
+
+service EchoService {
+  rpc Hello(HelloReq) returns (HelloResp) {
+    option deprecated = true;
+    option (google.api.http) = {get: "/api/hello"};
+  }
+}
+
+message HelloReq {
+  string name = 1;
+}
+
+message HelloResp {
+  string message = 1;
+}
+```
+
+Output:
+
+```yaml
+swagger: "2.0"
+info:
+  title: helloproto/v1/example.proto
+  version: version not set
+tags:
+  - name: EchoService
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/hello:
+    get:
+      operationId: EchoService_Hello
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1HelloResp'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: query
+          required: false
+          type: string
+      tags:
+        - EchoService
+      deprecated: true
+definitions:
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
+  v1HelloResp:
+    type: object
+    properties:
+      message:
+        type: string
+```
+
 {% endraw %}
