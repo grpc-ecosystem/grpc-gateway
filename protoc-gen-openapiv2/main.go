@@ -67,6 +67,7 @@ func main() {
 		if commit == "unknown" {
 			buildInfo, ok := debug.ReadBuildInfo()
 			if ok {
+				version = buildInfo.Main.Version
 				for _, setting := range buildInfo.Settings {
 					if setting.Key == "vcs.revision" {
 						commit = setting.Value
@@ -75,8 +76,6 @@ func main() {
 						date = setting.Value
 					}
 				}
-				fmt.Printf("commit %v, built at %v\n", commit, date)
-				os.Exit(0)
 			}
 		}
 		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
