@@ -160,6 +160,9 @@ type Registry struct {
 	// preserveRPCOrder, if true, will ensure the order of paths emitted in openapi swagger files mirror
 	// the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.
 	preserveRPCOrder bool
+
+	// enableRpcDeprecation whether to process grpc method's deprecated option
+	enableRpcDeprecation bool
 }
 
 type repeatedFieldSeparator struct {
@@ -874,4 +877,14 @@ func (r *Registry) SetPreserveRPCOrder(preserve bool) {
 // IsPreserveRPCOrder returns preserveRPCOrder
 func (r *Registry) IsPreserveRPCOrder() bool {
 	return r.preserveRPCOrder
+}
+
+// SetEnableRpcDeprecation sets enableRpcDeprecation
+func (r *Registry) SetEnableRpcDeprecation(enable bool) {
+	r.enableRpcDeprecation = enable
+}
+
+// GetEnableRpcDeprecation returns enableRpcDeprecation
+func (r *Registry) GetEnableRpcDeprecation() bool {
+	return r.enableRpcDeprecation
 }

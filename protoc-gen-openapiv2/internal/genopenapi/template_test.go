@@ -10789,3 +10789,127 @@ func TestApiVisibilityOption(t *testing.T) {
 		t.Fatal("Definition should be excluded by api visibility option")
 	}
 }
+
+func TestRenderServicesOptionDeprecated(t *testing.T) {
+	testCases := [...]struct {
+		testName           string
+		methodOptions      descriptorpb.MethodOptions
+		openapiOperation   *openapi_options.Operation
+		expectedDeprecated bool
+	}{
+		{
+			testName: "method option",
+			methodOptions: descriptorpb.MethodOptions{
+				Deprecated: proto.Bool(true),
+			},
+			expectedDeprecated: true,
+		},
+		{
+			testName: "openapi option",
+			openapiOperation: &openapi_options.Operation{
+				Deprecated: true,
+			},
+			expectedDeprecated: true,
+		},
+		{
+			testName: "empty openapi doesn't override method option",
+			methodOptions: descriptorpb.MethodOptions{
+				Deprecated: proto.Bool(true),
+			},
+			openapiOperation: &openapi_options.Operation{},
+			expectedDeprecated: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(tc.testName, func(t *testing.T) {
+			msgdesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("ExampleMessage"),
+			}
+
+			meth := &descriptorpb.MethodDescriptorProto{
+				Name:       proto.String("Example"),
+				InputType:  proto.String("ExampleMessage"),
+				OutputType: proto.String("ExampleMessage"),
+				Options:    &tc.methodOptions,
+			}
+
+			svc := &descriptorpb.ServiceDescriptorProto{
+				Name:   proto.String("ExampleService"),
+				Method: []*descriptorpb.MethodDescriptorProto{meth},
+			}
+
+			msg := &descriptor.Message{
+				DescriptorProto: msgdesc,
+			}
+
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+					Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: []*descriptor.Message{msg},
+				Services: []*descriptor.Service{
+					{
+						ServiceDescriptorProto: svc,
+						Methods: []*descriptor.Method{
+							{
+								MethodDescriptorProto: meth,
+								RequestType:           msg,
+								ResponseType:          msg,
+								Bindings: []*descriptor.Binding{
+									{
+										HTTPMethod: "GET",
+										PathTmpl: httprule.Template{
+											Version:  1,
+											OpCodes:  []int{0, 0},
+											Template: "/v1/echo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+
+			if tc.openapiOperation != nil {
+				proto.SetExtension(
+					proto.Message(file.Services[0].Methods[0].Options),
+					openapi_options.E_Openapiv2Operation,
+					tc.openapiOperation,
+				)
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetEnableRpcDeprecation(true)
+			fileCL := crossLinkFixture(&file)
+
+			if err := reg.Load(reqFromFile(fileCL)); err != nil {
+				t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+			}
+
+			result, err := applyTemplate(param{File: fileCL, reg: reg})
+			if err != nil {
+				t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+			}
+
+			got := result.getPathItemObject("/v1/echo").Get.Deprecated
+			if got != tc.expectedDeprecated {
+				t.Fatalf("Wrong deprecated field, got %v want %v", got, tc.expectedDeprecated)
+			}
+		})
+	}
+}
