@@ -21,3 +21,9 @@ nav_order: 8
 - Google Cloud Platform [HTTP/JSON gRPC transcoding](https://cloud.google.com/endpoints/docs/grpc/transcoding)
 
    A GCP product that behaves like the grpc-gateway.
+
+- gRPC gateway project generator [gen-grpc-gateway-api](https://github.com/akoserwal/gen-grpc-gateway-api) 
+
+   A shell script that can be used to generate a Go project that utilizes the gRPC-gateway and protobuf to expose a simple API.
+
+   Tutorial guide: [Automate gRPC-Gateway project generation in Go with gen-grpc-gateway-api](https://akoserwal.medium.com/automate-grpc-gateway-project-generation-in-golang-with-gen-grpc-gateway-api-015759f1e51b_)
