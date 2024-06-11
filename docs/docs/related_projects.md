@@ -24,6 +24,6 @@ nav_order: 8
 
 - gRPC gateway project generator [gen-grpc-gateway-api](https://github.com/akoserwal/gen-grpc-gateway-api) 
 
-   A shell script can be used to generate a Golang project that utilizes gRPC-gateway and proto to expose a sample API.
+   A shell script that can be used to generate a Go project that utilizes the gRPC-gateway and protobuf to expose a simple API.
 
    Tutorial guide: [Automate gRPC-Gateway project generation in Golang with gen-grpc-gateway-api](https://akoserwal.medium.com/automate-grpc-gateway-project-generation-in-golang-with-gen-grpc-gateway-api-015759f1e51b_)
