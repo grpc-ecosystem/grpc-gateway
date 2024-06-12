@@ -36,6 +36,8 @@ jobs:
         id: run-goreleaser
         with:
           args: ${{ steps.args.outputs.args }}
+          distribution: goreleaser # or 'goreleaser-pro'
+          version: "~> v2" # or 'latest', 'nightly', semver
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate subject

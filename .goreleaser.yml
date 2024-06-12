@@ -1,3 +1,4 @@
+version: 2
 builds:
   - main: ./protoc-gen-grpc-gateway/main.go
     id: protoc-gen-grpc-gateway
