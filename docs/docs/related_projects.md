@@ -27,3 +27,7 @@ nav_order: 8
    A shell script that can be used to generate a Go project that utilizes the gRPC-gateway and protobuf to expose a simple API.
 
    Tutorial guide: [Automate gRPC-Gateway project generation in Go with gen-grpc-gateway-api](https://akoserwal.medium.com/automate-grpc-gateway-project-generation-in-golang-with-gen-grpc-gateway-api-015759f1e51b)
+
+- [grpc-starter transcoding](https://danielliu1123.github.io/grpc-starter/docs/extensions/grpc-http-transcoding/)
+
+   A Java implementation of grpc-gateway based on Spring Boot.
