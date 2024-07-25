@@ -2654,13 +2654,13 @@ func TestValidateDefaultValueType(t *testing.T) {
 		},
 		{
 			"integer",
-			fmt.Sprint(math.MaxInt32 + 1),
+			fmt.Sprint(int64(math.MaxInt32) + 1),
 			"int32",
 			errors.New("the provided default value \"2147483648\" does not match provided format \"int32\""),
 		},
 		{
 			"integer",
-			fmt.Sprint(math.MaxInt64),
+			fmt.Sprint(int64(math.MaxInt64)),
 			"int64",
 			nil,
 		},
