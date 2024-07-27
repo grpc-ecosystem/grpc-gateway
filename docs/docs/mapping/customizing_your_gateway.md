@@ -292,7 +292,7 @@ service Greeter {
 
 ### Fully Overriding Custom HTTP Responses
 
-To fully override custom HTTP responses, you can use both a Forward Response Option and a custom marshaller.
+To fully override custom HTTP responses, you can use both a Forward Response Option and a Custom Marshaller.
 
 For example with proto response message as:
 
