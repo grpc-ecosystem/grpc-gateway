@@ -292,7 +292,7 @@ service Greeter {
 
 ### Fully Overriding Custom HTTP Responses
 
-To fully override custom HTTP responses, you can use both a Forward Response Option and a Custom Marshaller.
+To fully override custom HTTP responses, you can use both a Forward Response Option and a Custom Marshaler.
 
 For example with proto response message as:
 
@@ -302,7 +302,7 @@ message CreateUserResponse {
 }
 ```
 
-The desired HTTP response:
+The default HTTP response:
 
 ```json5
 HTTP 200 OK
@@ -342,11 +342,11 @@ func forwardResponse(ctx context.Context, w http.ResponseWriter, m protoreflect.
 }
 ```
 
-Create a custom marshaller to format the response data which utilizes the builtin JSON marshaller:
+Create a custom marshaler to format the response data which utilizes the `JSONPb` marshaler as a fallback:
 
 ```go
 type ResponseWrapper struct {
-  runtime.JSONBuiltin
+  runtime.JSONPb
 }
 
 func (c *ResponseWrapper) Marshal(data any) ([]byte, error) {
@@ -360,7 +360,7 @@ func (c *ResponseWrapper) Marshal(data any) ([]byte, error) {
     }
   }
   // otherwise, use the default JSON marshaller
-  return json.Marshal(resp)
+  return c.JSONPb.Marshal(resp)
 }
 ```
 
