@@ -290,6 +290,85 @@ service Greeter {
 }
 ```
 
+### Fully Overriding Custom HTTP Responses
+
+To fully override custom HTTP responses, you can use both a Forward Response Option and a Custom Marshaler.
+
+For example with proto response message as:
+
+```proto
+message CreateUserResponse {
+  string name = 1;
+}
+```
+
+The default HTTP response:
+
+```json5
+HTTP 200 OK
+Content-Type: application/json
+
+{"name":"John Doe"}
+```
+
+But you want to return a `201 Created` status code along with a custom response structure:
+
+```json5
+HTTP 201 Created
+Content-Type: application/json
+
+{"success":true,"data":{"name":"John Doe"}}
+```
+
+First, set up the gRPC-Gateway with the custom options:
+
+```go
+mux := runtime.NewServeMux(
+  runtime.WithMarshalerOption(runtime.MIMEWildcard, &ResponseWrapper{}),
+  runtime.WithForwardResponseOption(forwardResponse),
+)
+```
+
+Define the `forwardResponse` function to handle specific response types:
+
+```go
+func forwardResponse(ctx context.Context, w http.ResponseWriter, m protoreflect.ProtoMessage) error {
+  switch v := m.(type) {
+  case *pb.CreateUserResponse:
+    w.WriteHeader(http.StatusCreated)
+  }
+  // keep default behavior
+  return nil
+}
+```
+
+Create a custom marshaler to format the response data which utilizes the `JSONPb` marshaler as a fallback:
+
+```go
+type ResponseWrapper struct {
+  runtime.JSONPb
+}
+
+func (c *ResponseWrapper) Marshal(data any) ([]byte, error) {
+  resp := data
+  switch v := data.(type) {
+  case *pb.CreateUserResponse:
+    // wrap the response in a custom structure
+    resp = map[string]any{
+      "success": true,
+      "data":    data,
+    }
+  }
+  // otherwise, use the default JSON marshaller
+  return c.JSONPb.Marshal(resp)
+}
+```
+
+In this setup:
+
+- The `forwardResponse` function intercepts the response and formats it as needed.
+- The `CustomPB` marshaller ensures that specific types of responses are wrapped in a custom structure before being sent to the client.
+
 ## Error handler
 
 To override error handling for a `*runtime.ServeMux`, use the
@@ -385,7 +464,7 @@ This method is not used outside of the initial routing.
 
 ### Customizing Routing Errors
 
-If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be converted to the equivalent of the gRPC `12 UNIMPLEMENTED`, which is  HTTP `501 Not Implmented` you can use the following example:
+If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be converted to the equivalent of the gRPC `12 UNIMPLEMENTED`, which is HTTP `501 Not Implmented` you can use the following example:
 
 ```go
 func handleRoutingError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
@@ -405,6 +484,7 @@ func handleRoutingError(ctx context.Context, mux *runtime.ServeMux, marshaler ru
 ```
 
 To use this routing error handler, construct the mux as follows:
+
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithRoutingErrorHandler(handleRoutingError),
