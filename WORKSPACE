@@ -5,9 +5,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_google_googletest",
-    sha256 = "ed98258b96c6dc8af33eeb03c8d94a05b185866604382e12980f576595bdc509",
-    strip_prefix = "googletest-1.15.0",
-    urls = ["https://github.com/google/googletest/archive/v1.15.0.zip"],
+    sha256 = "f179ec217f9b3b3f3c6e8b02d3e7eda997b49e4ce26d6b235c9053bec9c0bf9f",
+    strip_prefix = "googletest-1.15.2",
+    urls = ["https://github.com/google/googletest/archive/v1.15.2.zip"],
 )
 
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
