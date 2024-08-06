@@ -3,6 +3,7 @@ package runtime
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/textproto"
@@ -201,8 +202,7 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 	}
 	for _, opt := range opts {
 		if err := opt(ctx, w, resp); err != nil {
-			grpclog.Errorf("Error handling ForwardResponseOptions: %v", err)
-			return err
+			return fmt.Errorf("error handling ForwardResponseOptions: %w", err)
 		}
 	}
 	return nil
