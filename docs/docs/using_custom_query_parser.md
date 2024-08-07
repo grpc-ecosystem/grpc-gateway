@@ -96,10 +96,11 @@ package main
 
 import (
 	"context"
+	"net/http"
+	
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/encoding/protojson"
-	"net/http"
 
 	"your_module/path/customparser"
 )
@@ -110,10 +111,9 @@ func createGRPCGatewayMux() *runtime.ServeMux {
 	
 	return runtime.NewServeMux(
 		// Custom query parameter parser
-		runtime.WithQueryParameterParser(&customparser.CustomQueryParameterParser{}),
+		runtime.SetQueryParameterParser(&customparser.CustomQueryParameterParser{}),
 		
 		// other runtime options you may need...
 	)
 }
-
 ```
