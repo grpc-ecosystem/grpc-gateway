@@ -609,7 +609,7 @@ The gRPC-Gateway allows you to customize the way query parameters are parsed and
 #### Example: Custom Query Parameter Parser for Nested Fields
 Suppose you have a gRPC service definition where you want to map query parameters to a nested message field. Here is how you can achieve this using a custom query parameter parser.
 
-##### Protobuf Definition:
+###### Protobuf Definition:
 ```protobuf
 syntax = "proto3";
 
@@ -640,10 +640,10 @@ service MyService {
 }
 ```
 
-##### The Problem
-The ListStuffRequest message contains a nested PageOptions message that represents pagination options for the list operation. By default, creating a ServerMux in gRPC-Gateway will be able to parse query parameters for the `stuff_uuid` and other fields. However, it can only parse query parameters for the PageOptions message if they are in the format `url?pagination.limit=10`. If your endpoint constraints require query parameters to be in the format `url?limit=10`, without specifying the full qualified path in the url, you will need to implement a custom parser to map these parameters correctly into the nested PageOptions message.
+###### The Problem
+The ListStuffRequest message contains a nested PageOptions message that represents pagination options for the list operation. By default, creating a ServerMux in gRPC-Gateway will be able to parse query parameters for the `stuff_uuid` and other basic fields (that are not your own custom message). Given that `PageOptions` is a custom message, and therefore will lead to a nested RequestMessage (the root message), it can only parse query parameters for the `PageOptions` message if they are in the format `url?pagination.limit=x`. If your endpoint constraints require query parameters to be in the format `url?limit=x`, without specifying the full qualified path in the url, you will need to implement a custom parser to map these parameters correctly into the nested PageOptions message.
 
-##### Custom Query Parameter Parser:
+###### Custom Query Parameter Parser
 
 Create a custom [QueryParameterParser](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/runtime/query.go#L30) to handle the nested PageOptions message.
 ```go
@@ -666,9 +666,11 @@ type CustomQueryParameterParser struct{}
 // Parse parses query parameters and populates the appropriate fields in the gRPC request message.
 func (p *CustomQueryParameterParser) Parse(target proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	switch req := target.(type) {
+	// Different messages/requests can have different parsers, of course
 	case *your_service_v1.ListStuffRequest:
 		return populateListStuffParams(values, req)
 	}
+	
 	return (runtime.DefaultQueryParser{}).Parse(target, values, filter)
 }
 
@@ -691,7 +693,7 @@ func populateListStuffParams(values url.Values, r *your_service_v1.ListStuffRequ
 	return nil
 }
 ```
-##### Integrate Custom Query Parameter Parser in gRPC-Gateway Setup:
+###### Integrate Your Custom Query Parameter Parser in gRPC-Gateway Setup
 
 All you need to do now is update the gRPC-Gateway setup, particularly wherever you are [defining the mux server](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/runtime/mux.go#L293), to [use the custom query parameter parser](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/runtime/mux.go#L110).
 ```go
