@@ -324,15 +324,15 @@ First, set up the gRPC-Gateway with the custom options:
 
 ```go
 mux := runtime.NewServeMux(
-  runtime.WithMarshalerOption(runtime.MIMEWildcard, &ResponseWrapper{}),
-  runtime.WithForwardResponseOption(forwardResponse),
+  runtime.WithForwardResponseOption(setStatus),
+  runtime.WithForwardResponseRewriter(responseEnvelope),
 )
 ```
 
-Define the `forwardResponse` function to handle specific response types:
+Define the `setStatus` function to handle specific response types:
 
 ```go
-func forwardResponse(ctx context.Context, w http.ResponseWriter, m protoreflect.ProtoMessage) error {
+func setStatus(ctx context.Context, w http.ResponseWriter, m protoreflect.ProtoMessage) error {
   switch v := m.(type) {
   case *pb.CreateUserResponse:
     w.WriteHeader(http.StatusCreated)
@@ -342,32 +342,29 @@ func forwardResponse(ctx context.Context, w http.ResponseWriter, m protoreflect.
 }
 ```
 
-Create a custom marshaler to format the response data which utilizes the `JSONPb` marshaler as a fallback:
+Define the `responseEnvelope` function to rewrite the response to a different type/shape:
 
 ```go
-type ResponseWrapper struct {
-  runtime.JSONPb
-}
-
-func (c *ResponseWrapper) Marshal(data any) ([]byte, error) {
-  resp := data
+func responseEnvelope(_ context.Context, response proto.Message) (interface{}, error) {
   switch v := data.(type) {
   case *pb.CreateUserResponse:
     // wrap the response in a custom structure
-    resp = map[string]any{
+    return map[string]any{
       "success": true,
       "data":    data,
-    }
+    }, nil
   }
-  // otherwise, use the default JSON marshaller
-  return c.JSONPb.Marshal(resp)
+  return response, nil
 }
 ```
 
 In this setup:
 
-- The `forwardResponse` function intercepts the response and formats it as needed.
-- The `CustomPB` marshaller ensures that specific types of responses are wrapped in a custom structure before being sent to the client.
+- The `setStatus` function intercepts the response and uses its type to send `201 Created` only when it sees `*pb.CreateUserResponse`.
+- The `responseEnvelope` function ensures that specific types of responses are wrapped in a custom structure before being sent to the client.
+
+❗ **NOTE:** Using `WithForwardResponseRewriter` is partially incompatible with OpenAPI annotations. Because response
+rewriting happens at runtime, it is not possible to represent that in `protoc-gen-openapiv2` output.
 
 ## Error handler
 
