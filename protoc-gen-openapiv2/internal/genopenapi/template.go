@@ -349,6 +349,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Format:      schema.Format,
 			Pattern:     schema.Pattern,
 			Required:    required,
+			UniqueItems: schema.UniqueItems,
 			extensions:  schema.extensions,
 			Enum:        schema.Enum,
 		}
