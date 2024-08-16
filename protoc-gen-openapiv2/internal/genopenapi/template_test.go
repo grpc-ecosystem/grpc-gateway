@@ -2062,7 +2062,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			}
 			want := []string{"baz"}
 			if diff := cmp.Diff(got, want); diff != "" {
-				t.Errorf(diff)
+				t.Error(diff)
 			}
 		}
 		{
@@ -2073,7 +2073,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			}
 			want := "bar"
 			if diff := cmp.Diff(got, want); diff != "" {
-				t.Errorf(diff)
+				t.Error(diff)
 			}
 		}
 
@@ -10816,7 +10816,7 @@ func TestRenderServicesOptionDeprecated(t *testing.T) {
 			methodOptions: descriptorpb.MethodOptions{
 				Deprecated: proto.Bool(true),
 			},
-			openapiOperation: &openapi_options.Operation{},
+			openapiOperation:   &openapi_options.Operation{},
 			expectedDeprecated: true,
 		},
 	}
