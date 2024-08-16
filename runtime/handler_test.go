@@ -272,9 +272,11 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 func TestForwardResponseMessage(t *testing.T) {
 	msg := &pb.SimpleMessage{Id: "One"}
 	tests := []struct {
-		name        string
-		marshaler   runtime.Marshaler
-		contentType string
+		name              string
+		marshaler         runtime.Marshaler
+		contentType       string
+		frw               runtime.ForwardResponseRewriter
+		getWantedResponse func(msg any) ([]byte, error)
 	}{{
 		name:        "standard marshaler",
 		marshaler:   &runtime.JSONPb{},
@@ -287,6 +289,19 @@ func TestForwardResponseMessage(t *testing.T) {
 		name:        "custom marshaler",
 		marshaler:   &CustomMarshaler{&runtime.JSONPb{}},
 		contentType: "Custom-Content-Type",
+	}, {
+		name:        "custom forward response rewriter",
+		marshaler:   &runtime.JSONPb{},
+		contentType: "application/json",
+		frw: func(ctx context.Context, response proto.Message) (any, error) {
+			return map[string]any{
+				"ok":   true,
+				"data": response,
+			}, nil
+		},
+		getWantedResponse: func(msg any) ([]byte, error) {
+			return new(runtime.JSONPb).Marshal(map[string]any{"ok": true, "data": msg})
+		},
 	}}
 
 	ctx := runtime.NewServerMetadataContext(context.Background(), runtime.ServerMetadata{})
@@ -295,7 +310,12 @@ func TestForwardResponseMessage(t *testing.T) {
 			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
 			resp := httptest.NewRecorder()
 
-			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(), tt.marshaler, resp, req, msg)
+			opts := []runtime.ServeMuxOption{}
+			if tt.frw != nil {
+				opts = append(opts, runtime.WithForwardResponseRewriter(tt.frw))
+			}
+
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(opts...), tt.marshaler, resp, req, msg)
 
 			w := resp.Result()
 			if w.StatusCode != http.StatusOK {
@@ -310,7 +330,10 @@ func TestForwardResponseMessage(t *testing.T) {
 			}
 			w.Body.Close()
 
-			want, err := tt.marshaler.Marshal(msg)
+			if tt.getWantedResponse == nil {
+				tt.getWantedResponse = tt.marshaler.Marshal
+			}
+			want, err := tt.getWantedResponse(msg)
 			if err != nil {
 				t.Errorf("marshaler.Marshal() failed %v", err)
 			}

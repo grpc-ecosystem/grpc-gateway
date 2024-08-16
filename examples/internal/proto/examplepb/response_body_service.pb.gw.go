@@ -249,7 +249,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp.(*ResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -274,7 +274,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp.(*RepeatedResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -299,7 +299,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp.(*RepeatedResponseStrings)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -369,7 +369,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp.(*ResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -391,7 +391,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp.(*RepeatedResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -413,7 +413,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp.(*RepeatedResponseStrings)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -446,39 +446,35 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 type response_ResponseBodyService_GetResponseBody_0 struct {
-	proto.Message
+	*ResponseBodyOut
 }
 
 func (m response_ResponseBodyService_GetResponseBody_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*ResponseBodyOut)
-	return response.Response
+	return m.Response
 }
 
 type response_ResponseBodyService_ListResponseBodies_0 struct {
-	proto.Message
+	*RepeatedResponseBodyOut
 }
 
 func (m response_ResponseBodyService_ListResponseBodies_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*RepeatedResponseBodyOut)
-	return response.Response
+	return m.Response
 }
 
 type response_ResponseBodyService_ListResponseStrings_0 struct {
-	proto.Message
+	*RepeatedResponseStrings
 }
 
 func (m response_ResponseBodyService_ListResponseStrings_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*RepeatedResponseStrings)
-	return response.Values
+	return m.Values
 }
 
 type response_ResponseBodyService_GetResponseBodyStream_0 struct {
-	proto.Message
+	*ResponseBodyOut
 }
 
 func (m response_ResponseBodyService_GetResponseBodyStream_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*ResponseBodyOut)
-	return response.Response
+	return m.Response
 }
 
 var (
