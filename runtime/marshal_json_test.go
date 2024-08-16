@@ -91,7 +91,7 @@ func TestJSONBuiltinsnmarshal(t *testing.T) {
 		Id: "foo",
 	}
 	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
-		t.Errorf(diff)
+		t.Error(diff)
 	}
 }
 
