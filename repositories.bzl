@@ -1787,8 +1787,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto_googleapis_api",
         importpath = "google.golang.org/genproto/googleapis/api",
-        sum = "h1:BBOTEWLuuEGQy9n1y9MhVJ9Qt0BDu21X8qZs71/uPZo=",
-        version = "v0.0.0-20240822170219-fc7c04adadcd",
+        sum = "h1:e0zB268kOca6FbuJkYUGxfwG4DKFZG/8DLyv9Zv66cE=",
+        version = "v0.0.0-20240823204242-4ba0660f739c",
     )
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
