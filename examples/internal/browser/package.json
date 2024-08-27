@@ -21,7 +21,7 @@
     "mout": "^1.2.4",
     "phantomjs": "^2.1.7",
     "swagger-client": "^2.1.28",
-    "webpack-stream": "^3.2.0"
+    "webpack-stream": "^7.0.0"
   },
   "dependencies": {
     "gulp-cli": "^2.3.0"
