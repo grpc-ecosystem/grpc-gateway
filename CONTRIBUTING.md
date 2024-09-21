@@ -11,12 +11,12 @@ All submissions, including submissions by project members, require review.
 It should be as simple as this (run from the root of the repository):
 
 ```bash
-docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.22 \
+docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23 \
     /bin/bash -c 'make install && \
         make clean && \
         make generate'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
-    ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.22 -c '\
+    ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23 -c '\
         bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
         bazel run :gazelle && \
         bazel run :buildifier'
