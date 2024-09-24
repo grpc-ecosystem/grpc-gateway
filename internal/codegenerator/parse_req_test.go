@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gateway-fm/grpc-gateway/v2/internal/codegenerator"
 	"github.com/google/go-cmp/cmp"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/pluginpb"

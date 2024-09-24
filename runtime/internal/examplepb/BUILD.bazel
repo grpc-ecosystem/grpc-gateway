@@ -32,7 +32,7 @@ go_proto_library(
         "//:go_apiv2",
         "//:go_grpc",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/runtime/internal/examplepb",
     proto = ":examplepb_proto",
     deps = [
         "@org_golang_google_genproto_googleapis_api//annotations",
@@ -42,7 +42,7 @@ go_proto_library(
 go_library(
     name = "examplepb",
     embed = [":examplepb_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/runtime/internal/examplepb",
 )
 
 alias(

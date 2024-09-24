@@ -4,7 +4,7 @@ package grpc.gateway.internal.descriptor.apiconfig;
 
 import "google/api/http.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/internal/descriptor/apiconfig";
 
 // GrpcAPIService represents a stripped down version of google.api.Service .
 // Compare to https://github.com/googleapis/googleapis/blob/master/google/api/service.proto

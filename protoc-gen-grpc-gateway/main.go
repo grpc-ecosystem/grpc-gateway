@@ -16,9 +16,9 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/codegenerator"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/descriptor"
+	"github.com/gateway-fm/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/compiler/protogen"
 )

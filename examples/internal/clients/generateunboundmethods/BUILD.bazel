@@ -12,7 +12,7 @@ go_library(
         "model_runtime_error.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/generateunboundmethods",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/clients/generateunboundmethods",
     visibility = ["//examples:__subpackages__"],
     deps = ["@org_golang_x_oauth2//:oauth2"],
 )

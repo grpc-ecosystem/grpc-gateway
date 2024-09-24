@@ -15,7 +15,7 @@ buildifier(
 )
 
 # gazelle:exclude _output
-# gazelle:prefix github.com/grpc-ecosystem/grpc-gateway/v2
+# gazelle:prefix github.com/gateway-fm/grpc-gateway/v2
 # gazelle:go_proto_compilers //:go_apiv2
 # gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc
 # gazelle:go_naming_convention import_alias

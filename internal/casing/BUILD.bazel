@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "casing",
     srcs = ["camel.go"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/internal/casing",
     visibility = ["//:__subpackages__"],
 )
 

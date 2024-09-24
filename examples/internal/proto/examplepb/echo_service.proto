@@ -10,7 +10,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 // Embedded represents a message embedded in SimpleMessage.
 message Embedded {

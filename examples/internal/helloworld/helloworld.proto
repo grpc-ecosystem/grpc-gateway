@@ -5,7 +5,7 @@ package grpc.gateway.examples.internal.helloworld;
 import "google/api/annotations.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/helloworld";
 
 service Greeter {
   rpc SayHello(HelloRequest) returns (HelloReply) {

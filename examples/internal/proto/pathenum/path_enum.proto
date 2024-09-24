@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package grpc.gateway.examples.internal.pathenum;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/pathenum";
 
 enum PathEnum {
   ABC = 0;

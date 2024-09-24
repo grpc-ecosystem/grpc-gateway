@@ -17,7 +17,7 @@ go_library(
         "model_stream_result_of_examplepb_response_body_out.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/responsebody",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/clients/responsebody",
     visibility = ["//visibility:public"],
     deps = ["@org_golang_x_oauth2//:oauth2"],
 )

@@ -14,7 +14,7 @@ go_library(
         "template.go",
         "types.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi",
     deps = [
         "//internal/casing",
         "//internal/descriptor",

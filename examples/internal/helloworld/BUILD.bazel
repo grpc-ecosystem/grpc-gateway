@@ -23,7 +23,7 @@ go_proto_library(
         "//:go_grpc",
         "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/helloworld",
     proto = ":helloworld_proto",
     visibility = ["//visibility:public"],
     deps = [
@@ -34,7 +34,7 @@ go_proto_library(
 go_library(
     name = "helloworld",
     embed = [":helloworld_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/helloworld",
     visibility = ["//examples:__subpackages__"],
 )
 

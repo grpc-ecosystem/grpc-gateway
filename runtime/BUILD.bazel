@@ -22,7 +22,7 @@ go_library(
         "proto2_convert.go",
         "query.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/runtime",
     deps = [
         "//internal/httprule",
         "//utilities",

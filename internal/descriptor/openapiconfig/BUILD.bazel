@@ -12,7 +12,7 @@ proto_library(
 go_proto_library(
     name = "openapiconfig_go_proto",
     compilers = ["//:go_apiv2"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/internal/descriptor/openapiconfig",
     proto = ":openapiconfig_proto",
     visibility = ["//:__subpackages__"],
     deps = ["//protoc-gen-openapiv2/options"],
@@ -21,7 +21,7 @@ go_proto_library(
 go_library(
     name = "openapiconfig",
     embed = [":openapiconfig_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/internal/descriptor/openapiconfig",
     visibility = ["//:__subpackages__"],
 )
 

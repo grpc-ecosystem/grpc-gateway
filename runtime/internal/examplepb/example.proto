@@ -7,7 +7,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/runtime/internal/examplepb";
 
 // SimpleMessage represents a simple message sent to the Echo service.
 message SimpleMessage {

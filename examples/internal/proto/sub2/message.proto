@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package grpc.gateway.examples.internal.proto.sub2;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/sub2";
 
 message IdMessage {
   string uuid = 1;

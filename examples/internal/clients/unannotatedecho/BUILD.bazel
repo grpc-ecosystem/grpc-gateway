@@ -16,7 +16,7 @@ go_library(
         "model_rpc_status.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/clients/unannotatedecho",
     deps = [
         "@com_github_antihax_optional//:optional",
         "@org_golang_x_oauth2//:oauth2",

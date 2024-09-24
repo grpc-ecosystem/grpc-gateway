@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	gwruntime "github.com/gateway-fm/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/grpclog"
 )
 

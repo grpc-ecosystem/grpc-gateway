@@ -12,14 +12,14 @@ proto_library(
 go_proto_library(
     name = "oneofenum_go_proto",
     compilers = ["//:go_apiv2"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/oneofenum",
     proto = ":oneofenum_proto",
 )
 
 go_library(
     name = "oneofenum",
     embed = [":oneofenum_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/oneofenum",
 )
 
 alias(

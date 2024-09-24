@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/casing"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 )

@@ -8,7 +8,7 @@ import "google/api/annotations.proto";
 import "google/api/httpbody.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 // Defines some more operations to be added to ABitOfEverythingService
 service StreamService {

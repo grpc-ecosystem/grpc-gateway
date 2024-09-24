@@ -5,7 +5,7 @@ package(default_visibility = ["//visibility:private"])
 go_library(
     name = "example-grpc-server_lib",
     srcs = ["main.go"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/cmd/example-grpc-server",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/cmd/example-grpc-server",
     deps = [
         "//examples/internal/server",
         "@org_golang_google_grpc//grpclog",

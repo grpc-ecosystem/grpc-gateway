@@ -2,7 +2,7 @@ syntax = "proto2";
 
 package grpc.gateway.runtime.internal.examplepb;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/runtime/internal/examplepb";
 
 message Proto2Message {
   optional float float_value = 42;

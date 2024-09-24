@@ -61,7 +61,7 @@ go_library(
         "model_v1exampledeep_pathsingle_nested_name_single_nested.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/clients/abe",
     deps = [
         "//examples/internal/proto/examplepb",
         "//examples/internal/proto/pathenum",

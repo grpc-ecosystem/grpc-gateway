@@ -8,7 +8,7 @@ go_library(
         "handlers.go",
         "main.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/gateway",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/gateway",
     visibility = ["//visibility:public"],
     deps = [
         "//examples/internal/proto/examplepb",

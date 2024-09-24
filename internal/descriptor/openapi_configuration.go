@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"google.golang.org/protobuf/encoding/protojson"
 	"gopkg.in/yaml.v3"
 )

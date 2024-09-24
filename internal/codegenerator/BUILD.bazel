@@ -9,7 +9,7 @@ go_library(
         "parse_req.go",
         "supported_features.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/internal/codegenerator",
     deps = [
         "@org_golang_google_protobuf//compiler/protogen",
         "@org_golang_google_protobuf//proto",

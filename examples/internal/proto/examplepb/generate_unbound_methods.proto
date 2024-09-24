@@ -10,7 +10,7 @@ package grpc.gateway.examples.internal.proto.examplepb;
 // Do not need annotations.proto, can still use well known types as usual
 import "google/protobuf/duration.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 // GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 message GenerateUnboundMethodsSimpleMessage {

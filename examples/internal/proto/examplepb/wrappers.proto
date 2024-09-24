@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+option go_package = "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 message Wrappers {
   google.protobuf.StringValue string_value = 1;

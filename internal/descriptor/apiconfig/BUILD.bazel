@@ -15,7 +15,7 @@ proto_library(
 go_proto_library(
     name = "apiconfig_go_proto",
     compilers = ["//:go_apiv2"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/internal/descriptor/apiconfig",
     proto = ":apiconfig_proto",
     deps = ["@org_golang_google_genproto_googleapis_api//annotations"],
 )
@@ -23,7 +23,7 @@ go_proto_library(
 go_library(
     name = "apiconfig",
     embed = [":apiconfig_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/internal/descriptor/apiconfig",
 )
 
 alias(

@@ -11,7 +11,7 @@ go_library(
         "string_array_flag.go",
         "trie.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/utilities",
+    importpath = "github.com/gateway-fm/grpc-gateway/v2/utilities",
 )
 
 go_test(

@@ -8,7 +8,7 @@ package examplepb
 
 import (
 	context "context"
-	sub "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
+	sub "github.com/gateway-fm/grpc-gateway/v2/examples/internal/proto/sub"
 	httpbody "google.golang.org/genproto/googleapis/api/httpbody"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"

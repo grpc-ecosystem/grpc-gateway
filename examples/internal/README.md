@@ -8,7 +8,7 @@ $ dep init
 Follow the guides from this [README.md](./browser/README.md) to run the server and gateway.
 ```bash
 # Make sure you are in the correct directory: 
-# $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/v2/examples
+# $GOPATH/src/github.com/gateway-fm/grpc-gateway/v2/examples
 $ cd examples/internal/browser
 $ pwd
 

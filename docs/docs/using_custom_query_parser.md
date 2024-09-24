@@ -48,8 +48,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"github.com/gateway-fm/grpc-gateway/v2/runtime"
+	"github.com/gateway-fm/grpc-gateway/v2/utilities"
 	"google.golang.org/protobuf/proto"
 
 	your_service_v1 "path/to/your/service/v1"
@@ -98,7 +98,7 @@ import (
 	"context"
 	"net/http"
 	
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/gateway-fm/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/encoding/protojson"
 

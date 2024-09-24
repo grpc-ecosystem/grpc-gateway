@@ -16,9 +16,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/casing"
+	"github.com/gateway-fm/grpc-gateway/v2/internal/descriptor"
+	openapi_options "github.com/gateway-fm/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/grpc/grpclog"
@@ -57,8 +57,7 @@ var wktSchemas = map[string]schemaCore{
 		Type: "string",
 	},
 	".google.protobuf.BytesValue": {
-		Type:   "string",
-		Format: "byte",
+		Type: "string",
 	},
 	".google.protobuf.Int32Value": {
 		Type:   "integer",
@@ -878,7 +877,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 		// see: https://swagger.io/specification/v2/#data-types
 		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
-		return "string", "byte", true
+		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_UINT32:
 		// Ditto.
 		return "integer", "int64", true
