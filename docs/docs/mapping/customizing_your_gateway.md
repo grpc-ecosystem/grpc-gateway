@@ -346,12 +346,12 @@ Define the `responseEnvelope` function to rewrite the response to a different ty
 
 ```go
 func responseEnvelope(_ context.Context, response proto.Message) (interface{}, error) {
-  switch v := data.(type) {
+  switch v := response.(type) {
   case *pb.CreateUserResponse:
     // wrap the response in a custom structure
     return map[string]any{
       "success": true,
-      "data":    data,
+      "data":    response,
     }, nil
   }
   return response, nil
