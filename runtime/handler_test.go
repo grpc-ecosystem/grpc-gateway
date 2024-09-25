@@ -17,12 +17,12 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type fakeReponseBodyWrapper struct {
+type fakeResponseBodyWrapper struct {
 	proto.Message
 }
 
 // XXX_ResponseBody returns id of SimpleMessage
-func (r fakeReponseBodyWrapper) XXX_ResponseBody() interface{} {
+func (r fakeResponseBodyWrapper) XXX_ResponseBody() interface{} {
 	resp := r.Message.(*pb.SimpleMessage)
 	return resp.Id
 }
@@ -61,15 +61,15 @@ func TestForwardResponseStream(t *testing.T) {
 	}, {
 		name: "response body stream case",
 		msgs: []msg{
-			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
-			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "Two"}}, nil},
+			{fakeResponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
+			{fakeResponseBodyWrapper{&pb.SimpleMessage{Id: "Two"}}, nil},
 		},
 		responseBody: true,
 		statusCode:   http.StatusOK,
 	}, {
 		name: "response body stream error case",
 		msgs: []msg{
-			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
+			{fakeResponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
 			{nil, status.Errorf(codes.OutOfRange, "400")},
 		},
 		responseBody: true,
@@ -142,8 +142,8 @@ func TestForwardResponseStream(t *testing.T) {
 
 				if tt.responseBody {
 					// responseBody interface is in runtime package and test is in runtime_test package. hence can't use responseBody directly
-					// So type casting to fakeReponseBodyWrapper struct to verify the data.
-					rb, ok := msg.pb.(fakeReponseBodyWrapper)
+					// So type casting to fakeResponseBodyWrapper struct to verify the data.
+					rb, ok := msg.pb.(fakeResponseBodyWrapper)
 					if !ok {
 						t.Errorf("stream responseBody failed %v", err)
 					}
@@ -252,7 +252,7 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 			var want []byte
 			for _, msg := range tt.msgs {
 				if msg.err != nil {
-					t.Skip("checking erorr encodings")
+					t.Skip("checking error encodings")
 				}
 				b, err := marshaler.Marshal(map[string]proto.Message{"result": msg.pb})
 				if err != nil {
