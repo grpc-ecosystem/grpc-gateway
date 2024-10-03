@@ -649,6 +649,13 @@ func renderFieldAsDefinition(f *descriptor.Field, reg *descriptor.Registry, refs
 		schema.Title = strings.TrimSpace(paragraphs[0])
 		schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
 	}
+
+	// to handle case where path param is present inside the field of descriptorpb.FieldDescriptorProto_TYPE_MESSAGE type
+	// it still needs to consider the behaviour of the field which was being done by schemaOfField() in case there are no path params
+	if j, err := getFieldBehaviorOption(reg, f); err == nil {
+		updateSwaggerObjectFromFieldBehavior(&schema, j, reg, f)
+	}
+
 	return schema, nil
 }
 
