@@ -5,9 +5,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "bazel_features",
-    sha256 = "bdc12fcbe6076180d835c9dd5b3685d509966191760a0eb10b276025fcb76158",
-    strip_prefix = "bazel_features-1.17.0",
-    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.17.0/bazel_features-v1.17.0.tar.gz",
+    sha256 = "b4b145c19e08fd48337f53c383db46398d0a810002907ff0c590762d926e05be",
+    strip_prefix = "bazel_features-1.18.0",
+    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.18.0/bazel_features-v1.18.0.tar.gz",
 )
 
 load("@bazel_features//:deps.bzl", "bazel_features_deps")
@@ -42,10 +42,10 @@ http_archive(
 
 http_archive(
     name = "googleapis",
-    sha256 = "2c50a002d7f7ee0c19cc1605233e4e1b19f4737e1b01e932d5e6f36cbfbf0f36",
-    strip_prefix = "googleapis-5c181aaf78bd1ae2e08c3a2971cd9e87b6e00986",
+    sha256 = "3c0a3cccabf1aca42bf2c06ed41933d73be68aa5cfd97f15a87c6f6309a8b2b9",
+    strip_prefix = "googleapis-672cd6a381c7a0aea16438e2335dc7799bd70e4d",
     urls = [
-        "https://github.com/googleapis/googleapis/archive/5c181aaf78bd1ae2e08c3a2971cd9e87b6e00986.zip",
+        "https://github.com/googleapis/googleapis/archive/672cd6a381c7a0aea16438e2335dc7799bd70e4d.zip",
     ],
 )
 
@@ -102,10 +102,10 @@ go_register_toolchains(version = "1.21.13")
 
 http_archive(
     name = "bazel_gazelle",
-    sha256 = "2c7545cc914a411e5c15c3d55a0a5ed34fbff62def0e1f0ab6ed14bda222c3cc",
+    sha256 = "b760f7fe75173886007f7c2e616a21241208f3d90e8657dc65d36a771e916b6a",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.39.0/bazel-gazelle-v0.39.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.39.0/bazel-gazelle-v0.39.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.39.1/bazel-gazelle-v0.39.1.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.39.1/bazel-gazelle-v0.39.1.tar.gz",
     ],
 )
 
