@@ -1,6 +1,6 @@
 openapiOptions:
   file:
-    # the file name must be the same as one passed to protoc when generating generating .swagger.json
+    # the file name must be the same as one passed to protoc when generating .swagger.json
     - file: "examples/internal/proto/examplepb/unannotated_echo_service.proto"
       option:
         info:

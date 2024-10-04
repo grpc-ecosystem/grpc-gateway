@@ -61,7 +61,7 @@ func TestConvertTimestamp(t *testing.T) {
 			case err != nil && !spec.wanterr:
 				t.Errorf("got unexpected error\n%#v", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expecte")
+				t.Errorf("did not error when expected")
 			case !proto.Equal(ts, spec.output):
 				t.Errorf(
 					"when testing %s; got\n%#v\nexpected\n%#v",
@@ -126,7 +126,7 @@ func TestConvertDuration(t *testing.T) {
 			case err != nil && !spec.wanterr:
 				t.Errorf("got unexpected error\n%#v", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expecte")
+				t.Errorf("did not error when expected")
 			case !proto.Equal(ts, spec.output):
 				t.Errorf(
 					"when testing %s; got\n%#v\nexpected\n%#v",

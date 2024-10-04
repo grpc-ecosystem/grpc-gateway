@@ -15,7 +15,7 @@ You can provide comments directly in your Protocol Buffer definitions and they w
 
 ```protobuf
 message MyMessage {
-  // This comment will end up direcly in your Open API definition
+  // This comment will end up directly in your Open API definition
   string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The UUID field."}];
 }
 ```
@@ -33,7 +33,7 @@ message ABitOfEverything {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
             title: "A bit of everything"
-            description: "Intentionaly complicated message type to cover many features of Protobuf."
+            description: "Intentionally complicated message type to cover many features of Protobuf."
             required: ["uuid", "int64_value", "double_value"]
         }
         external_docs: {
@@ -113,7 +113,7 @@ Please see this [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/gr
 
 ## Using google.api.field_behavior
 
-Google provides an [field option](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) for defining the behavior of fields that is also supported:
+Google provides a [field option](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) for defining the behavior of fields that is also supported:
 
 ```protobuf
 import "google/api/field_behavior.proto";

@@ -89,7 +89,7 @@ func (b binding) HasRepeatedEnumPathParam() bool {
 }
 
 // hasEnumPathParam returns true if the path parameter slice contains a parameter
-// that maps to a enum proto field and that the enum proto field is or isn't repeated
+// that maps to an enum proto field and that the enum proto field is or isn't repeated
 // based on the provided 'repeated' parameter.
 func (b binding) hasEnumPathParam(repeated bool) bool {
 	for _, p := range b.PathParams {
@@ -100,7 +100,7 @@ func (b binding) hasEnumPathParam(repeated bool) bool {
 	return false
 }
 
-// LookupEnum looks up a enum type by path parameter.
+// LookupEnum looks up an enum type by path parameter.
 func (b binding) LookupEnum(p descriptor.Parameter) *descriptor.Enum {
 	e, err := b.Registry.LookupEnum("", p.Target.GetTypeName())
 	if err != nil {

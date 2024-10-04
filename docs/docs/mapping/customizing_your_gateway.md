@@ -126,7 +126,7 @@ You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc
    )
    ```
 
-To keep the [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) alongside with your own rules write:
+To keep the [default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) alongside with your own rules write:
 
 ```go
 func CustomMatcher(key string) (string, bool) {
@@ -461,7 +461,7 @@ This method is not used outside of the initial routing.
 
 ### Customizing Routing Errors
 
-If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be converted to the equivalent of the gRPC `12 UNIMPLEMENTED`, which is HTTP `501 Not Implmented` you can use the following example:
+If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be converted to the equivalent of the gRPC `12 UNIMPLEMENTED`, which is HTTP `501 Not Implemented` you can use the following example:
 
 ```go
 func handleRoutingError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {

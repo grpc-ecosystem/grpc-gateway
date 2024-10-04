@@ -150,7 +150,7 @@ type LogoutRequest struct {
 	Test int32 `protobuf:"varint,2,opt,name=test,proto3" json:"test,omitempty"`
 	// This is an array
 	//
-	// It displays that using [] infront of the type
+	// It displays that using [] in front of the type
 	Stringarray []string `protobuf:"bytes,3,rep,name=stringarray,proto3" json:"stringarray,omitempty"`
 }
 
