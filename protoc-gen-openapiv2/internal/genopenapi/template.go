@@ -9,6 +9,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -979,7 +980,7 @@ var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)([^}]*)}")
 
 // templateToParts will split a URL template as defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
 // into a string slice with each part as an element of the slice for use by `partsToOpenAPIPath` and `partsToRegexpMap`.
-func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) []string {
+func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams *[]descriptor.Parameter) []string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -1004,14 +1005,72 @@ pathLoop:
 			}
 			// Pop from the stack
 			depth--
-			buffer += string(char)
-			if reg.GetUseJSONNamesForFields() &&
-				len(jsonBuffer) > 1 {
-				jsonSnakeCaseName := jsonBuffer[1:]
-				jsonCamelCaseName := lowerCamelCase(jsonSnakeCaseName, fields, msgs)
-				prev := buffer[:len(buffer)-len(jsonSnakeCaseName)-2]
-				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
-				jsonBuffer = ""
+			paramName := ""
+			pattern := ""
+			if reg.GetExpandSlashedPathPatterns() {
+				paramPattern := strings.SplitN(buffer[1:], "=", 2)
+				if len(paramPattern) == 2 {
+					paramName = paramPattern[0]
+					pattern = paramPattern[1]
+				}
+			}
+			if pattern == "" || pattern == "*" {
+				buffer += string(char)
+				if reg.GetUseJSONNamesForFields() &&
+					len(jsonBuffer) > 1 {
+					jsonSnakeCaseName := jsonBuffer[1:]
+					jsonCamelCaseName := lowerCamelCase(jsonSnakeCaseName, fields, msgs)
+					prev := buffer[:len(buffer)-len(jsonSnakeCaseName)-2]
+					buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
+					jsonBuffer = ""
+				}
+				continue
+			}
+
+			pathParamIndex := slices.IndexFunc(*pathParams, func(p descriptor.Parameter) bool {
+				return p.FieldPath.String() == paramName
+			})
+			if pathParamIndex == -1 {
+				panic(fmt.Sprintf("Path parameter %q not found in path parameters", paramName))
+			}
+			pathParam := (*pathParams)[pathParamIndex]
+			patternParts := strings.Split(pattern, "/")
+			for i, part := range patternParts {
+				modifiedPart := part
+				if part == "*" {
+					paramName := strings.TrimSuffix(parts[len(parts)-1], "s")
+					if reg.GetUseJSONNamesForFields() {
+						paramName = casing.JSONCamelCase(paramName)
+					}
+					modifiedPart = "{" + paramName + "}"
+					newParam := descriptor.Parameter{
+						Target: &descriptor.Field{
+							FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+								Name: proto.String(paramName),
+							},
+							Message:           pathParam.Target.Message,
+							FieldMessage:      pathParam.Target.FieldMessage,
+							ForcePrefixedName: pathParam.Target.ForcePrefixedName,
+						},
+						FieldPath: []descriptor.FieldPathComponent{{
+							Name:   paramName,
+							Target: nil,
+						}},
+						Method: nil,
+					}
+					*pathParams = append((*pathParams), newParam)
+					if pathParamIndex != -1 {
+						// the new parameter from the pattern replaces the old path parameter
+						*pathParams = append((*pathParams)[:pathParamIndex], (*pathParams)[pathParamIndex+1:]...)
+						pathParamIndex = -1
+					}
+				}
+				isLastPart := i == len(patternParts)-1
+				if isLastPart {
+					buffer = modifiedPart
+				} else {
+					parts = append(parts, modifiedPart)
+				}
 			}
 		case '/':
 			if depth == 0 {
@@ -1053,6 +1112,7 @@ pathLoop:
 func partsToOpenAPIPath(parts []string, overrides map[string]string) string {
 	for index, part := range parts {
 		part = canRegexp.ReplaceAllString(part, "{$1}")
+
 		if override, ok := overrides[part]; ok {
 			part = override
 		}
@@ -1170,13 +1230,14 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				operationFunc := operationForMethod(b.HTTPMethod)
 				// Iterate over all the OpenAPI parameters
 				parameters := openapiParametersObject{}
+				pathParams := b.PathParams
 				// split the path template into its parts
-				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)
+				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs, &pathParams)
 				// extract any constraints specified in the path placeholders into ECMA regular expressions
 				pathParamRegexpMap := partsToRegexpMap(parts)
 				// Keep track of path parameter overrides
 				var pathParamNames = make(map[string]string)
-				for _, parameter := range b.PathParams {
+				for _, parameter := range pathParams {
 
 					var paramType, paramFormat, desc, collectionFormat string
 					var defaultValue interface{}

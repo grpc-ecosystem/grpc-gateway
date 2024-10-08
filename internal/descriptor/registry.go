@@ -163,6 +163,17 @@ type Registry struct {
 
 	// enableRpcDeprecation whether to process grpc method's deprecated option
 	enableRpcDeprecation bool
+
+	// expandSlashedPathPatterns, if true, for a path parameter carying a sub-path, which is indicated via path parameter
+	// pattern (i.e. the parameter pattern contains forward slashes), this will expand the _pattern_ into the URI and will
+	// replace the parameter with wildcards from the _pattern_.
+	//
+	// Example: let's have a Google AIP style path "/v1/{name=projects/*/locations/*}/datasets/{dataset_id}" with a "name"
+	// parameter that contains sub-path. With "expandSlashedPathPatterns" turned on, the generated URI will be
+	// "/v1/projects/{project}/locations/{location}/datasets/{dataset_id}". Note that the original "name" parameter is
+	// replaced with "project" and "location" parameters. This leads to more compliant and readable OpenAPI suitable for
+	// documentation purposes, but may complicate client implementation if you want to pass the original "name" parameter.
+	expandSlashedPathPatterns bool
 }
 
 type repeatedFieldSeparator struct {
@@ -433,6 +444,10 @@ func (r *Registry) SetPrefix(prefix string) {
 // SetStandalone registers standalone flag to control package prefix
 func (r *Registry) SetStandalone(standalone bool) {
 	r.standalone = standalone
+}
+
+func (r *Registry) GetStandalone() bool {
+	return r.standalone
 }
 
 // SetRecursiveDepth records the max recursion count
@@ -887,4 +902,14 @@ func (r *Registry) SetEnableRpcDeprecation(enable bool) {
 // GetEnableRpcDeprecation returns enableRpcDeprecation
 func (r *Registry) GetEnableRpcDeprecation() bool {
 	return r.enableRpcDeprecation
+}
+
+// SetProto3OptionalNullable set proto3OtionalNullable
+func (r *Registry) SetExpandSlashedPathPatterns(expandSlashedPathPatterns bool) {
+	r.expandSlashedPathPatterns = expandSlashedPathPatterns
+}
+
+// SetProto3OptionalNullable set proto3OtionalNullable
+func (r *Registry) GetExpandSlashedPathPatterns() bool {
+	return r.expandSlashedPathPatterns
 }
