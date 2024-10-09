@@ -978,8 +978,18 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy s
 
 var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)([^}]*)}")
 
-// templateToParts will split a URL template as defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
-// into a string slice with each part as an element of the slice for use by `partsToOpenAPIPath` and `partsToRegexpMap`.
+// templateToParts splits a URL template into path segments for use by `partsToOpenAPIPath` and `partsToRegexpMap`.
+//
+// Parameters:
+//   - path:	The URL template as defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+//   - reg:	The descriptor registry used to read compiler flags
+//   - fields:	The fields of the request message, only used when `useJSONNamesForFields` is true
+//   - msgs:	The Messages of the service binding, only used when `useJSONNamesForFields` is true
+//   - pathParams:	The path parameters of the service binding, only used when `expandSlashedPathPatterns` is true
+//
+// Returns:
+//
+//	The path segments of the URL template. When `expandSlashedPathPatterns` is true, also mutates the pathParams slice.
 func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams *[]descriptor.Parameter) []string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like

@@ -446,10 +446,6 @@ func (r *Registry) SetStandalone(standalone bool) {
 	r.standalone = standalone
 }
 
-func (r *Registry) GetStandalone() bool {
-	return r.standalone
-}
-
 // SetRecursiveDepth records the max recursion count
 func (r *Registry) SetRecursiveDepth(count int) {
 	r.recursiveDepth = count
@@ -904,12 +900,10 @@ func (r *Registry) GetEnableRpcDeprecation() bool {
 	return r.enableRpcDeprecation
 }
 
-// SetProto3OptionalNullable set proto3OtionalNullable
 func (r *Registry) SetExpandSlashedPathPatterns(expandSlashedPathPatterns bool) {
 	r.expandSlashedPathPatterns = expandSlashedPathPatterns
 }
 
-// SetProto3OptionalNullable set proto3OtionalNullable
 func (r *Registry) GetExpandSlashedPathPatterns() bool {
 	return r.expandSlashedPathPatterns
 }
