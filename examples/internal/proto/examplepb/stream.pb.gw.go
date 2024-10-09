@@ -104,12 +104,13 @@ func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, error) {
+func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, chan error, error) {
 	var metadata runtime.ServerMetadata
+	errChan := make(chan error, 1)
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
-		return nil, metadata, err
+		return nil, metadata, errChan, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -120,7 +121,7 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 		}
 		if err != nil {
 			grpclog.Errorf("Failed to decode request: %v", err)
-			return err
+			return status.Errorf(codes.InvalidArgument, "Failed to decode request: %v", err)
 		}
 		if err := stream.Send(&protoReq); err != nil {
 			grpclog.Errorf("Failed to send request: %v", err)
@@ -131,20 +132,18 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 	go func() {
 		for {
 			if err := handleSend(); err != nil {
+				errChan <- err
 				break
 			}
-		}
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Errorf("Failed to get header from client: %v", err)
-		return nil, metadata, err
+		return nil, metadata, errChan, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, nil
+	return stream, metadata, errChan, nil
 }
 
 var (
@@ -306,12 +305,25 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkEcho_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+
+		resp, md, reqErrChan, err := request_StreamService_BulkEcho_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+		go func() {
+			for {
+				err := <-reqErrChan
+				if err != nil {
+					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+					if err := resp.CloseSend(); err != nil {
+						grpclog.Errorf("Failed to terminate client stream: %v", err)
+					}
+					return
+				}
+			}
+		}()
 
 		forward_StreamService_BulkEcho_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 

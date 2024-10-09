@@ -256,7 +256,9 @@ var _ = metadata.Join
 `))
 
 	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.ReplaceAll(`
-{{if .Method.GetServerStreaming}}
+{{if and .Method.GetClientStreaming .Method.GetServerStreaming}}
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.InstanceName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, chan error, error)
+{{else if .Method.GetServerStreaming}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.InstanceName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
 {{else}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
@@ -439,10 +441,11 @@ var (
 	_ = template.Must(handlerTemplate.New("bidi-streaming-request-func").Parse(`
 {{template "request-func-signature" .}} {
 	var metadata runtime.ServerMetadata
+	errChan := make(chan error, 1)
 	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
-		return nil, metadata, err
+		return nil, metadata, errChan, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -453,7 +456,7 @@ var (
 		}
 		if err != nil {
 			grpclog.Errorf("Failed to decode request: %v", err)
-			return err
+			return status.Errorf(codes.InvalidArgument, "Failed to decode request: %v", err)
 		}
 		if err := stream.Send(&protoReq); err != nil {
 			grpclog.Errorf("Failed to send request: %v", err)
@@ -464,20 +467,18 @@ var (
 	go func() {
 		for {
 			if err := handleSend(); err != nil {
+				errChan <- err
 				break
 			}
-		}
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Errorf("Failed to get header from client: %v", err)
-		return nil, metadata, err
+		return nil, metadata, errChan, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, nil
+	return stream, metadata, errChan, nil
 }
 `))
 
@@ -727,12 +728,30 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
+		{{if and $m.GetClientStreaming $m.GetServerStreaming }}
+		resp, md, reqErrChan, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(annotatedContext, inboundMarshaler, client, req, pathParams)
+		{{- else -}}
 		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(annotatedContext, inboundMarshaler, client, req, pathParams)
+		{{- end }}
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+		{{- if and $m.GetClientStreaming $m.GetServerStreaming }}
+		go func() {
+			for {
+				err := <-reqErrChan
+				if err != nil {
+					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+					if err := resp.CloseSend(); err != nil {
+						grpclog.Errorf("Failed to terminate client stream: %v", err)
+					}
+					return
+				}
+			}
+		}()
+		{{- end }}
 		{{if $m.GetServerStreaming}}
 		{{ if $b.ResponseBody }}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
