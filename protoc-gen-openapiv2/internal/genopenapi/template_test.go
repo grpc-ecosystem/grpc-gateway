@@ -4119,7 +4119,7 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 	}
 }
 
-func GetParameters(names []string) []descriptor.Parameter {
+func getParameters(names []string) []descriptor.Parameter {
 	params := make([]descriptor.Parameter, 0)
 	for _, name := range names {
 		params = append(params, descriptor.Parameter{
@@ -4149,11 +4149,11 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 		expectedPathParams []string
 		useJSONNames       bool
 	}{
-		{"/v1/{name=projects/*/documents/*}:exportResults", "/v1/projects/{project}/documents/{document}:exportResults", GetParameters([]string{"name"}), []string{"project", "document"}, true},
-		{"/test/{name=*}", "/test/{name}", GetParameters([]string{"name"}), []string{"name"}, true},
-		{"/test/{name=*}/", "/test/{name}/", GetParameters([]string{"name"}), []string{"name"}, true},
-		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", GetParameters([]string{"name"}), []string{"testCase"}, true},
-		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", GetParameters([]string{"name"}), []string{"test_case"}, false},
+		{"/v1/{name=projects/*/documents/*}:exportResults", "/v1/projects/{project}/documents/{document}:exportResults", getParameters([]string{"name"}), []string{"project", "document"}, true},
+		{"/test/{name=*}", "/test/{name}", getParameters([]string{"name"}), []string{"name"}, true},
+		{"/test/{name=*}/", "/test/{name}/", getParameters([]string{"name"}), []string{"name"}, true},
+		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"name"}), []string{"testCase"}, true},
+		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"name"}), []string{"test_case"}, false},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetExpandSlashedPathPatterns(true)

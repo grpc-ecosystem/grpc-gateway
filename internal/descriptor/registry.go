@@ -164,15 +164,16 @@ type Registry struct {
 	// enableRpcDeprecation whether to process grpc method's deprecated option
 	enableRpcDeprecation bool
 
-	// expandSlashedPathPatterns, if true, for a path parameter carying a sub-path, which is indicated via path parameter
-	// pattern (i.e. the parameter pattern contains forward slashes), this will expand the _pattern_ into the URI and will
-	// replace the parameter with wildcards from the _pattern_.
+	// expandSlashedPathPatterns, if true, for a path parameter carying a sub-path, described via parameter pattern (i.e.
+	// the pattern contains forward slashes), this will expand the _pattern_ into the URI and will _replace_ the parameter
+	// with new path parameters inferred from patterns wildcards.
 	//
-	// Example: let's have a Google AIP style path "/v1/{name=projects/*/locations/*}/datasets/{dataset_id}" with a "name"
-	// parameter that contains sub-path. With "expandSlashedPathPatterns" turned on, the generated URI will be
-	// "/v1/projects/{project}/locations/{location}/datasets/{dataset_id}". Note that the original "name" parameter is
-	// replaced with "project" and "location" parameters. This leads to more compliant and readable OpenAPI suitable for
-	// documentation purposes, but may complicate client implementation if you want to pass the original "name" parameter.
+	// Example: a Google AIP style path "/v1/{name=projects/*/locations/*}/datasets/{dataset}" with a "name" parameter
+	// containing sub-path will generate "/v1/projects/{project}/locations/{location}/datasets/{dataset}" path in OpenAPI.
+	// Note that the original "name" parameter is replaced with "project" and "location" parameters.
+	//
+	// This leads to more compliant and readable OpenAPI suitable for documentation, but may complicate client
+	// implementation if you want to pass the original "name" parameter.
 	expandSlashedPathPatterns bool
 }
 
