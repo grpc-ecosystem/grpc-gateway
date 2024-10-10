@@ -1,6 +1,6 @@
-version: v1
+version: v2
 plugins:
-  - name: openapiv2
+  - local: protoc-gen-openapiv2
     out: .
     opt:
       - enums_as_ints=true
