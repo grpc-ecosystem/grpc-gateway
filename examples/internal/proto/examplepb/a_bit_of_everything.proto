@@ -19,60 +19,60 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    title: "A Bit of Everything";
-    version: "1.0";
+    title: "A Bit of Everything"
+    version: "1.0"
     contact: {
-      name: "gRPC-Gateway project";
-      url: "https://github.com/grpc-ecosystem/grpc-gateway";
-      email: "none@example.com";
-    };
-    license: {
-      name: "BSD 3-Clause License";
-      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
-    };
-    extensions: {
-      key: "x-something-something";
-      value {string_value: "yadda"}
+      name: "gRPC-Gateway project"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      email: "none@example.com"
     }
-  };
+    license: {
+      name: "BSD 3-Clause License"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE"
+    }
+    extensions: {
+      key: "x-something-something"
+      value: {string_value: "yadda"}
+    }
+  }
   // Overwriting host entry breaks tests, so this is not done here.
   external_docs: {
-    url: "https://github.com/grpc-ecosystem/grpc-gateway";
-    description: "More about gRPC-Gateway";
+    url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    description: "More about gRPC-Gateway"
   }
-  schemes: HTTP;
-  schemes: HTTPS;
-  schemes: WSS;
-  consumes: "application/json";
-  consumes: "application/x-foo-mime";
-  produces: "application/json";
-  produces: "application/x-foo-mime";
+  schemes: HTTP
+  schemes: HTTPS
+  schemes: WSS
+  consumes: "application/json"
+  consumes: "application/x-foo-mime"
+  produces: "application/json"
+  produces: "application/x-foo-mime"
   security_definitions: {
     security: {
-      key: "BasicAuth";
+      key: "BasicAuth"
       value: {type: TYPE_BASIC}
     }
     security: {
-      key: "ApiKeyAuth";
+      key: "ApiKeyAuth"
       value: {
-        type: TYPE_API_KEY;
-        in: IN_HEADER;
-        name: "X-API-Key";
+        type: TYPE_API_KEY
+        in: IN_HEADER
+        name: "X-API-Key"
         extensions: {
-          key: "x-amazon-apigateway-authtype";
-          value {string_value: "oauth2"}
+          key: "x-amazon-apigateway-authtype"
+          value: {string_value: "oauth2"}
         }
         extensions: {
-          key: "x-amazon-apigateway-authorizer";
-          value {
-            struct_value {
-              fields {
-                key: "type";
-                value {string_value: "token"}
+          key: "x-amazon-apigateway-authorizer"
+          value: {
+            struct_value: {
+              fields: {
+                key: "type"
+                value: {string_value: "token"}
               }
-              fields {
-                key: "authorizerResultTtlInSeconds";
-                value {number_value: 60}
+              fields: {
+                key: "authorizerResultTtlInSeconds"
+                value: {number_value: 60}
               }
             }
           }
@@ -80,24 +80,24 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
       }
     }
     security: {
-      key: "OAuth2";
+      key: "OAuth2"
       value: {
-        type: TYPE_OAUTH2;
-        flow: FLOW_ACCESS_CODE;
-        authorization_url: "https://example.com/oauth/authorize";
-        token_url: "https://example.com/oauth/token";
+        type: TYPE_OAUTH2
+        flow: FLOW_ACCESS_CODE
+        authorization_url: "https://example.com/oauth/authorize"
+        token_url: "https://example.com/oauth/token"
         scopes: {
           scope: {
-            key: "read";
-            value: "Grants read access";
+            key: "read"
+            value: "Grants read access"
           }
           scope: {
-            key: "write";
-            value: "Grants write access";
+            key: "write"
+            value: "Grants write access"
           }
           scope: {
-            key: "admin";
-            value: "Grants read and write access to administrative information";
+            key: "admin"
+            value: "Grants read and write access to administrative information"
           }
         }
       }
@@ -105,53 +105,53 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
   security: {
     security_requirement: {
-      key: "BasicAuth";
-      value: {};
+      key: "BasicAuth"
+      value: {}
     }
     security_requirement: {
-      key: "ApiKeyAuth";
-      value: {};
+      key: "ApiKeyAuth"
+      value: {}
     }
   }
   security: {
     security_requirement: {
-      key: "OAuth2";
+      key: "OAuth2"
       value: {
-        scope: "read";
-        scope: "write";
+        scope: "read"
+        scope: "write"
       }
     }
     security_requirement: {
-      key: "ApiKeyAuth";
-      value: {};
+      key: "ApiKeyAuth"
+      value: {}
     }
   }
   responses: {
-    key: "403";
+    key: "403"
     value: {description: "Returned when the user does not have permission to access the resource."}
   }
   responses: {
-    key: "404";
+    key: "404"
     value: {
-      description: "Returned when the resource does not exist.";
+      description: "Returned when the resource does not exist."
       schema: {
         json_schema: {type: STRING}
       }
     }
   }
   responses: {
-    key: "418";
+    key: "418"
     value: {
-      description: "I'm a teapot.";
+      description: "I'm a teapot."
       schema: {
         json_schema: {ref: ".grpc.gateway.examples.internal.proto.examplepb.NumericEnum"}
       }
     }
   }
   responses: {
-    key: "500";
+    key: "500"
     value: {
-      description: "Server error";
+      description: "Server error"
       headers: {
         key: "X-Correlation-Id"
         value: {
@@ -161,7 +161,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
           default: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
           pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
         }
-      };
+      }
       schema: {
         json_schema: {ref: ".grpc.gateway.examples.internal.proto.examplepb.ErrorResponse"}
       }
@@ -171,17 +171,17 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     name: "echo rpc"
     description: "Echo Rpc description"
     extensions: {
-      key: "x-traitTag";
-      value {bool_value: true}
+      key: "x-traitTag"
+      value: {bool_value: true}
     }
   }
   extensions: {
-    key: "x-grpc-gateway-foo";
-    value {string_value: "bar"}
+    key: "x-grpc-gateway-foo"
+    value: {string_value: "bar"}
   }
   extensions: {
-    key: "x-grpc-gateway-baz-list";
-    value {
+    key: "x-grpc-gateway-baz-list"
+    value: {
       list_value: {
         values: {string_value: "one"}
         values: {bool_value: true}
@@ -192,10 +192,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 message ErrorResponse {
   string correlationId = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
-    title: "x-correlation-id",
-    description: "Unique event identifier for server requests",
-    format: "uuid",
+    pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+    title: "x-correlation-id"
+    description: "Unique event identifier for server requests"
+    format: "uuid"
     example: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
   }];
   ErrorObject error = 2;
@@ -203,14 +203,14 @@ message ErrorResponse {
 
 message ErrorObject {
   int32 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    pattern: "^[0-9]$",
-    title: "code",
-    description: "Response code",
+    pattern: "^[0-9]$"
+    title: "code"
+    description: "Response code"
     format: "integer"
   }];
   string message = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    pattern: "^[a-zA-Z0-9]{1, 32}$",
-    title: "message",
+    pattern: "^[a-zA-Z0-9]{1, 32}$"
+    title: "message"
     description: "Response message"
   }];
 }
@@ -228,13 +228,13 @@ message ABitOfEverything {
         "required_field_schema_json_name"
       ]
       extensions: {
-        key: "x-a-bit-of-everything-foo";
-        value {string_value: "bar"}
+        key: "x-a-bit-of-everything-foo"
+        value: {string_value: "bar"}
       }
     }
     external_docs: {
-      url: "https://github.com/grpc-ecosystem/grpc-gateway";
-      description: "Find out more about ABitOfEverything";
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      description: "Find out more about ABitOfEverything"
     }
     example: "{\"int64_value\": 12, \"double_value\": 12.3}"
   };
@@ -259,19 +259,19 @@ message ABitOfEverything {
   Nested single_nested = 25;
 
   string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-    min_length: 1,
-    field_configuration: {path_param_name: "uuidName"},
-    format: "uuid",
+    pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    min_length: 1
+    field_configuration: {path_param_name: "uuidName"}
+    format: "uuid"
     extensions: {
-      key: "x-internal";
-      value {bool_value: true}
+      key: "x-internal"
+      value: {bool_value: true}
     }
   }];
   repeated Nested nested = 2;
   float float_value = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    description: "Float value field",
-    default: "0.2",
+    description: "Float value field"
+    default: "0.2"
     required: ["float_value"]
   }];
   double double_value = 4;
@@ -310,31 +310,31 @@ message ABitOfEverything {
 
   // repeated numeric enum comment (This comment is overridden by the field annotation)
   repeated NumericEnum repeated_enum_annotation = 32 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    title: "Repeated numeric enum title",
+    title: "Repeated numeric enum title"
     description: "Repeated numeric enum description."
   }];
 
   // numeric enum comment (This comment is overridden by the field annotation)
   NumericEnum enum_value_annotation = 33 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    title: "Numeric enum title",
+    title: "Numeric enum title"
     description: "Numeric enum description."
   }];
 
   // repeated string comment (This comment is overridden by the field annotation)
   repeated string repeated_string_annotation = 34 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    title: "Repeated string title",
+    title: "Repeated string title"
     description: "Repeated string description."
   }];
 
   // repeated nested object comment (This comment is overridden by the field annotation)
   repeated Nested repeated_nested_annotation = 35 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    title: "Repeated nested object title",
+    title: "Repeated nested object title"
     description: "Repeated nested object description."
   }];
 
   // nested object comments (This comment is overridden by the field annotation)
   Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    title: "Nested object title",
+    title: "Nested object title"
     description: "Nested object description."
   }];
 
@@ -498,8 +498,8 @@ service ABitOfEverythingService {
     name: "ABitOfEverything"
     description: "ABitOfEverythingService description -- which should not be used in place of the documentation comment!"
     external_docs: {
-      url: "https://github.com/grpc-ecosystem/grpc-gateway";
-      description: "Find out more about EchoService";
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      description: "Find out more about EchoService"
     }
   };
 
@@ -565,20 +565,20 @@ service ABitOfEverythingService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {
         security_requirement: {
-          key: "ApiKeyAuth";
+          key: "ApiKeyAuth"
           value: {}
         }
         security_requirement: {
-          key: "OAuth2";
+          key: "OAuth2"
           value: {
-            scope: "read";
-            scope: "write";
+            scope: "read"
+            scope: "write"
           }
         }
       }
       extensions: {
-        key: "x-irreversible";
-        value {bool_value: true}
+        key: "x-irreversible"
+        value: {bool_value: true}
       }
     };
   }
@@ -587,8 +587,8 @@ service ABitOfEverythingService {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       deprecated: true // For testing purposes.
       external_docs: {
-        url: "https://github.com/grpc-ecosystem/grpc-gateway";
-        description: "Find out more about GetQuery";
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+        description: "Find out more about GetQuery"
       }
       security: {}
     };
@@ -606,19 +606,19 @@ service ABitOfEverythingService {
   rpc Echo(grpc.gateway.examples.internal.proto.sub.StringMessage) returns (grpc.gateway.examples.internal.proto.sub.StringMessage) {
     option (google.api.http) = {
       get: "/v1/example/a_bit_of_everything/echo/{value}"
-      additional_bindings {
+      additional_bindings: {
         post: "/v2/example/echo"
         body: "value"
       }
-      additional_bindings {get: "/v2/example/echo"}
+      additional_bindings: {get: "/v2/example/echo"}
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      description: "Description Echo";
-      summary: "Summary: Echo rpc";
-      tags: "echo rpc";
+      description: "Description Echo"
+      summary: "Summary: Echo rpc"
+      tags: "echo rpc"
       external_docs: {
-        url: "https://github.com/grpc-ecosystem/grpc-gateway";
-        description: "Find out more Echo";
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+        description: "Find out more Echo"
       }
       responses: {
         key: "200"
@@ -630,20 +630,20 @@ service ABitOfEverythingService {
         }
       }
       responses: {
-        key: "503";
+        key: "503"
         value: {
-          description: "Returned when the resource is temporarily unavailable.";
+          description: "Returned when the resource is temporarily unavailable."
           extensions: {
-            key: "x-number";
-            value {number_value: 100}
+            key: "x-number"
+            value: {number_value: 100}
           }
         }
       }
       responses: {
         // Overwrites global definition.
-        key: "404";
+        key: "404"
         value: {
-          description: "Returned when the resource does not exist.";
+          description: "Returned when the resource does not exist."
           schema: {
             json_schema: {type: INTEGER}
           }
@@ -666,13 +666,13 @@ service ABitOfEverythingService {
   }
   rpc GetMessageWithBody(MessageWithBody) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v2/example/withbody/{id}",
+      post: "/v2/example/withbody/{id}"
       body: "data"
     };
   }
   rpc PostWithEmptyBody(Body) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v2/example/postwithemptybody/{name}",
+      post: "/v2/example/postwithemptybody/{name}"
       body: "*"
     };
   }
@@ -713,7 +713,7 @@ service ABitOfEverythingService {
   rpc Exists(ABitOfEverything) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       custom: {
-        kind: "HEAD",
+        kind: "HEAD"
         path: "/v1/example/a_bit_of_everything/{uuid}"
       }
     };
@@ -722,7 +722,7 @@ service ABitOfEverythingService {
   rpc CustomOptionsRequest(ABitOfEverything) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       custom: {
-        kind: "OPTIONS",
+        kind: "OPTIONS"
         path: "/v1/example/a_bit_of_everything/{uuid}"
       }
     };
@@ -731,7 +731,7 @@ service ABitOfEverythingService {
   rpc TraceRequest(ABitOfEverything) returns (ABitOfEverything) {
     option (google.api.http) = {
       custom: {
-        kind: "TRACE",
+        kind: "TRACE"
         path: "/v1/example/a_bit_of_everything/{uuid}"
       }
     };

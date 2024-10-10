@@ -1,22 +1,20 @@
-version: v1
+version: v2
 plugins:
-  - plugin: buf.build/protocolbuffers/go:v1.28.1
-    revision: 4
+  - remote: buf.build/protocolbuffers/go:v1.35.1
     out: .
     opt:
       - paths=source_relative
-  - plugin: buf.build/grpc/go:v1.2.0
-    revision: 4
+  - remote: buf.build/grpc/go:v1.5.1
     out: .
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
-  - plugin: grpc-gateway
+  - local: protoc-gen-grpc-gateway
     out: .
     opt:
       - paths=source_relative
       - allow_repeated_fields_in_body=true
-  - plugin: openapiv2
+  - local: protoc-gen-openapiv2
     out: .
     opt:
       - allow_repeated_fields_in_body=true
