@@ -985,12 +985,11 @@ var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)([^}]*)}")
 //   - reg:	The descriptor registry used to read compiler flags
 //   - fields:	The fields of the request message, only used when `useJSONNamesForFields` is true
 //   - msgs:	The Messages of the service binding, only used when `useJSONNamesForFields` is true
-//   - pathParams:	The path parameters of the service binding, only used when `expandSlashedPathPatterns` is true
 //
 // Returns:
 //
-//	The path segments of the URL template. When `expandSlashedPathPatterns` is true, also mutates the pathParams slice.
-func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams *[]descriptor.Parameter) []string {
+//	The path segments of the URL template.
+func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) []string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -1015,72 +1014,14 @@ pathLoop:
 			}
 			// Pop from the stack
 			depth--
-			paramName := ""
-			pattern := ""
-			if reg.GetExpandSlashedPathPatterns() {
-				paramPattern := strings.SplitN(buffer[1:], "=", 2)
-				if len(paramPattern) == 2 {
-					paramName = paramPattern[0]
-					pattern = paramPattern[1]
-				}
-			}
-			if pattern == "" || pattern == "*" {
-				buffer += string(char)
-				if reg.GetUseJSONNamesForFields() &&
-					len(jsonBuffer) > 1 {
-					jsonSnakeCaseName := jsonBuffer[1:]
-					jsonCamelCaseName := lowerCamelCase(jsonSnakeCaseName, fields, msgs)
-					prev := buffer[:len(buffer)-len(jsonSnakeCaseName)-2]
-					buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
-					jsonBuffer = ""
-				}
-				continue
-			}
-
-			pathParamIndex := slices.IndexFunc(*pathParams, func(p descriptor.Parameter) bool {
-				return p.FieldPath.String() == paramName
-			})
-			if pathParamIndex == -1 {
-				panic(fmt.Sprintf("Path parameter %q not found in path parameters", paramName))
-			}
-			pathParam := (*pathParams)[pathParamIndex]
-			patternParts := strings.Split(pattern, "/")
-			for i, part := range patternParts {
-				modifiedPart := part
-				if part == "*" {
-					paramName := strings.TrimSuffix(parts[len(parts)-1], "s")
-					if reg.GetUseJSONNamesForFields() {
-						paramName = casing.JSONCamelCase(paramName)
-					}
-					modifiedPart = "{" + paramName + "}"
-					newParam := descriptor.Parameter{
-						Target: &descriptor.Field{
-							FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-								Name: proto.String(paramName),
-							},
-							Message:           pathParam.Target.Message,
-							FieldMessage:      pathParam.Target.FieldMessage,
-							ForcePrefixedName: pathParam.Target.ForcePrefixedName,
-						},
-						FieldPath: []descriptor.FieldPathComponent{{
-							Name:   paramName,
-							Target: nil,
-						}},
-						Method: nil,
-					}
-					*pathParams = append((*pathParams), newParam)
-					if pathParamIndex != -1 {
-						// the new parameter from the pattern replaces the old path parameter
-						*pathParams = append((*pathParams)[:pathParamIndex], (*pathParams)[pathParamIndex+1:]...)
-						pathParamIndex = -1
-					}
-				}
-				isLastPart := i == len(patternParts)-1
-				if isLastPart {
-					buffer = modifiedPart
-				} else {
-					parts = append(parts, modifiedPart)
-				}
+			buffer += string(char)
+			if reg.GetUseJSONNamesForFields() &&
+				len(jsonBuffer) > 1 {
+				jsonSnakeCaseName := jsonBuffer[1:]
+				jsonCamelCaseName := lowerCamelCase(jsonSnakeCaseName, fields, msgs)
+				prev := buffer[:len(buffer)-len(jsonSnakeCaseName)-2]
+				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
+				jsonBuffer = ""
 			}
 		case '/':
 			if depth == 0 {
@@ -1215,6 +1156,78 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
+// expandPathPatterns search the URI parts for path parameters with pattern and when the pattern contains a sub-path,
+// it expands the pattern into the URI parts and adds the new path parameters to the pathParams slice.
+//
+// Parameters:
+//   - pathParts:	the URI parts parsed from the path template with `templateToParts` function
+//   - pathParams: the path parameters of the service binding, this slice will be mutated when the path pattern contains
+//     a sub-path with wildcard.
+//
+// Returns:
+//
+//	The modified pathParts. Also mutates the pathParams slice.
+func expandPathPatterns(pathParts []string, pathParams *[]descriptor.Parameter) []string {
+	expandedPathParts := []string{}
+	for _, pathPart := range pathParts {
+		if !strings.HasPrefix(pathPart, "{") || !strings.HasSuffix(pathPart, "}") {
+			expandedPathParts = append(expandedPathParts, pathPart)
+			continue
+		}
+		woBraces := pathPart[1 : len(pathPart)-1]
+		paramPattern := strings.SplitN(woBraces, "=", 2)
+		if len(paramPattern) != 2 {
+			expandedPathParts = append(expandedPathParts, pathPart)
+			continue
+		}
+		paramName := paramPattern[0]
+		pattern := paramPattern[1]
+		if pattern == "*" {
+			expandedPathParts = append(expandedPathParts, pathPart)
+			continue
+		}
+		pathParamIndex := slices.IndexFunc(*pathParams, func(p descriptor.Parameter) bool {
+			return p.FieldPath.String() == paramName
+		})
+		if pathParamIndex == -1 {
+			panic(fmt.Sprintf("Path parameter %q not found in path parameters", paramName))
+		}
+		pathParam := (*pathParams)[pathParamIndex]
+		patternParts := strings.Split(pattern, "/")
+		for _, patternPart := range patternParts {
+			if patternPart != "*" {
+				expandedPathParts = append(expandedPathParts, patternPart)
+				continue
+			}
+			lastPart := expandedPathParts[len(expandedPathParts)-1]
+			paramName := strings.TrimSuffix(lastPart, "s")
+			expandedPathParts = append(expandedPathParts, "{"+paramName+"}")
+			newParam := descriptor.Parameter{
+				Target: &descriptor.Field{
+					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+						Name: proto.String(paramName),
+					},
+					Message:           pathParam.Target.Message,
+					FieldMessage:      pathParam.Target.FieldMessage,
+					ForcePrefixedName: pathParam.Target.ForcePrefixedName,
+				},
+				FieldPath: []descriptor.FieldPathComponent{{
+					Name:   paramName,
+					Target: nil,
+				}},
+				Method: nil,
+			}
+			*pathParams = append((*pathParams), newParam)
+			if pathParamIndex != -1 {
+				// the new parameter from the pattern replaces the old path parameter
+				*pathParams = append((*pathParams)[:pathParamIndex], (*pathParams)[pathParamIndex+1:]...)
+				pathParamIndex = -1
+			}
+		}
+	}
+	return expandedPathParts
+}
+
 func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message, defs openapiDefinitionsObject) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
@@ -1242,7 +1255,10 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				parameters := openapiParametersObject{}
 				pathParams := b.PathParams
 				// split the path template into its parts
-				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs, &pathParams)
+				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)
+				if reg.GetExpandSlashedPathPatterns() {
+					parts = expandPathPatterns(parts, &pathParams)
+				}
 				// extract any constraints specified in the path placeholders into ECMA regular expressions
 				pathParamRegexpMap := partsToRegexpMap(parts)
 				// Keep track of path parameter overrides
