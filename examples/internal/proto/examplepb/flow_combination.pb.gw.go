@@ -1900,8 +1900,7 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			return
 		}
 		go func() {
-			for {
-				err := <-reqErrChan
+			for err := range reqErrChan {
 				if err != nil {
 					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 					if err := resp.CloseSend(); err != nil {
