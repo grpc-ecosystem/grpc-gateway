@@ -142,6 +142,7 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 				break
 			}
 		}
+		close(errChan)
 	}()
 	header, err := stream.Header()
 	if err != nil {
@@ -1900,14 +1901,12 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			return
 		}
 		go func() {
-			for err := range reqErrChan {
-				if err != nil {
-					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-					if err := resp.CloseSend(); err != nil {
-						grpclog.Errorf("Failed to terminate client stream: %v", err)
-					}
-					return
-				}
+			err := <-reqErrChan
+			if err != io.EOF {
+				runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			}
+			if err := resp.CloseSend(); err != nil {
+				grpclog.Errorf("Failed to terminate client stream: %v", err)
 			}
 		}()
 

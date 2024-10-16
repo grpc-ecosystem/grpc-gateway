@@ -136,6 +136,7 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 				break
 			}
 		}
+		close(errChan)
 	}()
 	header, err := stream.Header()
 	if err != nil {
@@ -313,14 +314,12 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 		go func() {
-			for err := range reqErrChan {
-				if err != nil {
-					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-					if err := resp.CloseSend(); err != nil {
-						grpclog.Errorf("Failed to terminate client stream: %v", err)
-					}
-					return
-				}
+			err := <-reqErrChan
+			if err != io.EOF {
+				runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			}
+			if err := resp.CloseSend(); err != nil {
+				grpclog.Errorf("Failed to terminate client stream: %v", err)
 			}
 		}()
 
