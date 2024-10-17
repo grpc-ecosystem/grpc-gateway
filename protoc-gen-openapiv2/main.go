@@ -50,6 +50,7 @@ var (
 	allowPatchFeature              = flag.Bool("allow_patch_feature", true, "whether to hide update_mask fields in PATCH requests from the generated swagger file.")
 	preserveRPCOrder               = flag.Bool("preserve_rpc_order", false, "if true, will ensure the order of paths emitted in openapi swagger files mirror the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.")
 	enableRpcDeprecation           = flag.Bool("enable_rpc_deprecation", false, "whether to process grpc method's deprecated option.")
+	expandSlashedPathPatterns      = flag.Bool("expand_slashed_path_patterns", false, "if set, expands path parameters with URI sub-paths into the URI. For example, \"/v1/{name=projects/*}/resource\" becomes \"/v1/projects/{project}/resource\".")
 
 	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
 )
@@ -173,6 +174,7 @@ func main() {
 	reg.SetAllowPatchFeature(*allowPatchFeature)
 	reg.SetPreserveRPCOrder(*preserveRPCOrder)
 	reg.SetEnableRpcDeprecation(*enableRpcDeprecation)
+	reg.SetExpandSlashedPathPatterns(*expandSlashedPathPatterns)
 
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)

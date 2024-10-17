@@ -75,7 +75,8 @@ def _run_proto_gen_openapi(
         visibility_restriction_selectors,
         use_allof_for_refs,
         disable_default_responses,
-        enable_rpc_deprecation):
+        enable_rpc_deprecation,
+        expand_slashed_path_patterns):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -151,6 +152,9 @@ def _run_proto_gen_openapi(
 
     if enable_rpc_deprecation:
         args.add("--openapiv2_opt", "enable_rpc_deprecation=true")
+
+    if expand_slashed_path_patterns:
+        args.add("--openapiv2_opt", "expand_slashed_path_patterns=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -260,6 +264,7 @@ def _proto_gen_openapi_impl(ctx):
                     use_allof_for_refs = ctx.attr.use_allof_for_refs,
                     disable_default_responses = ctx.attr.disable_default_responses,
                     enable_rpc_deprecation = ctx.attr.enable_rpc_deprecation,
+                    expand_slashed_path_patterns = ctx.attr.expand_slashed_path_patterns,
                 ),
             ),
         ),
@@ -419,6 +424,13 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "whether to process grpc method's deprecated option.",
+        ),
+        "expand_slashed_path_patterns": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, expands path patterns containing slashes into URI." +
+                  " It also creates a new path parameter for each wildcard in " +
+                  " the path pattern.",
         ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
