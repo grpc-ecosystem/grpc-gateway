@@ -465,13 +465,13 @@ var (
 		return nil
 	}
 	go func() {
+		defer close(errChan)
 		for {
 			if err := handleSend(); err != nil {
 				errChan <- err
 				break
 			}
 		}
-		close(errChan)
 	}()
 	header, err := stream.Header()
 	if err != nil {
@@ -741,9 +741,10 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 		}
 		{{- if and $m.GetClientStreaming $m.GetServerStreaming }}
 		go func() {
-			err := <-reqErrChan
-			if err != io.EOF {
-				runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			for err := range reqErrChan {
+				if err != nil && err != io.EOF {
+					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+				}
 			}
 			if err := resp.CloseSend(); err != nil {
 				grpclog.Errorf("Failed to terminate client stream: %v", err)
