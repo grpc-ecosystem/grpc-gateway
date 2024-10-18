@@ -4119,6 +4119,61 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 	}
 }
 
+func getParameters(names []string) []descriptor.Parameter {
+	params := make([]descriptor.Parameter, 0)
+	for _, name := range names {
+		params = append(params, descriptor.Parameter{
+			Target: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name: proto.String(name),
+				},
+				Message:           &descriptor.Message{},
+				FieldMessage:      nil,
+				ForcePrefixedName: false,
+			},
+			FieldPath: []descriptor.FieldPathComponent{{
+				Name:   name,
+				Target: nil,
+			}},
+			Method: nil,
+		})
+	}
+	return params
+}
+
+func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
+	var tests = []struct {
+		input              string
+		expected           string
+		pathParams         []descriptor.Parameter
+		expectedPathParams []string
+		useJSONNames       bool
+	}{
+		{"/v1/{name=projects/*/documents/*}:exportResults", "/v1/projects/{project}/documents/{document}:exportResults", getParameters([]string{"name"}), []string{"project", "document"}, true},
+		{"/test/{name=*}", "/test/{name}", getParameters([]string{"name"}), []string{"name"}, true},
+		{"/test/{name=*}/", "/test/{name}/", getParameters([]string{"name"}), []string{"name"}, true},
+		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"name"}), []string{"testCase"}, true},
+		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"name"}), []string{"test_case"}, false},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetExpandSlashedPathPatterns(true)
+	for _, data := range tests {
+		reg.SetUseJSONNamesForFields(data.useJSONNames)
+		actualParts, actualParams := templateToExpandedPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), data.pathParams)
+		if data.expected != actualParts {
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actualParts)
+		}
+		pathParamsNames := make([]string, 0)
+		for _, param := range actualParams {
+			pathParamsNames = append(pathParamsNames, param.FieldPath[0].Name)
+		}
+		if !reflect.DeepEqual(data.expectedPathParams, pathParamsNames) {
+			t.Errorf("Expected mutated path params in templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expectedPathParams, data.pathParams)
+		}
+
+	}
+}
+
 func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 	const input = "/{user.name=prefix1/*/prefix2/*}:customMethod"
 
@@ -4230,6 +4285,11 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 
 func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) map[string]string {
 	return partsToRegexpMap(templateToParts(path, reg, fields, msgs))
+}
+
+func templateToExpandedPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams []descriptor.Parameter) (string, []descriptor.Parameter) {
+	pathParts, pathParams := expandPathPatterns(templateToParts(path, reg, fields, msgs), pathParams, reg)
+	return partsToOpenAPIPath(pathParts, make(map[string]string)), pathParams
 }
 
 func TestFQMNToRegexpMap(t *testing.T) {
