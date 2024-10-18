@@ -998,7 +998,6 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 	var parts []string
 	depth := 0
 	buffer := ""
-	jsonBuffer := ""
 pathLoop:
 	for i, char := range path {
 		switch char {
@@ -1006,8 +1005,6 @@ pathLoop:
 			// Push on the stack
 			depth++
 			buffer += string(char)
-			jsonBuffer = ""
-			jsonBuffer += string(char)
 		case '}':
 			if depth == 0 {
 				panic("Encountered } without matching { before it.")
@@ -1015,13 +1012,10 @@ pathLoop:
 			// Pop from the stack
 			depth--
 			buffer += string(char)
-			if reg.GetUseJSONNamesForFields() &&
-				len(jsonBuffer) > 1 {
-				jsonSnakeCaseName := jsonBuffer[1:]
-				jsonCamelCaseName := lowerCamelCase(jsonSnakeCaseName, fields, msgs)
-				prev := buffer[:len(buffer)-len(jsonSnakeCaseName)-2]
-				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
-				jsonBuffer = ""
+			if reg.GetUseJSONNamesForFields() {
+				paramNameProto := strings.SplitN(buffer[1:], "=", 2)[0]
+				paramNameCamelCase := lowerCamelCase(paramNameProto, fields, msgs)
+				buffer = strings.Join([]string{"{", paramNameCamelCase, buffer[len(paramNameProto)+1:]}, "")
 			}
 		case '/':
 			if depth == 0 {
@@ -1032,7 +1026,6 @@ pathLoop:
 				continue
 			}
 			buffer += string(char)
-			jsonBuffer += string(char)
 		case ':':
 			if depth == 0 {
 				// As soon as we find a ":" outside a variable,
@@ -1042,10 +1035,8 @@ pathLoop:
 				break pathLoop
 			}
 			buffer += string(char)
-			jsonBuffer += string(char)
 		default:
 			buffer += string(char)
-			jsonBuffer += string(char)
 		}
 	}
 
