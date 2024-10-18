@@ -1157,7 +1157,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 // Returns:
 //
 //	The modified pathParts and pathParams slice.
-func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter) ([]string, []descriptor.Parameter) {
+func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter, reg *descriptor.Registry) ([]string, []descriptor.Parameter) {
 	expandedPathParts := []string{}
 	modifiedPathParams := pathParams
 	for _, pathPart := range pathParts {
@@ -1192,6 +1192,9 @@ func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter) (
 			}
 			lastPart := expandedPathParts[len(expandedPathParts)-1]
 			paramName := strings.TrimSuffix(lastPart, "s")
+			if reg.GetUseJSONNamesForFields() {
+				paramName = casing.JSONCamelCase(paramName)
+			}
 			expandedPathParts = append(expandedPathParts, "{"+paramName+"}")
 			newParam := descriptor.Parameter{
 				Target: &descriptor.Field{
@@ -1248,7 +1251,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)
 				pathParams := b.PathParams
 				if reg.GetExpandSlashedPathPatterns() {
-					parts, pathParams = expandPathPatterns(parts, pathParams)
+					parts, pathParams = expandPathPatterns(parts, pathParams, reg)
 				}
 				// extract any constraints specified in the path placeholders into ECMA regular expressions
 				pathParamRegexpMap := partsToRegexpMap(parts)

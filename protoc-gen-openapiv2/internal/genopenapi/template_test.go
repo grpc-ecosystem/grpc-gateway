@@ -4288,7 +4288,7 @@ func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descri
 }
 
 func templateToExpandedPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams []descriptor.Parameter) (string, []descriptor.Parameter) {
-	pathParts, pathParams := expandPathPatterns(templateToParts(path, reg, fields, msgs), pathParams)
+	pathParts, pathParams := expandPathPatterns(templateToParts(path, reg, fields, msgs), pathParams, reg)
 	return partsToOpenAPIPath(pathParts, make(map[string]string)), pathParams
 }
 
