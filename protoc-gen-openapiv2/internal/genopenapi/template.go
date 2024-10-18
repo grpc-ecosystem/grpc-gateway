@@ -1156,19 +1156,19 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
-// expandPathPatterns search the URI parts for path parameters with pattern and when the pattern contains a sub-path,
+// expandPathPatterns searches the URI parts for path parameters with pattern and when the pattern contains a sub-path,
 // it expands the pattern into the URI parts and adds the new path parameters to the pathParams slice.
 //
 // Parameters:
 //   - pathParts:	the URI parts parsed from the path template with `templateToParts` function
-//   - pathParams: the path parameters of the service binding, this slice will be mutated when the path pattern contains
-//     a sub-path with wildcard.
+//   - pathParams: the path parameters of the service binding
 //
 // Returns:
 //
-//	The modified pathParts. Also mutates the pathParams slice.
-func expandPathPatterns(pathParts []string, pathParams *[]descriptor.Parameter) []string {
+//	The modified pathParts and pathParams slice.
+func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter) ([]string, []descriptor.Parameter) {
 	expandedPathParts := []string{}
+	modifiedPathParams := pathParams
 	for _, pathPart := range pathParts {
 		if !strings.HasPrefix(pathPart, "{") || !strings.HasSuffix(pathPart, "}") {
 			expandedPathParts = append(expandedPathParts, pathPart)
@@ -1186,13 +1186,13 @@ func expandPathPatterns(pathParts []string, pathParams *[]descriptor.Parameter) 
 			expandedPathParts = append(expandedPathParts, pathPart)
 			continue
 		}
-		pathParamIndex := slices.IndexFunc(*pathParams, func(p descriptor.Parameter) bool {
+		pathParamIndex := slices.IndexFunc(modifiedPathParams, func(p descriptor.Parameter) bool {
 			return p.FieldPath.String() == paramName
 		})
 		if pathParamIndex == -1 {
 			panic(fmt.Sprintf("Path parameter %q not found in path parameters", paramName))
 		}
-		pathParam := (*pathParams)[pathParamIndex]
+		pathParam := modifiedPathParams[pathParamIndex]
 		patternParts := strings.Split(pattern, "/")
 		for _, patternPart := range patternParts {
 			if patternPart != "*" {
@@ -1217,15 +1217,15 @@ func expandPathPatterns(pathParts []string, pathParams *[]descriptor.Parameter) 
 				}},
 				Method: nil,
 			}
-			*pathParams = append((*pathParams), newParam)
+			modifiedPathParams = append(modifiedPathParams, newParam)
 			if pathParamIndex != -1 {
 				// the new parameter from the pattern replaces the old path parameter
-				*pathParams = append((*pathParams)[:pathParamIndex], (*pathParams)[pathParamIndex+1:]...)
+				modifiedPathParams = append(modifiedPathParams[:pathParamIndex], modifiedPathParams[pathParamIndex+1:]...)
 				pathParamIndex = -1
 			}
 		}
 	}
-	return expandedPathParts
+	return expandedPathParts, modifiedPathParams
 }
 
 func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message, defs openapiDefinitionsObject) error {
@@ -1253,11 +1253,11 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				operationFunc := operationForMethod(b.HTTPMethod)
 				// Iterate over all the OpenAPI parameters
 				parameters := openapiParametersObject{}
-				pathParams := b.PathParams
 				// split the path template into its parts
 				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)
+				pathParams := b.PathParams
 				if reg.GetExpandSlashedPathPatterns() {
-					parts = expandPathPatterns(parts, &pathParams)
+					parts, pathParams = expandPathPatterns(parts, pathParams)
 				}
 				// extract any constraints specified in the path placeholders into ECMA regular expressions
 				pathParamRegexpMap := partsToRegexpMap(parts)

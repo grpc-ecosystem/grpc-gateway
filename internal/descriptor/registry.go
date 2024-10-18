@@ -164,7 +164,7 @@ type Registry struct {
 	// enableRpcDeprecation whether to process grpc method's deprecated option
 	enableRpcDeprecation bool
 
-	// expandSlashedPathPatterns, if true, for a path parameter carying a sub-path, described via parameter pattern (i.e.
+	// expandSlashedPathPatterns, if true, for a path parameter carrying a sub-path, described via parameter pattern (i.e.
 	// the pattern contains forward slashes), this will expand the _pattern_ into the URI and will _replace_ the parameter
 	// with new path parameters inferred from patterns wildcards.
 	//

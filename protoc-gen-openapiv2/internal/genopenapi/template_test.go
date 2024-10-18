@@ -4159,12 +4159,12 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 	reg.SetExpandSlashedPathPatterns(true)
 	for _, data := range tests {
 		reg.SetUseJSONNamesForFields(data.useJSONNames)
-		actual := templateToExpandedPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), &data.pathParams)
-		if data.expected != actual {
-			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		actualParts, actualParams := templateToExpandedPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), data.pathParams)
+		if data.expected != actualParts {
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actualParts)
 		}
 		pathParamsNames := make([]string, 0)
-		for _, param := range data.pathParams {
+		for _, param := range actualParams {
 			pathParamsNames = append(pathParamsNames, param.FieldPath[0].Name)
 		}
 		if !reflect.DeepEqual(data.expectedPathParams, pathParamsNames) {
@@ -4287,8 +4287,9 @@ func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descri
 	return partsToRegexpMap(templateToParts(path, reg, fields, msgs))
 }
 
-func templateToExpandedPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams *[]descriptor.Parameter) string {
-	return partsToOpenAPIPath(expandPathPatterns(templateToParts(path, reg, fields, msgs), pathParams), make(map[string]string))
+func templateToExpandedPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams []descriptor.Parameter) (string, []descriptor.Parameter) {
+	pathParts, pathParams := expandPathPatterns(templateToParts(path, reg, fields, msgs), pathParams)
+	return partsToOpenAPIPath(pathParts, make(map[string]string)), pathParams
 }
 
 func TestFQMNToRegexpMap(t *testing.T) {
