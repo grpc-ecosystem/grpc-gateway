@@ -445,6 +445,7 @@ var (
 	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
+		close(errChan)
 		return nil, metadata, errChan, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
@@ -471,6 +472,9 @@ var (
 				errChan <- err
 				break
 			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
@@ -745,9 +749,6 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 				if err != nil && err != io.EOF {
 					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 				}
-			}
-			if err := resp.CloseSend(); err != nil {
-				grpclog.Errorf("Failed to terminate client stream: %v", err)
 			}
 		}()
 		{{- end }}

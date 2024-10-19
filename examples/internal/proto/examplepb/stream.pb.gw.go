@@ -110,6 +110,7 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
+		close(errChan)
 		return nil, metadata, errChan, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
@@ -136,6 +137,9 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 				errChan <- err
 				break
 			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
@@ -318,9 +322,6 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 				if err != nil && err != io.EOF {
 					runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 				}
-			}
-			if err := resp.CloseSend(); err != nil {
-				grpclog.Errorf("Failed to terminate client stream: %v", err)
 			}
 		}()
 
