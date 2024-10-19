@@ -7,11 +7,11 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.23.0
-	golang.org/x/text v0.18.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240930140551-af27646dc61f
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240930140551-af27646dc61f
+	golang.org/x/text v0.19.0
+	google.golang.org/genproto/googleapis/api v0.0.0-20241015192408-796eee8c2d53
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53
 	google.golang.org/grpc v1.67.1
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.35.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 

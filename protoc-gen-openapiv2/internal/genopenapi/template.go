@@ -954,7 +954,7 @@ func fullyQualifiedNameToOpenAPIName(fqn string, reg *descriptor.Registry) (stri
 	return ret, ok
 }
 
-// Lookup message type by location.name and return a openapiv2-safe version
+// Lookup message type by location.name and return an openapiv2-safe version
 // of its FQMN.
 func lookupMsgAndOpenAPIName(location, name string, reg *descriptor.Registry) (*descriptor.Message, string, error) {
 	msg, err := reg.LookupMsg(location, name)

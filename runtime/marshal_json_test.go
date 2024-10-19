@@ -122,7 +122,7 @@ func TestJSONBuiltinUnmarshalFieldKnownErrors(t *testing.T) {
 	for _, fixt := range builtinKnownErrors {
 		dest := reflect.New(reflect.TypeOf(fixt.data))
 		if err := m.Unmarshal([]byte(fixt.json), dest.Interface()); err == nil {
-			t.Errorf("m.Unmarshal(%q, dest) succeeded; want ane error", fixt.json)
+			t.Errorf("m.Unmarshal(%q, dest) succeeded; want an error", fixt.json)
 		}
 	}
 }
