@@ -5080,7 +5080,10 @@
                 }
               },
               "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
-              "title": "The book to update."
+              "title": "The book to update.",
+              "required": [
+                "book"
+              ]
             }
           },
           {
