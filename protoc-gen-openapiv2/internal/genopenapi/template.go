@@ -1011,12 +1011,13 @@ pathLoop:
 			}
 			// Pop from the stack
 			depth--
-			buffer += string(char)
-			if reg.GetUseJSONNamesForFields() {
-				paramNameProto := strings.SplitN(buffer[1:], "=", 2)[0]
-				paramNameCamelCase := lowerCamelCase(paramNameProto, fields, msgs)
-				buffer = strings.Join([]string{"{", paramNameCamelCase, buffer[len(paramNameProto)+1:]}, "")
+			if !reg.GetUseJSONNamesForFields() {
+				buffer += string(char)
+				continue
 			}
+			paramNameProto := strings.SplitN(buffer[1:], "=", 2)[0]
+			paramNameCamelCase := lowerCamelCase(paramNameProto, fields, msgs)
+			buffer = strings.Join([]string{"{", paramNameCamelCase, buffer[len(paramNameProto)+1:], "}"}, "")
 		case '/':
 			if depth == 0 {
 				parts = append(parts, buffer)
