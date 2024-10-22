@@ -541,7 +541,7 @@ a custom post processor for your OAS file to replace any path parameter with `/`
 
 #### Expand path parameters containing sub-path segments
 
-Alternative to the above, you can enable the `expand_slashed_path_patterns` option to expand path parameters containing sub-path segments into the URI.
+Alternative to the above, you can enable the `expand_slashed_path_patterns` compiler option to expand path parameters containing sub-path segments into the URI.
 
 For example, consider:
 ```protobuf
@@ -549,11 +549,10 @@ rpc GetBook(GetBookRequest) returns (Book) {
   option (google.api.http) = {
     get: "/v1/{name=publishers/*/books/*}"
   };
-  option (google.api.method_signature) = "name";
 }
 ```
 
-Where the `GetBook` has a path parameter `name` with a pattern `publishers/*/books/*`. When you enable the `expand_slashed_path_patterns=true` option all the path patterns with slashes are expanded into the URI and each wildcard in the pattern is transformed into new path parameter. For the previous protobuf definition, the generated schema is:
+Where the `GetBook` has a path parameter `name` with a pattern `publishers/*/books/*`. When you enable the `expand_slashed_path_patterns=true` option the path pattern is expanded into the URI and each wildcard in the pattern is transformed into new path parameter. The generated schema for previous protobuf is:
 
 ```JSON
 {
