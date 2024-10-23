@@ -131,6 +131,46 @@
         ]
       }
     },
+    "/v1/example/a_bit_of_everything/echo_duration": {
+      "post": {
+        "operationId": "StreamService_BulkEchoDuration",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {},
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of protobufDuration"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "StreamService"
+        ]
+      }
+    },
     "/v1/example/download": {
       "get": {
         "operationId": "StreamService_Download",

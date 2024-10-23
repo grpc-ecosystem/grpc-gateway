@@ -325,6 +325,41 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEch
 	return nil
 }
 
+func (s *_ABitOfEverythingServer) BulkEchoDuration(stream examples.StreamService_BulkEchoDurationServer) error {
+	var msgs []*durationpb.Duration
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		msgs = append(msgs, msg)
+	}
+
+	hmd := metadata.New(map[string]string{
+		"foo": "foo1",
+		"bar": "bar1",
+	})
+	if err := stream.SendHeader(hmd); err != nil {
+		return err
+	}
+
+	for _, msg := range msgs {
+		grpclog.Info(msg)
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+	}
+
+	stream.SetTrailer(metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
+	return nil
+}
+
 func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
