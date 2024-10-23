@@ -539,6 +539,51 @@ Note that path parameters in OpenAPI does not support values with `/`, as discus
 so tools as Swagger UI will URL encode any `/` provided as parameter value. A possible workaround for this is to write
 a custom post processor for your OAS file to replace any path parameter with `/` into multiple parameters.
 
+#### Expand path parameters containing sub-path segments
+
+Alternative to the above, you can enable the `expand_slashed_path_patterns` compiler option to expand path parameters containing sub-path segments into the URI.
+
+For example, consider:
+```protobuf
+rpc GetBook(GetBookRequest) returns (Book) {
+  option (google.api.http) = {
+    get: "/v1/{name=publishers/*/books/*}"
+  };
+}
+```
+
+Where the `GetBook` has a path parameter `name` with a pattern `publishers/*/books/*`. When you enable the `expand_slashed_path_patterns=true` option the path pattern is expanded into the URI and each wildcard in the pattern is transformed into new path parameter. The generated schema for previous protobuf is:
+
+```JSON
+{
+ "/v1/publishers/{publisher}/books/{book}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "publisher",
+            "in": "path",
+            "required": true,
+            "type": "string",
+          },
+          {
+            "name": "book",
+            "in": "path",
+            "required": true,
+            "type": "string",
+          }
+        ]
+      }
+    }
+}
+```
+
+The URI is now pretty descriptive and there are two path parameters `publisher` and `book` instead of one `name`. The name of the new parameters is derived from the path segment before the wildcard in the pattern.
+
+Caveats:
+
+- the fact that the original `name` parameter is missing might complicate the usage of the API if you intend to pass in the `name` parameters from the resources,
+- when the `expand_slashed_path_patterns` compiler flag is enabled, the [`path_param_name`](#path-parameters) field annotation is ignored.
+
 ### Output format
 
 By default the output format is JSON, but it is possible to configure it using the `output_format` option. Allowed values are: `json`, `yaml`. The output format will also change the extension of the output files.
@@ -1043,4 +1088,6 @@ definitions:
         type: string
 ```
 
+
 {% endraw %}
+

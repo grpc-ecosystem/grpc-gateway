@@ -163,6 +163,18 @@ type Registry struct {
 
 	// enableRpcDeprecation whether to process grpc method's deprecated option
 	enableRpcDeprecation bool
+
+	// expandSlashedPathPatterns, if true, for a path parameter carrying a sub-path, described via parameter pattern (i.e.
+	// the pattern contains forward slashes), this will expand the _pattern_ into the URI and will _replace_ the parameter
+	// with new path parameters inferred from patterns wildcards.
+	//
+	// Example: a Google AIP style path "/v1/{name=projects/*/locations/*}/datasets/{dataset}" with a "name" parameter
+	// containing sub-path will generate "/v1/projects/{project}/locations/{location}/datasets/{dataset}" path in OpenAPI.
+	// Note that the original "name" parameter is replaced with "project" and "location" parameters.
+	//
+	// This leads to more compliant and readable OpenAPI suitable for documentation, but may complicate client
+	// implementation if you want to pass the original "name" parameter.
+	expandSlashedPathPatterns bool
 }
 
 type repeatedFieldSeparator struct {
@@ -887,4 +899,12 @@ func (r *Registry) SetEnableRpcDeprecation(enable bool) {
 // GetEnableRpcDeprecation returns enableRpcDeprecation
 func (r *Registry) GetEnableRpcDeprecation() bool {
 	return r.enableRpcDeprecation
+}
+
+func (r *Registry) SetExpandSlashedPathPatterns(expandSlashedPathPatterns bool) {
+	r.expandSlashedPathPatterns = expandSlashedPathPatterns
+}
+
+func (r *Registry) GetExpandSlashedPathPatterns() bool {
+	return r.expandSlashedPathPatterns
 }
