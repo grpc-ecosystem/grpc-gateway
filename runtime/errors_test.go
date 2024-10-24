@@ -1,6 +1,7 @@
 package runtime_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"net/http"
@@ -128,6 +129,55 @@ func TestDefaultHTTPError(t *testing.T) {
 				if st.Details[0].TypeUrl != spec.details {
 					t.Errorf(`details.type_url = %s; want %s`, st.Details[0].TypeUrl, spec.details)
 				}
+			}
+		})
+	}
+}
+
+func TestHTTPStreamError(t *testing.T) {
+	ctx := context.Background()
+
+	for _, tc := range []struct {
+		name             string
+		err              error
+		expectedStatus   *status.Status
+		expectedResponse []byte
+	}{
+		{
+			name:             "Simple error",
+			err:              errors.New("simple error"),
+			expectedStatus:   status.New(codes.Unknown, "simple error"),
+			expectedResponse: []byte(`{"error":{"code":2,"message":"simple error"}}`),
+		},
+		{
+			name:             "Invalid request error",
+			err:              status.Error(codes.InvalidArgument, "invalid request"),
+			expectedStatus:   status.New(codes.InvalidArgument, "invalid request"),
+			expectedResponse: []byte(`{"error":{"code":3,"message":"invalid request"}}`),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			w := httptest.NewRecorder()
+			r := httptest.NewRequest("GET", "/", nil)
+
+			mux := runtime.NewServeMux(runtime.WithStreamErrorHandler(
+				runtime.DefaultStreamErrorHandler,
+			))
+
+			marshaler := &runtime.JSONPb{}
+
+			runtime.HTTPStreamError(ctx, mux, marshaler, w, r, tc.err)
+
+			if w.Code != http.StatusOK {
+				t.Errorf("Expected status code %d, got %d", http.StatusOK, w.Code)
+			}
+
+			if !proto.Equal(status.Convert(tc.err).Proto(), tc.expectedStatus.Proto()) {
+				t.Errorf("Expected status %v, got %v", tc.expectedStatus, status.Convert(tc.err))
+			}
+
+			if !bytes.Equal(w.Body.Bytes(), tc.expectedResponse) {
+				t.Errorf("Expected response %s, got %s", tc.expectedResponse, w.Body.Bytes())
 			}
 		})
 	}

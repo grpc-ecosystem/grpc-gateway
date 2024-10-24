@@ -325,6 +325,58 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEch
 	return nil
 }
 
+func (s *_ABitOfEverythingServer) BulkEchoDuration(stream examples.StreamService_BulkEchoDurationServer) error {
+	hmd := metadata.New(map[string]string{
+		"foo": "foo1",
+		"bar": "bar1",
+	})
+	if err := stream.SendHeader(hmd); err != nil {
+		return err
+	}
+
+	// Channel to coordinate between read and write goroutines
+	msgChan := make(chan *durationpb.Duration)
+	errChan := make(chan error)
+
+	go func() {
+		defer close(msgChan)
+		for {
+			msg, err := stream.Recv()
+			if err == io.EOF {
+				return
+			}
+			if err != nil {
+				errChan <- err
+				return
+			}
+			msgChan <- msg
+		}
+	}()
+
+	go func() {
+		for msg := range msgChan {
+			grpclog.Info(msg)
+			if err := stream.Send(msg); err != nil {
+				errChan <- err
+				return
+			}
+		}
+		// Sleep to mock the delay in receiving the request close.
+		// Accommodates the integration test client which is not a true
+		// bidirectional streaming client that supports request streaming.
+		time.Sleep(1 * time.Second)
+		close(errChan)
+	}()
+
+	err := <-errChan
+
+	stream.SetTrailer(metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
+	return err
+}
+
 func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()

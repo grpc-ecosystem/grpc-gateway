@@ -27,6 +27,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -521,6 +522,7 @@ func TestABE(t *testing.T) {
 	testABEDownload(t, 8088)
 	testABEBulkEcho(t, 8088)
 	testABEBulkEchoZeroLength(t, 8088)
+	testABEBulkEchoDurationError(t, 8088)
 	testAdditionalBindings(t, 8088)
 	testABERepeated(t, 8088)
 	testABEExists(t, 8088)
@@ -1445,6 +1447,98 @@ func testABEBulkEchoZeroLength(t *testing.T, port int) {
 	} else if err != io.EOF {
 		t.Errorf("dec.Decode(&item) failed with %v; want success", err)
 		return
+	}
+}
+
+func testABEBulkEchoDurationError(t *testing.T, port int) {
+	reqr, reqw := io.Pipe()
+	var wg sync.WaitGroup
+	var want []*durationpb.Duration
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		defer reqw.Close()
+		for i := 0; i < 10; i++ {
+			s := fmt.Sprintf("%d.123s", i)
+			if i == 5 {
+				s = "invalidDurationFormat"
+			}
+			buf, err := marshaler.Marshal(s)
+			if err != nil {
+				t.Errorf("marshaler.Marshal(%v) failed with %v; want success", s, err)
+				return
+			}
+			if _, err = reqw.Write(buf); err != nil {
+				t.Errorf("reqw.Write(%q) failed with %v; want success", string(buf), err)
+				return
+			}
+			want = append(want, &durationpb.Duration{Seconds: int64(i), Nanos: int32(0.123 * 1e9)})
+		}
+	}()
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo_duration", port)
+	req, err := http.NewRequest("POST", apiURL, reqr)
+	if err != nil {
+		t.Errorf("http.NewRequest(%q, %q, reqr) failed with %v; want success", "POST", apiURL, err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Transfer-Encoding", "chunked")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", apiURL, "application/json", err)
+		return
+	}
+	defer resp.Body.Close()
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	var got []*durationpb.Duration
+	var invalidArgumentCount int
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		dec := marshaler.NewDecoder(resp.Body)
+		for i := 0; ; i++ {
+			var item struct {
+				Result json.RawMessage        `json:"result"`
+				Error  map[string]interface{} `json:"error"`
+			}
+			err := dec.Decode(&item)
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				t.Errorf("dec.Decode(&item) failed with %v; want success; i = %d", err, i)
+			}
+			if len(item.Error) != 0 {
+				code, ok := item.Error["code"].(float64)
+				if !ok {
+					t.Errorf("item.Error[code] not found or not a number: %#v; i = %d", item.Error, i)
+				} else if int32(code) == 3 {
+					invalidArgumentCount++
+				} else {
+					t.Errorf("item.Error[code] = %v; want 3; i = %d", code, i)
+				}
+				continue
+			}
+
+			msg := new(durationpb.Duration)
+			if err := marshaler.Unmarshal(item.Result, msg); err != nil {
+				t.Errorf("marshaler.Unmarshal(%q, msg) failed with %v; want success", item.Result, err)
+			}
+			got = append(got, msg)
+		}
+
+		if invalidArgumentCount != 1 {
+			t.Errorf("got %d errors with code 3; want exactly 1", invalidArgumentCount)
+		}
+	}()
+
+	wg.Wait()
+	if diff := cmp.Diff(got, want[:5], protocmp.Transform()); diff != "" {
+		t.Error(diff)
 	}
 }
 

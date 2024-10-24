@@ -13,6 +13,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -22,10 +23,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	StreamService_BulkCreate_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate"
-	StreamService_List_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List"
-	StreamService_BulkEcho_FullMethodName   = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho"
-	StreamService_Download_FullMethodName   = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download"
+	StreamService_BulkCreate_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate"
+	StreamService_List_FullMethodName             = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List"
+	StreamService_BulkEcho_FullMethodName         = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho"
+	StreamService_BulkEchoDuration_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEchoDuration"
+	StreamService_Download_FullMethodName         = "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download"
 )
 
 // StreamServiceClient is the client API for StreamService service.
@@ -37,6 +39,7 @@ type StreamServiceClient interface {
 	BulkCreate(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[ABitOfEverything, emptypb.Empty], error)
 	List(ctx context.Context, in *Options, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ABitOfEverything], error)
 	BulkEcho(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[sub.StringMessage, sub.StringMessage], error)
+	BulkEchoDuration(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[durationpb.Duration, durationpb.Duration], error)
 	Download(ctx context.Context, in *Options, opts ...grpc.CallOption) (grpc.ServerStreamingClient[httpbody.HttpBody], error)
 }
 
@@ -93,9 +96,22 @@ func (c *streamServiceClient) BulkEcho(ctx context.Context, opts ...grpc.CallOpt
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type StreamService_BulkEchoClient = grpc.BidiStreamingClient[sub.StringMessage, sub.StringMessage]
 
+func (c *streamServiceClient) BulkEchoDuration(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[durationpb.Duration, durationpb.Duration], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &StreamService_ServiceDesc.Streams[3], StreamService_BulkEchoDuration_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[durationpb.Duration, durationpb.Duration]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type StreamService_BulkEchoDurationClient = grpc.BidiStreamingClient[durationpb.Duration, durationpb.Duration]
+
 func (c *streamServiceClient) Download(ctx context.Context, in *Options, opts ...grpc.CallOption) (grpc.ServerStreamingClient[httpbody.HttpBody], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &StreamService_ServiceDesc.Streams[3], StreamService_Download_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &StreamService_ServiceDesc.Streams[4], StreamService_Download_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -121,6 +137,7 @@ type StreamServiceServer interface {
 	BulkCreate(grpc.ClientStreamingServer[ABitOfEverything, emptypb.Empty]) error
 	List(*Options, grpc.ServerStreamingServer[ABitOfEverything]) error
 	BulkEcho(grpc.BidiStreamingServer[sub.StringMessage, sub.StringMessage]) error
+	BulkEchoDuration(grpc.BidiStreamingServer[durationpb.Duration, durationpb.Duration]) error
 	Download(*Options, grpc.ServerStreamingServer[httpbody.HttpBody]) error
 }
 
@@ -139,6 +156,9 @@ func (UnimplementedStreamServiceServer) List(*Options, grpc.ServerStreamingServe
 }
 func (UnimplementedStreamServiceServer) BulkEcho(grpc.BidiStreamingServer[sub.StringMessage, sub.StringMessage]) error {
 	return status.Errorf(codes.Unimplemented, "method BulkEcho not implemented")
+}
+func (UnimplementedStreamServiceServer) BulkEchoDuration(grpc.BidiStreamingServer[durationpb.Duration, durationpb.Duration]) error {
+	return status.Errorf(codes.Unimplemented, "method BulkEchoDuration not implemented")
 }
 func (UnimplementedStreamServiceServer) Download(*Options, grpc.ServerStreamingServer[httpbody.HttpBody]) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
@@ -188,6 +208,13 @@ func _StreamService_BulkEcho_Handler(srv interface{}, stream grpc.ServerStream) 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type StreamService_BulkEchoServer = grpc.BidiStreamingServer[sub.StringMessage, sub.StringMessage]
 
+func _StreamService_BulkEchoDuration_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(StreamServiceServer).BulkEchoDuration(&grpc.GenericServerStream[durationpb.Duration, durationpb.Duration]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type StreamService_BulkEchoDurationServer = grpc.BidiStreamingServer[durationpb.Duration, durationpb.Duration]
+
 func _StreamService_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Options)
 	if err := stream.RecvMsg(m); err != nil {
@@ -220,6 +247,12 @@ var StreamService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "BulkEcho",
 			Handler:       _StreamService_BulkEcho_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "BulkEchoDuration",
+			Handler:       _StreamService_BulkEchoDuration_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
