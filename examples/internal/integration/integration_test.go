@@ -1460,7 +1460,7 @@ func testABEBulkEchoDurationError(t *testing.T, port int) {
 		defer reqw.Close()
 		for i := 0; i < 10; i++ {
 			s := fmt.Sprintf("%d.123s", i)
-			if i == 9 {
+			if i == 5 {
 				s = "invalidDurationFormat"
 			}
 			buf, err := marshaler.Marshal(s)
@@ -1494,6 +1494,7 @@ func testABEBulkEchoDurationError(t *testing.T, port int) {
 	}
 
 	var got []*durationpb.Duration
+	var invalidArgumentCount int
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
@@ -1515,7 +1516,9 @@ func testABEBulkEchoDurationError(t *testing.T, port int) {
 				code, ok := item.Error["code"].(float64)
 				if !ok {
 					t.Errorf("item.Error[code] not found or not a number: %#v; i = %d", item.Error, i)
-				} else if int32(code) != 3 {
+				} else if int32(code) == 3 {
+					invalidArgumentCount++
+				} else {
 					t.Errorf("item.Error[code] = %v; want 3; i = %d", code, i)
 				}
 				continue
@@ -1527,11 +1530,14 @@ func testABEBulkEchoDurationError(t *testing.T, port int) {
 			}
 			got = append(got, msg)
 		}
+
+		if invalidArgumentCount != 1 {
+			t.Errorf("got %d errors with code 3; want exactly 1", invalidArgumentCount)
+		}
 	}()
 
 	wg.Wait()
-
-	if diff := cmp.Diff(got, want[:len(got)], protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(got, want[:5], protocmp.Transform()); diff != "" {
 		t.Error(diff)
 	}
 }
