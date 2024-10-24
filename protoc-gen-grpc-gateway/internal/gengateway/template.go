@@ -747,7 +747,7 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 		go func() {
 			for err := range reqErrChan {
 				if err != nil && err != io.EOF {
-					runtime.HttpStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
+					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
 				}
 			}
 		}()

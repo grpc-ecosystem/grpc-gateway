@@ -82,7 +82,7 @@ func HTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.R
 }
 
 // HttpStreamError uses the mux-configured stream error handler to notify error to the client without closing the connection.
-func HttpStreamError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+func HTTPStreamError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, err error) {
 	st := mux.streamErrorHandler(ctx, err)
 	msg := errorChunk(st)
 	buf, err := marshaler.Marshal(msg)
