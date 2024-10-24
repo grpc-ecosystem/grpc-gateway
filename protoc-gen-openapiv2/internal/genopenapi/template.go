@@ -1208,6 +1208,7 @@ func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter, r
 				Target: &descriptor.Field{
 					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 						Name: proto.String(paramName),
+						Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 					},
 					Message:           pathParam.Target.Message,
 					FieldMessage:      pathParam.Target.FieldMessage,
