@@ -4126,8 +4126,16 @@ func getParameters(names []string) []descriptor.Parameter {
 			Target: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 					Name: proto.String(name),
+					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 				},
-				Message:           &descriptor.Message{},
+				Message: &descriptor.Message{
+					File: &descriptor.File{
+						FileDescriptorProto: &descriptorpb.FileDescriptorProto{},
+					},
+					DescriptorProto: &descriptorpb.DescriptorProto{
+						Name: proto.String(""),
+					},
+				},
 				FieldMessage:      nil,
 				ForcePrefixedName: false,
 			},
@@ -4170,7 +4178,31 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 		if !reflect.DeepEqual(data.expectedPathParams, pathParamsNames) {
 			t.Errorf("Expected mutated path params in templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expectedPathParams, data.pathParams)
 		}
+	}
+}
 
+func TestExpandedPathParametersStringType(t *testing.T) {
+	var tests = []struct {
+		input string
+	}{
+		{"/test/{name=test_cases/*}/"}, {"/v1/{name=projects/*/documents/*}:exportResults"},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetExpandSlashedPathPatterns(true)
+	expectedParamType := openapiSchemaObject{
+		schemaCore: schemaCore{
+			Type: "string",
+		},
+	}
+	for _, data := range tests {
+		_, actualParams := templateToExpandedPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), getParameters([]string{"name"}))
+		for _, param := range actualParams {
+			refs := make(refMap)
+			actualParamType := schemaOfField(param.Target, reg, refs)
+			if !reflect.DeepEqual(actualParamType, expectedParamType) {
+				t.Errorf("Expected all path parameters to be type of 'string', actual: %#+v", actualParamType)
+			}
+		}
 	}
 }
 
