@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
@@ -194,8 +195,10 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		w.Header().Set("Content-Length", strconv.Itoa(len(buf)))
 	}
 
-	if _, err = w.Write(buf); err != nil {
-		grpclog.Errorf("Failed to write response: %v", err)
+	if _, ok := resp.(*emptypb.Empty); !ok {
+		if _, err = w.Write(buf); err != nil {
+			grpclog.Errorf("Failed to write response: %v", err)
+		}
 	}
 
 	if doForwardTrailers {
