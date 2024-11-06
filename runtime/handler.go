@@ -194,7 +194,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		w.Header().Set("Content-Length", strconv.Itoa(len(buf)))
 	}
 
-	if _, err = w.Write(buf); err != nil {
+	if _, err = w.Write(buf); err != nil && !errors.Is(err, http.ErrBodyNotAllowed) {
 		grpclog.Errorf("Failed to write response: %v", err)
 	}
 
