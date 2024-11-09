@@ -7,7 +7,7 @@ jobs:
   build:
     strategy:
       matrix:
-        go-version: [1.21.x, 1.22.x, 1.23.x]
+        go-version: [1.22.x, 1.23.x]
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,7 +41,7 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.22
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -59,7 +59,7 @@ jobs:
       - run: git diff --exit-code
   bazel:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.22
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -102,7 +102,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5
         with:
-          go-version: 1.22
+          go-version: 1.23
           check-latest: true
       - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.23.0
   proto_lint:
@@ -123,7 +123,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5
         with:
-          go-version: 1.22
+          go-version: 1.23
           check-latest: true
       - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6 # v1.3.1
         with:
