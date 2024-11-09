@@ -151,6 +151,7 @@ type openapiParameterObject struct {
 	Required         bool                `json:"required" yaml:"required"`
 	Type             string              `json:"type,omitempty" yaml:"type,omitempty"`
 	Format           string              `json:"format,omitempty" yaml:"format,omitempty"`
+	UniqueItems      bool                `json:"uniqueItems,omitempty" yaml:"uniqueItems,omitempty"`
 	Items            *openapiItemsObject `json:"items,omitempty" yaml:"items,omitempty"`
 	Enum             interface{}         `json:"enum,omitempty" yaml:"enum,omitempty"`
 	CollectionFormat string              `json:"collectionFormat,omitempty" yaml:"collectionFormat,omitempty"`

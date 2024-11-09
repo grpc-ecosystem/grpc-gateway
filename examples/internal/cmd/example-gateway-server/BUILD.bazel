@@ -7,7 +7,7 @@ go_library(
     visibility = ["//visibility:private"],
     deps = [
         "//examples/internal/gateway",
-        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//grpclog",
     ],
 )
 

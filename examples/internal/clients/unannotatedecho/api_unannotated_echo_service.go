@@ -43,6 +43,8 @@ Description Echo
      * @param "NoProgress" (optional.String) - 
      * @param "NoNote" (optional.String) - 
      * @param "ResourceId" (optional.String) - 
+     * @param "NIdNId" (optional.String) - 
+     * @param "NIdVal" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -57,6 +59,8 @@ type UnannotatedEchoServiceEchoOpts struct {
 	NoProgress optional.String
 	NoNote optional.String
 	ResourceId optional.String
+	NIdNId optional.String
+	NIdVal optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEchoOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -103,6 +107,12 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx contex
 	}
 	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
 		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NIdNId.IsSet() {
+		localVarQueryParams.Add("nId.nId", parameterToString(localVarOptionals.NIdNId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NIdVal.IsSet() {
+		localVarQueryParams.Add("nId.val", parameterToString(localVarOptionals.NIdVal.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -241,6 +251,8 @@ Description Echo
      * @param "NoProgress" (optional.String) - 
      * @param "NoNote" (optional.String) - 
      * @param "ResourceId" (optional.String) - 
+     * @param "NIdNId" (optional.String) - 
+     * @param "NIdVal" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -255,6 +267,8 @@ type UnannotatedEchoServiceEcho2Opts struct {
 	NoProgress optional.String
 	NoNote optional.String
 	ResourceId optional.String
+	NIdNId optional.String
+	NIdVal optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -301,6 +315,12 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 	}
 	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
 		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NIdNId.IsSet() {
+		localVarQueryParams.Add("nId.nId", parameterToString(localVarOptionals.NIdNId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NIdVal.IsSet() {
+		localVarQueryParams.Add("nId.val", parameterToString(localVarOptionals.NIdVal.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -573,6 +593,8 @@ UnannotatedEchoServiceApiService EchoDelete method receives a simple message and
      * @param "NoProgress" (optional.String) - 
      * @param "NoNote" (optional.String) - 
      * @param "ResourceId" (optional.String) - 
+     * @param "NIdNId" (optional.String) - 
+     * @param "NIdVal" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -588,6 +610,8 @@ type UnannotatedEchoServiceEchoDeleteOpts struct {
 	NoProgress optional.String
 	NoNote optional.String
 	ResourceId optional.String
+	NIdNId optional.String
+	NIdVal optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, num string, localVarOptionals *UnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -636,6 +660,12 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
 		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NIdNId.IsSet() {
+		localVarQueryParams.Add("nId.nId", parameterToString(localVarOptionals.NIdNId.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NIdVal.IsSet() {
+		localVarQueryParams.Add("nId.val", parameterToString(localVarOptionals.NIdVal.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}

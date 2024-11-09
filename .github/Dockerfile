@@ -1,10 +1,10 @@
-FROM golang:1.21.1
+FROM golang:1.23.3
 
 ENV NVM_DIR="/usr/local/share/nvm"
 ENV NVM_SYMLINK_CURRENT=true \
     PATH=${NVM_DIR}/current/bin:${PATH}
 
-ARG VSCODE_SCRIPTS_VERSION="v0.193.0"
+ARG VSCODE_SCRIPTS_VERSION="v0.245.2"
 ARG NODE_VERSION="10"
 # Run some common installation scripts for a nicer dev environment. In order:
 # Used to create non-root user and update system packages
@@ -27,7 +27,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
         wget \
         unzip \
-        openjdk-11-jre \
+        openjdk-17-jre \
         bzip2 \
         patch && \
     apt-get clean -y && \

@@ -37,7 +37,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 var (
-	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "floatValue": 1, "double_value": 2, "doubleValue": 3, "int64_value": 4, "int64Value": 5, "uint64_value": 6, "uint64Value": 7, "int32_value": 8, "int32Value": 9, "fixed64_value": 10, "fixed64Value": 11, "fixed32_value": 12, "fixed32Value": 13, "bool_value": 14, "boolValue": 15, "string_value": 16, "stringValue": 17, "uint32_value": 18, "uint32Value": 19, "sfixed32_value": 20, "sfixed32Value": 21, "sfixed64_value": 22, "sfixed64Value": 23, "sint32_value": 24, "sint32Value": 25, "sint64_value": 26, "sint64Value": 27, "nonConventionalNameValue": 28, "enum_value": 29, "enumValue": 30, "path_enum_value": 31, "pathEnumValue": 32, "nested_path_enum_value": 33, "nestedPathEnumValue": 34, "enum_value_annotation": 35, "enumValueAnnotation": 36}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 30, 31, 32, 33, 34, 35, 36, 37, 38}}
+	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "nonConventionalNameValue": 14, "enum_value": 15, "path_enum_value": 16, "nested_path_enum_value": 17, "enum_value_annotation": 18}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}}
 )
 
 func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -488,11 +488,7 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -505,11 +501,7 @@ func local_request_ABitOfEverythingService_CreateBody_0(ctx context.Context, mar
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -519,18 +511,14 @@ func local_request_ABitOfEverythingService_CreateBody_0(ctx context.Context, mar
 }
 
 var (
-	filter_ABitOfEverythingService_CreateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "parent": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_ABitOfEverythingService_CreateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "parent": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateBookRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Book); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Book); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -567,11 +555,7 @@ func local_request_ABitOfEverythingService_CreateBook_0(ctx context.Context, mar
 	var protoReq CreateBookRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Book); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Book); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -605,7 +589,7 @@ func local_request_ABitOfEverythingService_CreateBook_0(ctx context.Context, mar
 }
 
 var (
-	filter_ABitOfEverythingService_UpdateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "name": 1}, Base: []int{1, 4, 5, 2, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 4, 2, 2, 3}}
+	filter_ABitOfEverythingService_UpdateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
 )
 
 func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -757,7 +741,7 @@ func local_request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshal
 }
 
 var (
-	filter_ABitOfEverythingService_Custom_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_ABitOfEverythingService_Custom_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_ABitOfEverythingService_Custom_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -827,7 +811,7 @@ func local_request_ABitOfEverythingService_Custom_0(ctx context.Context, marshal
 }
 
 var (
-	filter_ABitOfEverythingService_DoubleColon_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_ABitOfEverythingService_DoubleColon_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_ABitOfEverythingService_DoubleColon_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -900,11 +884,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -934,11 +914,7 @@ func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshal
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -965,18 +941,14 @@ func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshal
 }
 
 var (
-	filter_ABitOfEverythingService_UpdateV2_0 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 4, 5, 2, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 4, 2, 2, 3}}
+	filter_ABitOfEverythingService_UpdateV2_0 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
 )
 
 func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Abe); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1013,11 +985,7 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Abe); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1051,7 +1019,7 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 }
 
 var (
-	filter_ABitOfEverythingService_UpdateV2_1 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 4, 5, 2, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 4, 2, 2, 3}}
+	filter_ABitOfEverythingService_UpdateV2_1 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
 )
 
 func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1154,11 +1122,7 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1188,11 +1152,7 @@ func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marsh
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1271,7 +1231,7 @@ func local_request_ABitOfEverythingService_Delete_0(ctx context.Context, marshal
 }
 
 var (
-	filter_ABitOfEverythingService_GetQuery_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_ABitOfEverythingService_GetQuery_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1762,11 +1722,7 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Value); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1779,11 +1735,7 @@ func local_request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Value); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1832,11 +1784,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1866,11 +1814,7 @@ func local_request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, m
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1936,11 +1880,7 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 	var protoReq MessageWithBody
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Data); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Data); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1970,11 +1910,7 @@ func local_request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Cont
 	var protoReq MessageWithBody
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Data); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Data); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2004,11 +1940,7 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2038,11 +1970,7 @@ func local_request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Conte
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2069,7 +1997,7 @@ func local_request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Conte
 }
 
 var (
-	filter_ABitOfEverythingService_CheckGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "name": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_ABitOfEverythingService_CheckGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "name": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2139,7 +2067,7 @@ func local_request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Con
 }
 
 var (
-	filter_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "ok": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "ok": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2225,18 +2153,14 @@ func local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx c
 }
 
 var (
-	filter_ABitOfEverythingService_CheckPostQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "singleNested": 1, "string_value": 2, "stringValue": 3}, Base: []int{1, 1, 2, 3, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 2, 3, 4, 5}}
+	filter_ABitOfEverythingService_CheckPostQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "string_value": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2273,11 +2197,7 @@ func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Co
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2314,11 +2234,7 @@ func request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.C
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2331,11 +2247,7 @@ func local_request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx con
 	var protoReq Body
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2497,7 +2409,7 @@ func local_request_ABitOfEverythingService_CheckStatus_0(ctx context.Context, ma
 }
 
 var (
-	filter_ABitOfEverythingService_Exists_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_ABitOfEverythingService_Exists_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_ABitOfEverythingService_Exists_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2567,7 +2479,7 @@ func local_request_ABitOfEverythingService_Exists_0(ctx context.Context, marshal
 }
 
 var (
-	filter_ABitOfEverythingService_CustomOptionsRequest_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_ABitOfEverythingService_CustomOptionsRequest_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_ABitOfEverythingService_CustomOptionsRequest_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2637,7 +2549,7 @@ func local_request_ABitOfEverythingService_CustomOptionsRequest_0(ctx context.Co
 }
 
 var (
-	filter_ABitOfEverythingService_TraceRequest_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_ABitOfEverythingService_TraceRequest_0 = &utilities.DoubleArray{Encoding: map[string]int{"uuid": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_ABitOfEverythingService_TraceRequest_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2710,16 +2622,12 @@ func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marsha
 	var protoReq oneofenum.OneofEnumMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
 	if protoReq.One == nil {
 		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
 	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2732,16 +2640,12 @@ func local_request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, 
 	var protoReq oneofenum.OneofEnumMessage
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
 	if protoReq.One == nil {
 		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
 	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2754,11 +2658,7 @@ func request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Conte
 	var protoReq RequiredMessageTypeRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2771,11 +2671,7 @@ func local_request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context
 	var protoReq RequiredMessageTypeRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2912,6 +2808,7 @@ func local_request_SnakeEnumService_SnakeEnum_0(ctx context.Context, marshaler r
 // UnaryRPC     :call ABitOfEverythingServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterABitOfEverythingServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -3796,6 +3693,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 // UnaryRPC     :call CamelCaseServiceNameServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterCamelCaseServiceNameHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer) error {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -3830,6 +3728,7 @@ func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime
 // UnaryRPC     :call SnakeEnumServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterSnakeEnumServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterSnakeEnumServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server SnakeEnumServiceServer) error {
 
 	mux.Handle("GET", pattern_SnakeEnumService_SnakeEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -3863,21 +3762,21 @@ func RegisterSnakeEnumServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 // RegisterABitOfEverythingServiceHandlerFromEndpoint is same as RegisterABitOfEverythingServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -3895,7 +3794,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ABitOfEverythingServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ABitOfEverythingServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ABitOfEverythingServiceClient" to call the correct interceptors.
+// "ABitOfEverythingServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ABitOfEverythingServiceClient) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -4818,21 +4717,21 @@ var (
 // RegisterCamelCaseServiceNameHandlerFromEndpoint is same as RegisterCamelCaseServiceNameHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterCamelCaseServiceNameHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -4850,7 +4749,7 @@ func RegisterCamelCaseServiceNameHandler(ctx context.Context, mux *runtime.Serve
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "CamelCaseServiceNameClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "CamelCaseServiceNameClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "CamelCaseServiceNameClient" to call the correct interceptors.
+// "CamelCaseServiceNameClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterCamelCaseServiceNameHandlerClient(ctx context.Context, mux *runtime.ServeMux, client CamelCaseServiceNameClient) error {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -4889,21 +4788,21 @@ var (
 // RegisterSnakeEnumServiceHandlerFromEndpoint is same as RegisterSnakeEnumServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterSnakeEnumServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -4921,7 +4820,7 @@ func RegisterSnakeEnumServiceHandler(ctx context.Context, mux *runtime.ServeMux,
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "SnakeEnumServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "SnakeEnumServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "SnakeEnumServiceClient" to call the correct interceptors.
+// "SnakeEnumServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterSnakeEnumServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client SnakeEnumServiceClient) error {
 
 	mux.Handle("GET", pattern_SnakeEnumService_SnakeEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

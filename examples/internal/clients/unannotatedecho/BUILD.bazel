@@ -10,6 +10,7 @@ go_library(
         "configuration.go",
         "model_examplepb_numeric_enum.go",
         "model_examplepb_unannotated_embedded.go",
+        "model_examplepb_unannotated_nested_message.go",
         "model_examplepb_unannotated_simple_message.go",
         "model_protobuf_any.go",
         "model_rpc_status.go",

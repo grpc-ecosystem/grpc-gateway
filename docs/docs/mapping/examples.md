@@ -23,5 +23,5 @@ Examples are available under `examples/internal` directory.
   entrypoint of the generated reverse proxy.
 
 To use the same port for custom HTTP handlers (e.g. serving `swagger.json`),
-gRPC-Gateway, and a gRPC server, see [this code example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/main/cmd/serve.go) (and it's accompanying
+gRPC-Gateway, and a gRPC server, see [this code example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go) (and its accompanying
 [blog post](https://coreos.com/blog/grpc-protobufs-swagger.html)).

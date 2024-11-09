@@ -4,15 +4,15 @@ import "testing"
 
 func TestNaming(t *testing.T) {
 	type expectedNames struct {
-		fqn, legacy, simple string
+		fqn, legacy, simple, pkg string
 	}
 	messageNameToExpected := map[string]expectedNames{
-		".A":     {"A", "A", "A"},
-		".a.B.C": {"a.B.C", "aBC", "B.C"},
-		".a.D.C": {"a.D.C", "aDC", "D.C"},
-		".a.E.F": {"a.E.F", "aEF", "a.E.F"},
-		".b.E.F": {"b.E.F", "bEF", "b.E.F"},
-		".c.G.H": {"c.G.H", "GH", "H"},
+		".A":     {"A", "A", "A", "A"},
+		".a.B.C": {"a.B.C", "aBC", "B.C", "B.C"},
+		".a.D.C": {"a.D.C", "aDC", "D.C", "D.C"},
+		".a.E.F": {"a.E.F", "aEF", "a.E.F", "a.E.F"},
+		".b.E.F": {"b.E.F", "bEF", "b.E.F", "b.E.F"},
+		".c.G.H": {"c.G.H", "GH", "H", "G.H"},
 	}
 
 	allMessageNames := make([]string, 0, len(messageNameToExpected))
@@ -47,6 +47,16 @@ func TestNaming(t *testing.T) {
 			actual := uniqueNames[msgName]
 			if expected != actual {
 				t.Errorf("simple unique name %q does not match expected name %q", actual, expected)
+			}
+		}
+	})
+	t.Run("package", func(t *testing.T) {
+		uniqueNames := resolveNamesPackage(allMessageNames)
+		for _, msgName := range allMessageNames {
+			expected := messageNameToExpected[msgName].pkg
+			actual := uniqueNames[msgName]
+			if expected != actual {
+				t.Errorf("package unique name %q does not match expected name %q", actual, expected)
 			}
 		}
 	})

@@ -11,6 +11,7 @@ go_library(
         "model_examplepb_dynamic_message.go",
         "model_examplepb_dynamic_message_update.go",
         "model_examplepb_embedded.go",
+        "model_examplepb_nested_message.go",
         "model_examplepb_simple_message.go",
         "model_protobuf_any.go",
         "model_protobuf_null_value.go",

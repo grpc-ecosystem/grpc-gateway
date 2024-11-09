@@ -79,7 +79,7 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 // type aliases, and those don't have the custom MarshalJSON methods defined
 // on them. See http://choly.ca/post/go-json-marshalling/ (or, if it ever
 // goes away, use
-// https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/.
+// https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/).
 func (so openapiSwaggerObject) MarshalJSON() ([]byte, error) {
 	type alias openapiSwaggerObject
 	return extensionMarshalJSON(alias(so), so.extensions)

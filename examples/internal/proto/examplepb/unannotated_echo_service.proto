@@ -22,6 +22,11 @@ message UnannotatedEmbedded {
   }
 }
 
+message UnannotatedNestedMessage {
+  string n_id = 1;
+  string val = 2;
+}
+
 // UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
 message UnannotatedSimpleMessage {
   // Id represents the message identifier.
@@ -38,6 +43,7 @@ message UnannotatedSimpleMessage {
     UnannotatedEmbedded no = 8;
   }
   string resource_id = 9;
+  UnannotatedNestedMessage n_id = 10;
 }
 
 // Echo service responds to incoming echo requests.

@@ -48,7 +48,7 @@ func TestParseRequest(t *testing.T) {
 				t.Error("did not error as expected")
 			}
 			if diff := cmp.Diff(out, tt.out, protocmp.Transform()); diff != "" {
-				t.Errorf(diff)
+				t.Error(diff)
 			}
 		})
 	}

@@ -29,8 +29,13 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			expected: newFieldMask(),
 		},
 		{
-			name: "simple",
-
+			name:     "EmptyMessage",
+			msg:      &examplepb.ABitOfEverything{},
+			input:    `{"oneof_empty": {}}`,
+			expected: newFieldMask("oneof_empty"),
+		},
+		{
+			name:     "simple",
 			msg:      &examplepb.ABitOfEverything{},
 			input:    `{"uuid":"1234", "floatValue":3.14}`,
 			expected: newFieldMask("uuid", "float_value"),

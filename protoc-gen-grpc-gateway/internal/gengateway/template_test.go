@@ -93,6 +93,9 @@ func TestApplyTemplateHeader(t *testing.T) {
 	if want := "package example_pb\n"; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
+	if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
 }
 
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
@@ -239,7 +242,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `marshaler.NewDecoder(newReader()).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
+		if want := `marshaler.NewDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `val, ok = pathParams["nested.int32"]`; !strings.Contains(got, want) {
@@ -255,6 +258,9 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
@@ -310,7 +316,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		},
 		{
 			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, runtime.ServerMetadata, error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, runtime.ServerMetadata, chan error, error) {`,
 		},
 	} {
 		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
@@ -407,6 +413,9 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
@@ -585,6 +594,9 @@ func TestApplyTemplateInProcess(t *testing.T) {
 		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceServer) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
+		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
 	}
 }
 
@@ -659,6 +671,9 @@ func TestAllowPatchFeature(t *testing.T) {
 			return
 		}
 		if allowPatchFeature {
+			if want := `marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe)`; !strings.Contains(got, want) {
+				t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+			}
 			if !strings.Contains(got, want) {
 				t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 			}
@@ -666,6 +681,9 @@ func TestAllowPatchFeature(t *testing.T) {
 			if strings.Contains(got, want) {
 				t.Errorf("applyTemplate(%#v) = %s; want to _not_ contain %s", file, got, want)
 			}
+		}
+		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
 }
@@ -761,6 +779,9 @@ func TestIdentifierCapitalization(t *testing.T) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 	if want := `var protoReq ExampleResponse`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 }

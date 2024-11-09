@@ -8,18 +8,18 @@ name: renovate
 jobs:
   update_repositoriesbzl:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.19
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.22
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
-      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3
+      - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # v4
         with:
           path: /home/vscode/.cache/_grpc_gateway_bazel
           key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
@@ -36,6 +36,9 @@ jobs:
           build --local_cpu_resources=2    # Github runners have 2 vCPU
           EOF
       - run: bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
+        # Required with newer versions of Git
+        # https://github.com/actions/checkout/issues/766
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: |
           git add .
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then
@@ -46,7 +49,7 @@ jobs:
           fi
   regenerate:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.19
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.22
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -57,10 +60,13 @@ jobs:
       # git conflicts
       - update_repositoriesbzl
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
+        # Required with newer versions of Git
+        # https://github.com/actions/checkout/issues/766
+      - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - run: make install
       - run: make clean
       - run: make generate

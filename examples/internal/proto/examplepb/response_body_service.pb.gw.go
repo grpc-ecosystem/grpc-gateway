@@ -225,6 +225,7 @@ func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, ma
 // UnaryRPC     :call ResponseBodyServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterResponseBodyServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceServer) error {
 
 	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -248,7 +249,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp.(*ResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -273,7 +274,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp.(*RepeatedResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -298,7 +299,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp.(*RepeatedResponseStrings)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -315,21 +316,21 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 // RegisterResponseBodyServiceHandlerFromEndpoint is same as RegisterResponseBodyServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterResponseBodyServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -347,7 +348,7 @@ func RegisterResponseBodyServiceHandler(ctx context.Context, mux *runtime.ServeM
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ResponseBodyServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ResponseBodyServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ResponseBodyServiceClient" to call the correct interceptors.
+// "ResponseBodyServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ResponseBodyServiceClient) error {
 
 	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -368,7 +369,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_GetResponseBody_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp.(*ResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -390,7 +391,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseBodies_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp.(*RepeatedResponseBodyOut)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -412,7 +413,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
+		forward_ResponseBodyService_ListResponseStrings_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp.(*RepeatedResponseStrings)}, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -445,39 +446,35 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 type response_ResponseBodyService_GetResponseBody_0 struct {
-	proto.Message
+	*ResponseBodyOut
 }
 
 func (m response_ResponseBodyService_GetResponseBody_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*ResponseBodyOut)
-	return response.Response
+	return m.Response
 }
 
 type response_ResponseBodyService_ListResponseBodies_0 struct {
-	proto.Message
+	*RepeatedResponseBodyOut
 }
 
 func (m response_ResponseBodyService_ListResponseBodies_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*RepeatedResponseBodyOut)
-	return response.Response
+	return m.Response
 }
 
 type response_ResponseBodyService_ListResponseStrings_0 struct {
-	proto.Message
+	*RepeatedResponseStrings
 }
 
 func (m response_ResponseBodyService_ListResponseStrings_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*RepeatedResponseStrings)
-	return response.Values
+	return m.Values
 }
 
 type response_ResponseBodyService_GetResponseBodyStream_0 struct {
-	proto.Message
+	*ResponseBodyOut
 }
 
 func (m response_ResponseBodyService_GetResponseBodyStream_0) XXX_ResponseBody() interface{} {
-	response := m.Message.(*ResponseBodyOut)
-	return response.Response
+	return m.Response
 }
 
 var (

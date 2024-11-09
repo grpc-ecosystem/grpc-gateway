@@ -1,33 +1,35 @@
 package gateway
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"path"
 	"strings"
 
-	"github.com/golang/glog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
+	"google.golang.org/grpc/grpclog"
 )
 
 // openAPIServer returns OpenAPI specification files located under "/openapiv2/"
 func openAPIServer(dir string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasSuffix(r.URL.Path, ".swagger.json") {
-			glog.Errorf("Not Found: %s", r.URL.Path)
+			grpclog.Errorf("Not Found: %s", r.URL.Path)
 			http.NotFound(w, r)
 			return
 		}
 
-		glog.Infof("Serving %s", r.URL.Path)
+		grpclog.Infof("Serving %s", r.URL.Path)
 		p := strings.TrimPrefix(r.URL.Path, "/openapiv2/")
 		p = path.Join(dir, p)
 		http.ServeFile(w, r, p)
 	}
 }
 
-// allowCORS allows Cross Origin Resoruce Sharing from any origin.
+// allowCORS allows Cross Origin Resource Sharing from any origin.
 // Don't do this without consideration in production systems.
 func allowCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +52,7 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", strings.Join(headers, ","))
 	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE"}
 	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
-	glog.Infof("preflight request for %s", r.URL.Path)
+	grpclog.Infof("Preflight request for %s", r.URL.Path)
 }
 
 // healthzServer returns a simple health handler which returns ok.
@@ -63,4 +65,45 @@ func healthzServer(conn *grpc.ClientConn) http.HandlerFunc {
 		}
 		fmt.Fprintln(w, "ok")
 	}
+}
+
+type logResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rsp *logResponseWriter) WriteHeader(code int) {
+	rsp.statusCode = code
+	rsp.ResponseWriter.WriteHeader(code)
+}
+
+// Unwrap returns the original http.ResponseWriter. This is necessary
+// to expose Flush() and Push() on the underlying response writer.
+func (rsp *logResponseWriter) Unwrap() http.ResponseWriter {
+	return rsp.ResponseWriter
+}
+
+func newLogResponseWriter(w http.ResponseWriter) *logResponseWriter {
+	return &logResponseWriter{w, http.StatusOK}
+}
+
+// logRequestBody logs the request body when the response status code is not 200.
+// This addresses the issue of being unable to retrieve the request body in the customErrorHandler middleware.
+func logRequestBody(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		lw := newLogResponseWriter(w)
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("grpc server read request body err %+v", err), http.StatusBadRequest)
+			return
+		}
+		clonedR := r.Clone(r.Context())
+		clonedR.Body = io.NopCloser(bytes.NewReader(body))
+
+		h.ServeHTTP(lw, clonedR)
+
+		if lw.statusCode != http.StatusOK {
+			grpclog.Errorf("http error %+v request body %+v", lw.statusCode, string(body))
+		}
+	})
 }

@@ -24,9 +24,7 @@ gulp.task('gateway', shell.task([
 ]));
 
 gulp.task('serve-server', ['server'], function () {
-  let server = child.spawn('bin/example-server', [
-    '--logtostderr',
-  ], { stdio: 'inherit' });
+  let server = child.spawn('bin/example-server', [], { stdio: 'inherit' });
   process.on('exit', function () {
     server.kill();
   });
@@ -34,7 +32,7 @@ gulp.task('serve-server', ['server'], function () {
 
 gulp.task('serve-gateway', ['gateway', 'serve-server'], function () {
   let gw = child.spawn('bin/example-gw', [
-    '--logtostderr', '--openapi_dir', path.join(__dirname, "../proto/examplepb"),
+    '--openapi_dir', path.join(__dirname, "../proto/examplepb"),
   ], { stdio: 'inherit' });
   process.on('exit', function () {
     gw.kill();

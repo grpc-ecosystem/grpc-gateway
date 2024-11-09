@@ -3,9 +3,10 @@ package gateway
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"net/http"
+
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone"
@@ -35,12 +36,12 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 	return mux, nil
 }
 
-func dial(ctx context.Context, network, addr string) (*grpc.ClientConn, error) {
+func dial(network, addr string) (*grpc.ClientConn, error) {
 	switch network {
 	case "tcp":
-		return dialTCP(ctx, addr)
+		return dialTCP(addr)
 	case "unix":
-		return dialUnix(ctx, addr)
+		return dialUnix(addr)
 	default:
 		return nil, fmt.Errorf("unsupported network type %q", network)
 	}
@@ -48,15 +49,15 @@ func dial(ctx context.Context, network, addr string) (*grpc.ClientConn, error) {
 
 // dialTCP creates a client connection via TCP.
 // "addr" must be a valid TCP address with a port number.
-func dialTCP(ctx context.Context, addr string) (*grpc.ClientConn, error) {
-	return grpc.DialContext(ctx, addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func dialTCP(addr string) (*grpc.ClientConn, error) {
+	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
 
 // dialUnix creates a client connection via a unix domain socket.
 // "addr" must be a valid path to the socket.
-func dialUnix(ctx context.Context, addr string) (*grpc.ClientConn, error) {
+func dialUnix(addr string) (*grpc.ClientConn, error) {
 	d := func(ctx context.Context, addr string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, "unix", addr)
 	}
-	return grpc.DialContext(ctx, addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithContextDialer(d))
+	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithContextDialer(d))
 }

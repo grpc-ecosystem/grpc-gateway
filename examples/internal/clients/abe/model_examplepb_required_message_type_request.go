@@ -12,5 +12,5 @@ package abe
 
 type ExamplepbRequiredMessageTypeRequest struct {
 	Id string `json:"id"`
-	Foo *ExamplepbFoo `json:"foo"`
+	Foo *ProtoexamplepbFoo `json:"foo"`
 }

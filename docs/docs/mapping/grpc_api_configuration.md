@@ -94,7 +94,6 @@ It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb
    ```sh
    protoc -I . \
      --grpc-gateway_out ./gen/go \
-     --grpc-gateway_opt logtostderr=true \
      --grpc-gateway_opt paths=source_relative \
      --grpc-gateway_opt grpc_api_configuration=path/to/your_service.yaml \
      your/service/v1/your_service.proto
@@ -107,7 +106,6 @@ It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb
    ```
    protoc -I . \
      --grpc-gateway_out ./gen/go \
-     --grpc-gateway_opt logtostderr=true \
      --grpc-gateway_opt paths=source_relative \
      --grpc-gateway_opt standalone=true \
      --grpc-gateway_opt grpc_api_configuration=path/to/your_service.yaml \

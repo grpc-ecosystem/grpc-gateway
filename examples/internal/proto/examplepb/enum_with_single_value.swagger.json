@@ -1,0 +1,97 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "examples/internal/proto/examplepb/enum_with_single_value.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "EnumWithSingleValueService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/enum-with-single-value/echo": {
+      "post": {
+        "operationId": "EnumWithSingleValueService_Echo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbEnumWithSingleValueServiceEchoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbEnumWithSingleValueServiceEchoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "EnumWithSingleValueService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "examplepbEnumWithSingleValue": {
+      "type": "string",
+      "description": "EnumWithSingleValue is an enum with a single value. Since it has just a single value\nthe `enum` field should be omitted in the generated OpenAPI spec for the type when\nthe omit_enum_default_value option is set to true."
+    },
+    "examplepbEnumWithSingleValueServiceEchoRequest": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/examplepbEnumWithSingleValue"
+        }
+      }
+    },
+    "examplepbEnumWithSingleValueServiceEchoResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

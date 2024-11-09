@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 
-	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -18,12 +18,12 @@ func newUnannotatedEchoServer() examples.UnannotatedEchoServiceServer {
 }
 
 func (s *unannotatedEchoServer) Echo(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
-	glog.Info(msg)
+	grpclog.Info(msg)
 	return msg, nil
 }
 
 func (s *unannotatedEchoServer) EchoBody(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
-	glog.Info(msg)
+	grpclog.Info(msg)
 	grpc.SendHeader(ctx, metadata.New(map[string]string{
 		"foo": "foo1",
 		"bar": "bar1",
@@ -36,6 +36,6 @@ func (s *unannotatedEchoServer) EchoBody(ctx context.Context, msg *examples.Unan
 }
 
 func (s *unannotatedEchoServer) EchoDelete(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
-	glog.Info(msg)
+	grpclog.Info(msg)
 	return msg, nil
 }

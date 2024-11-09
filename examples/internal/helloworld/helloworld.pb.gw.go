@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 var (
-	filter_Greeter_SayHello_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -102,7 +102,7 @@ func local_request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_1 = &utilities.DoubleArray{Encoding: map[string]int{"strVal": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_1 = &utilities.DoubleArray{Encoding: map[string]int{"strVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -172,7 +172,7 @@ func local_request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_2 = &utilities.DoubleArray{Encoding: map[string]int{"floatVal": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_2 = &utilities.DoubleArray{Encoding: map[string]int{"floatVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -242,7 +242,7 @@ func local_request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_3 = &utilities.DoubleArray{Encoding: map[string]int{"doubleVal": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_3 = &utilities.DoubleArray{Encoding: map[string]int{"doubleVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -312,7 +312,7 @@ func local_request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_4 = &utilities.DoubleArray{Encoding: map[string]int{"boolVal": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_4 = &utilities.DoubleArray{Encoding: map[string]int{"boolVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -382,7 +382,7 @@ func local_request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_5 = &utilities.DoubleArray{Encoding: map[string]int{"bytesVal": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_5 = &utilities.DoubleArray{Encoding: map[string]int{"bytesVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -452,7 +452,7 @@ func local_request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_6 = &utilities.DoubleArray{Encoding: map[string]int{"int32Val": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_6 = &utilities.DoubleArray{Encoding: map[string]int{"int32Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -522,7 +522,7 @@ func local_request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_7 = &utilities.DoubleArray{Encoding: map[string]int{"uint32Val": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_7 = &utilities.DoubleArray{Encoding: map[string]int{"uint32Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -592,7 +592,7 @@ func local_request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_8 = &utilities.DoubleArray{Encoding: map[string]int{"int64Val": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_8 = &utilities.DoubleArray{Encoding: map[string]int{"int64Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -662,7 +662,7 @@ func local_request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_Greeter_SayHello_9 = &utilities.DoubleArray{Encoding: map[string]int{"uint64Val": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_Greeter_SayHello_9 = &utilities.DoubleArray{Encoding: map[string]int{"uint64Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -735,6 +735,7 @@ func local_request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Mar
 // UnaryRPC     :call GreeterServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterGreeterHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GreeterServer) error {
 
 	mux.Handle("GET", pattern_Greeter_SayHello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -993,21 +994,21 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 // RegisterGreeterHandlerFromEndpoint is same as RegisterGreeterHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterGreeterHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -1025,7 +1026,7 @@ func RegisterGreeterHandler(ctx context.Context, mux *runtime.ServeMux, conn *gr
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "GreeterClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GreeterClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "GreeterClient" to call the correct interceptors.
+// "GreeterClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GreeterClient) error {
 
 	mux.Handle("GET", pattern_Greeter_SayHello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

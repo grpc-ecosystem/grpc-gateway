@@ -20,6 +20,11 @@ message Embedded {
   }
 }
 
+message NestedMessage {
+  string n_id = 1;
+  string val = 2;
+}
+
 // SimpleMessage represents a simple message sent to the Echo service.
 message SimpleMessage {
   // Id represents the message identifier.
@@ -35,6 +40,7 @@ message SimpleMessage {
     Embedded no = 7;
   }
   string resource_id = 8;
+  NestedMessage n_id = 9;
 }
 
 // DynamicMessage represents a message which can have its structure
@@ -58,11 +64,12 @@ service EchoService {
   rpc Echo(SimpleMessage) returns (SimpleMessage) {
     option (google.api.http) = {
       post: "/v1/example/echo/{id}"
-      additional_bindings {get: "/v1/example/echo/{id}/{num}"}
-      additional_bindings {get: "/v1/example/echo/{id}/{num}/{lang}"}
-      additional_bindings {get: "/v1/example/echo1/{id}/{line_num}/{status.note}"}
-      additional_bindings {get: "/v1/example/echo2/{no.note}"}
-      additional_bindings {get: "/v1/example/echo/resource/{resource_id}"}
+      additional_bindings: {get: "/v1/example/echo/{id}/{num}"}
+      additional_bindings: {get: "/v1/example/echo/{id}/{num}/{lang}"}
+      additional_bindings: {get: "/v1/example/echo1/{id}/{line_num}/{status.note}"}
+      additional_bindings: {get: "/v1/example/echo2/{no.note}"}
+      additional_bindings: {get: "/v1/example/echo/resource/{resource_id}"}
+      additional_bindings: {get: "/v1/example/echo/nested/{n_id.n_id}"}
     };
   }
   // EchoBody method receives a simple message and returns it.
@@ -70,13 +77,9 @@ service EchoService {
     option (google.api.http) = {
       post: "/v1/example/echo_body"
       body: "*"
-      additional_bindings {
+      additional_bindings: {
         put: "/v1/example/echo_body/{id}"
         body: "no"
-      }
-      additional_bindings {
-        put: "/v1/example/echo_body2/{id}"
-        body: "resource_id"
       }
     };
   }

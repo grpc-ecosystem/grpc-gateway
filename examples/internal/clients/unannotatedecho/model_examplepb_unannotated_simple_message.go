@@ -23,4 +23,5 @@ type ExamplepbUnannotatedSimpleMessage struct {
 	En string `json:"en,omitempty"`
 	No *ExamplepbUnannotatedEmbedded `json:"no,omitempty"`
 	ResourceId string `json:"resourceId,omitempty"`
+	NId *ExamplepbUnannotatedNestedMessage `json:"nId,omitempty"`
 }

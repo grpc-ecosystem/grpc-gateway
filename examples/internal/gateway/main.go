@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc/grpclog"
 )
 
 // Endpoint describes a gRPC endpoint
@@ -35,14 +35,14 @@ func Run(ctx context.Context, opts Options) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	conn, err := dial(ctx, opts.GRPCServer.Network, opts.GRPCServer.Addr)
+	conn, err := dial(opts.GRPCServer.Network, opts.GRPCServer.Addr)
 	if err != nil {
 		return err
 	}
 	go func() {
 		<-ctx.Done()
 		if err := conn.Close(); err != nil {
-			glog.Errorf("Failed to close a client connection to the gRPC server: %v", err)
+			grpclog.Errorf("Failed to close a client connection to the gRPC server: %v", err)
 		}
 	}()
 
@@ -58,19 +58,19 @@ func Run(ctx context.Context, opts Options) error {
 
 	s := &http.Server{
 		Addr:    opts.Addr,
-		Handler: allowCORS(mux),
+		Handler: logRequestBody(allowCORS(mux)),
 	}
 	go func() {
 		<-ctx.Done()
-		glog.Infof("Shutting down the http server")
+		grpclog.Infof("Shutting down the http server")
 		if err := s.Shutdown(context.Background()); err != nil {
-			glog.Errorf("Failed to shutdown http server: %v", err)
+			grpclog.Errorf("Failed to shutdown http server: %v", err)
 		}
 	}()
 
-	glog.Infof("Starting listening at %s", opts.Addr)
+	grpclog.Infof("Starting listening at %s", opts.Addr)
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
-		glog.Errorf("Failed to listen and serve: %v", err)
+		grpclog.Errorf("Failed to listen and serve: %v", err)
 		return err
 	}
 	return nil

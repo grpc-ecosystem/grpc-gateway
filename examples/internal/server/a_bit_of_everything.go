@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
@@ -19,6 +18,7 @@ import (
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/durationpb"
@@ -50,7 +50,7 @@ func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABit
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	var uuid string
 	for {
 		uuid = fmt.Sprintf("%x", uuidgen.Next())
@@ -60,7 +60,7 @@ func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABit
 	}
 	s.v[uuid] = msg
 	s.v[uuid].Uuid = uuid
-	glog.Infof("%v", s.v[uuid])
+	grpclog.Infof("%v", s.v[uuid])
 	return s.v[uuid], nil
 }
 
@@ -95,7 +95,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkC
 			return err
 		}
 		count++
-		glog.Info(msg)
+		grpclog.Info(msg)
 		if _, err = s.Create(ctx, msg); err != nil {
 			return err
 		}
@@ -118,7 +118,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkC
 func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessage) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
-	glog.Info(msg)
+	grpclog.Info(msg)
 
 	err := grpc.SendHeader(ctx, metadata.New(map[string]string{
 		"uuid": msg.Uuid,
@@ -196,7 +196,7 @@ func (s *_ABitOfEverythingServer) Custom(ctx context.Context, msg *examples.ABit
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	if _, ok := s.v[msg.Uuid]; ok {
 		s.v[msg.Uuid] = msg
 	} else {
@@ -209,7 +209,7 @@ func (s *_ABitOfEverythingServer) DoubleColon(ctx context.Context, msg *examples
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	if _, ok := s.v[msg.Uuid]; ok {
 		s.v[msg.Uuid] = msg
 	} else {
@@ -222,7 +222,7 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	if _, ok := s.v[msg.Uuid]; ok {
 		s.v[msg.Uuid] = msg
 	} else {
@@ -232,7 +232,7 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 }
 
 func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*emptypb.Empty, error) {
-	glog.Info(msg)
+	grpclog.Info(msg)
 	// If there is no update mask do a regular update
 	if msg.UpdateMask == nil || len(msg.UpdateMask.GetPaths()) == 0 {
 		return s.Update(ctx, msg.Abe)
@@ -252,7 +252,7 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessag
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	if _, ok := s.v[msg.Uuid]; ok {
 		delete(s.v, msg.Uuid)
 	} else {
@@ -265,7 +265,7 @@ func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.AB
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	if _, ok := s.v[msg.Uuid]; ok {
 		s.v[msg.Uuid] = msg
 	} else {
@@ -278,7 +278,7 @@ func (s *_ABitOfEverythingServer) GetRepeatedQuery(ctx context.Context, msg *exa
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	return msg, nil
 }
 
@@ -286,7 +286,7 @@ func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessa
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	return msg, nil
 }
 
@@ -312,7 +312,7 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEch
 	}
 
 	for _, msg := range msgs {
-		glog.Info(msg)
+		grpclog.Info(msg)
 		if err := stream.Send(msg); err != nil {
 			return err
 		}
@@ -325,11 +325,63 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEch
 	return nil
 }
 
+func (s *_ABitOfEverythingServer) BulkEchoDuration(stream examples.StreamService_BulkEchoDurationServer) error {
+	hmd := metadata.New(map[string]string{
+		"foo": "foo1",
+		"bar": "bar1",
+	})
+	if err := stream.SendHeader(hmd); err != nil {
+		return err
+	}
+
+	// Channel to coordinate between read and write goroutines
+	msgChan := make(chan *durationpb.Duration)
+	errChan := make(chan error)
+
+	go func() {
+		defer close(msgChan)
+		for {
+			msg, err := stream.Recv()
+			if err == io.EOF {
+				return
+			}
+			if err != nil {
+				errChan <- err
+				return
+			}
+			msgChan <- msg
+		}
+	}()
+
+	go func() {
+		for msg := range msgChan {
+			grpclog.Info(msg)
+			if err := stream.Send(msg); err != nil {
+				errChan <- err
+				return
+			}
+		}
+		// Sleep to mock the delay in receiving the request close.
+		// Accommodates the integration test client which is not a true
+		// bidirectional streaming client that supports request streaming.
+		time.Sleep(1 * time.Second)
+		close(errChan)
+	}()
+
+	err := <-errChan
+
+	stream.SetTrailer(metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
+	return err
+}
+
 func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
-	glog.Info(msg)
+	grpclog.Info(msg)
 	return msg, nil
 }
 

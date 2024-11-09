@@ -22,6 +22,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 // Suppress "imported and not used" errors
@@ -36,7 +37,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
+		grpclog.Errorf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
@@ -47,25 +48,25 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 			break
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
+			grpclog.Errorf("Failed to decode request: %v", err)
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			if err == io.EOF {
 				break
 			}
-			grpclog.Infof("Failed to send request: %v", err)
+			grpclog.Errorf("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
 	}
 
 	if err := stream.CloseSend(); err != nil {
-		grpclog.Infof("Failed to terminate client stream: %v", err)
+		grpclog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
 	header, err := stream.Header()
 	if err != nil {
-		grpclog.Infof("Failed to get header from client: %v", err)
+		grpclog.Errorf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
@@ -104,12 +105,14 @@ func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, error) {
+func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, chan error, error) {
 	var metadata runtime.ServerMetadata
+	errChan := make(chan error, 1)
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
-		return nil, metadata, err
+		grpclog.Errorf("Failed to start streaming: %v", err)
+		close(errChan)
+		return nil, metadata, errChan, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -119,32 +122,81 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 			return err
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
-			return err
+			grpclog.Errorf("Failed to decode request: %v", err)
+			return status.Errorf(codes.InvalidArgument, "Failed to decode request: %v", err)
 		}
 		if err := stream.Send(&protoReq); err != nil {
-			grpclog.Infof("Failed to send request: %v", err)
+			grpclog.Errorf("Failed to send request: %v", err)
 			return err
 		}
 		return nil
 	}
 	go func() {
+		defer close(errChan)
 		for {
 			if err := handleSend(); err != nil {
+				errChan <- err
 				break
 			}
 		}
 		if err := stream.CloseSend(); err != nil {
-			grpclog.Infof("Failed to terminate client stream: %v", err)
+			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
 	if err != nil {
-		grpclog.Infof("Failed to get header from client: %v", err)
-		return nil, metadata, err
+		grpclog.Errorf("Failed to get header from client: %v", err)
+		return nil, metadata, errChan, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, nil
+	return stream, metadata, errChan, nil
+}
+
+func request_StreamService_BulkEchoDuration_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoDurationClient, runtime.ServerMetadata, chan error, error) {
+	var metadata runtime.ServerMetadata
+	errChan := make(chan error, 1)
+	stream, err := client.BulkEchoDuration(ctx)
+	if err != nil {
+		grpclog.Errorf("Failed to start streaming: %v", err)
+		close(errChan)
+		return nil, metadata, errChan, err
+	}
+	dec := marshaler.NewDecoder(req.Body)
+	handleSend := func() error {
+		var protoReq durationpb.Duration
+		err := dec.Decode(&protoReq)
+		if err == io.EOF {
+			return err
+		}
+		if err != nil {
+			grpclog.Errorf("Failed to decode request: %v", err)
+			return status.Errorf(codes.InvalidArgument, "Failed to decode request: %v", err)
+		}
+		if err := stream.Send(&protoReq); err != nil {
+			grpclog.Errorf("Failed to send request: %v", err)
+			return err
+		}
+		return nil
+	}
+	go func() {
+		defer close(errChan)
+		for {
+			if err := handleSend(); err != nil {
+				errChan <- err
+				break
+			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Errorf("Failed to terminate client stream: %v", err)
+		}
+	}()
+	header, err := stream.Header()
+	if err != nil {
+		grpclog.Errorf("Failed to get header from client: %v", err)
+		return nil, metadata, errChan, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, errChan, nil
 }
 
 var (
@@ -179,6 +231,7 @@ func request_StreamService_Download_0(ctx context.Context, marshaler runtime.Mar
 // UnaryRPC     :call StreamServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterStreamServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StreamServiceServer) error {
 
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -202,6 +255,13 @@ func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		return
 	})
 
+	mux.Handle("POST", pattern_StreamService_BulkEchoDuration_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+
 	mux.Handle("GET", pattern_StreamService_Download_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -215,21 +275,21 @@ func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 // RegisterStreamServiceHandlerFromEndpoint is same as RegisterStreamServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -247,7 +307,7 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "StreamServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "StreamServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "StreamServiceClient" to call the correct interceptors.
+// "StreamServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client StreamServiceClient) error {
 
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -305,14 +365,52 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkEcho_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+
+		resp, md, reqErrChan, err := request_StreamService_BulkEcho_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+		go func() {
+			for err := range reqErrChan {
+				if err != nil && err != io.EOF {
+					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
+				}
+			}
+		}()
 
 		forward_StreamService_BulkEcho_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_StreamService_BulkEchoDuration_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEchoDuration", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/echo_duration"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		resp, md, reqErrChan, err := request_StreamService_BulkEchoDuration_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		go func() {
+			for err := range reqErrChan {
+				if err != nil && err != io.EOF {
+					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
+				}
+			}
+		}()
+
+		forward_StreamService_BulkEchoDuration_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -348,6 +446,8 @@ var (
 
 	pattern_StreamService_BulkEcho_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo"}, ""))
 
+	pattern_StreamService_BulkEchoDuration_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo_duration"}, ""))
+
 	pattern_StreamService_Download_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "download"}, ""))
 )
 
@@ -357,6 +457,8 @@ var (
 	forward_StreamService_List_0 = runtime.ForwardResponseStream
 
 	forward_StreamService_BulkEcho_0 = runtime.ForwardResponseStream
+
+	forward_StreamService_BulkEchoDuration_0 = runtime.ForwardResponseStream
 
 	forward_StreamService_Download_0 = runtime.ForwardResponseStream
 )

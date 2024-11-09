@@ -15,7 +15,7 @@ You can provide comments directly in your Protocol Buffer definitions and they w
 
 ```protobuf
 message MyMessage {
-  // This comment will end up direcly in your Open API definition
+  // This comment will end up directly in your Open API definition
   string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The UUID field."}];
 }
 ```
@@ -33,7 +33,7 @@ message ABitOfEverything {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
         json_schema: {
             title: "A bit of everything"
-            description: "Intentionaly complicated message type to cover many features of Protobuf."
+            description: "Intentionally complicated message type to cover many features of Protobuf."
             required: ["uuid", "int64_value", "double_value"]
         }
         external_docs: {
@@ -113,7 +113,7 @@ Please see this [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/gr
 
 ## Using google.api.field_behavior
 
-Google provides an [field option](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) for defining the behavior of fields that is also supported:
+Google provides a [field option](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) for defining the behavior of fields that is also supported:
 
 ```protobuf
 import "google/api/field_behavior.proto";
@@ -162,9 +162,8 @@ Example of a bash script with the `use_go_templates` flag set to true:
 ```sh
 $ protoc -I. \
     --go_out . --go-grpc_out . \
-    --grpc-gateway_out . --grpc-gateway_opt logtostderr=true \
+    --grpc-gateway_out . \
     --openapiv2_out . \
-    --openapiv2_opt logtostderr=true \
     --openapiv2_opt use_go_templates=true \
     path/to/my/proto/v1/myproto.proto
 ```
@@ -231,6 +230,61 @@ This is how the OpenAPI file would be rendered in [Postman](https://www.getpostm
 ![Screenshot OpenAPI file in Postman](../../assets/images/gotemplates/postman.png)
 
 For a more detailed example of a proto file that has Go, templates enabled, [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/examples/internal/proto/examplepb/use_go_template.proto).
+
+### Using custom values
+
+Custom values can be specified in the [Go templates](https://golang.org/pkg/text/template/) that generate your proto file comments.
+
+A use case might be to interpolate different external documentation URLs when rendering documentation for different environments.
+
+#### How to use it
+
+The `use_go_templates` option has to be enabled as a prerequisite.
+
+Provide customized values in the format of `go_template_args=my_key=my_value`. `{{arg "my_key"}}` will be replaced with `my_value` in the Go template.
+
+Specify the `go_template_args` option multiple times if needed.
+
+```sh
+--openapiv2_out . --openapiv2_opt use_go_templates=true --openapiv2_opt go_template_args=my_key1=my_value1 --openapiv2_opt go_template_args=my_key2=my_value2
+...
+```
+
+#### Example script
+
+Example of a bash script with the `use_go_templates` flag set to true and custom template values set:
+
+```sh
+$ protoc -I. \
+    --go_out . --go-grpc_out . \
+    --grpc-gateway_out . \
+    --openapiv2_out . \
+    --openapiv2_opt use_go_templates=true \
+    --openapiv2_opt go_template_args=environment=test1 \
+    --openapiv2_opt go_template_args=environment_label=Test1 \
+    path/to/my/proto/v1/myproto.proto
+```
+
+#### Example proto file
+
+Example of a proto file with Go templates and custom values:
+
+```protobuf
+service LoginService {
+    // Login (Environment: {{arg "environment_label"}})
+    //
+    // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+    // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+    // This only works in the {{arg "environment"}} domain.
+    //
+    rpc Login (LoginRequest) returns (LoginReply) {
+        option (google.api.http) = {
+            post: "/v1/example/login"
+            body: "*"
+        };
+    }
+}
+```
 
 ## Other plugin options
 
@@ -484,6 +538,51 @@ Note that path parameters in OpenAPI does not support values with `/`, as discus
 [Support for path parameters which can contain slashes #892](https://github.com/OAI/OpenAPI-Specification/issues/892),
 so tools as Swagger UI will URL encode any `/` provided as parameter value. A possible workaround for this is to write
 a custom post processor for your OAS file to replace any path parameter with `/` into multiple parameters.
+
+#### Expand path parameters containing sub-path segments
+
+Alternative to the above, you can enable the `expand_slashed_path_patterns` compiler option to expand path parameters containing sub-path segments into the URI.
+
+For example, consider:
+```protobuf
+rpc GetBook(GetBookRequest) returns (Book) {
+  option (google.api.http) = {
+    get: "/v1/{name=publishers/*/books/*}"
+  };
+}
+```
+
+Where the `GetBook` has a path parameter `name` with a pattern `publishers/*/books/*`. When you enable the `expand_slashed_path_patterns=true` option the path pattern is expanded into the URI and each wildcard in the pattern is transformed into new path parameter. The generated schema for previous protobuf is:
+
+```JSON
+{
+ "/v1/publishers/{publisher}/books/{book}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "publisher",
+            "in": "path",
+            "required": true,
+            "type": "string",
+          },
+          {
+            "name": "book",
+            "in": "path",
+            "required": true,
+            "type": "string",
+          }
+        ]
+      }
+    }
+}
+```
+
+The URI is now pretty descriptive and there are two path parameters `publisher` and `book` instead of one `name`. The name of the new parameters is derived from the path segment before the wildcard in the pattern.
+
+Caveats:
+
+- the fact that the original `name` parameter is missing might complicate the usage of the API if you intend to pass in the `name` parameters from the resources,
+- when the `expand_slashed_path_patterns` compiler flag is enabled, the [`path_param_name`](#path-parameters) field annotation is ignored.
 
 ### Output format
 
@@ -880,4 +979,115 @@ plugins:
       - preserve_rpc_order=true
 ```
 
+### Enable RPC deprecation
+
+With `enable_rpc_deprecation` option you can deprecate openapi method using standard method's option. Allowed values are: `true`, `false`.
+
+For example, if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - enable_rpc_deprecation=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=enable_rpc_deprecation=true ./path/to/file.proto
+```
+
+Input example:
+
+```protobuf
+syntax = "proto3";
+
+package helloproto.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "helloproto/v1;helloproto";
+
+service EchoService {
+  rpc Hello(HelloReq) returns (HelloResp) {
+    option deprecated = true;
+    option (google.api.http) = {get: "/api/hello"};
+  }
+}
+
+message HelloReq {
+  string name = 1;
+}
+
+message HelloResp {
+  string message = 1;
+}
+```
+
+Output:
+
+```yaml
+swagger: "2.0"
+info:
+  title: helloproto/v1/example.proto
+  version: version not set
+tags:
+  - name: EchoService
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/hello:
+    get:
+      operationId: EchoService_Hello
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1HelloResp'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: name
+          in: query
+          required: false
+          type: string
+      tags:
+        - EchoService
+      deprecated: true
+definitions:
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
+  v1HelloResp:
+    type: object
+    properties:
+      message:
+        type: string
+```
+
+
 {% endraw %}
+

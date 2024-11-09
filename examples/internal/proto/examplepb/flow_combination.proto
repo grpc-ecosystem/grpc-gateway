@@ -49,26 +49,26 @@ service FlowCombination {
       body: "*"
 
       // w/o body; w/ path; w/o query
-      additional_bindings {post: "/rpc/path/{a}/{b}/{c}/rpc"}
+      additional_bindings: {post: "/rpc/path/{a}/{b}/{c}/rpc"}
       // w/o body; w/o path; w/ query
-      additional_bindings {post: "/rpc/query/rpc"}
+      additional_bindings: {post: "/rpc/query/rpc"}
       // w/ body; w/ path; w/o query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/body/path/{a}/{b}/rpc"
         body: "c"
       }
       // w/ body; w/o path; w/ query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/body/query/rpc"
         body: "c"
       }
       // w/ body; w/ path; w/ query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/body/path/{a}/query/rpc"
         body: "c"
       }
       // w/o body; w/ path; w/ query
-      additional_bindings {post: "/rpc/path/{a}/query/rpc"}
+      additional_bindings: {post: "/rpc/path/{a}/query/rpc"}
     };
   }
   rpc RpcPathSingleNestedRpc(SingleNestedProto) returns (EmptyProto) {
@@ -84,9 +84,9 @@ service FlowCombination {
       body: "c"
 
       // w/o body; w/ path (IsNestedProto3); w/ query
-      additional_bindings {post: "/rpc/path-nested1/{a.str}/rpc"}
+      additional_bindings: {post: "/rpc/path-nested1/{a.str}/rpc"}
       // w/ body; w/ path (IsNestedProto3); w/ query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/path-nested2/{a.str}/rpc"
         body: "c"
       }
@@ -100,26 +100,26 @@ service FlowCombination {
       body: "*"
 
       // w/o body; w/ path; w/o query
-      additional_bindings {post: "/rpc/path/{a}/{b}/{c}/stream"}
+      additional_bindings: {post: "/rpc/path/{a}/{b}/{c}/stream"}
       // w/o body; w/o path; w/ query
-      additional_bindings {post: "/rpc/query/stream"}
+      additional_bindings: {post: "/rpc/query/stream"}
       // w/ body; w/ path; w/o query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/body/path/{a}/{b}/stream"
         body: "c"
       }
       // w/ body; w/o path; w/ query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/body/query/stream"
         body: "c"
       }
       // w/ body; w/ path; w/ query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/body/path/{a}/query/stream"
         body: "c"
       }
       // w/o body; w/ path; w/ query
-      additional_bindings {post: "/rpc/path/{a}/query/stream"}
+      additional_bindings: {post: "/rpc/path/{a}/query/stream"}
     };
   }
   rpc RpcPathSingleNestedStream(SingleNestedProto) returns (stream EmptyProto) {
@@ -135,9 +135,9 @@ service FlowCombination {
       body: "c"
 
       // w/o body; w/ path (IsNestedProto3); w/ query
-      additional_bindings {post: "/rpc/path-nested1/{a.str}/stream"}
+      additional_bindings: {post: "/rpc/path-nested1/{a.str}/stream"}
       // w/ body; w/ path (IsNestedProto3); w/ query
-      additional_bindings {
+      additional_bindings: {
         post: "/rpc/path-nested2/{a.str}/stream"
         body: "c"
       }

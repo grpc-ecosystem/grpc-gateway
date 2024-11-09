@@ -27,7 +27,7 @@ message OutMessageC {
   string value = 1;
 }
 
-// ServiceA provices MethodOne and MethodTwo
+// ServiceA provides MethodOne and MethodTwo
 service ServiceA {
   // ServiceA.MethodOne receives InMessageA and returns OutMessageA
   //

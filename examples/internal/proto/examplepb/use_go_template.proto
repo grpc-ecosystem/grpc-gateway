@@ -76,7 +76,7 @@ message LogoutRequest {
   int32 test = 2;
   // This is an array
   //
-  // It displays that using [] infront of the type
+  // It displays that using [] in front of the type
   repeated string stringarray = 3;
 }
 

@@ -672,7 +672,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
-// TestMessagetoQueryParametersNoRecursive, is a check that cyclical references between messages
+// TestMessageToQueryParametersNoRecursive, is a check that cyclical references between messages
 // are not falsely detected given previous known edge-cases.
 func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 	type test struct {
@@ -683,7 +683,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 	tests := []test{
 		// First test:
 		// Here is a message that has two of another message adjacent to one another in a nested message.
-		// There is no loop but this was previouly falsely flagged as a cycle.
+		// There is no loop but this was previously falsely flagged as a cycle.
 		// Example proto:
 		// message NonRecursiveMessage {
 		//      string field = 1;
@@ -791,8 +791,8 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 	}
 }
 
-// TestMessagetoQueryParametersRecursive, is a check that cyclical references between messages
-// are handled gracefully. The goal is to insure that attempts to add messages with cyclical
+// TestMessageToQueryParametersRecursive, is a check that cyclical references between messages
+// are handled gracefully. The goal is to ensure that attempts to add messages with cyclical
 // references to query-parameters returns an error message.
 func TestMessageToQueryParametersRecursive(t *testing.T) {
 	type test struct {
@@ -802,7 +802,7 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 
 	tests := []test{
 		// First test:
-		// Here we test that a message that references it self through a field will return an error.
+		// Here we test that a message that references itself through a field will return an error.
 		// Example proto:
 		// message DirectRecursiveMessage {
 		//      DirectRecursiveMessage nested = 1;
@@ -2062,7 +2062,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			}
 			want := []string{"baz"}
 			if diff := cmp.Diff(got, want); diff != "" {
-				t.Errorf(diff)
+				t.Error(diff)
 			}
 		}
 		{
@@ -2073,7 +2073,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			}
 			want := "bar"
 			if diff := cmp.Diff(got, want); diff != "" {
-				t.Errorf(diff)
+				t.Error(diff)
 			}
 		}
 
@@ -2654,13 +2654,13 @@ func TestValidateDefaultValueType(t *testing.T) {
 		},
 		{
 			"integer",
-			fmt.Sprint(math.MaxInt32 + 1),
+			fmt.Sprint(int64(math.MaxInt32) + 1),
 			"int32",
 			errors.New("the provided default value \"2147483648\" does not match provided format \"int32\""),
 		},
 		{
 			"integer",
-			fmt.Sprint(math.MaxInt64),
+			fmt.Sprint(int64(math.MaxInt64)),
 			"int64",
 			nil,
 		},
@@ -3583,6 +3583,187 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 
 }
 
+func TestApplyTemplateWithRequestAndBodyParameters(t *testing.T) {
+	bookDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Book"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("id"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	createDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("CreateBookRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("parent"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("book"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+			{
+				Name:   proto.String("book_id"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(3),
+			},
+		},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("CreateBook"),
+		InputType:  proto.String("CreateBookRequest"),
+		OutputType: proto.String("Book"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("BookService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	bookMsg := &descriptor.Message{
+		DescriptorProto: bookDesc,
+	}
+	createMsg := &descriptor.Message{
+		DescriptorProto: createDesc,
+	}
+
+	parentField := &descriptor.Field{
+		Message:              createMsg,
+		FieldDescriptorProto: createMsg.GetField()[0],
+	}
+	bookField := &descriptor.Field{
+		Message:              createMsg,
+		FieldMessage:         bookMsg,
+		FieldDescriptorProto: createMsg.GetField()[1],
+	}
+	bookIDField := &descriptor.Field{
+		Message:              createMsg,
+		FieldDescriptorProto: createMsg.GetField()[2],
+	}
+
+	createMsg.Fields = []*descriptor.Field{parentField, bookField, bookIDField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("book.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{bookDesc, createDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/book.pb",
+			Name: "book_pb",
+		},
+		Messages: []*descriptor.Message{bookMsg, createMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           createMsg,
+						ResponseType:          bookMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{parent=publishers/*}/books",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "parent",
+												Target: parentField,
+											},
+										}),
+										Target: parentField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: []descriptor.FieldPathComponent{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := "", result.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := ([]string)(nil), result.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, result.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	if want, is, name := 1, len(result.Paths), "len(result.Paths)"; !reflect.DeepEqual(is, want) {
+		t.Errorf("%s = %d want to be %d", name, want, is)
+	}
+	if want, is, name := 4, len(result.Paths[0].PathItemObject.Post.Parameters), "len(result.Paths[0].PathItemObject.Post.Parameters)"; !reflect.DeepEqual(is, want) {
+		t.Errorf("%s = %d want to be %d", name, want, is)
+	}
+	if want, is, name := "#/definitions/BookServiceCreateBookBody", result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref, "result.Paths[0].PathItemObject.Post.Parameters[1].Schema.schemaCore.Ref"; !reflect.DeepEqual(is, want) {
+		t.Errorf("%s = %s want to be %s", name, want, is)
+	}
+
+	_, found := result.Definitions["BookServiceCreateBookBody"]
+	if !found {
+		t.Error("expecting definition to contain BookServiceCreateBookBody")
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
 // TestApplyTemplateProtobufAny tests that the protobufAny definition is correctly rendered with the @type field and
 // allowing additional properties.
 func TestApplyTemplateProtobufAny(t *testing.T) {
@@ -3938,6 +4119,93 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 	}
 }
 
+func getParameters(names []string) []descriptor.Parameter {
+	params := make([]descriptor.Parameter, 0)
+	for _, name := range names {
+		params = append(params, descriptor.Parameter{
+			Target: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name: proto.String(name),
+					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				},
+				Message: &descriptor.Message{
+					File: &descriptor.File{
+						FileDescriptorProto: &descriptorpb.FileDescriptorProto{},
+					},
+					DescriptorProto: &descriptorpb.DescriptorProto{
+						Name: proto.String(""),
+					},
+				},
+				FieldMessage:      nil,
+				ForcePrefixedName: false,
+			},
+			FieldPath: []descriptor.FieldPathComponent{{
+				Name:   name,
+				Target: nil,
+			}},
+			Method: nil,
+		})
+	}
+	return params
+}
+
+func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
+	var tests = []struct {
+		input              string
+		expected           string
+		pathParams         []descriptor.Parameter
+		expectedPathParams []string
+		useJSONNames       bool
+	}{
+		{"/v1/{name=projects/*/documents/*}:exportResults", "/v1/projects/{project}/documents/{document}:exportResults", getParameters([]string{"name"}), []string{"project", "document"}, true},
+		{"/test/{name=*}", "/test/{name}", getParameters([]string{"name"}), []string{"name"}, true},
+		{"/test/{name=*}/", "/test/{name}/", getParameters([]string{"name"}), []string{"name"}, true},
+		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"name"}), []string{"testCase"}, true},
+		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"name"}), []string{"test_case"}, false},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetExpandSlashedPathPatterns(true)
+	for _, data := range tests {
+		reg.SetUseJSONNamesForFields(data.useJSONNames)
+		actualParts, actualParams := templateToExpandedPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), data.pathParams)
+		if data.expected != actualParts {
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actualParts)
+		}
+		pathParamsNames := make([]string, 0)
+		for _, param := range actualParams {
+			pathParamsNames = append(pathParamsNames, param.FieldPath[0].Name)
+		}
+		if !reflect.DeepEqual(data.expectedPathParams, pathParamsNames) {
+			t.Errorf("Expected mutated path params in templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expectedPathParams, data.pathParams)
+		}
+	}
+}
+
+func TestExpandedPathParametersStringType(t *testing.T) {
+	var tests = []struct {
+		input string
+	}{
+		{"/test/{name=test_cases/*}/"}, {"/v1/{name=projects/*/documents/*}:exportResults"},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetExpandSlashedPathPatterns(true)
+	expectedParamType := openapiSchemaObject{
+		schemaCore: schemaCore{
+			Type: "string",
+		},
+	}
+	for _, data := range tests {
+		_, actualParams := templateToExpandedPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), getParameters([]string{"name"}))
+		for _, param := range actualParams {
+			refs := make(refMap)
+			actualParamType := schemaOfField(param.Target, reg, refs)
+			if !reflect.DeepEqual(actualParamType, expectedParamType) {
+				t.Errorf("Expected all path parameters to be type of 'string', actual: %#+v", actualParamType)
+			}
+		}
+	}
+}
+
 func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 	const input = "/{user.name=prefix1/*/prefix2/*}:customMethod"
 
@@ -4049,6 +4317,11 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 
 func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) map[string]string {
 	return partsToRegexpMap(templateToParts(path, reg, fields, msgs))
+}
+
+func templateToExpandedPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParams []descriptor.Parameter) (string, []descriptor.Parameter) {
+	pathParts, pathParams := expandPathPatterns(templateToParts(path, reg, fields, msgs), pathParams, reg)
+	return partsToOpenAPIPath(pathParts, make(map[string]string)), pathParams
 }
 
 func TestFQMNToRegexpMap(t *testing.T) {
@@ -4792,7 +5065,6 @@ func TestSchemaOfField(t *testing.T) {
 						MaxLength:        10,
 						MinLength:        3,
 						Pattern:          "[a-z]+",
-						UniqueItems:      true,
 						MaxProperties:    33,
 						MinProperties:    22,
 						Required:         []string{"req"},
@@ -4801,6 +5073,7 @@ func TestSchemaOfField(t *testing.T) {
 				},
 				Title:       "field title",
 				Description: "field description",
+				UniqueItems: true,
 				MaxItems:    20,
 				MinItems:    2,
 			},
@@ -4838,7 +5111,6 @@ func TestSchemaOfField(t *testing.T) {
 						MaxLength:        10,
 						MinLength:        3,
 						Pattern:          "[a-z]+",
-						UniqueItems:      true,
 						MaxProperties:    33,
 						MinProperties:    22,
 						Required:         []string{"req"},
@@ -4847,6 +5119,7 @@ func TestSchemaOfField(t *testing.T) {
 				},
 				Title:       "field title",
 				Description: "field description",
+				UniqueItems: true,
 				MaxItems:    20,
 				MinItems:    2,
 			},
@@ -5841,6 +6114,7 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 		expectedError         error
 		expectedOpenAPIObject interface{}
 		useGoTemplate         bool
+		goTemplateArgs        []string
 	}{
 		{
 			descr:                 "empty comments",
@@ -5968,6 +6242,33 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 			expectedError: nil,
 			useGoTemplate: true,
 		},
+		{
+			descr:                "template with use_go_template and go_template_args",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
+				Title:       "Template",
+				Description: `Description "which means nothing" for environment test with value my_value`,
+			},
+			comments: "Template\n\nDescription {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} for " +
+				"environment {{arg \"environment\"}} with value {{arg \"my_key\"}}",
+			expectedError:  nil,
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"my_key=my_value", "environment=test"},
+		},
+		{
+			descr:                "template with use_go_template and undefined go_template_args",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
+				Title: "Template",
+				Description: `Description "which means nothing" for environment test with value ` +
+					`goTemplateArg something_undefined not found`,
+			},
+			comments: "Template\n\nDescription {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} for " +
+				"environment {{arg \"environment\"}} with value {{arg \"something_undefined\"}}",
+			expectedError:  nil,
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"environment=test"},
+		},
 	}
 
 	for _, test := range tests {
@@ -5975,6 +6276,9 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 			reg := descriptor.NewRegistry()
 			if test.useGoTemplate {
 				reg.SetUseGoTemplate(true)
+			}
+			if len(test.goTemplateArgs) > 0 {
+				reg.SetGoTemplateArgs(test.goTemplateArgs)
 			}
 			err := updateOpenAPIDataFromComments(reg, test.openapiSwaggerObject, nil, test.comments, false)
 			if test.expectedError == nil {
@@ -6007,6 +6311,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
 		useGoTemplate  bool
+		goTemplateArgs []string
 	}{
 		{
 			descr: "external docs option",
@@ -6069,6 +6374,39 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			useGoTemplate: false,
 		},
 		{
+			descr: "external docs option with go template args",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]*openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title: "{{.Name}}",
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+							"{{arg \"my_key\"}}",
+					},
+					ExternalDocs: &openapi_options.ExternalDocumentation{
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+							"{{arg \"my_key\"}}",
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "Message",
+					Description: `Description "which means nothing" too`,
+					ExternalDocs: &openapiExternalDocumentationObject{
+						Description: `Description "which means nothing" too`,
+					},
+				},
+			},
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"my_key=too"},
+		},
+		{
 			descr: "registered OpenAPIOption",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
@@ -6103,6 +6441,44 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			},
 			useGoTemplate: true,
 		},
+		{
+			descr: "registered OpenAPIOption with go template args",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Message: []*openapiconfig.OpenAPIMessageOption{
+					{
+						Message: "example.Message",
+						Option: &openapi_options.Schema{
+							JsonSchema: &openapi_options.JSONSchema{
+								Title: "{{.Name}}",
+								Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+									"{{arg \"my_key\"}}",
+							},
+							ExternalDocs: &openapi_options.ExternalDocumentation{
+								Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}} " +
+									"{{arg \"my_key\"}}",
+							},
+						},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "Message",
+					Description: `Description "which means nothing" too`,
+					ExternalDocs: &openapiExternalDocumentationObject{
+						Description: `Description "which means nothing" too`,
+					},
+				},
+			},
+			useGoTemplate:  true,
+			goTemplateArgs: []string{"my_key=too"},
+		},
 	}
 
 	for _, test := range tests {
@@ -6116,6 +6492,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 			reg := descriptor.NewRegistry()
 			reg.SetUseGoTemplate(test.useGoTemplate)
+			reg.SetGoTemplateArgs(test.goTemplateArgs)
 			file := descriptor.File{
 				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -6174,6 +6551,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 func TestTagsWithGoTemplate(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseGoTemplate(true)
+	reg.SetGoTemplateArgs([]string{"my_key=my_value"})
 
 	svc := &descriptorpb.ServiceDescriptorProto{
 		Name:    proto.String("ExampleService"),
@@ -6214,11 +6592,16 @@ func TestTagsWithGoTemplate(t *testing.T) {
 				Description: "{{ import \"file\" }}",
 			},
 			{
-				Name: "ExampleService",
+				Name:        "ExampleService",
+				Description: "ExampleService!",
 			},
 			{
 				Name:        "not a service tag 2",
 				Description: "{{ import \"file\" }}",
+			},
+			{
+				Name:        "Service with my_key",
+				Description: "the {{arg \"my_key\"}}",
 			},
 		},
 	}
@@ -6240,6 +6623,14 @@ func TestTagsWithGoTemplate(t *testing.T) {
 		{
 			Name:        "not a service tag 2",
 			Description: "open file: no such file or directory",
+		},
+		{
+			Name:        "Service with my_key",
+			Description: "the my_value",
+		},
+		{
+			Name:        "service tag",
+			Description: "ExampleService!",
 		},
 	}
 	if !reflect.DeepEqual(actual.Tags, expectedTags) {
@@ -6563,7 +6954,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -6806,7 +7197,7 @@ func TestSingleServiceTemplateWithDuplicateInAllSupportedHttp1Operations(t *test
 			},
 		}
 		reg := descriptor.NewRegistry()
-		err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+		err := reg.Load(reqFromFile(&file))
 		if err != nil {
 			t.Fatalf("failed to reg.Load(): %v", err)
 		}
@@ -6992,7 +7383,7 @@ func TestSingleServiceTemplateWithDuplicateHttp1UnsupportedOperations(t *testing
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -7245,7 +7636,7 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8124,7 +8515,7 @@ func TestRenderServicesWithColonInPath(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8271,7 +8662,7 @@ func TestRenderServicesWithDoubleColonInPath(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8418,7 +8809,7 @@ func TestRenderServicesWithColonLastInPath(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -8565,7 +8956,7 @@ func TestRenderServicesWithColonInSegment(t *testing.T) {
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(reqFromFile(&file))
 	if err != nil {
 		t.Fatalf("failed to reg.Load(): %v", err)
 	}
@@ -9334,6 +9725,209 @@ func TestRenderServicesOpenapiPathsOrderPreservedAdditionalBindings(t *testing.T
 				t.Fatalf("RPC path order not preserved, got %s want %s", got, want)
 			}
 		}
+	}
+}
+
+func TestRenderServicesOpenapiRequiredBodyFieldContainingPathParam(t *testing.T) {
+
+	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
+
+	bookDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Book"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("type"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	addBookReqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("AddBookReq"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("book"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".Book"),
+				Number:   proto.Int32(1),
+				Options:  requiredFieldOptions,
+			},
+			{
+				Name:    proto.String("libraryId"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_UINT32.Enum(),
+				Number:  proto.Int32(2),
+				Options: requiredFieldOptions,
+			},
+			{
+				Name:   proto.String("isLatestEdition"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_BOOL.Enum(),
+				Number: proto.Int32(3),
+			},
+		},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("AddBook"),
+		InputType:  proto.String("AddBookReq"),
+		OutputType: proto.String("Book"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("BookService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	bookMsg := &descriptor.Message{
+		DescriptorProto: bookDesc,
+	}
+	addBookReqMsg := &descriptor.Message{
+		DescriptorProto: addBookReqDesc,
+	}
+
+	nameField := &descriptor.Field{
+		Message:              bookMsg,
+		FieldDescriptorProto: bookMsg.GetField()[0],
+	}
+	typeField := &descriptor.Field{
+		Message:              bookMsg,
+		FieldDescriptorProto: bookMsg.GetField()[1],
+	}
+	bookMsg.Fields = []*descriptor.Field{nameField, typeField}
+
+	bookField := &descriptor.Field{
+		Message:              addBookReqMsg,
+		FieldMessage:         bookMsg,
+		FieldDescriptorProto: addBookReqMsg.GetField()[0],
+	}
+	libraryIdField := &descriptor.Field{
+		Message:              addBookReqMsg,
+		FieldDescriptorProto: addBookReqMsg.GetField()[1],
+	}
+	isLatestEditionField := &descriptor.Field{
+		Message:              addBookReqMsg,
+		FieldDescriptorProto: addBookReqMsg.GetField()[2],
+	}
+	addBookReqMsg.Fields = []*descriptor.Field{bookField, libraryIdField, isLatestEditionField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("book.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{bookDesc, addBookReqDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{bookMsg, addBookReqMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           addBookReqMsg,
+						ResponseType:          bookMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/books/{book.type}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name: "book",
+											},
+											{
+												Name: "type",
+											},
+										}),
+										Target: typeField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: []descriptor.FieldPathComponent{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := GetPaths(result)
+	if got, want := len(paths), 1; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+
+	if got, want := paths[0], "/v1/books/{book.type}"; got != want {
+		t.Fatalf("Wrong results path, got %s want %s", got, want)
+	}
+
+	var operation = *result.getPathItemObject("/v1/books/{book.type}").Post
+
+	if got, want := operation.Parameters[0].Name, "book.type"; got != want {
+		t.Fatalf("Wrong parameter name 0, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[0].In, "path"; got != want {
+		t.Fatalf("Wrong parameter location 0, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[1].Name, "body"; got != want {
+		t.Fatalf("Wrong parameter name 1, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[1].In, "body"; got != want {
+		t.Fatalf("Wrong parameter location 1, got %s want %s", got, want)
+	}
+
+	if want, is, name := "#/definitions/BookServiceAddBookBody", operation.Parameters[1].Schema.schemaCore.Ref, "operation.Parameters[1].Schema.schemaCore.Ref"; !reflect.DeepEqual(is, want) {
+		t.Fatalf("%s = %s want to be %s", name, want, is)
+	}
+
+	definition, found := result.Definitions["BookServiceAddBookBody"]
+	if !found {
+		t.Fatalf("expecting definition to contain BookServiceAddBookBody")
+	}
+
+	if want, is, name := 3, len(*definition.Properties), "len(*definition.Properties)"; !reflect.DeepEqual(is, want) {
+		t.Fatalf("%s = %d want to be %d", name, want, is)
+	}
+
+	for index, keyValue := range []string{"book", "libraryId", "isLatestEdition"} {
+		if got, want := (*definition.Properties)[index].Key, keyValue; got != want {
+			t.Fatalf("Wrong definition property %d, got %s want %s", index, got, want)
+		}
+	}
+
+	correctRequiredFields := []string{"book", "libraryId"}
+	if got, want := definition.Required, correctRequiredFields; !reflect.DeepEqual(got, want) {
+		t.Fatalf("Wrong required fields in body definition, got = %s, want = %s", got, want)
 	}
 }
 
@@ -10174,6 +10768,36 @@ func TestUpdatePaths(t *testing.T) {
 	}
 }
 
+// Test that enum values have internal comments removed
+func TestEnumValueProtoComments(t *testing.T) {
+	reg := descriptor.NewRegistry()
+	name := "kind"
+	comments := "(-- this is a comment --)"
+
+	enum := &descriptor.Enum{
+		EnumDescriptorProto: &descriptorpb.EnumDescriptorProto{
+			Name: &name,
+		},
+		File: &descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				Name:    new(string),
+				Package: new(string),
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+					Location: []*descriptorpb.SourceCodeInfo_Location{
+						&descriptorpb.SourceCodeInfo_Location{
+							LeadingComments: &comments,
+						},
+					},
+				},
+			},
+		},
+	}
+	comments = enumValueProtoComments(reg, enum)
+	if comments != "" {
+		t.Errorf("expected '', got '%v'", comments)
+	}
+}
+
 func MustMarshal(v interface{}) []byte {
 	b, err := json.Marshal(v)
 	if err != nil {
@@ -10370,6 +10994,216 @@ func TestMergeTags(t *testing.T) {
 			mergedTags := mergeTags(tc.existingTags, tc.newTags)
 			if !reflect.DeepEqual(tc.expectedMergedTags, mergedTags) {
 				t.Fatalf("%s: Tags not correctly merged. Want %#v, got %#v", tc.testName, tc.expectedMergedTags, mergedTags)
+			}
+		})
+	}
+}
+
+func TestApiVisibilityOption(t *testing.T) {
+	reg := descriptor.NewRegistry()
+
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	methodExample := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+
+	serviceOptions := &descriptorpb.ServiceOptions{}
+	proto.SetExtension(serviceOptions, visibility.E_ApiVisibility, &visibility.VisibilityRule{
+		Restriction: "INTERNAL",
+	})
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:    proto.String("ExampleService"),
+		Options: serviceOptions,
+		Method:  []*descriptorpb.MethodDescriptorProto{methodExample},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: methodExample,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/example",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+	})
+	if err != nil {
+		t.Errorf("failed to reg.Load(req): %v", err)
+	}
+
+	actual, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	if len(actual.Definitions) != 0 {
+		t.Fatal("Definition should be excluded by api visibility option")
+	}
+}
+
+func TestRenderServicesOptionDeprecated(t *testing.T) {
+	testCases := [...]struct {
+		testName           string
+		methodOptions      descriptorpb.MethodOptions
+		openapiOperation   *openapi_options.Operation
+		expectedDeprecated bool
+	}{
+		{
+			testName: "method option",
+			methodOptions: descriptorpb.MethodOptions{
+				Deprecated: proto.Bool(true),
+			},
+			expectedDeprecated: true,
+		},
+		{
+			testName: "openapi option",
+			openapiOperation: &openapi_options.Operation{
+				Deprecated: true,
+			},
+			expectedDeprecated: true,
+		},
+		{
+			testName: "empty openapi doesn't override method option",
+			methodOptions: descriptorpb.MethodOptions{
+				Deprecated: proto.Bool(true),
+			},
+			openapiOperation:   &openapi_options.Operation{},
+			expectedDeprecated: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(tc.testName, func(t *testing.T) {
+			msgdesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("ExampleMessage"),
+			}
+
+			meth := &descriptorpb.MethodDescriptorProto{
+				Name:       proto.String("Example"),
+				InputType:  proto.String("ExampleMessage"),
+				OutputType: proto.String("ExampleMessage"),
+				Options:    &tc.methodOptions,
+			}
+
+			svc := &descriptorpb.ServiceDescriptorProto{
+				Name:   proto.String("ExampleService"),
+				Method: []*descriptorpb.MethodDescriptorProto{meth},
+			}
+
+			msg := &descriptor.Message{
+				DescriptorProto: msgdesc,
+			}
+
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+					Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: []*descriptor.Message{msg},
+				Services: []*descriptor.Service{
+					{
+						ServiceDescriptorProto: svc,
+						Methods: []*descriptor.Method{
+							{
+								MethodDescriptorProto: meth,
+								RequestType:           msg,
+								ResponseType:          msg,
+								Bindings: []*descriptor.Binding{
+									{
+										HTTPMethod: "GET",
+										PathTmpl: httprule.Template{
+											Version:  1,
+											OpCodes:  []int{0, 0},
+											Template: "/v1/echo",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+
+			if tc.openapiOperation != nil {
+				proto.SetExtension(
+					proto.Message(file.Services[0].Methods[0].Options),
+					openapi_options.E_Openapiv2Operation,
+					tc.openapiOperation,
+				)
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetEnableRpcDeprecation(true)
+			fileCL := crossLinkFixture(&file)
+
+			if err := reg.Load(reqFromFile(fileCL)); err != nil {
+				t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+			}
+
+			result, err := applyTemplate(param{File: fileCL, reg: reg})
+			if err != nil {
+				t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+			}
+
+			got := result.getPathItemObject("/v1/echo").Get.Deprecated
+			if got != tc.expectedDeprecated {
+				t.Fatalf("Wrong deprecated field, got %v want %v", got, tc.expectedDeprecated)
 			}
 		})
 	}

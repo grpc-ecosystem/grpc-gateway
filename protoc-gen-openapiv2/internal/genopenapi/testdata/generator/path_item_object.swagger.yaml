@@ -16,7 +16,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/StringMessage'
+            $ref: '#/definitions/v1StringMessage'
       parameters:
         - name: value
           in: query
@@ -94,7 +94,7 @@ paths:
       tags:
         - YourService
 definitions:
-  StringMessage:
+  v1StringMessage:
     type: object
     properties:
       value:

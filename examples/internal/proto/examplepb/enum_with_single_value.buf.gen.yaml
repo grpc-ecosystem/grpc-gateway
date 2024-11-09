@@ -1,0 +1,6 @@
+version: v2
+plugins:
+  - local: protoc-gen-openapiv2
+    out: .
+    opt:
+      - omit_enum_default_value=true

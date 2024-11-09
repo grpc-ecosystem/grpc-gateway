@@ -70,7 +70,7 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 	var metadata runtime.ServerMetadata
 	stream, err := client.StreamEmptyRpc(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
+		grpclog.Errorf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
@@ -81,25 +81,25 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 			break
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
+			grpclog.Errorf("Failed to decode request: %v", err)
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			if err == io.EOF {
 				break
 			}
-			grpclog.Infof("Failed to send request: %v", err)
+			grpclog.Errorf("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
 	}
 
 	if err := stream.CloseSend(); err != nil {
-		grpclog.Infof("Failed to terminate client stream: %v", err)
+		grpclog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
 	header, err := stream.Header()
 	if err != nil {
-		grpclog.Infof("Failed to get header from client: %v", err)
+		grpclog.Errorf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
@@ -110,12 +110,14 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 
 }
 
-func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, runtime.ServerMetadata, chan error, error) {
 	var metadata runtime.ServerMetadata
+	errChan := make(chan error, 1)
 	stream, err := client.StreamEmptyStream(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
-		return nil, metadata, err
+		grpclog.Errorf("Failed to start streaming: %v", err)
+		close(errChan)
+		return nil, metadata, errChan, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -125,43 +127,41 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 			return err
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
-			return err
+			grpclog.Errorf("Failed to decode request: %v", err)
+			return status.Errorf(codes.InvalidArgument, "Failed to decode request: %v", err)
 		}
 		if err := stream.Send(&protoReq); err != nil {
-			grpclog.Infof("Failed to send request: %v", err)
+			grpclog.Errorf("Failed to send request: %v", err)
 			return err
 		}
 		return nil
 	}
 	go func() {
+		defer close(errChan)
 		for {
 			if err := handleSend(); err != nil {
+				errChan <- err
 				break
 			}
 		}
 		if err := stream.CloseSend(); err != nil {
-			grpclog.Infof("Failed to terminate client stream: %v", err)
+			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
 	if err != nil {
-		grpclog.Infof("Failed to get header from client: %v", err)
-		return nil, metadata, err
+		grpclog.Errorf("Failed to get header from client: %v", err)
+		return nil, metadata, errChan, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, nil
+	return stream, metadata, errChan, nil
 }
 
 func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -174,11 +174,7 @@ func local_request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler r
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -319,11 +315,7 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -363,11 +355,7 @@ func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler r
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -404,18 +392,14 @@ func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -435,11 +419,7 @@ func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler r
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -456,18 +436,14 @@ func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -504,11 +480,7 @@ func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler r
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -542,7 +514,7 @@ func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -612,7 +584,7 @@ func local_request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler r
 }
 
 var (
-	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -682,18 +654,14 @@ func local_request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context,
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 2, 5, 5, 7, 0, 0, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 2, 2, 3, 8, 4, 5, 5}}
+	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
 func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -740,11 +708,7 @@ func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marsh
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -788,7 +752,7 @@ func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marsh
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -858,18 +822,14 @@ func local_request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marsh
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 2, 4, 5, 0, 0, 4, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 7, 4}}
+	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
 func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -906,11 +866,7 @@ func local_request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marsh
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -947,11 +903,7 @@ func request_FlowCombination_RpcBodyStream_0(ctx context.Context, marshaler runt
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1054,11 +1006,7 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1103,18 +1051,14 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1139,18 +1083,14 @@ func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1192,7 +1132,7 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
+	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
 func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
@@ -1237,7 +1177,7 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, runtime.ServerMetadata, error) {
@@ -1282,18 +1222,14 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, ma
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 2, 5, 5, 7, 0, 0, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 2, 2, 3, 8, 4, 5, 5}}
+	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
 func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1345,7 +1281,7 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 2, 3, 2, 0, 0}, Check: []int{0, 1, 1, 2, 4, 3}}
+	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
 func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
@@ -1390,18 +1326,14 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshale
 }
 
 var (
-	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 2, 4, 5, 0, 0, 4, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 7, 4}}
+	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
 func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1446,6 +1378,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 // UnaryRPC     :call FlowCombinationServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterFlowCombinationHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationServer) error {
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1852,21 +1785,21 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 // RegisterFlowCombinationHandlerFromEndpoint is same as RegisterFlowCombinationHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -1884,7 +1817,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "FlowCombinationClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "FlowCombinationClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "FlowCombinationClient" to call the correct interceptors.
+// "FlowCombinationClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.ServeMux, client FlowCombinationClient) error {
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1964,12 +1897,20 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_FlowCombination_StreamEmptyStream_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+
+		resp, md, reqErrChan, err := request_FlowCombination_StreamEmptyStream_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
+		go func() {
+			for err := range reqErrChan {
+				if err != nil && err != io.EOF {
+					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
+				}
+			}
+		}()
 
 		forward_FlowCombination_StreamEmptyStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 

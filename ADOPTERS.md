@@ -9,6 +9,7 @@ production users that have added themselves (in alphabetical order):
   API of [Chef Automate](https://automate.chef.io/). Furthermore, the generated
   OpenAPI data serves as the basis for its [API documentation](https://automate.chef.io/docs/api/).
   The code is Open Source, [see `github.com/chef/automate`](https://github.com/chef/automate).
+- [Cho Tot](https://careers.chotot.com/about-us/) utilizes gRPC Gateway to seamlessly integrate HTTP and gRPC services, enabling efficient communication for both legacy and modern systems.
 - [Conduit](https://github.com/ConduitIO/conduit), a data streaming tool written in Go,
   uses the gRPC-Gateway since its very beginning to provide an HTTP API in addition to its gRPC API. 
   This makes it easier to integrate with Conduit, and the generated OpenAPI data is used in the documentation.

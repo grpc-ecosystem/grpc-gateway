@@ -51,8 +51,7 @@ trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 4. Add `ocgrpc.ClientHandler` for tracing the gRPC client calls
 
 ```go
-// Example using DialContext
-conn, err := grpc.DialContext(
+conn, err := grpc.NewClient(
     // Other options goes here.
     // Add ocgrpc.ClientHandler for tracing the grpc client calls.
     grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),

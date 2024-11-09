@@ -6,6 +6,7 @@ import "examples/internal/proto/examplepb/a_bit_of_everything.proto";
 import "examples/internal/proto/sub/message.proto";
 import "google/api/annotations.proto";
 import "google/api/httpbody.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
@@ -24,6 +25,12 @@ service StreamService {
   rpc BulkEcho(stream grpc.gateway.examples.internal.proto.sub.StringMessage) returns (stream grpc.gateway.examples.internal.proto.sub.StringMessage) {
     option (google.api.http) = {
       post: "/v1/example/a_bit_of_everything/echo"
+      body: "*"
+    };
+  }
+  rpc BulkEchoDuration(stream google.protobuf.Duration) returns (stream google.protobuf.Duration) {
+    option (google.api.http) = {
+      post: "/v1/example/a_bit_of_everything/echo_duration"
       body: "*"
     };
   }

@@ -13,6 +13,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime/debug"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
@@ -35,6 +36,8 @@ var (
 	versionFlag                = flag.Bool("version", false, "print the current version")
 	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
 	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate proxy methods even for RPC methods that have no HttpRule annotation")
+
+	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
 )
 
 // Variables set by goreleaser at build time
@@ -48,6 +51,20 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag {
+		if commit == "unknown" {
+			buildInfo, ok := debug.ReadBuildInfo()
+			if ok {
+				version = buildInfo.Main.Version
+				for _, setting := range buildInfo.Settings {
+					if setting.Key == "vcs.revision" {
+						commit = setting.Value
+					}
+					if setting.Key == "vcs.time" {
+						date = setting.Value
+					}
+				}
+			}
+		}
 		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
 		os.Exit(0)
 	}
