@@ -331,24 +331,14 @@ The message posted as the id parameter will also be returned.
  * @param num
  * @param lang
  * @param optional nil or *EchoServiceEcho3Opts - Optional Parameters:
-     * @param "LineNum" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
-     * @param "StatusNote" (optional.String) - 
      * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
-     * @param "NoNote" (optional.String) - 
      * @param "ResourceId" (optional.String) - 
 
 @return ExamplepbSimpleMessage
 */
 
 type EchoServiceEcho3Opts struct { 
-	LineNum optional.String
-	StatusProgress optional.String
-	StatusNote optional.String
 	En optional.String
-	NoProgress optional.String
-	NoNote optional.String
 	ResourceId optional.String
 }
 
@@ -371,23 +361,8 @@ func (a *EchoServiceApiService) EchoServiceEcho3(ctx context.Context, id string,
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
-		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.StatusNote.IsSet() {
-		localVarQueryParams.Add("status.note", parameterToString(localVarOptionals.StatusNote.Value(), ""))
-	}
 	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
 		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.NoProgress.IsSet() {
-		localVarQueryParams.Add("no.progress", parameterToString(localVarOptionals.NoProgress.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
-		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
 		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
@@ -476,10 +451,7 @@ The message posted as the id parameter will also be returned.
  * @param statusNote
  * @param optional nil or *EchoServiceEcho4Opts - Optional Parameters:
      * @param "Num" (optional.String) - 
-     * @param "Lang" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
      * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
      * @param "ResourceId" (optional.String) - 
 
 @return ExamplepbSimpleMessage
@@ -487,10 +459,7 @@ The message posted as the id parameter will also be returned.
 
 type EchoServiceEcho4Opts struct { 
 	Num optional.String
-	Lang optional.String
-	StatusProgress optional.String
 	En optional.String
-	NoProgress optional.String
 	ResourceId optional.String
 }
 
@@ -516,17 +485,8 @@ func (a *EchoServiceApiService) EchoServiceEcho4(ctx context.Context, id string,
 	if localVarOptionals != nil && localVarOptionals.Num.IsSet() {
 		localVarQueryParams.Add("num", parameterToString(localVarOptionals.Num.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
-		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
-		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
-	}
 	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
 		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.NoProgress.IsSet() {
-		localVarQueryParams.Add("no.progress", parameterToString(localVarOptionals.NoProgress.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
 		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
@@ -614,11 +574,7 @@ The message posted as the id parameter will also be returned.
  * @param optional nil or *EchoServiceEcho5Opts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
      * @param "Num" (optional.String) - 
-     * @param "LineNum" (optional.String) - 
-     * @param "Lang" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
      * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
      * @param "ResourceId" (optional.String) - 
 
 @return ExamplepbSimpleMessage
@@ -627,11 +583,7 @@ The message posted as the id parameter will also be returned.
 type EchoServiceEcho5Opts struct { 
 	Id optional.String
 	Num optional.String
-	LineNum optional.String
-	Lang optional.String
-	StatusProgress optional.String
 	En optional.String
-	NoProgress optional.String
 	ResourceId optional.String
 }
 
@@ -658,20 +610,8 @@ func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote str
 	if localVarOptionals != nil && localVarOptionals.Num.IsSet() {
 		localVarQueryParams.Add("num", parameterToString(localVarOptionals.Num.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
-		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
-		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
-	}
 	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
 		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.NoProgress.IsSet() {
-		localVarQueryParams.Add("no.progress", parameterToString(localVarOptionals.NoProgress.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
 		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
