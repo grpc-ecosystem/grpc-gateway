@@ -532,12 +532,19 @@
     },
     "examplepbNumericEnum": {
       "type": "string",
+      "example": "ZERO",
       "enum": [
         "ZERO",
         "ONE"
       ],
       "default": "ZERO",
-      "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+      "description": "NumericEnum is one or zero.",
+      "title": "NumericEnum",
+      "externalDocs": {
+        "description": "Find out more about ABitOfEverything",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      },
+      "x-a-bit-of-everything-foo": "bar"
     },
     "pathenumPathEnum": {
       "type": "string",

@@ -100,7 +100,8 @@ var wktSchemas = map[string]schemaCore{
 		Items: (*openapiItemsObject)(&openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
-			}}),
+			},
+		}),
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
@@ -737,6 +738,7 @@ func shouldExcludeField(name string, excluded []descriptor.Parameter) bool {
 	}
 	return false
 }
+
 func filterOutExcludedFields(fields []string, excluded []descriptor.Parameter) []string {
 	var filtered []string
 	for _, f := range fields {
@@ -904,7 +906,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 }
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
-func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, reg *descriptor.Registry) {
+func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
 	for _, enum := range enums {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(enum.FQEN(), reg)
 		if !ok {
@@ -926,11 +928,36 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 				Default: defaultValue,
 			},
 		}
+
 		if reg.GetEnumsAsInts() {
 			enumSchemaObject.Type = "integer"
 			enumSchemaObject.Format = "int32"
 			enumSchemaObject.Default = getEnumDefaultNumber(reg, enum)
 			enumSchemaObject.Enum = listEnumNumbers(reg, enum)
+		}
+		opts, err := getEnumOpenAPIOption(reg, enum)
+		if err != nil {
+			panic(err)
+		}
+		if opts != nil {
+			protoSchema := openapiSchemaFromProtoSchema(opts, reg, customRefs, enum)
+			// Warning: Make sure not to overwrite any fields already set on the schema type.
+			// This is only a subset of the fields from JsonSchema since most of them only apply to arrays or objects not enums
+			enumSchemaObject.ExternalDocs = protoSchema.ExternalDocs
+			enumSchemaObject.ReadOnly = protoSchema.ReadOnly
+			enumSchemaObject.extensions = protoSchema.extensions
+			if protoSchema.Type != "" || protoSchema.Ref != "" {
+				enumSchemaObject.schemaCore = protoSchema.schemaCore
+			}
+			if protoSchema.Title != "" {
+				enumSchemaObject.Title = protoSchema.Title
+			}
+			if protoSchema.Description != "" {
+				enumSchemaObject.Description = protoSchema.Description
+			}
+			if protoSchema.Example != nil {
+				enumSchemaObject.Example = protoSchema.Example
+			}
 		}
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
@@ -971,8 +998,10 @@ func lookupMsgAndOpenAPIName(location, name string, reg *descriptor.Registry) (*
 
 // registriesSeen is used to memoise calls to resolveFullyQualifiedNameToOpenAPINames so
 // we don't repeat it unnecessarily, since it can take some time.
-var registriesSeen = map[*descriptor.Registry]map[string]string{}
-var registriesSeenMutex sync.Mutex
+var (
+	registriesSeen      = map[*descriptor.Registry]map[string]string{}
+	registriesSeenMutex sync.Mutex
+)
 
 // Take the names of every proto message and generate a unique reference for each, according to the given strategy.
 func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy string) map[string]string {
@@ -1265,7 +1294,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				// extract any constraints specified in the path placeholders into ECMA regular expressions
 				pathParamRegexpMap := partsToRegexpMap(parts)
 				// Keep track of path parameter overrides
-				var pathParamNames = make(map[string]string)
+				pathParamNames := make(map[string]string)
 				for _, parameter := range pathParams {
 
 					var paramType, paramFormat, desc, collectionFormat string
@@ -1578,7 +1607,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								Key: "error",
 								Value: openapiSchemaObject{
 									schemaCore: schemaCore{
-										Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
+										Ref: fmt.Sprintf("#/definitions/%s", statusDef),
+									},
 								},
 							})
 						}
@@ -1917,7 +1947,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	if err := renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs, nil); err != nil {
 		return nil, err
 	}
-	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg)
+	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg, requestResponseRefs)
 
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
@@ -2651,11 +2681,13 @@ func goTemplateComments(comment string, data interface{}, reg *descriptor.Regist
 	return temp.String()
 }
 
-var messageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "MessageType")
-var nestedProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.DescriptorProto)(nil)), "NestedType")
-var packageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
-var serviceProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Service")
-var methodProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
+var (
+	messageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "MessageType")
+	nestedProtoPath  = protoPathIndex(reflect.TypeOf((*descriptorpb.DescriptorProto)(nil)), "NestedType")
+	packageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
+	serviceProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Service")
+	methodProtoPath  = protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
+)
 
 func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, typeIndex int32, fieldPaths []int32) bool {
 	if typeName == "Package" && typeIndex == packageProtoPath {
@@ -2780,6 +2812,23 @@ func extractSchemaOptionFromMessageDescriptor(msg *descriptorpb.DescriptorProto)
 		return nil, nil
 	}
 	ext := proto.GetExtension(msg.Options, openapi_options.E_Openapiv2Schema)
+	opts, ok := ext.(*openapi_options.Schema)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
+	}
+	return opts, nil
+}
+
+// extractSchemaOptionFromEnumDescriptor extracts the message of type
+// openapi_options.Schema from a given proto enum's descriptor.
+func extractSchemaOptionFromEnumDescriptor(enum *descriptorpb.EnumDescriptorProto) (*openapi_options.Schema, error) {
+	if enum.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(enum.Options, openapi_options.E_Openapiv2Enum) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(enum.Options, openapi_options.E_Openapiv2Enum)
 	opts, ok := ext.(*openapi_options.Schema)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
@@ -2937,6 +2986,14 @@ func getMessageOpenAPIOption(reg *descriptor.Registry, msg *descriptor.Message) 
 	opts, ok := reg.GetOpenAPIMessageOption(msg.FQMN())
 	if !ok {
 		return nil, nil
+	}
+	return opts, nil
+}
+
+func getEnumOpenAPIOption(reg *descriptor.Registry, enum *descriptor.Enum) (*openapi_options.Schema, error) {
+	opts, err := extractSchemaOptionFromEnumDescriptor(enum.EnumDescriptorProto)
+	if err != nil {
+		return nil, err
 	}
 	return opts, nil
 }
@@ -3229,7 +3286,7 @@ func addCustomRefs(d openapiDefinitionsObject, reg *descriptor.Registry, refs re
 	if err := renderMessagesAsDefinition(msgMap, d, reg, refs, nil); err != nil {
 		return err
 	}
-	renderEnumerationsAsDefinition(enumMap, d, reg)
+	renderEnumerationsAsDefinition(enumMap, d, reg, refs)
 
 	// Run again in case any new refs were added
 	return addCustomRefs(d, reg, refs)
