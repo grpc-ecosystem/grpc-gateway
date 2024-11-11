@@ -22,7 +22,7 @@ docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --r
         bazel run :buildifier'
 ```
 
-You may need to authenticate with GitHub to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
+You may need to authenticate with GitHub to pull `ghcr.io/grpc-ecosystem/grpc-gateway/build-env`.
 You can do this by following the steps on the [GitHub Package docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
 
 ### Using Visual Studio Code dev containers
