@@ -13,7 +13,10 @@ parent: Mapping
 
 You might want to serialize request/response messages in MessagePack instead of JSON, for example:
 
-1. Write a custom implementation of [`Marshaler`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#Marshaler).
+1. Write a custom implementation of
+   [`Marshaler`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#Marshaler).
+   See [Custom marshalers](custom_marshalers.md) for some additional
+   customization options.
 
 2. Register your marshaler with [`WithMarshalerOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithMarshalerOption).
 
