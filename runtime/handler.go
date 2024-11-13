@@ -64,7 +64,13 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		}
 
 		if !wroteHeader {
-			w.Header().Set("Content-Type", marshaler.ContentType(respRw))
+			var contentType string
+			if sct, ok := marshaler.(StreamContentType); ok {
+				contentType = sct.StreamContentType(respRw)
+			} else {
+				contentType = marshaler.ContentType(respRw)
+			}
+			w.Header().Set("Content-Type", contentType)
 		}
 
 		var buf []byte
