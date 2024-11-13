@@ -41,7 +41,7 @@ The gRPC-Gateway is a generator that generates a Go implementation of a JSON/HTT
 
 <!-- TODO(v3): remove this note when default behavior matches Envoy/Cloud Endpoints -->
 **Behavior differences:**
-- By default, gRPC-Gateway does not escape path parameters in the same way. [This can be configured.](../mapping/customizing_your_gateway.md#Controlling-path-parameter-unescaping)
+- By default, gRPC-Gateway does not escape path parameters in the same way. [This can be configured.](mapping/customizing_your_gateway.md#Controlling-path-parameter-unescaping)
 
 ## What is the difference between the gRPC-Gateway and gRPC-web?
 
