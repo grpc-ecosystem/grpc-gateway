@@ -1,6 +1,8 @@
 module(
     name = "grpc_ecosystem_grpc_gateway",
-    version = "2.23.0",
+    # TODO: Change this to the actual version on each release.
+    #       This can wait until we publish this project on the Bazel registry.
+    version = "0.0.0",
 )
 
 # Bazel Central Registry modules.
