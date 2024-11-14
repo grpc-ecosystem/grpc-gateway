@@ -15,6 +15,7 @@ bazel_dep(name = "gazelle", version = "0.39.1", repo_name = "bazel_gazelle")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "protobuf", version = "28.0-rc1", repo_name = "com_google_protobuf")
 bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
+bazel_dep(name = "rules_rust", version = "0.54.1")
 
 go_sdk = use_extension("@io_bazel_rules_go//go:extensions.bzl", "go_sdk")
 go_sdk.download(version = "1.22.7")
