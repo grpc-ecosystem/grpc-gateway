@@ -245,7 +245,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `marshaler.NewDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `val, ok = pathParams["nested.int32"]`; !strings.Contains(got, want) {
+		if want := `val, ok := pathParams["nested.int32"]`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `protoReq.GetNested().Int32, err = runtime.Int32P(val)`; !strings.Contains(got, want) {
@@ -257,7 +257,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got, want) {
+		if want := `annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
@@ -775,10 +775,12 @@ func TestIdentifierCapitalization(t *testing.T) {
 	if want := `msg, err := client.ExamplEPost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
-	if want := `var protoReq ExamPleRequest`; !strings.Contains(got, want) {
+	if want := `var (
+		protoReq ExamPleRequest`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
-	if want := `var protoReq ExampleResponse`; !strings.Contains(got, want) {
+	if want := `var (
+		protoReq ExampleResponse`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 	if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {

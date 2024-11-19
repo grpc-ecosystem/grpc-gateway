@@ -24,21 +24,22 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
-
 var (
-	filter_NonStandardService_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
 )
 
-func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonStandardUpdateRequest
-	var metadata runtime.ServerMetadata
+var filter_NonStandardService_Update_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
+func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq NonStandardUpdateRequest
+		metadata runtime.ServerMetadata
+	)
 	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
@@ -53,23 +54,21 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 			protoReq.UpdateMask = fieldMask
 		}
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NonStandardService_Update_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.Update(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonStandardUpdateRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonStandardUpdateRequest
+		metadata runtime.ServerMetadata
+	)
 	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
@@ -84,27 +83,23 @@ func local_request_NonStandardService_Update_0(ctx context.Context, marshaler ru
 			protoReq.UpdateMask = fieldMask
 		}
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NonStandardService_Update_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.Update(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_NonStandardService_UpdateWithJSONNames_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_NonStandardService_UpdateWithJSONNames_0 = &utilities.DoubleArray{Encoding: map[string]int{"body": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, client NonStandardServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonStandardWithJSONNamesUpdateRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonStandardWithJSONNamesUpdateRequest
+		metadata runtime.ServerMetadata
+	)
 	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
@@ -119,23 +114,21 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 			protoReq.UpdateMask = fieldMask
 		}
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NonStandardService_UpdateWithJSONNames_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.UpdateWithJSONNames(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonStandardWithJSONNamesUpdateRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonStandardWithJSONNamesUpdateRequest
+		metadata runtime.ServerMetadata
+	)
 	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
@@ -150,17 +143,14 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 			protoReq.UpdateMask = fieldMask
 		}
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NonStandardService_UpdateWithJSONNames_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.UpdateWithJSONNames(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterNonStandardServiceHandlerServer registers the http handlers for service NonStandardService to "mux".
@@ -169,16 +159,13 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterNonStandardServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NonStandardServiceServer) error {
-
 	mux.Handle("PATCH", pattern_NonStandardService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/Update", runtime.WithHTTPPathPattern("/v1/example/non_standard/update"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/Update", runtime.WithHTTPPathPattern("/v1/example/non_standard/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -190,20 +177,15 @@ func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.S
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_NonStandardService_Update_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("PATCH", pattern_NonStandardService_UpdateWithJSONNames_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/UpdateWithJSONNames", runtime.WithHTTPPathPattern("/v1/example/non_standard/update_with_json_names"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/UpdateWithJSONNames", runtime.WithHTTPPathPattern("/v1/example/non_standard/update_with_json_names"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -215,9 +197,7 @@ func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.S
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_NonStandardService_UpdateWithJSONNames_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -244,7 +224,6 @@ func RegisterNonStandardServiceHandlerFromEndpoint(ctx context.Context, mux *run
 			}
 		}()
 	}()
-
 	return RegisterNonStandardServiceHandler(ctx, mux, conn)
 }
 
@@ -260,14 +239,11 @@ func RegisterNonStandardServiceHandler(ctx context.Context, mux *runtime.ServeMu
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "NonStandardServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterNonStandardServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client NonStandardServiceClient) error {
-
 	mux.Handle("PATCH", pattern_NonStandardService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/Update", runtime.WithHTTPPathPattern("/v1/example/non_standard/update"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/Update", runtime.WithHTTPPathPattern("/v1/example/non_standard/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -278,18 +254,13 @@ func RegisterNonStandardServiceHandlerClient(ctx context.Context, mux *runtime.S
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_NonStandardService_Update_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("PATCH", pattern_NonStandardService_UpdateWithJSONNames_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/UpdateWithJSONNames", runtime.WithHTTPPathPattern("/v1/example/non_standard/update_with_json_names"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NonStandardService/UpdateWithJSONNames", runtime.WithHTTPPathPattern("/v1/example/non_standard/update_with_json_names"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -300,22 +271,17 @@ func RegisterNonStandardServiceHandlerClient(ctx context.Context, mux *runtime.S
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_NonStandardService_UpdateWithJSONNames_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
 var (
-	pattern_NonStandardService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update"}, ""))
-
+	pattern_NonStandardService_Update_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update"}, ""))
 	pattern_NonStandardService_UpdateWithJSONNames_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update_with_json_names"}, ""))
 )
 
 var (
-	forward_NonStandardService_Update_0 = runtime.ForwardResponseMessage
-
+	forward_NonStandardService_Update_0              = runtime.ForwardResponseMessage
 	forward_NonStandardService_UpdateWithJSONNames_0 = runtime.ForwardResponseMessage
 )

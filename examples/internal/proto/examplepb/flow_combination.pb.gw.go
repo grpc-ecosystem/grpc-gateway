@@ -24,35 +24,38 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq EmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq EmptyProto
+		metadata runtime.ServerMetadata
+	)
 	msg, err := client.RpcEmptyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq EmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq EmptyProto
+		metadata runtime.ServerMetadata
+	)
 	msg, err := server.RpcEmptyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcEmptyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq EmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq EmptyProto
+		metadata runtime.ServerMetadata
+	)
 	stream, err := client.RpcEmptyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -63,7 +66,6 @@ func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, marshaler run
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -92,7 +94,6 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 			return nil, metadata, err
 		}
 	}
-
 	if err := stream.CloseSend(); err != nil {
 		grpclog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
@@ -103,11 +104,9 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-
 	msg, err := stream.CloseAndRecv()
 	metadata.TrailerMD = stream.Trailer()
 	return msg, metadata, err
-
 }
 
 func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, runtime.ServerMetadata, chan error, error) {
@@ -158,755 +157,567 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 }
 
 func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	val, ok = pathParams["c"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
-
 	protoReq.C, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	val, ok = pathParams["c"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
-
 	protoReq.C, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_FlowCombination_RpcBodyRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_4); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_4); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
+var filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 
 func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_5); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_5); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_6); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_6); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
-)
+var filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 
 func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SingleNestedProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq SingleNestedProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathSingleNestedRpc_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcPathSingleNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SingleNestedProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq SingleNestedProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathSingleNestedRpc_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcPathSingleNestedRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
-)
+var filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 
 func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcPathNestedRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
-)
+var filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 
 func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_1); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_1); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcPathNestedRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
-)
+var filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 
 func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.RpcPathNestedRpc(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_FlowCombination_RpcBodyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -917,50 +728,38 @@ func request_FlowCombination_RpcBodyStream_0(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	val, ok = pathParams["c"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
-
 	protoReq.C, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -971,24 +770,21 @@ func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyStream_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_FlowCombination_RpcBodyStream_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_FlowCombination_RpcBodyStream_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -999,44 +795,33 @@ func request_FlowCombination_RpcBodyStream_2(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1047,28 +832,24 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_4); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1079,45 +860,33 @@ func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
+var filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 
 func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_5); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1128,41 +897,30 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NonEmptyProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NonEmptyProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_6); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1173,41 +931,30 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runt
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
-)
+var filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 
 func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, runtime.ServerMetadata, error) {
-	var protoReq SingleNestedProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq SingleNestedProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathSingleNestedStream_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcPathSingleNestedStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1218,55 +965,41 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, ma
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
-)
+var filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 
 func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	val, ok = pathParams["b"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
-
 	protoReq.B, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedStream_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1277,41 +1010,30 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
-)
+var filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 
 func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedStream_1); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1322,45 +1044,33 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshale
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
-var (
-	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
-)
+var filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 
 func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
-	var protoReq NestedProto
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq NestedProto
+		metadata runtime.ServerMetadata
+		err      error
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a.str"]
+	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
-
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedStream_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -1371,7 +1081,6 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 // RegisterFlowCombinationHandlerServer registers the http handlers for service FlowCombination to "mux".
@@ -1380,16 +1089,13 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterFlowCombinationHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationServer) error {
-
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyRpc", runtime.WithHTTPPathPattern("/rpc/empty/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyRpc", runtime.WithHTTPPathPattern("/rpc/empty/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1401,9 +1107,7 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcEmptyRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1426,16 +1130,13 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1447,20 +1148,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/{b}/{c}/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/{b}/{c}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1472,20 +1168,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_1(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/query/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1497,20 +1188,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_2(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/{b}/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/{b}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1522,20 +1208,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_3(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/query/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1547,20 +1228,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_4(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/query/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1572,20 +1248,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_5(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/query/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1597,20 +1268,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_6(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1622,20 +1288,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathSingleNestedRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/{b}/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/{b}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1647,20 +1308,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1672,20 +1328,15 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedRpc_1(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/rpc"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1697,9 +1348,7 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedRpc_2(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1803,7 +1452,6 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 			}
 		}()
 	}()
-
 	return RegisterFlowCombinationHandler(ctx, mux, conn)
 }
 
@@ -1819,14 +1467,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "FlowCombinationClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.ServeMux, client FlowCombinationClient) error {
-
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyRpc", runtime.WithHTTPPathPattern("/rpc/empty/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyRpc", runtime.WithHTTPPathPattern("/rpc/empty/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1837,18 +1482,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcEmptyRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyStream", runtime.WithHTTPPathPattern("/rpc/empty/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyStream", runtime.WithHTTPPathPattern("/rpc/empty/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1859,18 +1499,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcEmptyStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_StreamEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyRpc", runtime.WithHTTPPathPattern("/stream/empty/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyRpc", runtime.WithHTTPPathPattern("/stream/empty/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1881,18 +1516,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_StreamEmptyRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_StreamEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyStream", runtime.WithHTTPPathPattern("/stream/empty/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyStream", runtime.WithHTTPPathPattern("/stream/empty/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1911,18 +1541,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 				}
 			}
 		}()
-
 		forward_FlowCombination_StreamEmptyStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1933,18 +1558,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/{b}/{c}/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/{b}/{c}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1955,18 +1575,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_1(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/query/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1977,18 +1592,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_2(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/{b}/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/{b}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1999,18 +1609,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_3(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/query/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2021,18 +1626,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_4(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/query/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2043,18 +1643,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_5(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/query/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", runtime.WithHTTPPathPattern("/rpc/path/{a}/query/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2065,18 +1660,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyRpc_6(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2087,18 +1677,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathSingleNestedRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/{b}/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/{b}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2109,18 +1694,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedRpc_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2131,18 +1711,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedRpc_1(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/rpc"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2153,18 +1728,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedRpc_2(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2175,18 +1745,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/path/{a}/{b}/{c}/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/path/{a}/{b}/{c}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2197,18 +1762,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_1(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/query/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/query/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2219,18 +1779,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_2(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/{b}/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/{b}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2241,18 +1796,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_3(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/query/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/query/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2263,18 +1813,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_4(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/query/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/body/path/{a}/query/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2285,18 +1830,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_5(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/path/{a}/query/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", runtime.WithHTTPPathPattern("/rpc/path/{a}/query/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2307,18 +1847,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcBodyStream_6(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2329,18 +1864,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathSingleNestedStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/{b}/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/{b}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2351,18 +1881,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2373,18 +1898,13 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedStream_1(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/stream"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2395,118 +1915,65 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_FlowCombination_RpcPathNestedStream_2(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
 var (
-	pattern_FlowCombination_RpcEmptyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "empty"}, ""))
-
-	pattern_FlowCombination_RpcEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "empty", "stream"}, ""))
-
-	pattern_FlowCombination_StreamEmptyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"stream", "empty", "rpc"}, ""))
-
-	pattern_FlowCombination_StreamEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"stream", "empty"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "body"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "path", "a", "b", "c"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "query"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "body", "path", "a", "b"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"rpc", "body", "query"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 0}, []string{"rpc", "body", "path", "a", "query"}, ""))
-
-	pattern_FlowCombination_RpcBodyRpc_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 0}, []string{"rpc", "path", "a", "query"}, ""))
-
-	pattern_FlowCombination_RpcPathSingleNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
-
-	pattern_FlowCombination_RpcPathNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 0}, []string{"rpc", "path-nested", "a.str", "b"}, ""))
-
-	pattern_FlowCombination_RpcPathNestedRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested1", "a.str"}, ""))
-
-	pattern_FlowCombination_RpcPathNestedRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested2", "a.str"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "body", "stream"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "path", "a", "b", "c", "stream"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "query", "stream"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "body", "path", "a", "b", "stream"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"rpc", "body", "query", "stream"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"rpc", "body", "path", "a", "query", "stream"}, ""))
-
-	pattern_FlowCombination_RpcBodyStream_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"rpc", "path", "a", "query", "stream"}, ""))
-
+	pattern_FlowCombination_RpcEmptyRpc_0               = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "empty"}, ""))
+	pattern_FlowCombination_RpcEmptyStream_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "empty", "stream"}, ""))
+	pattern_FlowCombination_StreamEmptyRpc_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"stream", "empty", "rpc"}, ""))
+	pattern_FlowCombination_StreamEmptyStream_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"stream", "empty"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "body"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_1                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "path", "a", "b", "c"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_2                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_3                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "body", "path", "a", "b"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_4                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"rpc", "body", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_5                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 0}, []string{"rpc", "body", "path", "a", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_6                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 0}, []string{"rpc", "path", "a", "query"}, ""))
+	pattern_FlowCombination_RpcPathSingleNestedRpc_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 0}, []string{"rpc", "path-nested", "a.str", "b"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_1          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested1", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_2          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested2", "a.str"}, ""))
+	pattern_FlowCombination_RpcBodyStream_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "body", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_1             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "path", "a", "b", "c", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_2             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_3             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "body", "path", "a", "b", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_4             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"rpc", "body", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_5             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"rpc", "body", "path", "a", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_6             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"rpc", "path", "a", "query", "stream"}, ""))
 	pattern_FlowCombination_RpcPathSingleNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, ""))
-
-	pattern_FlowCombination_RpcPathNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"rpc", "path-nested", "a.str", "b", "stream"}, ""))
-
-	pattern_FlowCombination_RpcPathNestedStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested1", "a.str", "stream"}, ""))
-
-	pattern_FlowCombination_RpcPathNestedStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested2", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"rpc", "path-nested", "a.str", "b", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_1       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested1", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_2       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested2", "a.str", "stream"}, ""))
 )
 
 var (
-	forward_FlowCombination_RpcEmptyRpc_0 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcEmptyStream_0 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_StreamEmptyRpc_0 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_StreamEmptyStream_0 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyRpc_0 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyRpc_1 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyRpc_2 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyRpc_3 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyRpc_4 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyRpc_5 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyRpc_6 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcPathSingleNestedRpc_0 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcPathNestedRpc_0 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcPathNestedRpc_1 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcPathNestedRpc_2 = runtime.ForwardResponseMessage
-
-	forward_FlowCombination_RpcBodyStream_0 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyStream_1 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyStream_2 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyStream_3 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyStream_4 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyStream_5 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcBodyStream_6 = runtime.ForwardResponseStream
-
+	forward_FlowCombination_RpcEmptyRpc_0               = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcEmptyStream_0            = runtime.ForwardResponseStream
+	forward_FlowCombination_StreamEmptyRpc_0            = runtime.ForwardResponseMessage
+	forward_FlowCombination_StreamEmptyStream_0         = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyRpc_0                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyRpc_1                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyRpc_2                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyRpc_3                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyRpc_4                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyRpc_5                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyRpc_6                = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcPathSingleNestedRpc_0    = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcPathNestedRpc_0          = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcPathNestedRpc_1          = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcPathNestedRpc_2          = runtime.ForwardResponseMessage
+	forward_FlowCombination_RpcBodyStream_0             = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyStream_1             = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyStream_2             = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyStream_3             = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyStream_4             = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyStream_5             = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcBodyStream_6             = runtime.ForwardResponseStream
 	forward_FlowCombination_RpcPathSingleNestedStream_0 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcPathNestedStream_0 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcPathNestedStream_1 = runtime.ForwardResponseStream
-
-	forward_FlowCombination_RpcPathNestedStream_2 = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcPathNestedStream_0       = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcPathNestedStream_1       = runtime.ForwardResponseStream
+	forward_FlowCombination_RpcPathNestedStream_2       = runtime.ForwardResponseStream
 )
