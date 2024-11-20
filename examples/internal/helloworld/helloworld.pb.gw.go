@@ -10,6 +10,7 @@ package helloworld
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -28,6 +29,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join

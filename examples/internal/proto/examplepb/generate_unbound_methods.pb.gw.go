@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -28,6 +29,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join
@@ -38,7 +40,7 @@ func request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marsh
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -50,7 +52,7 @@ func local_request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context,
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Echo(ctx, &protoReq)
@@ -62,7 +64,7 @@ func request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, m
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -74,7 +76,7 @@ func local_request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Cont
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.EchoBody(ctx, &protoReq)
@@ -86,7 +88,7 @@ func request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context,
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.EchoDelete(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -98,7 +100,7 @@ func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Co
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.EchoDelete(ctx, &protoReq)

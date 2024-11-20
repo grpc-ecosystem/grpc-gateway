@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -28,6 +29,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join
@@ -38,7 +40,7 @@ func request_ServiceA_MethodOne_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq InMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.MethodOne(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -50,7 +52,7 @@ func local_request_ServiceA_MethodOne_0(ctx context.Context, marshaler runtime.M
 		protoReq InMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.MethodOne(ctx, &protoReq)
@@ -62,7 +64,7 @@ func request_ServiceA_MethodTwo_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq OutMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.MethodTwo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -74,7 +76,7 @@ func local_request_ServiceA_MethodTwo_0(ctx context.Context, marshaler runtime.M
 		protoReq OutMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.MethodTwo(ctx, &protoReq)
@@ -86,7 +88,7 @@ func request_ServiceC_MethodOne_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq InMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.MethodOne(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -98,7 +100,7 @@ func local_request_ServiceC_MethodOne_0(ctx context.Context, marshaler runtime.M
 		protoReq InMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.MethodOne(ctx, &protoReq)
@@ -110,7 +112,7 @@ func request_ServiceC_MethodTwo_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq OutMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.MethodTwo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -122,7 +124,7 @@ func local_request_ServiceC_MethodTwo_0(ctx context.Context, marshaler runtime.M
 		protoReq OutMessageA
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.MethodTwo(ctx, &protoReq)

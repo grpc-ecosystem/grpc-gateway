@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -28,6 +29,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join
@@ -38,7 +40,7 @@ func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq LoginRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.Login(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -50,7 +52,7 @@ func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.M
 		protoReq LoginRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Login(ctx, &protoReq)
@@ -62,7 +64,7 @@ func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marsha
 		protoReq LogoutRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.Logout(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -74,7 +76,7 @@ func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.
 		protoReq LogoutRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Logout(ctx, &protoReq)

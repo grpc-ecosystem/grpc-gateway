@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -28,6 +29,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join
@@ -488,7 +490,7 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 		protoReq SimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -500,7 +502,7 @@ func local_request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime
 		protoReq SimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.EchoBody(ctx, &protoReq)
@@ -520,7 +522,7 @@ func request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marsh
 	} else if _, ok := protoReq.Ext.(*SimpleMessage_No); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_No, but: %t\n", protoReq.Ext)
 	}
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	val, ok := pathParams["id"]
@@ -552,7 +554,7 @@ func local_request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime
 	} else if _, ok := protoReq.Ext.(*SimpleMessage_No); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_No, but: %t\n", protoReq.Ext)
 	}
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	val, ok := pathParams["id"]
@@ -616,7 +618,7 @@ func request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Mars
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
@@ -645,7 +647,7 @@ func local_request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtim
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {

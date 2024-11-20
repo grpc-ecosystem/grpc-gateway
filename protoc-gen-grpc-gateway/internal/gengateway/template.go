@@ -253,6 +253,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join
@@ -290,7 +291,7 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 	for {
 		var protoReq {{ .Method.RequestType.GoType .Method.Service.File.GoPkg.Path }}
 		err = dec.Decode(&protoReq)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
@@ -298,7 +299,7 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			grpclog.Errorf("Failed to send request: %v", err)
@@ -364,12 +365,12 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{printf "%s" $protoReq }}
 	{{- end }}
 	{{- if not $isFieldMask }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
 	{{- if $isFieldMask }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.{{ .FieldMaskField }} == nil || len(protoReq.{{ .FieldMaskField }}.GetPaths()) == 0 {
@@ -465,7 +466,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err := dec.Decode(&protoReq)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			return err
 		}
 		if err != nil {
@@ -544,12 +545,12 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{ printf "%s" $protoReq }}
 	{{- end }}
 	{{- if not $isFieldMask }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(req.Body).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
 	{{- if $isFieldMask }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.{{ .FieldMaskField }} == nil || len(protoReq.{{ .FieldMaskField }}.GetPaths()) == 0 {
@@ -751,7 +752,7 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Client(ctx context.Cont
 		{{- if and $m.GetClientStreaming $m.GetServerStreaming }}
 		go func() {
 			for err := range reqErrChan {
-				if err != nil && err != io.EOF {
+				if err != nil && !errors.Is(err, io.EOF) {
 					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
 				}
 			}
