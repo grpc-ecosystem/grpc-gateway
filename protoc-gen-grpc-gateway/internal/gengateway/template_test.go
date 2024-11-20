@@ -96,6 +96,9 @@ func TestApplyTemplateHeader(t *testing.T) {
 	if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
+	if want := `mux.Handle(http.MethodGet,`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
 }
 
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
@@ -263,6 +266,9 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
+		if want := `mux.Handle(http.MethodPost,`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
 	}
 }
 
@@ -416,6 +422,9 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `mux.Handle(http.MethodPost,`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
@@ -597,6 +606,9 @@ func TestApplyTemplateInProcess(t *testing.T) {
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
+		if want := `mux.Handle(http.MethodPost,`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
 	}
 }
 
@@ -683,6 +695,9 @@ func TestAllowPatchFeature(t *testing.T) {
 			}
 		}
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `mux.Handle(http.MethodPatch,`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
@@ -784,6 +799,12 @@ func TestIdentifierCapitalization(t *testing.T) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 	if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if want := `mux.Handle(http.MethodGet,`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if want := `mux.Handle(http.MethodPost,`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 }

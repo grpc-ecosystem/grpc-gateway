@@ -111,7 +111,7 @@ func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Co
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterGenerateUnboundMethodsEchoServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GenerateUnboundMethodsEchoServiceServer) error {
-	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -131,7 +131,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context,
 		}
 		forward_GenerateUnboundMethodsEchoService_Echo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_GenerateUnboundMethodsEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -151,7 +151,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context,
 		}
 		forward_GenerateUnboundMethodsEchoService_EchoBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_GenerateUnboundMethodsEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -211,7 +211,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandler(ctx context.Context, mux *
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "GenerateUnboundMethodsEchoServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GenerateUnboundMethodsEchoServiceClient) error {
-	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -228,7 +228,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context,
 		}
 		forward_GenerateUnboundMethodsEchoService_Echo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_GenerateUnboundMethodsEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -245,7 +245,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context,
 		}
 		forward_GenerateUnboundMethodsEchoService_EchoBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_GenerateUnboundMethodsEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)

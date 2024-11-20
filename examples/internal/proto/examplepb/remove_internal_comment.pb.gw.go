@@ -63,7 +63,7 @@ func local_request_Foo2Service_Foo2_0(ctx context.Context, marshaler runtime.Mar
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterFoo2ServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterFoo2ServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server Foo2ServiceServer) error {
-	mux.Handle("POST", pattern_Foo2Service_Foo2_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_Foo2Service_Foo2_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -123,7 +123,7 @@ func RegisterFoo2ServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "Foo2ServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterFoo2ServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client Foo2ServiceClient) error {
-	mux.Handle("POST", pattern_Foo2Service_Foo2_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_Foo2Service_Foo2_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
