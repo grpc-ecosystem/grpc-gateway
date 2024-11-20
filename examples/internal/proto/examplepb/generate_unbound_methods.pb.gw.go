@@ -24,89 +24,85 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateUnboundMethodsSimpleMessage
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq GenerateUnboundMethodsSimpleMessage
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateUnboundMethodsSimpleMessage
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq GenerateUnboundMethodsSimpleMessage
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.Echo(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateUnboundMethodsSimpleMessage
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq GenerateUnboundMethodsSimpleMessage
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateUnboundMethodsSimpleMessage
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq GenerateUnboundMethodsSimpleMessage
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.EchoBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, client GenerateUnboundMethodsEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateUnboundMethodsSimpleMessage
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq GenerateUnboundMethodsSimpleMessage
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.EchoDelete(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server GenerateUnboundMethodsEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GenerateUnboundMethodsSimpleMessage
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq GenerateUnboundMethodsSimpleMessage
+		metadata runtime.ServerMetadata
+	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.EchoDelete(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterGenerateUnboundMethodsEchoServiceHandlerServer registers the http handlers for service GenerateUnboundMethodsEchoService to "mux".
@@ -115,16 +111,13 @@ func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Co
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterGenerateUnboundMethodsEchoServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GenerateUnboundMethodsEchoServiceServer) error {
-
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -136,20 +129,15 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context,
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_GenerateUnboundMethodsEchoService_Echo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -161,20 +149,15 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context,
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_GenerateUnboundMethodsEchoService_EchoBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -186,9 +169,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerServer(ctx context.Context,
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_GenerateUnboundMethodsEchoService_EchoDelete_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -215,7 +196,6 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerFromEndpoint(ctx context.Co
 			}
 		}()
 	}()
-
 	return RegisterGenerateUnboundMethodsEchoServiceHandler(ctx, mux, conn)
 }
 
@@ -231,14 +211,11 @@ func RegisterGenerateUnboundMethodsEchoServiceHandler(ctx context.Context, mux *
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "GenerateUnboundMethodsEchoServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GenerateUnboundMethodsEchoServiceClient) error {
-
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -249,18 +226,13 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context,
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_GenerateUnboundMethodsEchoService_Echo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -271,18 +243,13 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context,
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_GenerateUnboundMethodsEchoService_EchoBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	mux.Handle("POST", pattern_GenerateUnboundMethodsEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete", runtime.WithHTTPPathPattern("/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -293,26 +260,19 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context,
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_GenerateUnboundMethodsEchoService_EchoDelete_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
 var (
-	pattern_GenerateUnboundMethodsEchoService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "Echo"}, ""))
-
-	pattern_GenerateUnboundMethodsEchoService_EchoBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoBody"}, ""))
-
+	pattern_GenerateUnboundMethodsEchoService_Echo_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "Echo"}, ""))
+	pattern_GenerateUnboundMethodsEchoService_EchoBody_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoBody"}, ""))
 	pattern_GenerateUnboundMethodsEchoService_EchoDelete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoDelete"}, ""))
 )
 
 var (
-	forward_GenerateUnboundMethodsEchoService_Echo_0 = runtime.ForwardResponseMessage
-
-	forward_GenerateUnboundMethodsEchoService_EchoBody_0 = runtime.ForwardResponseMessage
-
+	forward_GenerateUnboundMethodsEchoService_Echo_0       = runtime.ForwardResponseMessage
+	forward_GenerateUnboundMethodsEchoService_EchoBody_0   = runtime.ForwardResponseMessage
 	forward_GenerateUnboundMethodsEchoService_EchoDelete_0 = runtime.ForwardResponseMessage
 )
