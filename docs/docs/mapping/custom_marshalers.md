@@ -27,7 +27,7 @@ type YourMarshaler struct {
 
 // ...
 
-func (*YourMarshaler) Delimited() []byte {
+func (*YourMarshaler) Delimiter() []byte {
   return []byte("|")
 }
 ```
@@ -59,7 +59,7 @@ type CustomJSONPb struct {
   runtime.JSONPb
 }
 
-func (*CustomJSONPb) Delimited() []byte {
+func (*CustomJSONPb) Delimiter() []byte {
   // Strictly speaking this is already the default delimiter for JSONPb, but
   // providing it here for completeness with an NDJSON marshaler all in one
   // place.
