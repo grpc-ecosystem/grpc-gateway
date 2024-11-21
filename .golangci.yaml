@@ -1,0 +1,13 @@
+issues:
+  exclude-dirs-use-default: false
+  exclude-generated: disable
+  exclude-rules:
+    - path: examples
+      linters:
+        - staticcheck
+  max-issues-per-linter: 0
+  max-same-issues: 0
+linters:
+  disable-all: true
+  enable:
+    - staticcheck

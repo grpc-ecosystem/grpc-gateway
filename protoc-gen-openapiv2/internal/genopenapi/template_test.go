@@ -10784,7 +10784,7 @@ func TestEnumValueProtoComments(t *testing.T) {
 				Package: new(string),
 				SourceCodeInfo: &descriptorpb.SourceCodeInfo{
 					Location: []*descriptorpb.SourceCodeInfo_Location{
-						&descriptorpb.SourceCodeInfo_Location{
+						{
 							LeadingComments: &comments,
 						},
 					},

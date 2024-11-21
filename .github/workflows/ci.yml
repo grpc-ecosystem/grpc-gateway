@@ -125,9 +125,10 @@ jobs:
         with:
           go-version: 1.23
           check-latest: true
-      - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6 # v1.3.1
+      - uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8 # v6
         with:
-          install-go: false
+          args: --verbose
+          version: v1.62.0
   fuzz:
     runs-on: ubuntu-latest
     steps:
