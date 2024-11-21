@@ -58,19 +58,17 @@ Enums can be customized like messages:
 // NumericEnum is one or zero.
 enum NumericEnum {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {
-    json_schema: {
-      title: "NumericEnum"
-      description: "NumericEnum is one or zero."
-      extensions: {
-        key: "x-a-bit-of-everything-foo";
-        value {
-          string_value: "bar";
-        }
+    description: "NumericEnum is one or zero."
+    title: "NumericEnum"
+    extensions: {
+      key: "x-a-bit-of-everything-foo"
+      value {
+        string_value: "bar"
       }
     }
     external_docs: {
-      url: "https://github.com/grpc-ecosystem/grpc-gateway";
-      description: "Find out more about ABitOfEverything";
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      description: "Find out more about ABitOfEverything"
     }
     example: "\"ZERO\""
   };

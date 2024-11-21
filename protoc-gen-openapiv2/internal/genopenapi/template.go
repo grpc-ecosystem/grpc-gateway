@@ -940,7 +940,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 			panic(err)
 		}
 		if opts != nil {
-			protoSchema := openapiSchemaFromProtoSchema(opts, reg, customRefs, enum)
+			protoSchema := openapiSchemaFromProtoEnumSchema(opts, reg, customRefs, enum)
 			// Warning: Make sure not to overwrite any fields already set on the schema type.
 			// This is only a subset of the fields from JsonSchema since most of them only apply to arrays or objects not enums
 			enumSchemaObject.ExternalDocs = protoSchema.ExternalDocs
@@ -2819,9 +2819,9 @@ func extractSchemaOptionFromMessageDescriptor(msg *descriptorpb.DescriptorProto)
 	return opts, nil
 }
 
-// extractSchemaOptionFromEnumDescriptor extracts the message of type
-// openapi_options.Schema from a given proto enum's descriptor.
-func extractSchemaOptionFromEnumDescriptor(enum *descriptorpb.EnumDescriptorProto) (*openapi_options.Schema, error) {
+// extractEnumSchemaOptionFromEnumDescriptor extracts the message of type
+// openapi_options.EnumSchema from a given proto enum's descriptor.
+func extractEnumSchemaOptionFromEnumDescriptor(enum *descriptorpb.EnumDescriptorProto) (*openapi_options.EnumSchema, error) {
 	if enum.Options == nil {
 		return nil, nil
 	}
@@ -2829,9 +2829,9 @@ func extractSchemaOptionFromEnumDescriptor(enum *descriptorpb.EnumDescriptorProt
 		return nil, nil
 	}
 	ext := proto.GetExtension(enum.Options, openapi_options.E_Openapiv2Enum)
-	opts, ok := ext.(*openapi_options.Schema)
+	opts, ok := ext.(*openapi_options.EnumSchema)
 	if !ok {
-		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
+		return nil, fmt.Errorf("extension is %T; want a EnumSchema", ext)
 	}
 	return opts, nil
 }
@@ -2990,8 +2990,8 @@ func getMessageOpenAPIOption(reg *descriptor.Registry, msg *descriptor.Message) 
 	return opts, nil
 }
 
-func getEnumOpenAPIOption(reg *descriptor.Registry, enum *descriptor.Enum) (*openapi_options.Schema, error) {
-	opts, err := extractSchemaOptionFromEnumDescriptor(enum.EnumDescriptorProto)
+func getEnumOpenAPIOption(reg *descriptor.Registry, enum *descriptor.Enum) (*openapi_options.EnumSchema, error) {
+	opts, err := extractEnumSchemaOptionFromEnumDescriptor(enum.EnumDescriptorProto)
 	if err != nil {
 		return nil, err
 	}
@@ -3167,6 +3167,24 @@ func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotation
 		case annotations.FieldBehavior_IMMUTABLE:
 		}
 	}
+}
+
+func openapiSchemaFromProtoEnumSchema(s *openapi_options.EnumSchema, reg *descriptor.Registry, refs refMap, data interface{}) openapiSchemaObject {
+	ret := openapiSchemaObject{
+		ExternalDocs: protoExternalDocumentationToOpenAPIExternalDocumentation(s.GetExternalDocs(), reg, data),
+	}
+	jsonSchema := &openapi_options.JSONSchema{
+		Ref:         s.Ref,
+		Title:       s.Title,
+		Extensions:  s.Extensions,
+		Description: s.Description,
+		Default:     s.Default,
+		ReadOnly:    s.ReadOnly,
+		Example:     s.Example,
+	}
+	ret.schemaCore = protoJSONSchemaToOpenAPISchemaCore(jsonSchema, reg, refs)
+	updateswaggerObjectFromJSONSchema(&ret, jsonSchema, reg, data)
+	return ret
 }
 
 func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) openapiSchemaObject {

@@ -33,7 +33,7 @@ extend google.protobuf.EnumOptions {
   //
   // All IDs are the same, as assigned. It is okay that they are the same, as they extend
   // different descriptor messages.
-  Schema openapiv2_enum = 1042;
+  EnumSchema openapiv2_enum = 1042;
 }
 extend google.protobuf.ServiceOptions {
   // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
