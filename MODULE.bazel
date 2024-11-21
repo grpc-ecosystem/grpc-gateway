@@ -39,15 +39,9 @@ go_deps.module(
     sum = "h1:i7eJL8qZTpSEXOPTxNKhASYpMn+8e5Q6AdndVa1dWek=",
     version = "v1.5.4",
 )
-go_deps.module(
-    path = "github.com/bazelbuild/buildtools/v7",
-    sum = "h1:BRlRwQ/4rd608QvjsM9HSzBLLM1nXyzHaDzdkBAyDKk=",
-    version = "v7.3.1",
-)
 use_repo(
     go_deps,
     "com_github_antihax_optional",
-    "com_github_bazelbuild_buildtools_v7",
     "com_github_golang_protobuf",
     "com_github_google_go_cmp",
     "com_github_rogpeppe_fastuuid",
@@ -59,4 +53,11 @@ use_repo(
     "org_golang_google_protobuf",
     "org_golang_x_oauth2",
     "org_golang_x_text",
+)
+
+non_module_deps = use_extension(":non_module_deps.bzl", "non_module_deps")
+use_repo(
+    non_module_deps,
+    "com_github_bazelbuild_buildtools",
+    "org_golang_x_tools",
 )
