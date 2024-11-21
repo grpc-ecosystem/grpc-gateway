@@ -87,7 +87,7 @@ func local_request_ServiceB_MethodTwo_0(ctx context.Context, marshaler runtime.M
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterServiceBHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterServiceBHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ServiceBServer) error {
-	mux.Handle("POST", pattern_ServiceB_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceB_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -107,7 +107,7 @@ func RegisterServiceBHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		}
 		forward_ServiceB_MethodOne_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_ServiceB_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceB_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -167,7 +167,7 @@ func RegisterServiceBHandler(ctx context.Context, mux *runtime.ServeMux, conn *g
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ServiceBClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterServiceBHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ServiceBClient) error {
-	mux.Handle("POST", pattern_ServiceB_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceB_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -184,7 +184,7 @@ func RegisterServiceBHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		}
 		forward_ServiceB_MethodOne_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_ServiceB_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceB_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)

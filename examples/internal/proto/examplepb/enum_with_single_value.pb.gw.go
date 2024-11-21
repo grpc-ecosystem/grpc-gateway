@@ -63,7 +63,7 @@ func local_request_EnumWithSingleValueService_Echo_0(ctx context.Context, marsha
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterEnumWithSingleValueServiceHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterEnumWithSingleValueServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server EnumWithSingleValueServiceServer) error {
-	mux.Handle("POST", pattern_EnumWithSingleValueService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_EnumWithSingleValueService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -123,7 +123,7 @@ func RegisterEnumWithSingleValueServiceHandler(ctx context.Context, mux *runtime
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "EnumWithSingleValueServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterEnumWithSingleValueServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client EnumWithSingleValueServiceClient) error {
-	mux.Handle("POST", pattern_EnumWithSingleValueService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_EnumWithSingleValueService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)

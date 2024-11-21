@@ -135,7 +135,7 @@ func local_request_ServiceC_MethodTwo_0(ctx context.Context, marshaler runtime.M
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterServiceAHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterServiceAHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ServiceAServer) error {
-	mux.Handle("POST", pattern_ServiceA_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceA_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -155,7 +155,7 @@ func RegisterServiceAHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		}
 		forward_ServiceA_MethodOne_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_ServiceA_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceA_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -185,7 +185,7 @@ func RegisterServiceAHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterServiceCHandlerFromEndpoint instead.
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterServiceCHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ServiceCServer) error {
-	mux.Handle("POST", pattern_ServiceC_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceC_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -205,7 +205,7 @@ func RegisterServiceCHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		}
 		forward_ServiceC_MethodOne_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_ServiceC_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceC_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -265,7 +265,7 @@ func RegisterServiceAHandler(ctx context.Context, mux *runtime.ServeMux, conn *g
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ServiceAClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterServiceAHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ServiceAClient) error {
-	mux.Handle("POST", pattern_ServiceA_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceA_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -282,7 +282,7 @@ func RegisterServiceAHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		}
 		forward_ServiceA_MethodOne_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_ServiceA_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceA_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -348,7 +348,7 @@ func RegisterServiceCHandler(ctx context.Context, mux *runtime.ServeMux, conn *g
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ServiceCClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterServiceCHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ServiceCClient) error {
-	mux.Handle("POST", pattern_ServiceC_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceC_MethodOne_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -365,7 +365,7 @@ func RegisterServiceCHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		}
 		forward_ServiceC_MethodOne_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
-	mux.Handle("POST", pattern_ServiceC_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_ServiceC_MethodTwo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
