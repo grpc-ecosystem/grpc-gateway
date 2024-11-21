@@ -293,7 +293,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		}
 		timestamp := timestamppb.New(t)
 		if ok := timestamp.IsValid(); !ok {
-			return protoreflect.Value{}, fmt.Errorf("%s is not a valid timestamp", value)
+			return protoreflect.Value{}, fmt.Errorf("%s before 0001-01-01", value)
 		}
 		msg = timestamp
 	case "google.protobuf.Duration":
