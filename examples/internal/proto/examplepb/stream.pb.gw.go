@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -30,6 +31,7 @@ var (
 	_ codes.Code
 	_ io.Reader
 	_ status.Status
+	_ = errors.New
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = metadata.Join
@@ -46,7 +48,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 	for {
 		var protoReq ABitOfEverything
 		err = dec.Decode(&protoReq)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
@@ -54,7 +56,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			grpclog.Errorf("Failed to send request: %v", err)
@@ -114,7 +116,7 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 	handleSend := func() error {
 		var protoReq sub.StringMessage
 		err := dec.Decode(&protoReq)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			return err
 		}
 		if err != nil {
@@ -161,7 +163,7 @@ func request_StreamService_BulkEchoDuration_0(ctx context.Context, marshaler run
 	handleSend := func() error {
 		var protoReq durationpb.Duration
 		err := dec.Decode(&protoReq)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			return err
 		}
 		if err != nil {
@@ -352,7 +354,7 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		go func() {
 			for err := range reqErrChan {
-				if err != nil && err != io.EOF {
+				if err != nil && !errors.Is(err, io.EOF) {
 					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
 				}
 			}
@@ -377,7 +379,7 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		}
 		go func() {
 			for err := range reqErrChan {
-				if err != nil && err != io.EOF {
+				if err != nil && !errors.Is(err, io.EOF) {
 					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
 				}
 			}

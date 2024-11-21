@@ -30,6 +30,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
+		"errors",
 		"io",
 		"net/http",
 		"github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
