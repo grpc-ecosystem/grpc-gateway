@@ -60,3 +60,10 @@ use_repo(
     "org_golang_x_oauth2",
     "org_golang_x_text",
 )
+
+non_module_deps = use_extension(":non_module_deps.bzl", "non_module_deps")
+use_repo(
+    non_module_deps,
+    "com_github_bazelbuild_buildtools",
+    "org_golang_x_tools",
+)
