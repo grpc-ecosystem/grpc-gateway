@@ -15,9 +15,9 @@ def _non_module_deps_impl(
     )
     http_archive(
         name = "com_github_bazelbuild_buildtools",
-        sha256 = "05c3c3602d25aeda1e9dbc91d3b66e624c1f9fdadf273e5480b489e744ca7269",
-        strip_prefix = "buildtools-6.4.0",
-        urls = ["https://github.com/bazelbuild/buildtools/archive/v6.4.0.tar.gz"],
+        sha256 = "051951c10ff8addeb4f10be3b0cf474b304b2ccd675f2cc7683cdd9010320ca9",
+        strip_prefix = "buildtools-7.3.1",
+        urls = ["https://github.com/bazelbuild/buildtools/archive/v7.3.1.tar.gz"],
     )
 
 non_module_deps = module_extension(
