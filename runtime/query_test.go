@@ -495,6 +495,14 @@ func TestPopulateParameters(t *testing.T) {
 			want:    &examplepb.Proto3Message{},
 			wanterr: errors.New("invalid path: \"repeated_message\" is not a message"),
 		},
+		{
+			values: url.Values{
+				"timestampValue": {"0000-01-01T00:00:00.00Z"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "timestamp_value": 0000-01-01T00:00:00.00Z before 0001-01-01`),
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			msg := spec.want.ProtoReflect().New().Interface()
