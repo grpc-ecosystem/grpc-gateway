@@ -1215,7 +1215,11 @@ func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter, r
 			continue
 		}
 		pathParamIndex := slices.IndexFunc(modifiedPathParams, func(p descriptor.Parameter) bool {
-			return p.FieldPath.String() == paramName
+			if !reg.GetUseJSONNamesForFields() {
+				return p.FieldPath.String() == paramName
+			}
+			fieldPath := casing.JSONCamelCase(p.FieldPath.String())
+			return fieldPath == paramName
 		})
 		if pathParamIndex == -1 {
 			panic(fmt.Sprintf("Path parameter %q not found in path parameters", paramName))

@@ -922,8 +922,8 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 		Params   []openapiParameterObject
 	}
 
-	var requiredField = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
-	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	requiredField := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, requiredField)
 
 	messageSchema := &openapi_options.Schema{
@@ -2021,7 +2021,8 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		},
 	}
 	verifyTemplateExtensions := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File,
-		opts *openapiconfig.OpenAPIOptions) {
+		opts *openapiconfig.OpenAPIOptions,
+	) {
 		if err := AddErrorDefs(reg); err != nil {
 			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 			return
@@ -2242,7 +2243,8 @@ func TestApplyTemplateHeaders(t *testing.T) {
 		},
 	}
 	verifyTemplateHeaders := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File,
-		opts *openapiconfig.OpenAPIOptions) {
+		opts *openapiconfig.OpenAPIOptions,
+	) {
 		if err := AddErrorDefs(reg); err != nil {
 			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 			return
@@ -2301,7 +2303,6 @@ func TestApplyTemplateHeaders(t *testing.T) {
 		}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 		}
-
 	}
 	t.Run("verify template options set via proto options", func(t *testing.T) {
 		file := newFile()
@@ -2515,7 +2516,6 @@ func TestValidateHeaderType(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestValidateDefaultValueType(t *testing.T) {
@@ -2711,7 +2711,6 @@ func TestValidateDefaultValueType(t *testing.T) {
 			}
 		}
 	}
-
 }
 
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
@@ -3580,7 +3579,6 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestApplyTemplateWithRequestAndBodyParameters(t *testing.T) {
@@ -4024,7 +4022,7 @@ func generateMsgsForJSONReservedName() []*descriptor.Message {
 }
 
 func TestTemplateWithJsonCamelCase(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input    string
 		expected string
 	}{
@@ -4053,7 +4051,7 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 }
 
 func TestTemplateWithoutJsonCamelCase(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input    string
 		expected string
 	}{
@@ -4081,7 +4079,7 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 }
 
 func TestTemplateToOpenAPIPath(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input    string
 		expected string
 	}{
@@ -4150,7 +4148,7 @@ func getParameters(names []string) []descriptor.Parameter {
 }
 
 func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input              string
 		expected           string
 		pathParams         []descriptor.Parameter
@@ -4162,6 +4160,8 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 		{"/test/{name=*}/", "/test/{name}/", getParameters([]string{"name"}), []string{"name"}, true},
 		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"name"}), []string{"testCase"}, true},
 		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"name"}), []string{"test_case"}, false},
+		{"/test/{test_type.name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"test_type.name"}), []string{"testCase"}, true},
+		{"/test/{test_type.name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"test_type.name"}), []string{"test_case"}, false},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetExpandSlashedPathPatterns(true)
@@ -4182,7 +4182,7 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 }
 
 func TestExpandedPathParametersStringType(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input string
 	}{
 		{"/test/{name=test_cases/*}/"}, {"/v1/{name=projects/*/documents/*}:exportResults"},
@@ -4229,7 +4229,7 @@ func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 }
 
 func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input          string
 		output         string
 		listOfFQMNs    []string
@@ -4325,7 +4325,7 @@ func templateToExpandedPath(path string, reg *descriptor.Registry, fields []*des
 }
 
 func TestFQMNToRegexpMap(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input    string
 		expected map[string]string
 	}{
@@ -4349,7 +4349,7 @@ func TestFQMNToRegexpMap(t *testing.T) {
 }
 
 func TestFQMNtoOpenAPIName(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		input    string
 		expected string
 	}{
@@ -4417,15 +4417,15 @@ func TestSchemaOfField(t *testing.T) {
 		Format: "uuid",
 	}
 
-	var fieldOptions = new(descriptorpb.FieldOptions)
+	fieldOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
 
-	var requiredField = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
-	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	requiredField := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, requiredField)
 
-	var outputOnlyField = []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
-	var outputOnlyOptions = new(descriptorpb.FieldOptions)
+	outputOnlyField := []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
+	outputOnlyOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(outputOnlyOptions, annotations.E_FieldBehavior, outputOnlyField)
 
 	tests := []test{
@@ -5332,23 +5332,23 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		Required:    []string{"aRequiredField"},
 	}
 
-	var requiredField = new(descriptorpb.FieldOptions)
+	requiredField := new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredField, openapi_options.E_Openapiv2Field, jsonSchema)
 
-	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
-	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	fieldBehaviorRequired := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
 
-	var fieldBehaviorOutputOnlyField = []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
-	var fieldBehaviorOutputOnlyOptions = new(descriptorpb.FieldOptions)
+	fieldBehaviorOutputOnlyField := []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
+	fieldBehaviorOutputOnlyOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldBehaviorOutputOnlyOptions, annotations.E_FieldBehavior, fieldBehaviorOutputOnlyField)
 
-	var fieldVisibilityFieldInternal = &visibility.VisibilityRule{Restriction: "INTERNAL"}
-	var fieldVisibilityInternalOption = new(descriptorpb.FieldOptions)
+	fieldVisibilityFieldInternal := &visibility.VisibilityRule{Restriction: "INTERNAL"}
+	fieldVisibilityInternalOption := new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldVisibilityInternalOption, visibility.E_FieldVisibility, fieldVisibilityFieldInternal)
 
-	var fieldVisibilityFieldPreview = &visibility.VisibilityRule{Restriction: "INTERNAL,PREVIEW"}
-	var fieldVisibilityPreviewOption = new(descriptorpb.FieldOptions)
+	fieldVisibilityFieldPreview := &visibility.VisibilityRule{Restriction: "INTERNAL,PREVIEW"}
+	fieldVisibilityPreviewOption := new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldVisibilityPreviewOption, visibility.E_FieldVisibility, fieldVisibilityFieldPreview)
 
 	tests := []struct {
@@ -6032,7 +6032,6 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.descr, func(t *testing.T) {
-
 			msgs := []*descriptor.Message{}
 			for _, msgdesc := range test.msgDescs {
 				msgdesc.Options = &descriptorpb.MessageOptions{}
@@ -6106,7 +6105,6 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 }
 
 func TestUpdateOpenAPIDataFromComments(t *testing.T) {
-
 	tests := []struct {
 		descr                 string
 		openapiSwaggerObject  interface{}
@@ -6483,7 +6481,6 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.descr, func(t *testing.T) {
-
 			msgs := []*descriptor.Message{}
 			for _, msgdesc := range test.msgDescs {
 				msgdesc.Options = &descriptorpb.MessageOptions{}
@@ -6582,7 +6579,8 @@ func TestTagsWithGoTemplate(t *testing.T) {
 	// Set tag through service extension
 	proto.SetExtension(file.GetService()[0].Options, openapi_options.E_Openapiv2Tag, &openapi_options.Tag{
 		Name:        "service tag",
-		Description: "{{ .Name }}!"})
+		Description: "{{ .Name }}!",
+	})
 
 	// Set tags through file extension
 	swagger := openapi_options.Swagger{
@@ -7918,9 +7916,7 @@ func TestSubPathParams(t *testing.T) {
 }
 
 func TestRenderServicesParameterDescriptionNoFieldBody(t *testing.T) {
-
-	optionsRaw :=
-		`{
+	optionsRaw := `{
 			"[grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema]": {
 			  "jsonSchema": {
 				"title": "aMessage title",
@@ -8027,7 +8023,6 @@ func TestRenderServicesParameterDescriptionNoFieldBody(t *testing.T) {
 	if got != want {
 		t.Fatalf("Wrong description for body parameter, got %s want %s", got, want)
 	}
-
 }
 
 func TestRenderServicesWithBodyFieldNameInCamelCase(t *testing.T) {
@@ -8171,7 +8166,7 @@ func TestRenderServicesWithBodyFieldNameInCamelCase(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/v1/users/{userObject.name}").Post
+	operation := *result.getPathItemObject("/v1/users/{userObject.name}").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8381,7 +8376,7 @@ func TestRenderServicesWithBodyFieldHasFieldMask(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/v1/users/{userObject.name}").Patch
+	operation := *result.getPathItemObject("/v1/users/{userObject.name}").Patch
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8409,7 +8404,7 @@ func TestRenderServicesWithColonInPath(t *testing.T) {
 			PathParamName: "overrideField",
 		},
 	}
-	var fieldOptions = new(descriptorpb.FieldOptions)
+	fieldOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
 
 	reqDesc := &descriptorpb.DescriptorProto{
@@ -8533,7 +8528,7 @@ func TestRenderServicesWithColonInPath(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/my/{overrideField}:foo").Post
+	operation := *result.getPathItemObject("/my/{overrideField}:foo").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8680,7 +8675,7 @@ func TestRenderServicesWithDoubleColonInPath(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/my/{field}:foo:bar").Post
+	operation := *result.getPathItemObject("/my/{field}:foo:bar").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8827,7 +8822,7 @@ func TestRenderServicesWithColonLastInPath(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/my/{field}:").Post
+	operation := *result.getPathItemObject("/my/{field}:").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -8974,7 +8969,7 @@ func TestRenderServicesWithColonInSegment(t *testing.T) {
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/my/{field}").Post
+	operation := *result.getPathItemObject("/my/{field}").Post
 	if got, want := len(operation.Parameters), 2; got != want {
 		t.Fatalf("Parameters length differed, got %d want %d", got, want)
 	}
@@ -9729,9 +9724,8 @@ func TestRenderServicesOpenapiPathsOrderPreservedAdditionalBindings(t *testing.T
 }
 
 func TestRenderServicesOpenapiRequiredBodyFieldContainingPathParam(t *testing.T) {
-
-	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
-	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	fieldBehaviorRequired := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
 
 	bookDesc := &descriptorpb.DescriptorProto{
@@ -9888,7 +9882,7 @@ func TestRenderServicesOpenapiRequiredBodyFieldContainingPathParam(t *testing.T)
 		t.Fatalf("Wrong results path, got %s want %s", got, want)
 	}
 
-	var operation = *result.getPathItemObject("/v1/books/{book.type}").Post
+	operation := *result.getPathItemObject("/v1/books/{book.type}").Post
 
 	if got, want := operation.Parameters[0].Name, "book.type"; got != want {
 		t.Fatalf("Wrong parameter name 0, got %s want %s", got, want)
@@ -9932,11 +9926,9 @@ func TestRenderServicesOpenapiRequiredBodyFieldContainingPathParam(t *testing.T)
 }
 
 func TestArrayMessageItemsType(t *testing.T) {
-
 	msgDesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 		Field: []*descriptorpb.FieldDescriptorProto{
-
 			{
 				Name:     proto.String("children"),
 				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
@@ -10163,7 +10155,6 @@ func TestArrayMessageItemsType(t *testing.T) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 	if want, is, name := expect, result.Definitions, "Produces"; !reflect.DeepEqual(is, want) {
-
 		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
 	}
 	// If there was a failure, print out the input and the json result for debugging.
@@ -10364,7 +10355,6 @@ func TestQueryParameterType(t *testing.T) {
 	}
 
 	if want, is, name := expect[0].PathItemObject.Get.Parameters, result.getPathItemObject("/v1/echo").Get.Parameters, "Produces"; !reflect.DeepEqual(is, want) {
-
 		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
 	}
 	// If there was a failure, print out the input and the json result for debugging.
@@ -10784,7 +10774,7 @@ func TestEnumValueProtoComments(t *testing.T) {
 				Package: new(string),
 				SourceCodeInfo: &descriptorpb.SourceCodeInfo{
 					Location: []*descriptorpb.SourceCodeInfo_Location{
-						&descriptorpb.SourceCodeInfo_Location{
+						{
 							LeadingComments: &comments,
 						},
 					},
