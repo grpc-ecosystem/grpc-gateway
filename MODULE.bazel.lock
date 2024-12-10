@@ -246,20 +246,12 @@
   "moduleExtensions": {
     "//:non_module_deps.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "lhgzIpwlfIMDougPUVDoxGRhNI2zVxaOtDEk+dTDChU=",
+        "bzlTransitiveDigest": "gUl5hwI2AaaoyzEa14a09dj+WYU0fM+OBBXVBOQ50bo=",
         "usagesDigest": "iXvfBtzAbLvbLe9kllQpE1XGaenkPW3Qmggx56ZxOoQ=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
         "generatedRepoSpecs": {
-          "org_golang_x_tools": {
-            "repoRuleId": "@@gazelle+//internal:go_repository.bzl%go_repository",
-            "attributes": {
-              "importpath": "golang.org/x/tools",
-              "sum": "h1:vU5i/LfpvrRCpgM/VPfJLg5KjxD3E+hfT1SH+d9zLwg=",
-              "version": "v0.21.1-0.20240508182429-e35e4ccd0d2d"
-            }
-          },
           "com_github_bazelbuild_buildtools": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
@@ -274,16 +266,6 @@
         "recordedRepoMappingEntries": [
           [
             "",
-            "bazel_gazelle",
-            "gazelle+"
-          ],
-          [
-            "",
-            "bazel_tools",
-            "bazel_tools"
-          ],
-          [
-            "gazelle+",
             "bazel_tools",
             "bazel_tools"
           ]
@@ -611,6 +593,173 @@
             "bazel_tools"
           ]
         ]
+      }
+    },
+    "@@googleapis+//:extensions.bzl%switched_rules": {
+      "general": {
+        "bzlTransitiveDigest": "vG6fuTzXD8MMvHWZEQud0MMH7eoC4GXY0va7VrFFh04=",
+        "usagesDigest": "mzODiZHDGK2gPNpfPqjDmTn2PdgInmgNpfIL3KC2/Ts=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "com_google_googleapis_imports": {
+            "repoRuleId": "@@googleapis+//:repository_rules.bzl%switched_rules",
+            "attributes": {
+              "rules": {
+                "proto_library_with_info": [
+                  "",
+                  ""
+                ],
+                "moved_proto_library": [
+                  "",
+                  ""
+                ],
+                "java_proto_library": [
+                  "",
+                  ""
+                ],
+                "java_grpc_library": [
+                  "",
+                  ""
+                ],
+                "java_gapic_library": [
+                  "",
+                  ""
+                ],
+                "java_gapic_test": [
+                  "",
+                  ""
+                ],
+                "java_gapic_assembly_gradle_pkg": [
+                  "",
+                  ""
+                ],
+                "py_proto_library": [
+                  "",
+                  ""
+                ],
+                "py_grpc_library": [
+                  "",
+                  ""
+                ],
+                "py_gapic_library": [
+                  "",
+                  ""
+                ],
+                "py_test": [
+                  "",
+                  ""
+                ],
+                "py_gapic_assembly_pkg": [
+                  "",
+                  ""
+                ],
+                "py_import": [
+                  "",
+                  ""
+                ],
+                "go_proto_library": [
+                  "",
+                  ""
+                ],
+                "go_grpc_library": [
+                  "",
+                  ""
+                ],
+                "go_library": [
+                  "",
+                  ""
+                ],
+                "go_test": [
+                  "",
+                  ""
+                ],
+                "go_gapic_library": [
+                  "",
+                  ""
+                ],
+                "go_gapic_assembly_pkg": [
+                  "",
+                  ""
+                ],
+                "cc_proto_library": [
+                  "",
+                  ""
+                ],
+                "cc_grpc_library": [
+                  "",
+                  ""
+                ],
+                "cc_gapic_library": [
+                  "",
+                  ""
+                ],
+                "php_proto_library": [
+                  "",
+                  "php_proto_library"
+                ],
+                "php_grpc_library": [
+                  "",
+                  "php_grpc_library"
+                ],
+                "php_gapic_library": [
+                  "",
+                  "php_gapic_library"
+                ],
+                "php_gapic_assembly_pkg": [
+                  "",
+                  "php_gapic_assembly_pkg"
+                ],
+                "nodejs_gapic_library": [
+                  "",
+                  "typescript_gapic_library"
+                ],
+                "nodejs_gapic_assembly_pkg": [
+                  "",
+                  "typescript_gapic_assembly_pkg"
+                ],
+                "ruby_proto_library": [
+                  "",
+                  ""
+                ],
+                "ruby_grpc_library": [
+                  "",
+                  ""
+                ],
+                "ruby_ads_gapic_library": [
+                  "",
+                  ""
+                ],
+                "ruby_cloud_gapic_library": [
+                  "",
+                  ""
+                ],
+                "ruby_gapic_assembly_pkg": [
+                  "",
+                  ""
+                ],
+                "csharp_proto_library": [
+                  "",
+                  ""
+                ],
+                "csharp_grpc_library": [
+                  "",
+                  ""
+                ],
+                "csharp_gapic_library": [
+                  "",
+                  ""
+                ],
+                "csharp_gapic_assembly_pkg": [
+                  "",
+                  ""
+                ]
+              }
+            }
+          }
+        },
+        "recordedRepoMappingEntries": []
       }
     },
     "@@platforms//host:extension.bzl%host_platform": {
