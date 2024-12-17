@@ -141,7 +141,7 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 	}
 
 	// Check if oneof already set
-	if of := fieldDescriptor.ContainingOneof(); of != nil {
+	if of := fieldDescriptor.ContainingOneof(); of != nil && !of.IsSynthetic() {
 		if f := msgValue.WhichOneof(of); f != nil {
 			return fmt.Errorf("field already set for oneof %q", of.FullName().Name())
 		}
