@@ -70,10 +70,10 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_proto",
-    sha256 = "798377bf1093d30cd740d347d1ec58c63701a32306daea44eb3b54459eef4494",
-    strip_prefix = "rules_proto-7.0.3",
+    sha256 = "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
+    strip_prefix = "rules_proto-7.1.0",
     urls = [
-        "https://github.com/bazelbuild/rules_proto/archive/refs/tags/7.0.3.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/refs/tags/7.1.0.tar.gz",
     ],
 )
 
