@@ -11,7 +11,7 @@ import "google/protobuf/wrappers.proto";
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
 
 message Proto3Message {
-  // Next number: 49
+  // Next number: 50
   Proto3Message nested = 41;
   float float_value = 42;
   double double_value = 43;
@@ -23,6 +23,7 @@ message Proto3Message {
   string string_value = 8;
   bytes bytes_value = 9;
   repeated string repeated_value = 10;
+  optional string optional_value = 49;
   repeated google.protobuf.UInt64Value repeated_message = 44;
   EnumValue enum_value = 11;
   repeated EnumValue repeated_enum = 12;
