@@ -94,6 +94,7 @@ func TestPopulateParameters(t *testing.T) {
 	durationStr := durationT.String()
 	durationPb := durationpb.New(durationT)
 
+	optionalStr := "str"
 	fieldmaskStr := "float_value,double_value"
 	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}
 
@@ -134,6 +135,7 @@ func TestPopulateParameters(t *testing.T) {
 				"string_value":           {"str"},
 				"bytes_value":            {"YWJjMTIzIT8kKiYoKSctPUB-"},
 				"repeated_value":         {"a", "b", "c"},
+				"optional_value":         {optionalStr},
 				"repeated_message":       {"1", "2", "3"},
 				"enum_value":             {"1"},
 				"repeated_enum":          {"1", "2", "0"},
@@ -184,6 +186,7 @@ func TestPopulateParameters(t *testing.T) {
 				StringValue:        "str",
 				BytesValue:         []byte("abc123!?$*&()'-=@~"),
 				RepeatedValue:      []string{"a", "b", "c"},
+				OptionalValue:      &optionalStr,
 				RepeatedMessage:    []*wrapperspb.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
 				EnumValue:          examplepb.EnumValue_Y,
 				RepeatedEnum:       []examplepb.EnumValue{examplepb.EnumValue_Y, examplepb.EnumValue_Z, examplepb.EnumValue_X},
@@ -499,7 +502,7 @@ func TestPopulateParameters(t *testing.T) {
 			values: url.Values{
 				"timestampValue": {"0000-01-01T00:00:00.00Z"},
 			},
-			filter: utilities.NewDoubleArray(nil),
+			filter:  utilities.NewDoubleArray(nil),
 			want:    &examplepb.Proto3Message{},
 			wanterr: errors.New(`parsing field "timestamp_value": 0000-01-01T00:00:00.00Z before 0001-01-01`),
 		},

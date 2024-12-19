@@ -1882,8 +1882,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_protobuf",
         importpath = "google.golang.org/protobuf",
-        sum = "h1:8Ar7bF+apOIoThw1EdZl0p1oWvMqTHmpA2fRTyZO8io=",
-        version = "v1.35.2",
+        sum = "h1:mjIs9gYtt56AzC4ZaffQuh88TZurBGhIJMBZGSxNerQ=",
+        version = "v1.36.0",
     )
     go_repository(
         name = "org_golang_x_crypto",
