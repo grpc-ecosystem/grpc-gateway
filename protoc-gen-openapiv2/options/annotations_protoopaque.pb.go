@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: protoc-gen-openapiv2/options/annotations.proto
 
-//go:build !protoopaque
+//go:build protoopaque
 
 package options
 
