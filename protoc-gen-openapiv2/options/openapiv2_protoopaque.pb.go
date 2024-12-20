@@ -4,7 +4,7 @@
 // 	protoc        (unknown)
 // source: protoc-gen-openapiv2/options/openapiv2.proto
 
-//go:build !protoopaque
+//go:build protoopaque
 
 package options
 
@@ -357,62 +357,22 @@ func (x SecurityScheme_Flow) Number() protoreflect.EnumNumber {
 //	  produces: "application/json";
 //	};
 type Swagger struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// Specifies the OpenAPI Specification version being used. It can be
-	// used by the OpenAPI UI and other clients to interpret the API listing. The
-	// value MUST be "2.0".
-	Swagger string `protobuf:"bytes,1,opt,name=swagger,proto3" json:"swagger,omitempty"`
-	// Provides metadata about the API. The metadata can be used by the
-	// clients if needed.
-	Info *Info `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`
-	// The host (name or ip) serving the API. This MUST be the host only and does
-	// not include the scheme nor sub-paths. It MAY include a port. If the host is
-	// not included, the host serving the documentation is to be used (including
-	// the port). The host does not support path templating.
-	Host string `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
-	// The base path on which the API is served, which is relative to the host. If
-	// it is not included, the API is served directly under the host. The value
-	// MUST start with a leading slash (/). The basePath does not support path
-	// templating.
-	// Note that using `base_path` does not change the endpoint paths that are
-	// generated in the resulting OpenAPI file. If you wish to use `base_path`
-	// with relatively generated OpenAPI paths, the `base_path` prefix must be
-	// manually removed from your `google.api.http` paths and your code changed to
-	// serve the API from the `base_path`.
-	BasePath string `protobuf:"bytes,4,opt,name=base_path,json=basePath,proto3" json:"base_path,omitempty"`
-	// The transfer protocol of the API. Values MUST be from the list: "http",
-	// "https", "ws", "wss". If the schemes is not included, the default scheme to
-	// be used is the one used to access the OpenAPI definition itself.
-	Schemes []Scheme `protobuf:"varint,5,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.Scheme" json:"schemes,omitempty"`
-	// A list of MIME types the APIs can consume. This is global to all APIs but
-	// can be overridden on specific API calls. Value MUST be as described under
-	// Mime Types.
-	Consumes []string `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
-	// A list of MIME types the APIs can produce. This is global to all APIs but
-	// can be overridden on specific API calls. Value MUST be as described under
-	// Mime Types.
-	Produces []string `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
-	// An object to hold responses that can be used across operations. This
-	// property does not define global responses for all operations.
-	Responses map[string]*Response `protobuf:"bytes,10,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Security scheme definitions that can be used across the specification.
-	SecurityDefinitions *SecurityDefinitions `protobuf:"bytes,11,opt,name=security_definitions,json=securityDefinitions,proto3" json:"security_definitions,omitempty"`
-	// A declaration of which security schemes are applied for the API as a whole.
-	// The list of values describes alternative security schemes that can be used
-	// (that is, there is a logical OR between the security requirements).
-	// Individual operations can override this definition.
-	Security []*SecurityRequirement `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
-	// A list of tags for API documentation control. Tags can be used for logical
-	// grouping of operations by resources or any other qualifier.
-	Tags []*Tag `protobuf:"bytes,13,rep,name=tags,proto3" json:"tags,omitempty"`
-	// Additional external documentation.
-	ExternalDocs *ExternalDocumentation `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,15,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                          protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Swagger             string                     `protobuf:"bytes,1,opt,name=swagger,proto3" json:"swagger,omitempty"`
+	xxx_hidden_Info                *Info                      `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`
+	xxx_hidden_Host                string                     `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
+	xxx_hidden_BasePath            string                     `protobuf:"bytes,4,opt,name=base_path,json=basePath,proto3" json:"base_path,omitempty"`
+	xxx_hidden_Schemes             []Scheme                   `protobuf:"varint,5,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.Scheme" json:"schemes,omitempty"`
+	xxx_hidden_Consumes            []string                   `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
+	xxx_hidden_Produces            []string                   `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
+	xxx_hidden_Responses           map[string]*Response       `protobuf:"bytes,10,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_SecurityDefinitions *SecurityDefinitions       `protobuf:"bytes,11,opt,name=security_definitions,json=securityDefinitions,proto3" json:"security_definitions,omitempty"`
+	xxx_hidden_Security            *[]*SecurityRequirement    `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	xxx_hidden_Tags                *[]*Tag                    `protobuf:"bytes,13,rep,name=tags,proto3" json:"tags,omitempty"`
+	xxx_hidden_ExternalDocs        *ExternalDocumentation     `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	xxx_hidden_Extensions          map[string]*structpb.Value `protobuf:"bytes,15,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields                  protoimpl.UnknownFields
+	sizeCache                      protoimpl.SizeCache
 }
 
 func (x *Swagger) Reset() {
@@ -442,178 +402,182 @@ func (x *Swagger) ProtoReflect() protoreflect.Message {
 
 func (x *Swagger) GetSwagger() string {
 	if x != nil {
-		return x.Swagger
+		return x.xxx_hidden_Swagger
 	}
 	return ""
 }
 
 func (x *Swagger) GetInfo() *Info {
 	if x != nil {
-		return x.Info
+		return x.xxx_hidden_Info
 	}
 	return nil
 }
 
 func (x *Swagger) GetHost() string {
 	if x != nil {
-		return x.Host
+		return x.xxx_hidden_Host
 	}
 	return ""
 }
 
 func (x *Swagger) GetBasePath() string {
 	if x != nil {
-		return x.BasePath
+		return x.xxx_hidden_BasePath
 	}
 	return ""
 }
 
 func (x *Swagger) GetSchemes() []Scheme {
 	if x != nil {
-		return x.Schemes
+		return x.xxx_hidden_Schemes
 	}
 	return nil
 }
 
 func (x *Swagger) GetConsumes() []string {
 	if x != nil {
-		return x.Consumes
+		return x.xxx_hidden_Consumes
 	}
 	return nil
 }
 
 func (x *Swagger) GetProduces() []string {
 	if x != nil {
-		return x.Produces
+		return x.xxx_hidden_Produces
 	}
 	return nil
 }
 
 func (x *Swagger) GetResponses() map[string]*Response {
 	if x != nil {
-		return x.Responses
+		return x.xxx_hidden_Responses
 	}
 	return nil
 }
 
 func (x *Swagger) GetSecurityDefinitions() *SecurityDefinitions {
 	if x != nil {
-		return x.SecurityDefinitions
+		return x.xxx_hidden_SecurityDefinitions
 	}
 	return nil
 }
 
 func (x *Swagger) GetSecurity() []*SecurityRequirement {
 	if x != nil {
-		return x.Security
+		if x.xxx_hidden_Security != nil {
+			return *x.xxx_hidden_Security
+		}
 	}
 	return nil
 }
 
 func (x *Swagger) GetTags() []*Tag {
 	if x != nil {
-		return x.Tags
+		if x.xxx_hidden_Tags != nil {
+			return *x.xxx_hidden_Tags
+		}
 	}
 	return nil
 }
 
 func (x *Swagger) GetExternalDocs() *ExternalDocumentation {
 	if x != nil {
-		return x.ExternalDocs
+		return x.xxx_hidden_ExternalDocs
 	}
 	return nil
 }
 
 func (x *Swagger) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *Swagger) SetSwagger(v string) {
-	x.Swagger = v
+	x.xxx_hidden_Swagger = v
 }
 
 func (x *Swagger) SetInfo(v *Info) {
-	x.Info = v
+	x.xxx_hidden_Info = v
 }
 
 func (x *Swagger) SetHost(v string) {
-	x.Host = v
+	x.xxx_hidden_Host = v
 }
 
 func (x *Swagger) SetBasePath(v string) {
-	x.BasePath = v
+	x.xxx_hidden_BasePath = v
 }
 
 func (x *Swagger) SetSchemes(v []Scheme) {
-	x.Schemes = v
+	x.xxx_hidden_Schemes = v
 }
 
 func (x *Swagger) SetConsumes(v []string) {
-	x.Consumes = v
+	x.xxx_hidden_Consumes = v
 }
 
 func (x *Swagger) SetProduces(v []string) {
-	x.Produces = v
+	x.xxx_hidden_Produces = v
 }
 
 func (x *Swagger) SetResponses(v map[string]*Response) {
-	x.Responses = v
+	x.xxx_hidden_Responses = v
 }
 
 func (x *Swagger) SetSecurityDefinitions(v *SecurityDefinitions) {
-	x.SecurityDefinitions = v
+	x.xxx_hidden_SecurityDefinitions = v
 }
 
 func (x *Swagger) SetSecurity(v []*SecurityRequirement) {
-	x.Security = v
+	x.xxx_hidden_Security = &v
 }
 
 func (x *Swagger) SetTags(v []*Tag) {
-	x.Tags = v
+	x.xxx_hidden_Tags = &v
 }
 
 func (x *Swagger) SetExternalDocs(v *ExternalDocumentation) {
-	x.ExternalDocs = v
+	x.xxx_hidden_ExternalDocs = v
 }
 
 func (x *Swagger) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *Swagger) HasInfo() bool {
 	if x == nil {
 		return false
 	}
-	return x.Info != nil
+	return x.xxx_hidden_Info != nil
 }
 
 func (x *Swagger) HasSecurityDefinitions() bool {
 	if x == nil {
 		return false
 	}
-	return x.SecurityDefinitions != nil
+	return x.xxx_hidden_SecurityDefinitions != nil
 }
 
 func (x *Swagger) HasExternalDocs() bool {
 	if x == nil {
 		return false
 	}
-	return x.ExternalDocs != nil
+	return x.xxx_hidden_ExternalDocs != nil
 }
 
 func (x *Swagger) ClearInfo() {
-	x.Info = nil
+	x.xxx_hidden_Info = nil
 }
 
 func (x *Swagger) ClearSecurityDefinitions() {
-	x.SecurityDefinitions = nil
+	x.xxx_hidden_SecurityDefinitions = nil
 }
 
 func (x *Swagger) ClearExternalDocs() {
-	x.ExternalDocs = nil
+	x.xxx_hidden_ExternalDocs = nil
 }
 
 type Swagger_builder struct {
@@ -678,19 +642,19 @@ func (b0 Swagger_builder) Build() *Swagger {
 	m0 := &Swagger{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Swagger = b.Swagger
-	x.Info = b.Info
-	x.Host = b.Host
-	x.BasePath = b.BasePath
-	x.Schemes = b.Schemes
-	x.Consumes = b.Consumes
-	x.Produces = b.Produces
-	x.Responses = b.Responses
-	x.SecurityDefinitions = b.SecurityDefinitions
-	x.Security = b.Security
-	x.Tags = b.Tags
-	x.ExternalDocs = b.ExternalDocs
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Swagger = b.Swagger
+	x.xxx_hidden_Info = b.Info
+	x.xxx_hidden_Host = b.Host
+	x.xxx_hidden_BasePath = b.BasePath
+	x.xxx_hidden_Schemes = b.Schemes
+	x.xxx_hidden_Consumes = b.Consumes
+	x.xxx_hidden_Produces = b.Produces
+	x.xxx_hidden_Responses = b.Responses
+	x.xxx_hidden_SecurityDefinitions = b.SecurityDefinitions
+	x.xxx_hidden_Security = &b.Security
+	x.xxx_hidden_Tags = &b.Tags
+	x.xxx_hidden_ExternalDocs = b.ExternalDocs
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -720,57 +684,22 @@ func (b0 Swagger_builder) Build() *Swagger {
 //	  }
 //	}
 type Operation struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// A list of tags for API documentation control. Tags can be used for logical
-	// grouping of operations by resources or any other qualifier.
-	Tags []string `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
-	// A short summary of what the operation does. For maximum readability in the
-	// swagger-ui, this field SHOULD be less than 120 characters.
-	Summary string `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
-	// A verbose explanation of the operation behavior. GFM syntax can be used for
-	// rich text representation.
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	// Additional external documentation for this operation.
-	ExternalDocs *ExternalDocumentation `protobuf:"bytes,4,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	// Unique string used to identify the operation. The id MUST be unique among
-	// all operations described in the API. Tools and libraries MAY use the
-	// operationId to uniquely identify an operation, therefore, it is recommended
-	// to follow common programming naming conventions.
-	OperationId string `protobuf:"bytes,5,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
-	// A list of MIME types the operation can consume. This overrides the consumes
-	// definition at the OpenAPI Object. An empty value MAY be used to clear the
-	// global definition. Value MUST be as described under Mime Types.
-	Consumes []string `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
-	// A list of MIME types the operation can produce. This overrides the produces
-	// definition at the OpenAPI Object. An empty value MAY be used to clear the
-	// global definition. Value MUST be as described under Mime Types.
-	Produces []string `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
-	// The list of possible responses as they are returned from executing this
-	// operation.
-	Responses map[string]*Response `protobuf:"bytes,9,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// The transfer protocol for the operation. Values MUST be from the list:
-	// "http", "https", "ws", "wss". The value overrides the OpenAPI Object
-	// schemes definition.
-	Schemes []Scheme `protobuf:"varint,10,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.Scheme" json:"schemes,omitempty"`
-	// Declares this operation to be deprecated. Usage of the declared operation
-	// should be refrained. Default value is false.
-	Deprecated bool `protobuf:"varint,11,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
-	// A declaration of which security schemes are applied for this operation. The
-	// list of values describes alternative security schemes that can be used
-	// (that is, there is a logical OR between the security requirements). This
-	// definition overrides any declared top-level security. To remove a top-level
-	// security declaration, an empty array can be used.
-	Security []*SecurityRequirement `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions map[string]*structpb.Value `protobuf:"bytes,13,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Custom parameters such as HTTP request headers.
-	// See: https://swagger.io/docs/specification/2-0/describing-parameters/
-	// and https://swagger.io/specification/v2/#parameter-object.
-	Parameters    *Parameters `protobuf:"bytes,14,opt,name=parameters,proto3" json:"parameters,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                   protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Tags         []string                   `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
+	xxx_hidden_Summary      string                     `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
+	xxx_hidden_Description  string                     `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_ExternalDocs *ExternalDocumentation     `protobuf:"bytes,4,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	xxx_hidden_OperationId  string                     `protobuf:"bytes,5,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	xxx_hidden_Consumes     []string                   `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
+	xxx_hidden_Produces     []string                   `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
+	xxx_hidden_Responses    map[string]*Response       `protobuf:"bytes,9,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_Schemes      []Scheme                   `protobuf:"varint,10,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.Scheme" json:"schemes,omitempty"`
+	xxx_hidden_Deprecated   bool                       `protobuf:"varint,11,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	xxx_hidden_Security     *[]*SecurityRequirement    `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	xxx_hidden_Extensions   map[string]*structpb.Value `protobuf:"bytes,13,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_Parameters   *Parameters                `protobuf:"bytes,14,opt,name=parameters,proto3" json:"parameters,omitempty"`
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *Operation) Reset() {
@@ -800,167 +729,169 @@ func (x *Operation) ProtoReflect() protoreflect.Message {
 
 func (x *Operation) GetTags() []string {
 	if x != nil {
-		return x.Tags
+		return x.xxx_hidden_Tags
 	}
 	return nil
 }
 
 func (x *Operation) GetSummary() string {
 	if x != nil {
-		return x.Summary
+		return x.xxx_hidden_Summary
 	}
 	return ""
 }
 
 func (x *Operation) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *Operation) GetExternalDocs() *ExternalDocumentation {
 	if x != nil {
-		return x.ExternalDocs
+		return x.xxx_hidden_ExternalDocs
 	}
 	return nil
 }
 
 func (x *Operation) GetOperationId() string {
 	if x != nil {
-		return x.OperationId
+		return x.xxx_hidden_OperationId
 	}
 	return ""
 }
 
 func (x *Operation) GetConsumes() []string {
 	if x != nil {
-		return x.Consumes
+		return x.xxx_hidden_Consumes
 	}
 	return nil
 }
 
 func (x *Operation) GetProduces() []string {
 	if x != nil {
-		return x.Produces
+		return x.xxx_hidden_Produces
 	}
 	return nil
 }
 
 func (x *Operation) GetResponses() map[string]*Response {
 	if x != nil {
-		return x.Responses
+		return x.xxx_hidden_Responses
 	}
 	return nil
 }
 
 func (x *Operation) GetSchemes() []Scheme {
 	if x != nil {
-		return x.Schemes
+		return x.xxx_hidden_Schemes
 	}
 	return nil
 }
 
 func (x *Operation) GetDeprecated() bool {
 	if x != nil {
-		return x.Deprecated
+		return x.xxx_hidden_Deprecated
 	}
 	return false
 }
 
 func (x *Operation) GetSecurity() []*SecurityRequirement {
 	if x != nil {
-		return x.Security
+		if x.xxx_hidden_Security != nil {
+			return *x.xxx_hidden_Security
+		}
 	}
 	return nil
 }
 
 func (x *Operation) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *Operation) GetParameters() *Parameters {
 	if x != nil {
-		return x.Parameters
+		return x.xxx_hidden_Parameters
 	}
 	return nil
 }
 
 func (x *Operation) SetTags(v []string) {
-	x.Tags = v
+	x.xxx_hidden_Tags = v
 }
 
 func (x *Operation) SetSummary(v string) {
-	x.Summary = v
+	x.xxx_hidden_Summary = v
 }
 
 func (x *Operation) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *Operation) SetExternalDocs(v *ExternalDocumentation) {
-	x.ExternalDocs = v
+	x.xxx_hidden_ExternalDocs = v
 }
 
 func (x *Operation) SetOperationId(v string) {
-	x.OperationId = v
+	x.xxx_hidden_OperationId = v
 }
 
 func (x *Operation) SetConsumes(v []string) {
-	x.Consumes = v
+	x.xxx_hidden_Consumes = v
 }
 
 func (x *Operation) SetProduces(v []string) {
-	x.Produces = v
+	x.xxx_hidden_Produces = v
 }
 
 func (x *Operation) SetResponses(v map[string]*Response) {
-	x.Responses = v
+	x.xxx_hidden_Responses = v
 }
 
 func (x *Operation) SetSchemes(v []Scheme) {
-	x.Schemes = v
+	x.xxx_hidden_Schemes = v
 }
 
 func (x *Operation) SetDeprecated(v bool) {
-	x.Deprecated = v
+	x.xxx_hidden_Deprecated = v
 }
 
 func (x *Operation) SetSecurity(v []*SecurityRequirement) {
-	x.Security = v
+	x.xxx_hidden_Security = &v
 }
 
 func (x *Operation) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *Operation) SetParameters(v *Parameters) {
-	x.Parameters = v
+	x.xxx_hidden_Parameters = v
 }
 
 func (x *Operation) HasExternalDocs() bool {
 	if x == nil {
 		return false
 	}
-	return x.ExternalDocs != nil
+	return x.xxx_hidden_ExternalDocs != nil
 }
 
 func (x *Operation) HasParameters() bool {
 	if x == nil {
 		return false
 	}
-	return x.Parameters != nil
+	return x.xxx_hidden_Parameters != nil
 }
 
 func (x *Operation) ClearExternalDocs() {
-	x.ExternalDocs = nil
+	x.xxx_hidden_ExternalDocs = nil
 }
 
 func (x *Operation) ClearParameters() {
-	x.Parameters = nil
+	x.xxx_hidden_Parameters = nil
 }
 
 type Operation_builder struct {
@@ -1020,19 +951,19 @@ func (b0 Operation_builder) Build() *Operation {
 	m0 := &Operation{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Tags = b.Tags
-	x.Summary = b.Summary
-	x.Description = b.Description
-	x.ExternalDocs = b.ExternalDocs
-	x.OperationId = b.OperationId
-	x.Consumes = b.Consumes
-	x.Produces = b.Produces
-	x.Responses = b.Responses
-	x.Schemes = b.Schemes
-	x.Deprecated = b.Deprecated
-	x.Security = b.Security
-	x.Extensions = b.Extensions
-	x.Parameters = b.Parameters
+	x.xxx_hidden_Tags = b.Tags
+	x.xxx_hidden_Summary = b.Summary
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_ExternalDocs = b.ExternalDocs
+	x.xxx_hidden_OperationId = b.OperationId
+	x.xxx_hidden_Consumes = b.Consumes
+	x.xxx_hidden_Produces = b.Produces
+	x.xxx_hidden_Responses = b.Responses
+	x.xxx_hidden_Schemes = b.Schemes
+	x.xxx_hidden_Deprecated = b.Deprecated
+	x.xxx_hidden_Security = &b.Security
+	x.xxx_hidden_Extensions = b.Extensions
+	x.xxx_hidden_Parameters = b.Parameters
 	return m0
 }
 
@@ -1042,12 +973,10 @@ func (b0 Operation_builder) Build() *Operation {
 // parameters beyond those inferred from the Protobuf schema.
 // See: https://swagger.io/specification/v2/#parameter-object
 type Parameters struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// `Headers` is one or more HTTP header parameter.
-	// See: https://swagger.io/docs/specification/2-0/describing-parameters/#header-parameters
-	Headers       []*HeaderParameter `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Headers *[]*HeaderParameter    `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Parameters) Reset() {
@@ -1077,13 +1006,15 @@ func (x *Parameters) ProtoReflect() protoreflect.Message {
 
 func (x *Parameters) GetHeaders() []*HeaderParameter {
 	if x != nil {
-		return x.Headers
+		if x.xxx_hidden_Headers != nil {
+			return *x.xxx_hidden_Headers
+		}
 	}
 	return nil
 }
 
 func (x *Parameters) SetHeaders(v []*HeaderParameter) {
-	x.Headers = v
+	x.xxx_hidden_Headers = &v
 }
 
 type Parameters_builder struct {
@@ -1098,27 +1029,21 @@ func (b0 Parameters_builder) Build() *Parameters {
 	m0 := &Parameters{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Headers = b.Headers
+	x.xxx_hidden_Headers = &b.Headers
 	return m0
 }
 
 // `HeaderParameter` a HTTP header parameter.
 // See: https://swagger.io/specification/v2/#parameter-object
 type HeaderParameter struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// `Name` is the header name.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// `Description` is a short description of the header.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	// `Type` is the type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
-	// See: https://swagger.io/specification/v2/#parameterType.
-	Type HeaderParameter_Type `protobuf:"varint,3,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter_Type" json:"type,omitempty"`
-	// `Format` The extending format for the previously mentioned type.
-	Format string `protobuf:"bytes,4,opt,name=format,proto3" json:"format,omitempty"`
-	// `Required` indicates if the header is optional
-	Required      bool `protobuf:"varint,5,opt,name=required,proto3" json:"required,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name        string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	xxx_hidden_Description string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Type        HeaderParameter_Type   `protobuf:"varint,3,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter_Type" json:"type,omitempty"`
+	xxx_hidden_Format      string                 `protobuf:"bytes,4,opt,name=format,proto3" json:"format,omitempty"`
+	xxx_hidden_Required    bool                   `protobuf:"varint,5,opt,name=required,proto3" json:"required,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *HeaderParameter) Reset() {
@@ -1148,57 +1073,57 @@ func (x *HeaderParameter) ProtoReflect() protoreflect.Message {
 
 func (x *HeaderParameter) GetName() string {
 	if x != nil {
-		return x.Name
+		return x.xxx_hidden_Name
 	}
 	return ""
 }
 
 func (x *HeaderParameter) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *HeaderParameter) GetType() HeaderParameter_Type {
 	if x != nil {
-		return x.Type
+		return x.xxx_hidden_Type
 	}
 	return HeaderParameter_UNKNOWN
 }
 
 func (x *HeaderParameter) GetFormat() string {
 	if x != nil {
-		return x.Format
+		return x.xxx_hidden_Format
 	}
 	return ""
 }
 
 func (x *HeaderParameter) GetRequired() bool {
 	if x != nil {
-		return x.Required
+		return x.xxx_hidden_Required
 	}
 	return false
 }
 
 func (x *HeaderParameter) SetName(v string) {
-	x.Name = v
+	x.xxx_hidden_Name = v
 }
 
 func (x *HeaderParameter) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *HeaderParameter) SetType(v HeaderParameter_Type) {
-	x.Type = v
+	x.xxx_hidden_Type = v
 }
 
 func (x *HeaderParameter) SetFormat(v string) {
-	x.Format = v
+	x.xxx_hidden_Format = v
 }
 
 func (x *HeaderParameter) SetRequired(v bool) {
-	x.Required = v
+	x.xxx_hidden_Required = v
 }
 
 type HeaderParameter_builder struct {
@@ -1221,11 +1146,11 @@ func (b0 HeaderParameter_builder) Build() *HeaderParameter {
 	m0 := &HeaderParameter{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Name = b.Name
-	x.Description = b.Description
-	x.Type = b.Type
-	x.Format = b.Format
-	x.Required = b.Required
+	x.xxx_hidden_Name = b.Name
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Type = b.Type
+	x.xxx_hidden_Format = b.Format
+	x.xxx_hidden_Required = b.Required
 	return m0
 }
 
@@ -1233,21 +1158,14 @@ func (b0 HeaderParameter_builder) Build() *HeaderParameter {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#headerObject
 type Header struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// `Description` is a short description of the header.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
-	// The type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
-	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	// `Format` The extending format for the previously mentioned type.
-	Format string `protobuf:"bytes,3,opt,name=format,proto3" json:"format,omitempty"`
-	// `Default` Declares the value of the header that the server will use if none is provided.
-	// See: https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-6.2.
-	// Unlike JSON Schema this value MUST conform to the defined type for the header.
-	Default string `protobuf:"bytes,6,opt,name=default,proto3" json:"default,omitempty"`
-	// 'Pattern' See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.3.
-	Pattern       string `protobuf:"bytes,13,opt,name=pattern,proto3" json:"pattern,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Description string                 `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Type        string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	xxx_hidden_Format      string                 `protobuf:"bytes,3,opt,name=format,proto3" json:"format,omitempty"`
+	xxx_hidden_Default     string                 `protobuf:"bytes,6,opt,name=default,proto3" json:"default,omitempty"`
+	xxx_hidden_Pattern     string                 `protobuf:"bytes,13,opt,name=pattern,proto3" json:"pattern,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Header) Reset() {
@@ -1277,57 +1195,57 @@ func (x *Header) ProtoReflect() protoreflect.Message {
 
 func (x *Header) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *Header) GetType() string {
 	if x != nil {
-		return x.Type
+		return x.xxx_hidden_Type
 	}
 	return ""
 }
 
 func (x *Header) GetFormat() string {
 	if x != nil {
-		return x.Format
+		return x.xxx_hidden_Format
 	}
 	return ""
 }
 
 func (x *Header) GetDefault() string {
 	if x != nil {
-		return x.Default
+		return x.xxx_hidden_Default
 	}
 	return ""
 }
 
 func (x *Header) GetPattern() string {
 	if x != nil {
-		return x.Pattern
+		return x.xxx_hidden_Pattern
 	}
 	return ""
 }
 
 func (x *Header) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *Header) SetType(v string) {
-	x.Type = v
+	x.xxx_hidden_Type = v
 }
 
 func (x *Header) SetFormat(v string) {
-	x.Format = v
+	x.xxx_hidden_Format = v
 }
 
 func (x *Header) SetDefault(v string) {
-	x.Default = v
+	x.xxx_hidden_Default = v
 }
 
 func (x *Header) SetPattern(v string) {
-	x.Pattern = v
+	x.xxx_hidden_Pattern = v
 }
 
 type Header_builder struct {
@@ -1351,11 +1269,11 @@ func (b0 Header_builder) Build() *Header {
 	m0 := &Header{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Description = b.Description
-	x.Type = b.Type
-	x.Format = b.Format
-	x.Default = b.Default
-	x.Pattern = b.Pattern
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Type = b.Type
+	x.xxx_hidden_Format = b.Format
+	x.xxx_hidden_Default = b.Default
+	x.xxx_hidden_Pattern = b.Pattern
 	return m0
 }
 
@@ -1363,26 +1281,14 @@ func (b0 Header_builder) Build() *Header {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responseObject
 type Response struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// `Description` is a short description of the response.
-	// GFM syntax can be used for rich text representation.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
-	// `Schema` optionally defines the structure of the response.
-	// If `Schema` is not provided, it means there is no content to the response.
-	Schema *Schema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
-	// `Headers` A list of headers that are sent with the response.
-	// `Header` name is expected to be a string in the canonical format of the MIME header key
-	// See: https://golang.org/pkg/net/textproto/#CanonicalMIMEHeaderKey
-	Headers map[string]*Header `protobuf:"bytes,3,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// `Examples` gives per-mimetype response examples.
-	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
-	Examples map[string]string `protobuf:"bytes,4,rep,name=examples,proto3" json:"examples,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,5,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Description string                     `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Schema      *Schema                    `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
+	xxx_hidden_Headers     map[string]*Header         `protobuf:"bytes,3,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_Examples    map[string]string          `protobuf:"bytes,4,rep,name=examples,proto3" json:"examples,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_Extensions  map[string]*structpb.Value `protobuf:"bytes,5,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Response) Reset() {
@@ -1412,68 +1318,68 @@ func (x *Response) ProtoReflect() protoreflect.Message {
 
 func (x *Response) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *Response) GetSchema() *Schema {
 	if x != nil {
-		return x.Schema
+		return x.xxx_hidden_Schema
 	}
 	return nil
 }
 
 func (x *Response) GetHeaders() map[string]*Header {
 	if x != nil {
-		return x.Headers
+		return x.xxx_hidden_Headers
 	}
 	return nil
 }
 
 func (x *Response) GetExamples() map[string]string {
 	if x != nil {
-		return x.Examples
+		return x.xxx_hidden_Examples
 	}
 	return nil
 }
 
 func (x *Response) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *Response) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *Response) SetSchema(v *Schema) {
-	x.Schema = v
+	x.xxx_hidden_Schema = v
 }
 
 func (x *Response) SetHeaders(v map[string]*Header) {
-	x.Headers = v
+	x.xxx_hidden_Headers = v
 }
 
 func (x *Response) SetExamples(v map[string]string) {
-	x.Examples = v
+	x.xxx_hidden_Examples = v
 }
 
 func (x *Response) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *Response) HasSchema() bool {
 	if x == nil {
 		return false
 	}
-	return x.Schema != nil
+	return x.xxx_hidden_Schema != nil
 }
 
 func (x *Response) ClearSchema() {
-	x.Schema = nil
+	x.xxx_hidden_Schema = nil
 }
 
 type Response_builder struct {
@@ -1502,11 +1408,11 @@ func (b0 Response_builder) Build() *Response {
 	m0 := &Response{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Description = b.Description
-	x.Schema = b.Schema
-	x.Headers = b.Headers
-	x.Examples = b.Examples
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Schema = b.Schema
+	x.xxx_hidden_Headers = b.Headers
+	x.xxx_hidden_Examples = b.Examples
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -1534,27 +1440,16 @@ func (b0 Response_builder) Build() *Response {
 //	  ...
 //	};
 type Info struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// The title of the application.
-	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	// A short description of the application. GFM syntax can be used for rich
-	// text representation.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	// The Terms of Service for the API.
-	TermsOfService string `protobuf:"bytes,3,opt,name=terms_of_service,json=termsOfService,proto3" json:"terms_of_service,omitempty"`
-	// The contact information for the exposed API.
-	Contact *Contact `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
-	// The license information for the exposed API.
-	License *License `protobuf:"bytes,5,opt,name=license,proto3" json:"license,omitempty"`
-	// Provides the version of the application API (not to be confused
-	// with the specification version).
-	Version string `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,7,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                     protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Title          string                     `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	xxx_hidden_Description    string                     `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_TermsOfService string                     `protobuf:"bytes,3,opt,name=terms_of_service,json=termsOfService,proto3" json:"terms_of_service,omitempty"`
+	xxx_hidden_Contact        *Contact                   `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
+	xxx_hidden_License        *License                   `protobuf:"bytes,5,opt,name=license,proto3" json:"license,omitempty"`
+	xxx_hidden_Version        string                     `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
+	xxx_hidden_Extensions     map[string]*structpb.Value `protobuf:"bytes,7,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *Info) Reset() {
@@ -1584,101 +1479,101 @@ func (x *Info) ProtoReflect() protoreflect.Message {
 
 func (x *Info) GetTitle() string {
 	if x != nil {
-		return x.Title
+		return x.xxx_hidden_Title
 	}
 	return ""
 }
 
 func (x *Info) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *Info) GetTermsOfService() string {
 	if x != nil {
-		return x.TermsOfService
+		return x.xxx_hidden_TermsOfService
 	}
 	return ""
 }
 
 func (x *Info) GetContact() *Contact {
 	if x != nil {
-		return x.Contact
+		return x.xxx_hidden_Contact
 	}
 	return nil
 }
 
 func (x *Info) GetLicense() *License {
 	if x != nil {
-		return x.License
+		return x.xxx_hidden_License
 	}
 	return nil
 }
 
 func (x *Info) GetVersion() string {
 	if x != nil {
-		return x.Version
+		return x.xxx_hidden_Version
 	}
 	return ""
 }
 
 func (x *Info) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *Info) SetTitle(v string) {
-	x.Title = v
+	x.xxx_hidden_Title = v
 }
 
 func (x *Info) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *Info) SetTermsOfService(v string) {
-	x.TermsOfService = v
+	x.xxx_hidden_TermsOfService = v
 }
 
 func (x *Info) SetContact(v *Contact) {
-	x.Contact = v
+	x.xxx_hidden_Contact = v
 }
 
 func (x *Info) SetLicense(v *License) {
-	x.License = v
+	x.xxx_hidden_License = v
 }
 
 func (x *Info) SetVersion(v string) {
-	x.Version = v
+	x.xxx_hidden_Version = v
 }
 
 func (x *Info) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *Info) HasContact() bool {
 	if x == nil {
 		return false
 	}
-	return x.Contact != nil
+	return x.xxx_hidden_Contact != nil
 }
 
 func (x *Info) HasLicense() bool {
 	if x == nil {
 		return false
 	}
-	return x.License != nil
+	return x.xxx_hidden_License != nil
 }
 
 func (x *Info) ClearContact() {
-	x.Contact = nil
+	x.xxx_hidden_Contact = nil
 }
 
 func (x *Info) ClearLicense() {
-	x.License = nil
+	x.xxx_hidden_License = nil
 }
 
 type Info_builder struct {
@@ -1708,13 +1603,13 @@ func (b0 Info_builder) Build() *Info {
 	m0 := &Info{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Title = b.Title
-	x.Description = b.Description
-	x.TermsOfService = b.TermsOfService
-	x.Contact = b.Contact
-	x.License = b.License
-	x.Version = b.Version
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Title = b.Title
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_TermsOfService = b.TermsOfService
+	x.xxx_hidden_Contact = b.Contact
+	x.xxx_hidden_License = b.License
+	x.xxx_hidden_Version = b.Version
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -1737,17 +1632,12 @@ func (b0 Info_builder) Build() *Info {
 //	  ...
 //	};
 type Contact struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// The identifying name of the contact person/organization.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// The URL pointing to the contact information. MUST be in the format of a
-	// URL.
-	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
-	// The email address of the contact person/organization. MUST be in the format
-	// of an email address.
-	Email         string `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name  string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	xxx_hidden_Url   string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	xxx_hidden_Email string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Contact) Reset() {
@@ -1777,35 +1667,35 @@ func (x *Contact) ProtoReflect() protoreflect.Message {
 
 func (x *Contact) GetName() string {
 	if x != nil {
-		return x.Name
+		return x.xxx_hidden_Name
 	}
 	return ""
 }
 
 func (x *Contact) GetUrl() string {
 	if x != nil {
-		return x.Url
+		return x.xxx_hidden_Url
 	}
 	return ""
 }
 
 func (x *Contact) GetEmail() string {
 	if x != nil {
-		return x.Email
+		return x.xxx_hidden_Email
 	}
 	return ""
 }
 
 func (x *Contact) SetName(v string) {
-	x.Name = v
+	x.xxx_hidden_Name = v
 }
 
 func (x *Contact) SetUrl(v string) {
-	x.Url = v
+	x.xxx_hidden_Url = v
 }
 
 func (x *Contact) SetEmail(v string) {
-	x.Email = v
+	x.xxx_hidden_Email = v
 }
 
 type Contact_builder struct {
@@ -1825,9 +1715,9 @@ func (b0 Contact_builder) Build() *Contact {
 	m0 := &Contact{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Name = b.Name
-	x.Url = b.Url
-	x.Email = b.Email
+	x.xxx_hidden_Name = b.Name
+	x.xxx_hidden_Url = b.Url
+	x.xxx_hidden_Email = b.Email
 	return m0
 }
 
@@ -1849,13 +1739,11 @@ func (b0 Contact_builder) Build() *Contact {
 //	  ...
 //	};
 type License struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// The license name used for the API.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// A URL to the license used for the API. MUST be in the format of a URL.
-	Url           string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Name string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	xxx_hidden_Url  string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *License) Reset() {
@@ -1885,24 +1773,24 @@ func (x *License) ProtoReflect() protoreflect.Message {
 
 func (x *License) GetName() string {
 	if x != nil {
-		return x.Name
+		return x.xxx_hidden_Name
 	}
 	return ""
 }
 
 func (x *License) GetUrl() string {
 	if x != nil {
-		return x.Url
+		return x.xxx_hidden_Url
 	}
 	return ""
 }
 
 func (x *License) SetName(v string) {
-	x.Name = v
+	x.xxx_hidden_Name = v
 }
 
 func (x *License) SetUrl(v string) {
-	x.Url = v
+	x.xxx_hidden_Url = v
 }
 
 type License_builder struct {
@@ -1918,8 +1806,8 @@ func (b0 License_builder) Build() *License {
 	m0 := &License{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Name = b.Name
-	x.Url = b.Url
+	x.xxx_hidden_Name = b.Name
+	x.xxx_hidden_Url = b.Url
 	return m0
 }
 
@@ -1939,15 +1827,11 @@ func (b0 License_builder) Build() *License {
 //	  ...
 //	};
 type ExternalDocumentation struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// A short description of the target documentation. GFM syntax can be used for
-	// rich text representation.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
-	// The URL for the target documentation. Value MUST be in the format
-	// of a URL.
-	Url           string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Description string                 `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Url         string                 `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ExternalDocumentation) Reset() {
@@ -1977,24 +1861,24 @@ func (x *ExternalDocumentation) ProtoReflect() protoreflect.Message {
 
 func (x *ExternalDocumentation) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *ExternalDocumentation) GetUrl() string {
 	if x != nil {
-		return x.Url
+		return x.xxx_hidden_Url
 	}
 	return ""
 }
 
 func (x *ExternalDocumentation) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *ExternalDocumentation) SetUrl(v string) {
-	x.Url = v
+	x.xxx_hidden_Url = v
 }
 
 type ExternalDocumentation_builder struct {
@@ -2012,8 +1896,8 @@ func (b0 ExternalDocumentation_builder) Build() *ExternalDocumentation {
 	m0 := &ExternalDocumentation{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Description = b.Description
-	x.Url = b.Url
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Url = b.Url
 	return m0
 }
 
@@ -2021,27 +1905,14 @@ func (b0 ExternalDocumentation_builder) Build() *ExternalDocumentation {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
 type Schema struct {
-	state      protoimpl.MessageState `protogen:"hybrid.v1"`
-	JsonSchema *JSONSchema            `protobuf:"bytes,1,opt,name=json_schema,json=jsonSchema,proto3" json:"json_schema,omitempty"`
-	// Adds support for polymorphism. The discriminator is the schema property
-	// name that is used to differentiate between other schema that inherit this
-	// schema. The property name used MUST be defined at this schema and it MUST
-	// be in the required property list. When used, the value MUST be the name of
-	// this schema or any schema that inherits it.
-	Discriminator string `protobuf:"bytes,2,opt,name=discriminator,proto3" json:"discriminator,omitempty"`
-	// Relevant only for Schema "properties" definitions. Declares the property as
-	// "read only". This means that it MAY be sent as part of a response but MUST
-	// NOT be sent as part of the request. Properties marked as readOnly being
-	// true SHOULD NOT be in the required list of the defined schema. Default
-	// value is false.
-	ReadOnly bool `protobuf:"varint,3,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
-	// Additional external documentation for this schema.
-	ExternalDocs *ExternalDocumentation `protobuf:"bytes,5,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	// A free-form property to include an example of an instance for this schema in JSON.
-	// This is copied verbatim to the output.
-	Example       string `protobuf:"bytes,6,opt,name=example,proto3" json:"example,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                    protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_JsonSchema    *JSONSchema            `protobuf:"bytes,1,opt,name=json_schema,json=jsonSchema,proto3" json:"json_schema,omitempty"`
+	xxx_hidden_Discriminator string                 `protobuf:"bytes,2,opt,name=discriminator,proto3" json:"discriminator,omitempty"`
+	xxx_hidden_ReadOnly      bool                   `protobuf:"varint,3,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	xxx_hidden_ExternalDocs  *ExternalDocumentation `protobuf:"bytes,5,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	xxx_hidden_Example       string                 `protobuf:"bytes,6,opt,name=example,proto3" json:"example,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *Schema) Reset() {
@@ -2071,79 +1942,79 @@ func (x *Schema) ProtoReflect() protoreflect.Message {
 
 func (x *Schema) GetJsonSchema() *JSONSchema {
 	if x != nil {
-		return x.JsonSchema
+		return x.xxx_hidden_JsonSchema
 	}
 	return nil
 }
 
 func (x *Schema) GetDiscriminator() string {
 	if x != nil {
-		return x.Discriminator
+		return x.xxx_hidden_Discriminator
 	}
 	return ""
 }
 
 func (x *Schema) GetReadOnly() bool {
 	if x != nil {
-		return x.ReadOnly
+		return x.xxx_hidden_ReadOnly
 	}
 	return false
 }
 
 func (x *Schema) GetExternalDocs() *ExternalDocumentation {
 	if x != nil {
-		return x.ExternalDocs
+		return x.xxx_hidden_ExternalDocs
 	}
 	return nil
 }
 
 func (x *Schema) GetExample() string {
 	if x != nil {
-		return x.Example
+		return x.xxx_hidden_Example
 	}
 	return ""
 }
 
 func (x *Schema) SetJsonSchema(v *JSONSchema) {
-	x.JsonSchema = v
+	x.xxx_hidden_JsonSchema = v
 }
 
 func (x *Schema) SetDiscriminator(v string) {
-	x.Discriminator = v
+	x.xxx_hidden_Discriminator = v
 }
 
 func (x *Schema) SetReadOnly(v bool) {
-	x.ReadOnly = v
+	x.xxx_hidden_ReadOnly = v
 }
 
 func (x *Schema) SetExternalDocs(v *ExternalDocumentation) {
-	x.ExternalDocs = v
+	x.xxx_hidden_ExternalDocs = v
 }
 
 func (x *Schema) SetExample(v string) {
-	x.Example = v
+	x.xxx_hidden_Example = v
 }
 
 func (x *Schema) HasJsonSchema() bool {
 	if x == nil {
 		return false
 	}
-	return x.JsonSchema != nil
+	return x.xxx_hidden_JsonSchema != nil
 }
 
 func (x *Schema) HasExternalDocs() bool {
 	if x == nil {
 		return false
 	}
-	return x.ExternalDocs != nil
+	return x.xxx_hidden_ExternalDocs != nil
 }
 
 func (x *Schema) ClearJsonSchema() {
-	x.JsonSchema = nil
+	x.xxx_hidden_JsonSchema = nil
 }
 
 func (x *Schema) ClearExternalDocs() {
-	x.ExternalDocs = nil
+	x.xxx_hidden_ExternalDocs = nil
 }
 
 type Schema_builder struct {
@@ -2173,11 +2044,11 @@ func (b0 Schema_builder) Build() *Schema {
 	m0 := &Schema{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.JsonSchema = b.JsonSchema
-	x.Discriminator = b.Discriminator
-	x.ReadOnly = b.ReadOnly
-	x.ExternalDocs = b.ExternalDocs
-	x.Example = b.Example
+	x.xxx_hidden_JsonSchema = b.JsonSchema
+	x.xxx_hidden_Discriminator = b.Discriminator
+	x.xxx_hidden_ReadOnly = b.ReadOnly
+	x.xxx_hidden_ExternalDocs = b.ExternalDocs
+	x.xxx_hidden_Example = b.Example
 	return m0
 }
 
@@ -2196,31 +2067,18 @@ func (b0 Schema_builder) Build() *Schema {
 //	  ...
 //	};
 type EnumSchema struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// A short description of the schema.
-	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
-	Default     string `protobuf:"bytes,2,opt,name=default,proto3" json:"default,omitempty"`
-	// The title of the schema.
-	Title    string `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
-	Required bool   `protobuf:"varint,4,opt,name=required,proto3" json:"required,omitempty"`
-	ReadOnly bool   `protobuf:"varint,5,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
-	// Additional external documentation for this schema.
-	ExternalDocs *ExternalDocumentation `protobuf:"bytes,6,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	Example      string                 `protobuf:"bytes,7,opt,name=example,proto3" json:"example,omitempty"`
-	// Ref is used to define an external reference to include in the message.
-	// This could be a fully qualified proto message reference, and that type must
-	// be imported into the protofile. If no message is identified, the Ref will
-	// be used verbatim in the output.
-	// For example:
-	//
-	//	`ref: ".google.protobuf.Timestamp"`.
-	Ref string `protobuf:"bytes,8,opt,name=ref,proto3" json:"ref,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,9,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                   protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Description  string                     `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Default      string                     `protobuf:"bytes,2,opt,name=default,proto3" json:"default,omitempty"`
+	xxx_hidden_Title        string                     `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	xxx_hidden_Required     bool                       `protobuf:"varint,4,opt,name=required,proto3" json:"required,omitempty"`
+	xxx_hidden_ReadOnly     bool                       `protobuf:"varint,5,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	xxx_hidden_ExternalDocs *ExternalDocumentation     `protobuf:"bytes,6,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	xxx_hidden_Example      string                     `protobuf:"bytes,7,opt,name=example,proto3" json:"example,omitempty"`
+	xxx_hidden_Ref          string                     `protobuf:"bytes,8,opt,name=ref,proto3" json:"ref,omitempty"`
+	xxx_hidden_Extensions   map[string]*structpb.Value `protobuf:"bytes,9,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *EnumSchema) Reset() {
@@ -2250,112 +2108,112 @@ func (x *EnumSchema) ProtoReflect() protoreflect.Message {
 
 func (x *EnumSchema) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *EnumSchema) GetDefault() string {
 	if x != nil {
-		return x.Default
+		return x.xxx_hidden_Default
 	}
 	return ""
 }
 
 func (x *EnumSchema) GetTitle() string {
 	if x != nil {
-		return x.Title
+		return x.xxx_hidden_Title
 	}
 	return ""
 }
 
 func (x *EnumSchema) GetRequired() bool {
 	if x != nil {
-		return x.Required
+		return x.xxx_hidden_Required
 	}
 	return false
 }
 
 func (x *EnumSchema) GetReadOnly() bool {
 	if x != nil {
-		return x.ReadOnly
+		return x.xxx_hidden_ReadOnly
 	}
 	return false
 }
 
 func (x *EnumSchema) GetExternalDocs() *ExternalDocumentation {
 	if x != nil {
-		return x.ExternalDocs
+		return x.xxx_hidden_ExternalDocs
 	}
 	return nil
 }
 
 func (x *EnumSchema) GetExample() string {
 	if x != nil {
-		return x.Example
+		return x.xxx_hidden_Example
 	}
 	return ""
 }
 
 func (x *EnumSchema) GetRef() string {
 	if x != nil {
-		return x.Ref
+		return x.xxx_hidden_Ref
 	}
 	return ""
 }
 
 func (x *EnumSchema) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *EnumSchema) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *EnumSchema) SetDefault(v string) {
-	x.Default = v
+	x.xxx_hidden_Default = v
 }
 
 func (x *EnumSchema) SetTitle(v string) {
-	x.Title = v
+	x.xxx_hidden_Title = v
 }
 
 func (x *EnumSchema) SetRequired(v bool) {
-	x.Required = v
+	x.xxx_hidden_Required = v
 }
 
 func (x *EnumSchema) SetReadOnly(v bool) {
-	x.ReadOnly = v
+	x.xxx_hidden_ReadOnly = v
 }
 
 func (x *EnumSchema) SetExternalDocs(v *ExternalDocumentation) {
-	x.ExternalDocs = v
+	x.xxx_hidden_ExternalDocs = v
 }
 
 func (x *EnumSchema) SetExample(v string) {
-	x.Example = v
+	x.xxx_hidden_Example = v
 }
 
 func (x *EnumSchema) SetRef(v string) {
-	x.Ref = v
+	x.xxx_hidden_Ref = v
 }
 
 func (x *EnumSchema) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *EnumSchema) HasExternalDocs() bool {
 	if x == nil {
 		return false
 	}
-	return x.ExternalDocs != nil
+	return x.xxx_hidden_ExternalDocs != nil
 }
 
 func (x *EnumSchema) ClearExternalDocs() {
-	x.ExternalDocs = nil
+	x.xxx_hidden_ExternalDocs = nil
 }
 
 type EnumSchema_builder struct {
@@ -2389,15 +2247,15 @@ func (b0 EnumSchema_builder) Build() *EnumSchema {
 	m0 := &EnumSchema{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Description = b.Description
-	x.Default = b.Default
-	x.Title = b.Title
-	x.Required = b.Required
-	x.ReadOnly = b.ReadOnly
-	x.ExternalDocs = b.ExternalDocs
-	x.Example = b.Example
-	x.Ref = b.Ref
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Default = b.Default
+	x.xxx_hidden_Title = b.Title
+	x.xxx_hidden_Required = b.Required
+	x.xxx_hidden_ReadOnly = b.ReadOnly
+	x.xxx_hidden_ExternalDocs = b.ExternalDocs
+	x.xxx_hidden_Example = b.Example
+	x.xxx_hidden_Ref = b.Ref
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -2429,58 +2287,35 @@ func (b0 EnumSchema_builder) Build() *EnumSchema {
 //	      }];
 //	}
 type JSONSchema struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// Ref is used to define an external reference to include in the message.
-	// This could be a fully qualified proto message reference, and that type must
-	// be imported into the protofile. If no message is identified, the Ref will
-	// be used verbatim in the output.
-	// For example:
-	//
-	//	`ref: ".google.protobuf.Timestamp"`.
-	Ref string `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
-	// The title of the schema.
-	Title string `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
-	// A short description of the schema.
-	Description string `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
-	Default     string `protobuf:"bytes,7,opt,name=default,proto3" json:"default,omitempty"`
-	ReadOnly    bool   `protobuf:"varint,8,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
-	// A free-form property to include a JSON example of this field. This is copied
-	// verbatim to the output swagger.json. Quotes must be escaped.
-	// This property is the same for 2.0 and 3.0.0 https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/3.0.0.md#schemaObject  https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
-	Example    string  `protobuf:"bytes,9,opt,name=example,proto3" json:"example,omitempty"`
-	MultipleOf float64 `protobuf:"fixed64,10,opt,name=multiple_of,json=multipleOf,proto3" json:"multiple_of,omitempty"`
-	// Maximum represents an inclusive upper limit for a numeric instance. The
-	// value of MUST be a number,
-	Maximum          float64 `protobuf:"fixed64,11,opt,name=maximum,proto3" json:"maximum,omitempty"`
-	ExclusiveMaximum bool    `protobuf:"varint,12,opt,name=exclusive_maximum,json=exclusiveMaximum,proto3" json:"exclusive_maximum,omitempty"`
-	// minimum represents an inclusive lower limit for a numeric instance. The
-	// value of MUST be a number,
-	Minimum          float64  `protobuf:"fixed64,13,opt,name=minimum,proto3" json:"minimum,omitempty"`
-	ExclusiveMinimum bool     `protobuf:"varint,14,opt,name=exclusive_minimum,json=exclusiveMinimum,proto3" json:"exclusive_minimum,omitempty"`
-	MaxLength        uint64   `protobuf:"varint,15,opt,name=max_length,json=maxLength,proto3" json:"max_length,omitempty"`
-	MinLength        uint64   `protobuf:"varint,16,opt,name=min_length,json=minLength,proto3" json:"min_length,omitempty"`
-	Pattern          string   `protobuf:"bytes,17,opt,name=pattern,proto3" json:"pattern,omitempty"`
-	MaxItems         uint64   `protobuf:"varint,20,opt,name=max_items,json=maxItems,proto3" json:"max_items,omitempty"`
-	MinItems         uint64   `protobuf:"varint,21,opt,name=min_items,json=minItems,proto3" json:"min_items,omitempty"`
-	UniqueItems      bool     `protobuf:"varint,22,opt,name=unique_items,json=uniqueItems,proto3" json:"unique_items,omitempty"`
-	MaxProperties    uint64   `protobuf:"varint,24,opt,name=max_properties,json=maxProperties,proto3" json:"max_properties,omitempty"`
-	MinProperties    uint64   `protobuf:"varint,25,opt,name=min_properties,json=minProperties,proto3" json:"min_properties,omitempty"`
-	Required         []string `protobuf:"bytes,26,rep,name=required,proto3" json:"required,omitempty"`
-	// Items in 'array' must be unique.
-	Array []string                           `protobuf:"bytes,34,rep,name=array,proto3" json:"array,omitempty"`
-	Type  []JSONSchema_JSONSchemaSimpleTypes `protobuf:"varint,35,rep,packed,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.JSONSchema_JSONSchemaSimpleTypes" json:"type,omitempty"`
-	// `Format`
-	Format string `protobuf:"bytes,36,opt,name=format,proto3" json:"format,omitempty"`
-	// Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1
-	Enum []string `protobuf:"bytes,46,rep,name=enum,proto3" json:"enum,omitempty"`
-	// Additional field level properties used when generating the OpenAPI v2 file.
-	FieldConfiguration *JSONSchema_FieldConfiguration `protobuf:"bytes,1001,opt,name=field_configuration,json=fieldConfiguration,proto3" json:"field_configuration,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,48,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                         protoimpl.MessageState             `protogen:"opaque.v1"`
+	xxx_hidden_Ref                string                             `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
+	xxx_hidden_Title              string                             `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	xxx_hidden_Description        string                             `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Default            string                             `protobuf:"bytes,7,opt,name=default,proto3" json:"default,omitempty"`
+	xxx_hidden_ReadOnly           bool                               `protobuf:"varint,8,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	xxx_hidden_Example            string                             `protobuf:"bytes,9,opt,name=example,proto3" json:"example,omitempty"`
+	xxx_hidden_MultipleOf         float64                            `protobuf:"fixed64,10,opt,name=multiple_of,json=multipleOf,proto3" json:"multiple_of,omitempty"`
+	xxx_hidden_Maximum            float64                            `protobuf:"fixed64,11,opt,name=maximum,proto3" json:"maximum,omitempty"`
+	xxx_hidden_ExclusiveMaximum   bool                               `protobuf:"varint,12,opt,name=exclusive_maximum,json=exclusiveMaximum,proto3" json:"exclusive_maximum,omitempty"`
+	xxx_hidden_Minimum            float64                            `protobuf:"fixed64,13,opt,name=minimum,proto3" json:"minimum,omitempty"`
+	xxx_hidden_ExclusiveMinimum   bool                               `protobuf:"varint,14,opt,name=exclusive_minimum,json=exclusiveMinimum,proto3" json:"exclusive_minimum,omitempty"`
+	xxx_hidden_MaxLength          uint64                             `protobuf:"varint,15,opt,name=max_length,json=maxLength,proto3" json:"max_length,omitempty"`
+	xxx_hidden_MinLength          uint64                             `protobuf:"varint,16,opt,name=min_length,json=minLength,proto3" json:"min_length,omitempty"`
+	xxx_hidden_Pattern            string                             `protobuf:"bytes,17,opt,name=pattern,proto3" json:"pattern,omitempty"`
+	xxx_hidden_MaxItems           uint64                             `protobuf:"varint,20,opt,name=max_items,json=maxItems,proto3" json:"max_items,omitempty"`
+	xxx_hidden_MinItems           uint64                             `protobuf:"varint,21,opt,name=min_items,json=minItems,proto3" json:"min_items,omitempty"`
+	xxx_hidden_UniqueItems        bool                               `protobuf:"varint,22,opt,name=unique_items,json=uniqueItems,proto3" json:"unique_items,omitempty"`
+	xxx_hidden_MaxProperties      uint64                             `protobuf:"varint,24,opt,name=max_properties,json=maxProperties,proto3" json:"max_properties,omitempty"`
+	xxx_hidden_MinProperties      uint64                             `protobuf:"varint,25,opt,name=min_properties,json=minProperties,proto3" json:"min_properties,omitempty"`
+	xxx_hidden_Required           []string                           `protobuf:"bytes,26,rep,name=required,proto3" json:"required,omitempty"`
+	xxx_hidden_Array              []string                           `protobuf:"bytes,34,rep,name=array,proto3" json:"array,omitempty"`
+	xxx_hidden_Type               []JSONSchema_JSONSchemaSimpleTypes `protobuf:"varint,35,rep,packed,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.JSONSchema_JSONSchemaSimpleTypes" json:"type,omitempty"`
+	xxx_hidden_Format             string                             `protobuf:"bytes,36,opt,name=format,proto3" json:"format,omitempty"`
+	xxx_hidden_Enum               []string                           `protobuf:"bytes,46,rep,name=enum,proto3" json:"enum,omitempty"`
+	xxx_hidden_FieldConfiguration *JSONSchema_FieldConfiguration     `protobuf:"bytes,1001,opt,name=field_configuration,json=fieldConfiguration,proto3" json:"field_configuration,omitempty"`
+	xxx_hidden_Extensions         map[string]*structpb.Value         `protobuf:"bytes,48,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
 }
 
 func (x *JSONSchema) Reset() {
@@ -2510,299 +2345,299 @@ func (x *JSONSchema) ProtoReflect() protoreflect.Message {
 
 func (x *JSONSchema) GetRef() string {
 	if x != nil {
-		return x.Ref
+		return x.xxx_hidden_Ref
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetTitle() string {
 	if x != nil {
-		return x.Title
+		return x.xxx_hidden_Title
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetDefault() string {
 	if x != nil {
-		return x.Default
+		return x.xxx_hidden_Default
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetReadOnly() bool {
 	if x != nil {
-		return x.ReadOnly
+		return x.xxx_hidden_ReadOnly
 	}
 	return false
 }
 
 func (x *JSONSchema) GetExample() string {
 	if x != nil {
-		return x.Example
+		return x.xxx_hidden_Example
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetMultipleOf() float64 {
 	if x != nil {
-		return x.MultipleOf
+		return x.xxx_hidden_MultipleOf
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetMaximum() float64 {
 	if x != nil {
-		return x.Maximum
+		return x.xxx_hidden_Maximum
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetExclusiveMaximum() bool {
 	if x != nil {
-		return x.ExclusiveMaximum
+		return x.xxx_hidden_ExclusiveMaximum
 	}
 	return false
 }
 
 func (x *JSONSchema) GetMinimum() float64 {
 	if x != nil {
-		return x.Minimum
+		return x.xxx_hidden_Minimum
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetExclusiveMinimum() bool {
 	if x != nil {
-		return x.ExclusiveMinimum
+		return x.xxx_hidden_ExclusiveMinimum
 	}
 	return false
 }
 
 func (x *JSONSchema) GetMaxLength() uint64 {
 	if x != nil {
-		return x.MaxLength
+		return x.xxx_hidden_MaxLength
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetMinLength() uint64 {
 	if x != nil {
-		return x.MinLength
+		return x.xxx_hidden_MinLength
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetPattern() string {
 	if x != nil {
-		return x.Pattern
+		return x.xxx_hidden_Pattern
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetMaxItems() uint64 {
 	if x != nil {
-		return x.MaxItems
+		return x.xxx_hidden_MaxItems
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetMinItems() uint64 {
 	if x != nil {
-		return x.MinItems
+		return x.xxx_hidden_MinItems
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetUniqueItems() bool {
 	if x != nil {
-		return x.UniqueItems
+		return x.xxx_hidden_UniqueItems
 	}
 	return false
 }
 
 func (x *JSONSchema) GetMaxProperties() uint64 {
 	if x != nil {
-		return x.MaxProperties
+		return x.xxx_hidden_MaxProperties
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetMinProperties() uint64 {
 	if x != nil {
-		return x.MinProperties
+		return x.xxx_hidden_MinProperties
 	}
 	return 0
 }
 
 func (x *JSONSchema) GetRequired() []string {
 	if x != nil {
-		return x.Required
+		return x.xxx_hidden_Required
 	}
 	return nil
 }
 
 func (x *JSONSchema) GetArray() []string {
 	if x != nil {
-		return x.Array
+		return x.xxx_hidden_Array
 	}
 	return nil
 }
 
 func (x *JSONSchema) GetType() []JSONSchema_JSONSchemaSimpleTypes {
 	if x != nil {
-		return x.Type
+		return x.xxx_hidden_Type
 	}
 	return nil
 }
 
 func (x *JSONSchema) GetFormat() string {
 	if x != nil {
-		return x.Format
+		return x.xxx_hidden_Format
 	}
 	return ""
 }
 
 func (x *JSONSchema) GetEnum() []string {
 	if x != nil {
-		return x.Enum
+		return x.xxx_hidden_Enum
 	}
 	return nil
 }
 
 func (x *JSONSchema) GetFieldConfiguration() *JSONSchema_FieldConfiguration {
 	if x != nil {
-		return x.FieldConfiguration
+		return x.xxx_hidden_FieldConfiguration
 	}
 	return nil
 }
 
 func (x *JSONSchema) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *JSONSchema) SetRef(v string) {
-	x.Ref = v
+	x.xxx_hidden_Ref = v
 }
 
 func (x *JSONSchema) SetTitle(v string) {
-	x.Title = v
+	x.xxx_hidden_Title = v
 }
 
 func (x *JSONSchema) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *JSONSchema) SetDefault(v string) {
-	x.Default = v
+	x.xxx_hidden_Default = v
 }
 
 func (x *JSONSchema) SetReadOnly(v bool) {
-	x.ReadOnly = v
+	x.xxx_hidden_ReadOnly = v
 }
 
 func (x *JSONSchema) SetExample(v string) {
-	x.Example = v
+	x.xxx_hidden_Example = v
 }
 
 func (x *JSONSchema) SetMultipleOf(v float64) {
-	x.MultipleOf = v
+	x.xxx_hidden_MultipleOf = v
 }
 
 func (x *JSONSchema) SetMaximum(v float64) {
-	x.Maximum = v
+	x.xxx_hidden_Maximum = v
 }
 
 func (x *JSONSchema) SetExclusiveMaximum(v bool) {
-	x.ExclusiveMaximum = v
+	x.xxx_hidden_ExclusiveMaximum = v
 }
 
 func (x *JSONSchema) SetMinimum(v float64) {
-	x.Minimum = v
+	x.xxx_hidden_Minimum = v
 }
 
 func (x *JSONSchema) SetExclusiveMinimum(v bool) {
-	x.ExclusiveMinimum = v
+	x.xxx_hidden_ExclusiveMinimum = v
 }
 
 func (x *JSONSchema) SetMaxLength(v uint64) {
-	x.MaxLength = v
+	x.xxx_hidden_MaxLength = v
 }
 
 func (x *JSONSchema) SetMinLength(v uint64) {
-	x.MinLength = v
+	x.xxx_hidden_MinLength = v
 }
 
 func (x *JSONSchema) SetPattern(v string) {
-	x.Pattern = v
+	x.xxx_hidden_Pattern = v
 }
 
 func (x *JSONSchema) SetMaxItems(v uint64) {
-	x.MaxItems = v
+	x.xxx_hidden_MaxItems = v
 }
 
 func (x *JSONSchema) SetMinItems(v uint64) {
-	x.MinItems = v
+	x.xxx_hidden_MinItems = v
 }
 
 func (x *JSONSchema) SetUniqueItems(v bool) {
-	x.UniqueItems = v
+	x.xxx_hidden_UniqueItems = v
 }
 
 func (x *JSONSchema) SetMaxProperties(v uint64) {
-	x.MaxProperties = v
+	x.xxx_hidden_MaxProperties = v
 }
 
 func (x *JSONSchema) SetMinProperties(v uint64) {
-	x.MinProperties = v
+	x.xxx_hidden_MinProperties = v
 }
 
 func (x *JSONSchema) SetRequired(v []string) {
-	x.Required = v
+	x.xxx_hidden_Required = v
 }
 
 func (x *JSONSchema) SetArray(v []string) {
-	x.Array = v
+	x.xxx_hidden_Array = v
 }
 
 func (x *JSONSchema) SetType(v []JSONSchema_JSONSchemaSimpleTypes) {
-	x.Type = v
+	x.xxx_hidden_Type = v
 }
 
 func (x *JSONSchema) SetFormat(v string) {
-	x.Format = v
+	x.xxx_hidden_Format = v
 }
 
 func (x *JSONSchema) SetEnum(v []string) {
-	x.Enum = v
+	x.xxx_hidden_Enum = v
 }
 
 func (x *JSONSchema) SetFieldConfiguration(v *JSONSchema_FieldConfiguration) {
-	x.FieldConfiguration = v
+	x.xxx_hidden_FieldConfiguration = v
 }
 
 func (x *JSONSchema) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *JSONSchema) HasFieldConfiguration() bool {
 	if x == nil {
 		return false
 	}
-	return x.FieldConfiguration != nil
+	return x.xxx_hidden_FieldConfiguration != nil
 }
 
 func (x *JSONSchema) ClearFieldConfiguration() {
-	x.FieldConfiguration = nil
+	x.xxx_hidden_FieldConfiguration = nil
 }
 
 type JSONSchema_builder struct {
@@ -2863,32 +2698,32 @@ func (b0 JSONSchema_builder) Build() *JSONSchema {
 	m0 := &JSONSchema{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Ref = b.Ref
-	x.Title = b.Title
-	x.Description = b.Description
-	x.Default = b.Default
-	x.ReadOnly = b.ReadOnly
-	x.Example = b.Example
-	x.MultipleOf = b.MultipleOf
-	x.Maximum = b.Maximum
-	x.ExclusiveMaximum = b.ExclusiveMaximum
-	x.Minimum = b.Minimum
-	x.ExclusiveMinimum = b.ExclusiveMinimum
-	x.MaxLength = b.MaxLength
-	x.MinLength = b.MinLength
-	x.Pattern = b.Pattern
-	x.MaxItems = b.MaxItems
-	x.MinItems = b.MinItems
-	x.UniqueItems = b.UniqueItems
-	x.MaxProperties = b.MaxProperties
-	x.MinProperties = b.MinProperties
-	x.Required = b.Required
-	x.Array = b.Array
-	x.Type = b.Type
-	x.Format = b.Format
-	x.Enum = b.Enum
-	x.FieldConfiguration = b.FieldConfiguration
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Ref = b.Ref
+	x.xxx_hidden_Title = b.Title
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Default = b.Default
+	x.xxx_hidden_ReadOnly = b.ReadOnly
+	x.xxx_hidden_Example = b.Example
+	x.xxx_hidden_MultipleOf = b.MultipleOf
+	x.xxx_hidden_Maximum = b.Maximum
+	x.xxx_hidden_ExclusiveMaximum = b.ExclusiveMaximum
+	x.xxx_hidden_Minimum = b.Minimum
+	x.xxx_hidden_ExclusiveMinimum = b.ExclusiveMinimum
+	x.xxx_hidden_MaxLength = b.MaxLength
+	x.xxx_hidden_MinLength = b.MinLength
+	x.xxx_hidden_Pattern = b.Pattern
+	x.xxx_hidden_MaxItems = b.MaxItems
+	x.xxx_hidden_MinItems = b.MinItems
+	x.xxx_hidden_UniqueItems = b.UniqueItems
+	x.xxx_hidden_MaxProperties = b.MaxProperties
+	x.xxx_hidden_MinProperties = b.MinProperties
+	x.xxx_hidden_Required = b.Required
+	x.xxx_hidden_Array = b.Array
+	x.xxx_hidden_Type = b.Type
+	x.xxx_hidden_Format = b.Format
+	x.xxx_hidden_Enum = b.Enum
+	x.xxx_hidden_FieldConfiguration = b.FieldConfiguration
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -2896,22 +2731,13 @@ func (b0 JSONSchema_builder) Build() *JSONSchema {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#tagObject
 type Tag struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// The name of the tag. Use it to allow override of the name of a
-	// global Tag object, then use that name to reference the tag throughout the
-	// OpenAPI file.
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// A short description for the tag. GFM syntax can be used for rich text
-	// representation.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	// Additional external documentation for this tag.
-	ExternalDocs *ExternalDocumentation `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,4,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                   protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Name         string                     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	xxx_hidden_Description  string                     `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_ExternalDocs *ExternalDocumentation     `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	xxx_hidden_Extensions   map[string]*structpb.Value `protobuf:"bytes,4,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *Tag) Reset() {
@@ -2941,57 +2767,57 @@ func (x *Tag) ProtoReflect() protoreflect.Message {
 
 func (x *Tag) GetName() string {
 	if x != nil {
-		return x.Name
+		return x.xxx_hidden_Name
 	}
 	return ""
 }
 
 func (x *Tag) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *Tag) GetExternalDocs() *ExternalDocumentation {
 	if x != nil {
-		return x.ExternalDocs
+		return x.xxx_hidden_ExternalDocs
 	}
 	return nil
 }
 
 func (x *Tag) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *Tag) SetName(v string) {
-	x.Name = v
+	x.xxx_hidden_Name = v
 }
 
 func (x *Tag) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *Tag) SetExternalDocs(v *ExternalDocumentation) {
-	x.ExternalDocs = v
+	x.xxx_hidden_ExternalDocs = v
 }
 
 func (x *Tag) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *Tag) HasExternalDocs() bool {
 	if x == nil {
 		return false
 	}
-	return x.ExternalDocs != nil
+	return x.xxx_hidden_ExternalDocs != nil
 }
 
 func (x *Tag) ClearExternalDocs() {
-	x.ExternalDocs = nil
+	x.xxx_hidden_ExternalDocs = nil
 }
 
 type Tag_builder struct {
@@ -3016,10 +2842,10 @@ func (b0 Tag_builder) Build() *Tag {
 	m0 := &Tag{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Name = b.Name
-	x.Description = b.Description
-	x.ExternalDocs = b.ExternalDocs
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Name = b.Name
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_ExternalDocs = b.ExternalDocs
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -3032,12 +2858,10 @@ func (b0 Tag_builder) Build() *Tag {
 // specification. This does not enforce the security schemes on the operations
 // and only serves to provide the relevant details for each scheme.
 type SecurityDefinitions struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// A single security scheme definition, mapping a "name" to the scheme it
-	// defines.
-	Security      map[string]*SecurityScheme `protobuf:"bytes,1,rep,name=security,proto3" json:"security,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state               protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Security map[string]*SecurityScheme `protobuf:"bytes,1,rep,name=security,proto3" json:"security,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *SecurityDefinitions) Reset() {
@@ -3067,13 +2891,13 @@ func (x *SecurityDefinitions) ProtoReflect() protoreflect.Message {
 
 func (x *SecurityDefinitions) GetSecurity() map[string]*SecurityScheme {
 	if x != nil {
-		return x.Security
+		return x.xxx_hidden_Security
 	}
 	return nil
 }
 
 func (x *SecurityDefinitions) SetSecurity(v map[string]*SecurityScheme) {
-	x.Security = v
+	x.xxx_hidden_Security = v
 }
 
 type SecurityDefinitions_builder struct {
@@ -3088,7 +2912,7 @@ func (b0 SecurityDefinitions_builder) Build() *SecurityDefinitions {
 	m0 := &SecurityDefinitions{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Security = b.Security
+	x.xxx_hidden_Security = b.Security
 	return m0
 }
 
@@ -3102,40 +2926,18 @@ func (b0 SecurityDefinitions_builder) Build() *SecurityDefinitions {
 // a header or as a query parameter) and OAuth2's common flows (implicit,
 // password, application and access code).
 type SecurityScheme struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// The type of the security scheme. Valid values are "basic",
-	// "apiKey" or "oauth2".
-	Type SecurityScheme_Type `protobuf:"varint,1,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme_Type" json:"type,omitempty"`
-	// A short description for security scheme.
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	// The name of the header or query parameter to be used.
-	// Valid for apiKey.
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// The location of the API key. Valid values are "query" or
-	// "header".
-	// Valid for apiKey.
-	In SecurityScheme_In `protobuf:"varint,4,opt,name=in,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme_In" json:"in,omitempty"`
-	// The flow used by the OAuth2 security scheme. Valid values are
-	// "implicit", "password", "application" or "accessCode".
-	// Valid for oauth2.
-	Flow SecurityScheme_Flow `protobuf:"varint,5,opt,name=flow,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme_Flow" json:"flow,omitempty"`
-	// The authorization URL to be used for this flow. This SHOULD be in
-	// the form of a URL.
-	// Valid for oauth2/implicit and oauth2/accessCode.
-	AuthorizationUrl string `protobuf:"bytes,6,opt,name=authorization_url,json=authorizationUrl,proto3" json:"authorization_url,omitempty"`
-	// The token URL to be used for this flow. This SHOULD be in the
-	// form of a URL.
-	// Valid for oauth2/password, oauth2/application and oauth2/accessCode.
-	TokenUrl string `protobuf:"bytes,7,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
-	// The available scopes for the OAuth2 security scheme.
-	// Valid for oauth2.
-	Scopes *Scopes `protobuf:"bytes,8,opt,name=scopes,proto3" json:"scopes,omitempty"`
-	// Custom properties that start with "x-" such as "x-foo" used to describe
-	// extra functionality that is not covered by the standard OpenAPI Specification.
-	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
-	Extensions    map[string]*structpb.Value `protobuf:"bytes,9,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                       protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Type             SecurityScheme_Type        `protobuf:"varint,1,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme_Type" json:"type,omitempty"`
+	xxx_hidden_Description      string                     `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Name             string                     `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	xxx_hidden_In               SecurityScheme_In          `protobuf:"varint,4,opt,name=in,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme_In" json:"in,omitempty"`
+	xxx_hidden_Flow             SecurityScheme_Flow        `protobuf:"varint,5,opt,name=flow,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme_Flow" json:"flow,omitempty"`
+	xxx_hidden_AuthorizationUrl string                     `protobuf:"bytes,6,opt,name=authorization_url,json=authorizationUrl,proto3" json:"authorization_url,omitempty"`
+	xxx_hidden_TokenUrl         string                     `protobuf:"bytes,7,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
+	xxx_hidden_Scopes           *Scopes                    `protobuf:"bytes,8,opt,name=scopes,proto3" json:"scopes,omitempty"`
+	xxx_hidden_Extensions       map[string]*structpb.Value `protobuf:"bytes,9,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields               protoimpl.UnknownFields
+	sizeCache                   protoimpl.SizeCache
 }
 
 func (x *SecurityScheme) Reset() {
@@ -3165,112 +2967,112 @@ func (x *SecurityScheme) ProtoReflect() protoreflect.Message {
 
 func (x *SecurityScheme) GetType() SecurityScheme_Type {
 	if x != nil {
-		return x.Type
+		return x.xxx_hidden_Type
 	}
 	return SecurityScheme_TYPE_INVALID
 }
 
 func (x *SecurityScheme) GetDescription() string {
 	if x != nil {
-		return x.Description
+		return x.xxx_hidden_Description
 	}
 	return ""
 }
 
 func (x *SecurityScheme) GetName() string {
 	if x != nil {
-		return x.Name
+		return x.xxx_hidden_Name
 	}
 	return ""
 }
 
 func (x *SecurityScheme) GetIn() SecurityScheme_In {
 	if x != nil {
-		return x.In
+		return x.xxx_hidden_In
 	}
 	return SecurityScheme_IN_INVALID
 }
 
 func (x *SecurityScheme) GetFlow() SecurityScheme_Flow {
 	if x != nil {
-		return x.Flow
+		return x.xxx_hidden_Flow
 	}
 	return SecurityScheme_FLOW_INVALID
 }
 
 func (x *SecurityScheme) GetAuthorizationUrl() string {
 	if x != nil {
-		return x.AuthorizationUrl
+		return x.xxx_hidden_AuthorizationUrl
 	}
 	return ""
 }
 
 func (x *SecurityScheme) GetTokenUrl() string {
 	if x != nil {
-		return x.TokenUrl
+		return x.xxx_hidden_TokenUrl
 	}
 	return ""
 }
 
 func (x *SecurityScheme) GetScopes() *Scopes {
 	if x != nil {
-		return x.Scopes
+		return x.xxx_hidden_Scopes
 	}
 	return nil
 }
 
 func (x *SecurityScheme) GetExtensions() map[string]*structpb.Value {
 	if x != nil {
-		return x.Extensions
+		return x.xxx_hidden_Extensions
 	}
 	return nil
 }
 
 func (x *SecurityScheme) SetType(v SecurityScheme_Type) {
-	x.Type = v
+	x.xxx_hidden_Type = v
 }
 
 func (x *SecurityScheme) SetDescription(v string) {
-	x.Description = v
+	x.xxx_hidden_Description = v
 }
 
 func (x *SecurityScheme) SetName(v string) {
-	x.Name = v
+	x.xxx_hidden_Name = v
 }
 
 func (x *SecurityScheme) SetIn(v SecurityScheme_In) {
-	x.In = v
+	x.xxx_hidden_In = v
 }
 
 func (x *SecurityScheme) SetFlow(v SecurityScheme_Flow) {
-	x.Flow = v
+	x.xxx_hidden_Flow = v
 }
 
 func (x *SecurityScheme) SetAuthorizationUrl(v string) {
-	x.AuthorizationUrl = v
+	x.xxx_hidden_AuthorizationUrl = v
 }
 
 func (x *SecurityScheme) SetTokenUrl(v string) {
-	x.TokenUrl = v
+	x.xxx_hidden_TokenUrl = v
 }
 
 func (x *SecurityScheme) SetScopes(v *Scopes) {
-	x.Scopes = v
+	x.xxx_hidden_Scopes = v
 }
 
 func (x *SecurityScheme) SetExtensions(v map[string]*structpb.Value) {
-	x.Extensions = v
+	x.xxx_hidden_Extensions = v
 }
 
 func (x *SecurityScheme) HasScopes() bool {
 	if x == nil {
 		return false
 	}
-	return x.Scopes != nil
+	return x.xxx_hidden_Scopes != nil
 }
 
 func (x *SecurityScheme) ClearScopes() {
-	x.Scopes = nil
+	x.xxx_hidden_Scopes = nil
 }
 
 type SecurityScheme_builder struct {
@@ -3313,15 +3115,15 @@ func (b0 SecurityScheme_builder) Build() *SecurityScheme {
 	m0 := &SecurityScheme{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Type = b.Type
-	x.Description = b.Description
-	x.Name = b.Name
-	x.In = b.In
-	x.Flow = b.Flow
-	x.AuthorizationUrl = b.AuthorizationUrl
-	x.TokenUrl = b.TokenUrl
-	x.Scopes = b.Scopes
-	x.Extensions = b.Extensions
+	x.xxx_hidden_Type = b.Type
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Name = b.Name
+	x.xxx_hidden_In = b.In
+	x.xxx_hidden_Flow = b.Flow
+	x.xxx_hidden_AuthorizationUrl = b.AuthorizationUrl
+	x.xxx_hidden_TokenUrl = b.TokenUrl
+	x.xxx_hidden_Scopes = b.Scopes
+	x.xxx_hidden_Extensions = b.Extensions
 	return m0
 }
 
@@ -3337,14 +3139,10 @@ func (b0 SecurityScheme_builder) Build() *SecurityScheme {
 // The name used for each property MUST correspond to a security scheme
 // declared in the Security Definitions.
 type SecurityRequirement struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// Each name must correspond to a security scheme which is declared in
-	// the Security Definitions. If the security scheme is of type "oauth2",
-	// then the value is a list of scope names required for the execution.
-	// For other security scheme types, the array MUST be empty.
-	SecurityRequirement map[string]*SecurityRequirement_SecurityRequirementValue `protobuf:"bytes,1,rep,name=security_requirement,json=securityRequirement,proto3" json:"security_requirement,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	state                          protoimpl.MessageState                                   `protogen:"opaque.v1"`
+	xxx_hidden_SecurityRequirement map[string]*SecurityRequirement_SecurityRequirementValue `protobuf:"bytes,1,rep,name=security_requirement,json=securityRequirement,proto3" json:"security_requirement,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields                  protoimpl.UnknownFields
+	sizeCache                      protoimpl.SizeCache
 }
 
 func (x *SecurityRequirement) Reset() {
@@ -3374,13 +3172,13 @@ func (x *SecurityRequirement) ProtoReflect() protoreflect.Message {
 
 func (x *SecurityRequirement) GetSecurityRequirement() map[string]*SecurityRequirement_SecurityRequirementValue {
 	if x != nil {
-		return x.SecurityRequirement
+		return x.xxx_hidden_SecurityRequirement
 	}
 	return nil
 }
 
 func (x *SecurityRequirement) SetSecurityRequirement(v map[string]*SecurityRequirement_SecurityRequirementValue) {
-	x.SecurityRequirement = v
+	x.xxx_hidden_SecurityRequirement = v
 }
 
 type SecurityRequirement_builder struct {
@@ -3397,7 +3195,7 @@ func (b0 SecurityRequirement_builder) Build() *SecurityRequirement {
 	m0 := &SecurityRequirement{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.SecurityRequirement = b.SecurityRequirement
+	x.xxx_hidden_SecurityRequirement = b.SecurityRequirement
 	return m0
 }
 
@@ -3407,12 +3205,10 @@ func (b0 SecurityRequirement_builder) Build() *SecurityRequirement {
 //
 // Lists the available scopes for an OAuth2 security scheme.
 type Scopes struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// Maps between a name of a scope to a short description of it (as the value
-	// of the property).
-	Scope         map[string]string `protobuf:"bytes,1,rep,name=scope,proto3" json:"scope,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope map[string]string      `protobuf:"bytes,1,rep,name=scope,proto3" json:"scope,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *Scopes) Reset() {
@@ -3442,13 +3238,13 @@ func (x *Scopes) ProtoReflect() protoreflect.Message {
 
 func (x *Scopes) GetScope() map[string]string {
 	if x != nil {
-		return x.Scope
+		return x.xxx_hidden_Scope
 	}
 	return nil
 }
 
 func (x *Scopes) SetScope(v map[string]string) {
-	x.Scope = v
+	x.xxx_hidden_Scope = v
 }
 
 type Scopes_builder struct {
@@ -3463,21 +3259,17 @@ func (b0 Scopes_builder) Build() *Scopes {
 	m0 := &Scopes{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Scope = b.Scope
+	x.xxx_hidden_Scope = b.Scope
 	return m0
 }
 
 // 'FieldConfiguration' provides additional field level properties used when generating the OpenAPI v2 file.
 // These properties are not defined by OpenAPIv2, but they are used to control the generation.
 type JSONSchema_FieldConfiguration struct {
-	state protoimpl.MessageState `protogen:"hybrid.v1"`
-	// Alternative parameter name when used as path parameter. If set, this will
-	// be used as the complete parameter name when this field is used as a path
-	// parameter. Use this to avoid having auto generated path parameter names
-	// for overlapping paths.
-	PathParamName string `protobuf:"bytes,47,opt,name=path_param_name,json=pathParamName,proto3" json:"path_param_name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                    protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_PathParamName string                 `protobuf:"bytes,47,opt,name=path_param_name,json=pathParamName,proto3" json:"path_param_name,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *JSONSchema_FieldConfiguration) Reset() {
@@ -3507,13 +3299,13 @@ func (x *JSONSchema_FieldConfiguration) ProtoReflect() protoreflect.Message {
 
 func (x *JSONSchema_FieldConfiguration) GetPathParamName() string {
 	if x != nil {
-		return x.PathParamName
+		return x.xxx_hidden_PathParamName
 	}
 	return ""
 }
 
 func (x *JSONSchema_FieldConfiguration) SetPathParamName(v string) {
-	x.PathParamName = v
+	x.xxx_hidden_PathParamName = v
 }
 
 type JSONSchema_FieldConfiguration_builder struct {
@@ -3530,7 +3322,7 @@ func (b0 JSONSchema_FieldConfiguration_builder) Build() *JSONSchema_FieldConfigu
 	m0 := &JSONSchema_FieldConfiguration{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.PathParamName = b.PathParamName
+	x.xxx_hidden_PathParamName = b.PathParamName
 	return m0
 }
 
@@ -3538,10 +3330,10 @@ func (b0 JSONSchema_FieldConfiguration_builder) Build() *JSONSchema_FieldConfigu
 // scope names required for the execution. For other security scheme types,
 // the array MUST be empty.
 type SecurityRequirement_SecurityRequirementValue struct {
-	state         protoimpl.MessageState `protogen:"hybrid.v1"`
-	Scope         []string               `protobuf:"bytes,1,rep,name=scope,proto3" json:"scope,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Scope []string               `protobuf:"bytes,1,rep,name=scope,proto3" json:"scope,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *SecurityRequirement_SecurityRequirementValue) Reset() {
@@ -3571,13 +3363,13 @@ func (x *SecurityRequirement_SecurityRequirementValue) ProtoReflect() protorefle
 
 func (x *SecurityRequirement_SecurityRequirementValue) GetScope() []string {
 	if x != nil {
-		return x.Scope
+		return x.xxx_hidden_Scope
 	}
 	return nil
 }
 
 func (x *SecurityRequirement_SecurityRequirementValue) SetScope(v []string) {
-	x.Scope = v
+	x.xxx_hidden_Scope = v
 }
 
 type SecurityRequirement_SecurityRequirementValue_builder struct {
@@ -3590,7 +3382,7 @@ func (b0 SecurityRequirement_SecurityRequirementValue_builder) Build() *Security
 	m0 := &SecurityRequirement_SecurityRequirementValue{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.Scope = b.Scope
+	x.xxx_hidden_Scope = b.Scope
 	return m0
 }
 
