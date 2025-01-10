@@ -40,7 +40,7 @@ GEM
       logger
     faraday-net_http (3.3.0)
       net-http
-    ffi (1.17.0)
+    ffi (1.17.1)
     forwardable-extended (2.6.0)
     gemoji (4.1.0)
     github-pages (230)
@@ -209,7 +209,7 @@ GEM
       html-pipeline (~> 2.2)
       jekyll (>= 3.0, < 5.0)
     json (2.7.2)
-    just-the-docs (0.10.0)
+    just-the-docs (0.10.1)
       jekyll (>= 3.8.5)
       jekyll-include-cache
       jekyll-seo-tag (>= 2.0)
@@ -246,7 +246,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rexml (3.3.9)
+    rexml (3.4.0)
     rouge (3.30.0)
     rubyzip (2.3.2)
     safe_yaml (1.0.5)
