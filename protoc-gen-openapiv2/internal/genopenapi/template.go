@@ -164,9 +164,6 @@ func getEnumDefaultNumber(reg *descriptor.Registry, enum *descriptor.Enum) inter
 	if !reg.GetOmitEnumDefaultValue() {
 		for _, value := range enum.GetValue() {
 			if value.GetNumber() == 0 {
-				if !isVisible(getEnumValueVisibilityOption(value), reg) {
-					return nil
-				}
 				return int(value.GetNumber())
 			}
 		}
