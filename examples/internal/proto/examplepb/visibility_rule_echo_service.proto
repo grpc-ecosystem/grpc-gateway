@@ -36,6 +36,11 @@ message VisibilityRuleSimpleMessage {
     VISIBILITY_ENUM_PREVIEW = 3 [(google.api.value_visibility).restriction = "INTERNAL,PREVIEW"];
   }
 
+  enum VisibilityEnumHiddenDefault {
+    VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED = 0 [(google.api.value_visibility).restriction = "INTERNAL"];
+    VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE = 1;
+  }
+
   // Id represents the message identifier.
   string id = 1;
   int64 num = 2;
@@ -51,6 +56,7 @@ message VisibilityRuleSimpleMessage {
   string internal_field = 8 [(google.api.field_visibility).restriction = "INTERNAL"];
   string preview_field = 9 [(google.api.field_visibility).restriction = "INTERNAL,PREVIEW"];
   VisibilityEnum an_enum = 10;
+  VisibilityEnumHiddenDefault ahidden_default_enum = 11;
 }
 
 // MessageInPreviewMethod doesn't define its own visibility restrictions,

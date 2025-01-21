@@ -106,6 +106,15 @@
               "VISIBILITY_ENUM_VISIBLE"
             ],
             "default": "VISIBILITY_ENUM_UNSPECIFIED"
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+            ]
           }
         ],
         "tags": [
@@ -122,6 +131,12 @@
         "VISIBILITY_ENUM_VISIBLE"
       ],
       "default": "VISIBILITY_ENUM_UNSPECIFIED"
+    },
+    "VisibilityRuleSimpleMessageVisibilityEnumHiddenDefault": {
+      "type": "string",
+      "enum": [
+        "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+      ]
     },
     "examplepbVisibilityRuleEmbedded": {
       "type": "object",
@@ -166,6 +181,9 @@
         },
         "anEnum": {
           "$ref": "#/definitions/VisibilityRuleSimpleMessageVisibilityEnum"
+        },
+        "ahiddenDefaultEnum": {
+          "$ref": "#/definitions/VisibilityRuleSimpleMessageVisibilityEnumHiddenDefault"
         }
       },
       "description": "SimpleMessage represents a simple message sent to the Echo service."

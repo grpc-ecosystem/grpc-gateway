@@ -150,6 +150,9 @@ func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) interface{}
 	if !reg.GetOmitEnumDefaultValue() {
 		for _, value := range enum.GetValue() {
 			if value.GetNumber() == 0 {
+				if !isVisible(getEnumValueVisibilityOption(value), reg) {
+					return nil
+				}
 				return value.GetName()
 			}
 		}

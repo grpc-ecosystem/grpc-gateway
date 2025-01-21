@@ -106,6 +106,16 @@
               1
             ],
             "default": 0
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "enum": [
+              1
+            ],
+            "default": 0
           }
         ],
         "tags": [
@@ -120,6 +130,14 @@
       "format": "int32",
       "enum": [
         0,
+        1
+      ],
+      "default": 0
+    },
+    "VisibilityRuleSimpleMessageVisibilityEnumHiddenDefault": {
+      "type": "integer",
+      "format": "int32",
+      "enum": [
         1
       ],
       "default": 0
@@ -167,6 +185,9 @@
         },
         "anEnum": {
           "$ref": "#/definitions/VisibilityRuleSimpleMessageVisibilityEnum"
+        },
+        "ahiddenDefaultEnum": {
+          "$ref": "#/definitions/VisibilityRuleSimpleMessageVisibilityEnumHiddenDefault"
         }
       },
       "description": "SimpleMessage represents a simple message sent to the Echo service."
