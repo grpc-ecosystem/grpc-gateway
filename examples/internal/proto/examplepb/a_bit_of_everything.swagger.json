@@ -415,20 +415,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -870,20 +869,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -1312,20 +1310,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -1779,20 +1776,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -2268,20 +2264,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -2756,20 +2751,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -3198,20 +3192,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -3664,20 +3657,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -4130,20 +4122,19 @@
           },
           {
             "name": "mapValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "map of numeric enum",
             "in": "query",
             "required": false
           },
           {
             "name": "mappedStringValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "mappedNestedValue",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
             "in": "query",
             "required": false
           },
@@ -5329,13 +5320,16 @@
                   "type": "object",
                   "additionalProperties": {
                     "$ref": "#/definitions/examplepbNumericEnum"
-                  }
+                  },
+                  "title": "map of numeric enum"
                 },
                 "mappedStringValue": {
                   "type": "object",
                   "additionalProperties": {
                     "type": "string"
-                  }
+                  },
+                  "description": "Map of string description.",
+                  "title": "Map of string title"
                 },
                 "mappedNestedValue": {
                   "type": "object",
@@ -5651,13 +5645,16 @@
                   "type": "object",
                   "additionalProperties": {
                     "$ref": "#/definitions/examplepbNumericEnum"
-                  }
+                  },
+                  "title": "map of numeric enum"
                 },
                 "mappedStringValue": {
                   "type": "object",
                   "additionalProperties": {
                     "type": "string"
-                  }
+                  },
+                  "description": "Map of string description.",
+                  "title": "Map of string title"
                 },
                 "mappedNestedValue": {
                   "type": "object",
@@ -6644,13 +6641,16 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
-          }
+          },
+          "title": "map of numeric enum"
         },
         "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "description": "Map of string description.",
+          "title": "Map of string title"
         },
         "mappedNestedValue": {
           "type": "object",
@@ -6906,13 +6906,16 @@
               "type": "object",
               "additionalProperties": {
                 "$ref": "#/definitions/examplepbNumericEnum"
-              }
+              },
+              "title": "map of numeric enum"
             },
             "mappedStringValue": {
               "type": "object",
               "additionalProperties": {
                 "type": "string"
-              }
+              },
+              "description": "Map of string description.",
+              "title": "Map of string title"
             },
             "mappedNestedValue": {
               "type": "object",
@@ -7192,13 +7195,16 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
-          }
+          },
+          "title": "map of numeric enum"
         },
         "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "description": "Map of string description.",
+          "title": "Map of string title"
         },
         "mappedNestedValue": {
           "type": "object",
@@ -7577,13 +7583,16 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
-          }
+          },
+          "title": "map of numeric enum"
         },
         "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "description": "Map of string description.",
+          "title": "Map of string title"
         },
         "mappedNestedValue": {
           "type": "object",

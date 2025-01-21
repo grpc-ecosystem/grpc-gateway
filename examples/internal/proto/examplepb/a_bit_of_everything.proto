@@ -297,8 +297,15 @@ message ABitOfEverything {
     string oneof_string = 21;
   }
 
+  // map of numeric enum
   map<string, NumericEnum> map_value = 22;
-  map<string, string> mapped_string_value = 23;
+
+  // map of string  (This comment is overridden by the field annotation)
+  map<string, string> mapped_string_value = 23 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Map of string title"
+    description: "Map of string description."
+  }];
+
   map<string, Nested> mapped_nested_value = 24;
 
   string nonConventionalNameValue = 26;

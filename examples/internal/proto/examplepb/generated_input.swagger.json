@@ -200,13 +200,16 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
-          }
+          },
+          "title": "map of numeric enum"
         },
         "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
-          }
+          },
+          "description": "Map of string description.",
+          "title": "Map of string title"
         },
         "mappedNestedValue": {
           "type": "object",

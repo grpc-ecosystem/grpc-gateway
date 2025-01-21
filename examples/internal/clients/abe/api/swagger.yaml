@@ -322,28 +322,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -746,28 +736,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -1155,28 +1135,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -1591,28 +1561,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -2032,28 +1992,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "timestampValue"
@@ -2450,28 +2400,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -2912,28 +2852,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -3331,28 +3261,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -3767,28 +3687,18 @@ paths:
         x-optionalDataType: "String"
       - name: "mapValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "map of numeric enum"
         required: false
         x-exportParamName: "MapValue"
       - name: "mappedStringValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
+        description: "Map of string title\n\nMap of string description."
         required: false
         type: "string"
         x-exportParamName: "MappedStringValue"
         x-optionalDataType: "String"
       - name: "mappedNestedValue"
         in: "query"
-        description: "This is a request variable of the map type. The query format\
-          \ is \"map_name[key]=value\", e.g. If the map name is Age, the key type\
-          \ is string, and the value type is integer, the query parameter is expressed\
-          \ as Age[\"bob\"]=18"
         required: false
         x-exportParamName: "MappedNestedValue"
       - name: "nonConventionalNameValue"
@@ -5307,10 +5217,13 @@ definitions:
         type: "string"
       mapValue:
         type: "object"
+        title: "map of numeric enum"
         additionalProperties:
           $ref: "#/definitions/examplepbNumericEnum"
       mappedStringValue:
         type: "object"
+        description: "Map of string description."
+        title: "Map of string title"
         additionalProperties:
           type: "string"
       mappedNestedValue:
@@ -5534,10 +5447,13 @@ definitions:
         type: "string"
       mapValue:
         type: "object"
+        title: "map of numeric enum"
         additionalProperties:
           $ref: "#/definitions/examplepbNumericEnum"
       mappedStringValue:
         type: "object"
+        description: "Map of string description."
+        title: "Map of string title"
         additionalProperties:
           type: "string"
       mappedNestedValue:
@@ -5818,10 +5734,13 @@ definitions:
         type: "string"
       mapValue:
         type: "object"
+        title: "map of numeric enum"
         additionalProperties:
           $ref: "#/definitions/examplepbNumericEnum"
       mappedStringValue:
         type: "object"
+        description: "Map of string description."
+        title: "Map of string title"
         additionalProperties:
           type: "string"
       mappedNestedValue:
@@ -6263,10 +6182,13 @@ definitions:
         type: "string"
       mapValue:
         type: "object"
+        title: "map of numeric enum"
         additionalProperties:
           $ref: "#/definitions/examplepbNumericEnum"
       mappedStringValue:
         type: "object"
+        description: "Map of string description."
+        title: "Map of string title"
         additionalProperties:
           type: "string"
       mappedNestedValue:
@@ -6454,10 +6376,13 @@ definitions:
         type: "string"
       mapValue:
         type: "object"
+        title: "map of numeric enum"
         additionalProperties:
           $ref: "#/definitions/examplepbNumericEnum"
       mappedStringValue:
         type: "object"
+        description: "Map of string description."
+        title: "Map of string title"
         additionalProperties:
           type: "string"
       mappedNestedValue:
@@ -6645,10 +6570,13 @@ definitions:
         type: "string"
       mapValue:
         type: "object"
+        title: "map of numeric enum"
         additionalProperties:
           $ref: "#/definitions/examplepbNumericEnum"
       mappedStringValue:
         type: "object"
+        description: "Map of string description."
+        title: "Map of string title"
         additionalProperties:
           type: "string"
       mappedNestedValue:
