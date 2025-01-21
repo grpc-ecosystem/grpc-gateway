@@ -11,7 +11,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -19,7 +19,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           check-latest: true
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: 10
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           check-latest: true
       - run: >
@@ -100,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: 1.23
           check-latest: true
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           check-latest: true
       - run: make install
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: 1.23
           check-latest: true
