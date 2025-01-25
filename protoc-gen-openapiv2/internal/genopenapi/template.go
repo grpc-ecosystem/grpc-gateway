@@ -317,7 +317,6 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 					fName := fmt.Sprintf("%s[%s]", *field.Name, kType)
 					field.Name = proto.String(fName)
 					schema.Type = schema.AdditionalProperties.schemaCore.Type
-					schema.Description = `This is a request variable of the map type. The query format is "map_name[key]=value", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age["bob"]=18`
 				}
 			}
 		}

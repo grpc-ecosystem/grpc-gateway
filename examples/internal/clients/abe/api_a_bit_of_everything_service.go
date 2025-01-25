@@ -373,9 +373,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -757,9 +757,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -1139,9 +1139,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -1675,9 +1675,9 @@ This API creates a new ABitOfEverything
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -2343,9 +2343,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -2735,9 +2735,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -3242,9 +3242,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
@@ -3788,9 +3788,9 @@ ABitOfEverythingServiceApiService
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofEmpty" (optional.Interface of map[string]string) - 
      * @param "OneofString" (optional.String) - 
-     * @param "MapValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedStringValue" (optional.String) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
-     * @param "MappedNestedValue" (optional.Interface of interface{}) -  This is a request variable of the map type. The query format is \&quot;map_name[key]&#x3D;value\&quot;, e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\&quot;bob\&quot;]&#x3D;18
+     * @param "MapValue" (optional.Interface of interface{}) -  map of numeric enum
+     * @param "MappedStringValue" (optional.String) -  Map of string title  Map of string description.
+     * @param "MappedNestedValue" (optional.Interface of interface{}) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1

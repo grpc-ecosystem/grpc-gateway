@@ -10311,7 +10311,6 @@ func TestQueryParameterType(t *testing.T) {
 				Parameters: openapiParametersObject{
 					{
 						Name:        "Address[string]",
-						Description: `This is a request variable of the map type. The query format is "map_name[key]=value", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age["bob"]=18`,
 						In:          "query",
 						Type:        "integer",
 					},
