@@ -483,8 +483,8 @@ func TestPopulateParameters(t *testing.T) {
 		{
 			// Don't allow setting a oneof more than once
 			values: url.Values{
-				"oneof_int32_value":   {"10"},
-				"nested_oneof_value_one.int32Value":   {"-1"},
+				"nested_oneof_int32_value":          {"10"},
+				"nested_oneof_value_one.int32Value": {"-1"},
 			},
 			filter:  utilities.NewDoubleArray(nil),
 			want:    &examplepb.Proto3Message{},
@@ -493,8 +493,8 @@ func TestPopulateParameters(t *testing.T) {
 		{
 			// Don't allow setting a oneof more than once
 			values: url.Values{
-				"nested_oneof_value_one.int32Value":   {"-1"},
-				"oneof_int32_value":   {"10"},
+				"nested_oneof_value_one.int32Value": {"-1"},
+				"nested_oneof_int32_value":          {"10"},
 			},
 			filter:  utilities.NewDoubleArray(nil),
 			want:    &examplepb.Proto3Message{},
