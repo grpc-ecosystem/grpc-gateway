@@ -35,7 +35,7 @@ message Proto3Message {
     string oneof_string_value = 2;
   }
   oneof nested_oneof_value {
-    int32 oneof_int32_value = 50;
+    int32 nested_oneof_int32_value = 50;
     Proto3Message nested_oneof_value_one = 46;
   }
   google.protobuf.DoubleValue wrapper_double_value = 17;
