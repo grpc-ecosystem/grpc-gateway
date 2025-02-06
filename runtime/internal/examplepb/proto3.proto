@@ -11,7 +11,7 @@ import "google/protobuf/wrappers.proto";
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
 
 message Proto3Message {
-  // Next number: 50
+  // Next number: 51
   Proto3Message nested = 41;
   float float_value = 42;
   double double_value = 43;
@@ -35,6 +35,7 @@ message Proto3Message {
     string oneof_string_value = 2;
   }
   oneof nested_oneof_value {
+    int32 oneof_int32_value = 50;
     Proto3Message nested_oneof_value_one = 46;
   }
   google.protobuf.DoubleValue wrapper_double_value = 17;
