@@ -46,11 +46,6 @@ nested docker container is not possible.
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.
 
-### Regenerate a code for a single proto file
-1. Install [buf](https://buf.build/docs/installation/).
-2. You may need to install plugins explicitly if they are not in the PATH (brew package does not add them to a visible path for "buf").
-3. `buf generate --path=location/of/proto`
-
 ## Making a release
 
 To make a release, follow these steps:
