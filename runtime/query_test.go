@@ -481,6 +481,26 @@ func TestPopulateParameters(t *testing.T) {
 			wanterr: errors.New("field already set for oneof \"oneof_value\""),
 		},
 		{
+			// Don't allow setting a oneof more than once
+			values: url.Values{
+				"nested_oneof_int32_value":          {"10"},
+				"nested_oneof_value_one.int32Value": {"-1"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New("field already set for oneof \"nested_oneof_value\""),
+		},
+		{
+			// Don't allow setting a oneof more than once
+			values: url.Values{
+				"nested_oneof_value_one.int32Value": {"-1"},
+				"nested_oneof_int32_value":          {"10"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New("field already set for oneof \"nested_oneof_value\""),
+		},
+		{
 			// Error when there are too many values
 			values: url.Values{
 				"uint64_value": {"1", "2"},
