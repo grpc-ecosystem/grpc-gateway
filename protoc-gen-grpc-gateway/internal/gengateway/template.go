@@ -382,7 +382,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	}
 	{{- end }}
 {{- else }}
-    io.ReadAll(req.Body)
+    io.Copy(io.Discard, req.Body)
 {{- end }}
 {{- if .PathParams }}
 	{{- $binding := . }}
