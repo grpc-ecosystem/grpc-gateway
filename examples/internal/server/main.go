@@ -28,6 +28,7 @@ func Run(ctx context.Context, network, address string) error {
 	s := grpc.NewServer()
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
+	examples.RegisterNoBodyPostServiceServer(s, newNoBodyPostServer())
 	examples.RegisterNonStandardServiceServer(s, newNonStandardServer())
 	examples.RegisterUnannotatedEchoServiceServer(s, newUnannotatedEchoServer())
 
@@ -49,6 +50,7 @@ func RunInProcessGateway(ctx context.Context, addr string, opts ...runtime.Serve
 
 	examples.RegisterEchoServiceHandlerServer(ctx, mux, newEchoServer())
 	examples.RegisterFlowCombinationHandlerServer(ctx, mux, newFlowCombinationServer())
+	examples.RegisterNoBodyPostServiceHandlerServer(ctx, mux, newNoBodyPostServer())
 	examples.RegisterNonStandardServiceHandlerServer(ctx, mux, newNonStandardServer())
 	standalone.RegisterUnannotatedEchoServiceHandlerServer(ctx, mux, newUnannotatedEchoServer())
 
@@ -75,5 +77,4 @@ func RunInProcessGateway(ctx context.Context, addr string, opts ...runtime.Serve
 		return err
 	}
 	return nil
-
 }
