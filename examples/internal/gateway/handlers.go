@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // openAPIServer returns OpenAPI specification files located under "/openapiv2/"
@@ -59,6 +60,10 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 func healthzServer(conn *grpc.ClientConn) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
+		if s := conn.GetState(); s == connectivity.Idle {
+			// Invoke method to move connection from Idle to Ready
+			conn.Invoke(r.Context(), "/grpc.health.v1.Health/Check", &emptypb.Empty{}, &emptypb.Empty{})
+		}
 		if s := conn.GetState(); s != connectivity.Ready {
 			http.Error(w, fmt.Sprintf("grpc server is %s", s), http.StatusBadGateway)
 			return
