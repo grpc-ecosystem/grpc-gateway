@@ -16,6 +16,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
@@ -55,6 +56,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
@@ -85,6 +87,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
@@ -106,6 +109,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
@@ -135,6 +139,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
       - examples/internal/proto/examplepb/response_body_service.proto
@@ -149,6 +154,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
@@ -165,6 +171,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
       - examples/internal/proto/examplepb/generated_input.proto
+      - examples/internal/proto/examplepb/no_body_post.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
