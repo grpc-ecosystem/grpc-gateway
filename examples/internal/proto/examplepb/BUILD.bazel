@@ -56,6 +56,7 @@ proto_library(
         "generate_unbound_methods.proto",
         "generated_output.proto",
         "ignore_comment.proto",
+        "no_body_post.proto",
         "non_standard_names.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",
@@ -126,6 +127,7 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
+        "no_body_post.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
@@ -147,6 +149,7 @@ go_library(
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
         "@org_golang_google_protobuf//runtime/protoimpl",
+        "@org_golang_google_protobuf//types/known/emptypb",
     ],
 )
 
