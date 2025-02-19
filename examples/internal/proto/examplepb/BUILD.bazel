@@ -127,6 +127,7 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
+        "no_body_post.pb.go",
         "no_body_post.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
