@@ -41,7 +41,7 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -59,7 +59,7 @@ jobs:
       - run: git diff --exit-code
   bazel:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
