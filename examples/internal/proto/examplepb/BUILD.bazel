@@ -18,6 +18,8 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude generate_unbound_methods.pb.gw.go
 # gazelle:exclude generate_unbound_methods_grpc.pb.go
 # gazelle:exclude generated_input.proto
+# gazelle:exclude no_body_post.pb.gw.go
+# gazelle:exclude no_body_post_grpc.pb.go
 # gazelle:exclude non_standard_names.pb.gw.go
 # gazelle:exclude non_standard_names_grpc.pb.go
 # gazelle:exclude response_body_service.pb.gw.go
@@ -127,7 +129,6 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
-        "no_body_post.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
@@ -149,7 +150,6 @@ go_library(
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
         "@org_golang_google_protobuf//runtime/protoimpl",
-        "@org_golang_google_protobuf//types/known/emptypb",
     ],
 )
 
