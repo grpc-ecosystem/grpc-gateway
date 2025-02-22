@@ -21,6 +21,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/server"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
@@ -2704,5 +2705,75 @@ func testEchoWithInvalidHeaderKey(t *testing.T, port int, apiPrefix string) {
 	}
 	if got, want := msg.Id, "myid"; got != want {
 		t.Errorf("msg.Id = %q; want %q", got, want)
+	}
+}
+
+// Test server context closing when body is sent on a POST method which has no
+// "body" annotation defined.
+func TestNoBodyPost(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testNoBodyPostRPC(t, 8088)
+	testNoBodyPostStream(t, 8088)
+}
+
+func testNoBodyPostRPC(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/rpc", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.NoBodyPostServer_RetrieveContextRPC()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testNoBodyPostStream(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/stream", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.NoBodyPostServer_RetrieveContextStream()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
 	}
 }

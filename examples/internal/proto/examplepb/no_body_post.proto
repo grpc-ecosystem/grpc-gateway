@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+// No-Body POST Service
+// Used to test server context cancellation with Unary and ServerStream methods
+// when no body annotation is defined in the POST method.
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+service NoBodyPostService {
+  rpc RpcEmptyRpc(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {post: "/rpc/no-body/rpc"};
+  }
+  rpc RpcEmptyStream(google.protobuf.Empty) returns (stream google.protobuf.Empty) {
+    option (google.api.http) = {post: "/rpc/no-body/stream"};
+  }
+}

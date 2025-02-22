@@ -17,7 +17,6 @@ import (
 
 // newGateway returns a new gateway server which translates HTTP into gRPC.
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
-
 	mux := gwruntime.NewServeMux(opts...)
 
 	for _, f := range []func(context.Context, *gwruntime.ServeMux, *grpc.ClientConn) error{
@@ -26,6 +25,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 		examplepb.RegisterStreamServiceHandler,
 		examplepb.RegisterABitOfEverythingServiceHandler,
 		examplepb.RegisterFlowCombinationHandler,
+		examplepb.RegisterNoBodyPostServiceHandler,
 		examplepb.RegisterNonStandardServiceHandler,
 		examplepb.RegisterResponseBodyServiceHandler,
 	} {
