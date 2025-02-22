@@ -8,7 +8,7 @@ name: renovate
 jobs:
   update_repositoriesbzl:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -49,7 +49,7 @@ jobs:
           fi
   regenerate:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.23
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
