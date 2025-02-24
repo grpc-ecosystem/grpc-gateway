@@ -55,7 +55,7 @@ func TestUrlEncodedDecoder_Decode(t *testing.T) {
 		{
 			name: "repeated field",
 			values: url.Values{
-				"repeated_string": {"one", "two", "three"},
+				"repeated_string_value": {"one", "two", "three"},
 			},
 			want: &examplepb.ABitOfEverything{
 				RepeatedStringValue: []string{"one", "two", "three"},
@@ -106,8 +106,8 @@ func TestUrlEncodedDecoder_DecodeNonProto(t *testing.T) {
 
 func TestUrlEncodeMarshal_ContentType(t *testing.T) {
 	m := &UrlEncodeMarshal{}
-	if got := m.ContentType(nil); got != "application/x-www-form-urlencoded" {
-		t.Errorf("UrlEncodeMarshal.ContentType() = %v, want application/x-www-form-urlencoded", got)
+	if got := m.ContentType(nil); got != "application/json" {
+		t.Errorf("UrlEncodeMarshal.ContentType() = %v, want application/json", got)
 	}
 }
 

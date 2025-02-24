@@ -57,6 +57,6 @@ func (u *UrlEncodeMarshal) Marshal(v interface{}) ([]byte, error) {
 }
 
 // NewDecoder indicates how to decode the request
-func (u UrlEncodeMarshal) NewDecoder(r io.Reader) Decoder {
+func (u *UrlEncodeMarshal) NewDecoder(r io.Reader) Decoder {
 	return NewUrlEncodedDecoder(r)
 }
