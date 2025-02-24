@@ -11,21 +11,30 @@ import (
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
 // a registered MIME type.
-const MIMEWildcard = "*"
+const (
+	MIMEWildcard   = "*"
+	MIMEUrlEncoded = "application/x-www-form-urlencoded"
+)
 
 var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 
-	defaultMarshaler = &HTTPBodyMarshaler{
-		Marshaler: &JSONPb{
-			MarshalOptions: protojson.MarshalOptions{
-				EmitUnpopulated: true,
-			},
-			UnmarshalOptions: protojson.UnmarshalOptions{
-				DiscardUnknown: true,
-			},
+	defaultJsonPbMarshaler = &JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			EmitUnpopulated: true,
 		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}
+
+	defaultMarshaler = &HTTPBodyMarshaler{
+		Marshaler: defaultJsonPbMarshaler,
+	}
+
+	urlEncodedMarshaler = &UrlEncodeMarshal{
+		Marshaler: defaultJsonPbMarshaler,
 	}
 )
 
@@ -93,7 +102,8 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 func makeMarshalerMIMERegistry() marshalerRegistry {
 	return marshalerRegistry{
 		mimeMap: map[string]Marshaler{
-			MIMEWildcard: defaultMarshaler,
+			MIMEWildcard:   defaultMarshaler,
+			MIMEUrlEncoded: urlEncodedMarshaler,
 		},
 	}
 }
