@@ -3156,21 +3156,29 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 }
 
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
+	required := true
+	if field.GetProto3Optional() {
+		required = false
+	}
 	for _, fb := range j {
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:
-			if reg.GetUseJSONNamesForFields() {
-				s.Required = append(s.Required, *field.JsonName)
-			} else {
-				s.Required = append(s.Required, *field.Name)
-			}
+			required = true
 		case annotations.FieldBehavior_OUTPUT_ONLY:
 			s.ReadOnly = true
 		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
 		case annotations.FieldBehavior_OPTIONAL:
+			required = false
 		case annotations.FieldBehavior_INPUT_ONLY:
 			// OpenAPI v3 supports a writeOnly property, but this is not supported in Open API v2
 		case annotations.FieldBehavior_IMMUTABLE:
+		}
+	}
+	if required {
+		if reg.GetUseJSONNamesForFields() {
+			s.Required = append(s.Required, *field.JsonName)
+		} else {
+			s.Required = append(s.Required, *field.Name)
 		}
 	}
 }
