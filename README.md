@@ -97,6 +97,48 @@ This will place four binaries in your `$GOBIN`;
 
 Make sure that your `$GOBIN` is in your `$PATH`.
 
+### **Using the `tool` Directive in Go 1.24**
+
+Starting from Go 1.24, the `tool` directive in `go.mod` provides a structured way to track and manage executable dependencies. This replaces the previous workaround of using a separate `tools.go` file with blank imports.
+
+#### **Tracking Tools in `go.mod`**
+
+Instead of manually importing tool dependencies in a Go source file, you can now use the `tool` directive in `go.mod` to declare the tools your project depends on. For example:
+
+```go
+module tools
+
+go 1.24
+
+tool (
+	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	google.golang.org/protobuf/cmd/protoc-gen-go
+)
+```
+
+#### **Managing Tool Dependencies**
+
+To add tools to your module, use the `-tool` flag with `go get`:
+
+```sh
+go get -tool github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+go get -tool github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+go get -tool google.golang.org/protobuf/cmd/protoc-gen-go
+go get -tool google.golang.org/grpc/cmd/protoc-gen-go-grpc
+```
+
+This automatically updates `go.mod`, adding the tools under the `tool` directive along with `require` statements to ensure version tracking.
+
+### Install Tools
+
+Once the tool dependencies are properly recorded in the `go.mod` file, simply execute the following command in the root directory of your project:
+
+```sh
+go install ./...
+```
+
 ### Download the binaries
 
 You may alternatively download the binaries from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
