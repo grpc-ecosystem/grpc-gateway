@@ -272,7 +272,7 @@ var (
 
 	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.ReplaceAll(`
 {{ if and .Method.GetClientStreaming .Method.GetServerStreaming }}
-func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ctx context.Context, marshaler runtime.Marshaler, client {{ .Method.Service.InstanceName }}Client, req *http.Request, pathParams map[string]string) ({{ .Method.Service.InstanceName }}_{{ .Method.GetName }}Client, runtime.ServerMetadata, chan error, error)
+func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ctx context.Context, marshaler runtime.Marshaler, client {{ .Method.Service.InstanceName }}Client, req *http.Request, pathParams map[string]string) ({{ .Method.Service.InstanceName }}_{{ .Method.GetName }}Client, runtime.ServerMetadata, error)
 {{ else if .Method.GetServerStreaming }}
 func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ctx context.Context, marshaler runtime.Marshaler, client {{ .Method.Service.InstanceName }}Client, req *http.Request, pathParams map[string]string) ({{ .Method.Service.InstanceName }}_{{ .Method.GetName }}Client, runtime.ServerMetadata, error)
 {{ else }}
@@ -457,12 +457,10 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	_ = template.Must(handlerTemplate.New("bidi-streaming-request-func").Parse(`
 {{ template "request-func-signature" . }} {
 	var metadata runtime.ServerMetadata
-	errChan := make(chan error, 1)
 	stream, err := client.{{ .Method.GetName }}(ctx)
 	if err != nil {
 		grpclog.Errorf("Failed to start streaming: %v", err)
-		close(errChan)
-		return nil, metadata, errChan, err
+		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
@@ -482,10 +480,8 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil
 	}
 	go func() {
-		defer close(errChan)
 		for {
 			if err := handleSend(); err != nil {
-				errChan <- err
 				break
 			}
 		}
@@ -496,10 +492,10 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Errorf("Failed to get header from client: %v", err)
-		return nil, metadata, errChan, err
+		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, errChan, nil
+	return stream, metadata, nil
 }
 `))
 
@@ -741,25 +737,12 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Client(ctx context.Cont
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		{{if and $m.GetClientStreaming $m.GetServerStreaming }}
-		resp, md, reqErrChan, err := request_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}(annotatedContext, inboundMarshaler, client, req, pathParams)
-		{{- else -}}
 		resp, md, err := request_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}(annotatedContext, inboundMarshaler, client, req, pathParams)
-		{{- end }}
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		{{- if and $m.GetClientStreaming $m.GetServerStreaming }}
-		go func() {
-			for err := range reqErrChan {
-				if err != nil && !errors.Is(err, io.EOF) {
-					runtime.HTTPStreamError(annotatedContext, mux, outboundMarshaler, w, req, err)
-				}
-			}
-		}()
-		{{- end }}
 		{{- if $m.GetServerStreaming }}
 		{{- if $b.ResponseBody }}
 		forward_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
