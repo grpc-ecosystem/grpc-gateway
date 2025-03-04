@@ -64,6 +64,9 @@ type Registry struct {
 	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
+	// useProto3FieldSemantics if true proto3 field semantics are used for generating fields in OpenAPI definitions,
+	useProto3FieldSemantics bool
+
 	// openAPINamingStrategy is the naming strategy to use for assigning OpenAPI field and parameter names. This can be one of the following:
 	// - `legacy`: use the legacy naming strategy from protoc-gen-swagger, that generates unique but not necessarily
 	//             maximally concise names. Components are concatenated directly, e.g., `MyOuterMessageMyNestedMessage`.
@@ -397,6 +400,14 @@ func (r *Registry) LookupFile(name string) (*File, error) {
 		return nil, fmt.Errorf("no such file given: %s", name)
 	}
 	return f, nil
+}
+
+func (r *Registry) GetUseProto3FieldSemantics() bool {
+	return r.useProto3FieldSemantics
+}
+
+func (r *Registry) SetUseProto3FieldSemantics(useProto3FieldSemantics bool) {
+	r.useProto3FieldSemantics = useProto3FieldSemantics
 }
 
 // LookupExternalHTTPRules looks up external http rules by fully qualified service method name
