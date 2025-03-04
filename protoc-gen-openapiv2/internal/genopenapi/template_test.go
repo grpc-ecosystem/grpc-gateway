@@ -10310,9 +10310,9 @@ func TestQueryParameterType(t *testing.T) {
 			Get: &openapiOperationObject{
 				Parameters: openapiParametersObject{
 					{
-						Name:        "Address[string]",
-						In:          "query",
-						Type:        "integer",
+						Name: "Address[string]",
+						In:   "query",
+						Type: "integer",
 					},
 				},
 			},
@@ -11193,6 +11193,87 @@ func TestRenderServicesOptionDeprecated(t *testing.T) {
 			got := result.getPathItemObject("/v1/echo").Get.Deprecated
 			if got != tc.expectedDeprecated {
 				t.Fatalf("Wrong deprecated field, got %v want %v", got, tc.expectedDeprecated)
+			}
+		})
+	}
+}
+
+func Test_updateSwaggerObjectFromFieldBehavior(t *testing.T) {
+	type args struct {
+		s     *openapiSchemaObject
+		j     []annotations.FieldBehavior
+		reg   *descriptor.Registry
+		field *descriptor.Field
+	}
+
+	regWithNoProto3FieldSemantics := &descriptor.Registry{}
+	regWithProto3FieldSemantics := &descriptor.Registry{}
+	regWithProto3FieldSemantics.SetUseProto3FieldSemantics(true)
+	proto3Field := &descriptor.Field{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("name"),
+		Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		Number: proto.Int32(1),
+	}}
+	boolTrue := true
+	proto3FieldOptional := &descriptor.Field{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+		Name:           proto.String("name"),
+		Type:           descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		Number:         proto.Int32(1),
+		Proto3Optional: &boolTrue,
+	}}
+	tests := []struct {
+		name     string
+		args     args
+		required []string
+	}{
+		{
+			name: "FieldBehavior_REQUIRED",
+			args: args{
+				s: &openapiSchemaObject{},
+				j: []annotations.FieldBehavior{
+					annotations.FieldBehavior_REQUIRED,
+				},
+				reg:   regWithNoProto3FieldSemantics,
+				field: proto3FieldOptional,
+			},
+			required: []string{"name"},
+		},
+		{
+			name: "No Required No Proto3 Optional",
+			args: args{
+				s:     &openapiSchemaObject{},
+				j:     []annotations.FieldBehavior{},
+				reg:   regWithNoProto3FieldSemantics,
+				field: proto3FieldOptional,
+			},
+			required: nil,
+		},
+		{
+			name: "No Required Has Proto3 Optional",
+			args: args{
+				s:     &openapiSchemaObject{},
+				j:     []annotations.FieldBehavior{},
+				reg:   regWithProto3FieldSemantics,
+				field: proto3FieldOptional,
+			},
+			required: nil,
+		},
+		{
+			name: "No Required Has Proto3 Required",
+			args: args{
+				s:     &openapiSchemaObject{},
+				j:     []annotations.FieldBehavior{},
+				reg:   regWithProto3FieldSemantics,
+				field: proto3Field,
+			},
+			required: []string{"name"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			updateSwaggerObjectFromFieldBehavior(tt.args.s, tt.args.j, tt.args.reg, tt.args.field)
+			if !reflect.DeepEqual(tt.args.s.Required, tt.required) {
+				t.Errorf("updateSwaggerObjectFromFieldBehavior() = %v, want %v", tt.args.s.Required, tt.required)
 			}
 		})
 	}
