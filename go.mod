@@ -1,6 +1,6 @@
 module github.com/grpc-ecosystem/grpc-gateway/v2
 
-go 1.24
+go 1.23.0
 
 require (
 	github.com/antihax/optional v1.0.0
