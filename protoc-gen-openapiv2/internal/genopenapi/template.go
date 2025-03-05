@@ -849,11 +849,27 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		}
 	}
 
+	ret.Required = arrayUniq(ret.Required)
+
 	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
 		ret.XNullable = true
 	}
 
 	return ret
+}
+
+func arrayUniq[T comparable](array []T) []T {
+	seen := make(map[T]struct{})
+	j := 0
+	for _, v := range array {
+		if _, ok := seen[v]; ok {
+			continue
+		}
+		seen[v] = struct{}{}
+		array[j] = v
+		j++
+	}
+	return array[:j]
 }
 
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
@@ -3156,21 +3172,29 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 }
 
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
+	required := false
+	if reg.GetUseProto3FieldSemantics() {
+		required = !field.GetProto3Optional()
+	}
 	for _, fb := range j {
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:
-			if reg.GetUseJSONNamesForFields() {
-				s.Required = append(s.Required, *field.JsonName)
-			} else {
-				s.Required = append(s.Required, *field.Name)
-			}
+			required = true
 		case annotations.FieldBehavior_OUTPUT_ONLY:
 			s.ReadOnly = true
 		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
 		case annotations.FieldBehavior_OPTIONAL:
+			required = false
 		case annotations.FieldBehavior_INPUT_ONLY:
 			// OpenAPI v3 supports a writeOnly property, but this is not supported in Open API v2
 		case annotations.FieldBehavior_IMMUTABLE:
+		}
+	}
+	if required {
+		if reg.GetUseJSONNamesForFields() {
+			s.Required = append(s.Required, *field.JsonName)
+		} else {
+			s.Required = append(s.Required, *field.Name)
 		}
 	}
 }
