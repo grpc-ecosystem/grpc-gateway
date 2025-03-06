@@ -64,7 +64,7 @@ type Registry struct {
 	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
-	// useProto3FieldSemantics if true proto3 field semantics are used for generating fields in OpenAPI definitions,
+	// useProto3FieldSemantics if true proto3 field semantics are used for generating fields in OpenAPI definitions.
 	useProto3FieldSemantics bool
 
 	// openAPINamingStrategy is the naming strategy to use for assigning OpenAPI field and parameter names. This can be one of the following:
