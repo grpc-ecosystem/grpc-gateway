@@ -849,27 +849,13 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		}
 	}
 
-	ret.Required = arrayUniq(ret.Required)
+	ret.Required = slices.Compact(ret.Required)
 
 	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
 		ret.XNullable = true
 	}
 
 	return ret
-}
-
-func arrayUniq[T comparable](array []T) []T {
-	seen := make(map[T]struct{})
-	j := 0
-	for _, v := range array {
-		if _, ok := seen[v]; ok {
-			continue
-		}
-		seen[v] = struct{}{}
-		array[j] = v
-		j++
-	}
-	return array[:j]
 }
 
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
