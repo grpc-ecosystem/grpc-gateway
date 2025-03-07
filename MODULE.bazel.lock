@@ -157,7 +157,8 @@
     "https://bcr.bazel.build/modules/rules_rust/0.58.0/source.json": "36262a3cdbd52eb89f275aa41877f0ea77aa4759c26ff76c6bfeb03aeff7b3dd",
     "https://bcr.bazel.build/modules/rules_shell/0.2.0/MODULE.bazel": "fda8a652ab3c7d8fee214de05e7a9916d8b28082234e8d2c0094505c5268ed3c",
     "https://bcr.bazel.build/modules/rules_shell/0.3.0/MODULE.bazel": "de4402cd12f4cc8fda2354fce179fdb068c0b9ca1ec2d2b17b3e21b24c1a937b",
-    "https://bcr.bazel.build/modules/rules_shell/0.3.0/source.json": "c55ed591aa5009401ddf80ded9762ac32c358d2517ee7820be981e2de9756cf3",
+    "https://bcr.bazel.build/modules/rules_shell/0.4.0/MODULE.bazel": "0f8f11bb3cd11755f0b48c1de0bbcf62b4b34421023aa41a2fc74ef68d9584f0",
+    "https://bcr.bazel.build/modules/rules_shell/0.4.0/source.json": "1d7fa7f941cd41dc2704ba5b4edc2e2230eea1cc600d80bd2b65838204c50b95",
     "https://bcr.bazel.build/modules/stardoc/0.5.1/MODULE.bazel": "1a05d92974d0c122f5ccf09291442580317cdd859f07a8655f1db9a60374f9f8",
     "https://bcr.bazel.build/modules/stardoc/0.5.3/MODULE.bazel": "c7f6948dae6999bf0db32c1858ae345f112cacf98f174c7a8bb707e41b974f1c",
     "https://bcr.bazel.build/modules/stardoc/0.5.6/MODULE.bazel": "c43dabc564990eeab55e25ed61c07a1aadafe9ece96a4efabb3f8bf9063b71ef",
@@ -176,7 +177,7 @@
   "moduleExtensions": {
     "//:non_module_deps.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "4giArLlRkDmxJjtKIJoTys7UTMwyXe1LYK4odE7GqfU=",
+        "bzlTransitiveDigest": "1Me019iFzpO9iOJygvYw1zRzCSV3EiEY1sbSKNmfBFw=",
         "usagesDigest": "iXvfBtzAbLvbLe9kllQpE1XGaenkPW3Qmggx56ZxOoQ=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -185,10 +186,10 @@
           "com_github_bazelbuild_buildtools": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
-              "sha256": "0063f317e135481783f3dc14c82bc15e0bf873c5e9aeece63b4f94d151aeb09f",
-              "strip_prefix": "buildtools-8.0.2",
+              "sha256": "573345c2039889a4001b9933a7ebde8dcaf910c47787993aecccebc3117a4425",
+              "strip_prefix": "buildtools-8.0.3",
               "urls": [
-                "https://github.com/bazelbuild/buildtools/archive/v8.0.2.tar.gz"
+                "https://github.com/bazelbuild/buildtools/archive/v8.0.3.tar.gz"
               ]
             }
           }

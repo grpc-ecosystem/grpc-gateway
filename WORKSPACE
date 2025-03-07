@@ -127,10 +127,23 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 protobuf_deps()
 
 http_archive(
+    name = "rules_shell",
+    sha256 = "3e114424a5c7e4fd43e0133cc6ecdfe54e45ae8affa14fadd839f29901424043",
+    strip_prefix = "rules_shell-0.4.0",
+    url = "https://github.com/bazelbuild/rules_shell/releases/download/v0.4.0/rules_shell-v0.4.0.tar.gz",
+)
+
+load("@rules_shell//shell:repositories.bzl", "rules_shell_dependencies", "rules_shell_toolchains")
+
+rules_shell_dependencies()
+
+rules_shell_toolchains()
+
+http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "0063f317e135481783f3dc14c82bc15e0bf873c5e9aeece63b4f94d151aeb09f",
-    strip_prefix = "buildtools-8.0.2",
-    urls = ["https://github.com/bazelbuild/buildtools/archive/v8.0.2.tar.gz"],
+    sha256 = "573345c2039889a4001b9933a7ebde8dcaf910c47787993aecccebc3117a4425",
+    strip_prefix = "buildtools-8.0.3",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/v8.0.3.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
