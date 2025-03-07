@@ -849,6 +849,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		}
 	}
 
+	slices.Sort(ret.Required)
 	ret.Required = slices.Compact(ret.Required)
 
 	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
