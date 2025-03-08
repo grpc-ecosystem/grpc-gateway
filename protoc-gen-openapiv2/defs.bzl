@@ -432,6 +432,12 @@ protoc_gen_openapiv2 = rule(
                   " It also creates a new path parameter for each wildcard in " +
                   " the path pattern.",
         ),
+        "use_proto3_field_semantics": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, uses proto3 field semantics for the OpenAPI schema." +
+                  "  This means that fields are required by default.",
+        ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
             executable = True,
