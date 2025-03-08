@@ -1,0 +1,21 @@
+on:
+  pull_request:
+    paths:
+      - .devcontainer/devcontainer.json
+      - .github/workflows/devcontainer.yml
+permissions:
+  contents: read
+name: CI
+jobs:
+  devcontainer:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Pre-build dev container image
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/grpc-ecosystem/grpc-gateway/build-env
+          cacheFrom: ghcr.io/grpc-ecosystem/grpc-gateway/build-env
+          push: always
