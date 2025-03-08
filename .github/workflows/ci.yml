@@ -41,11 +41,7 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
-      options: "--user root"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -59,11 +55,7 @@ jobs:
       - run: git diff --exit-code
   bazel:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
-      options: "--user root"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4

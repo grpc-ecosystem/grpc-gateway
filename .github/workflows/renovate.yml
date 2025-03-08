@@ -8,11 +8,7 @@ name: renovate
 jobs:
   update_repositoriesbzl:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
-      options: "--user root"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -49,11 +45,7 @@ jobs:
           fi
   regenerate:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.24
-      options: "--user root"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
     runs-on: ubuntu-latest
     needs:
       # Run after update_repositoriesbzl to avoid
