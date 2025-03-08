@@ -43,7 +43,12 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	ch := make(chan struct{})
+	defer func() { <-ch }()
+	go func() {
+		defer func() { ch <- struct{}{} }()
+		io.Copy(io.Discard, req.Body)
+	}()
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -94,7 +99,12 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	ch := make(chan struct{})
+	defer func() { <-ch }()
+	go func() {
+		defer func() { ch <- struct{}{} }()
+		io.Copy(io.Discard, req.Body)
+	}()
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -184,7 +194,12 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	ch := make(chan struct{})
+	defer func() { <-ch }()
+	go func() {
+		defer func() { ch <- struct{}{} }()
+		io.Copy(io.Discard, req.Body)
+	}()
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
