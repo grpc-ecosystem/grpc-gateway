@@ -14,6 +14,7 @@ go_library(
         "//examples/internal/proto/examplepb",
         "//examples/internal/proto/standalone",
         "//runtime",
+        "@com_github_gorilla_websocket//:websocket",
         "@org_golang_google_genproto_googleapis_rpc//errdetails",
         "@org_golang_google_grpc//:grpc",
         "@org_golang_google_grpc//connectivity",
