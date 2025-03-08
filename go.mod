@@ -5,6 +5,7 @@ go 1.23.0
 require (
 	github.com/antihax/optional v1.0.0
 	github.com/google/go-cmp v0.7.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.28.0
 	golang.org/x/text v0.23.0
