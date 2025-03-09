@@ -7,7 +7,6 @@ go_library(
     srcs = [
         "api_a_bit_of_everything.go",
         "api_camel_case_service_name.go",
-        "api_cenasss.go",
         "api_echo_rpc.go",
         "api_snake_enum_service.go",
         "client.go",
