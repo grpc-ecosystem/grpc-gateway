@@ -2,6 +2,7 @@ package genopenapi
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math"
@@ -517,6 +518,22 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			Type: "object",
 		},
 	}
+
+	if reg.GetGenerateXGoType() && msg.File.GoPkg.Path != "" {
+		if schema.extensions == nil {
+			schema.extensions = []extension{}
+		}
+		schema.extensions = append(schema.extensions, extension{
+			key: "x-go-type",
+			value: json.RawMessage(`{
+                "import": {
+                    "package": "` + msg.File.GoPkg.Path + `"
+                },
+                "type": "` + msg.GetName() + `"
+            }`),
+		})
+	}
+
 	msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 	if err := updateOpenAPIDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
 		return openapiSchemaObject{}, err

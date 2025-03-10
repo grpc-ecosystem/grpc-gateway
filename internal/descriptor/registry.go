@@ -178,6 +178,9 @@ type Registry struct {
 	// This leads to more compliant and readable OpenAPI suitable for documentation, but may complicate client
 	// implementation if you want to pass the original "name" parameter.
 	expandSlashedPathPatterns bool
+
+	// generateXGoType is a global generator option for generating x-go-type annotations
+	generateXGoType bool
 }
 
 type repeatedFieldSeparator struct {
@@ -918,4 +921,12 @@ func (r *Registry) SetExpandSlashedPathPatterns(expandSlashedPathPatterns bool) 
 
 func (r *Registry) GetExpandSlashedPathPatterns() bool {
 	return r.expandSlashedPathPatterns
+}
+
+func (r *Registry) SetGenerateXGoType(generateXGoType bool) {
+	r.generateXGoType = generateXGoType
+}
+
+func (r *Registry) GetGenerateXGoType() bool {
+	return r.generateXGoType
 }
