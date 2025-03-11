@@ -76,7 +76,8 @@ def _run_proto_gen_openapi(
         use_allof_for_refs,
         disable_default_responses,
         enable_rpc_deprecation,
-        expand_slashed_path_patterns):
+        expand_slashed_path_patterns,
+        preserve_rpc_order):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -155,6 +156,9 @@ def _run_proto_gen_openapi(
 
     if expand_slashed_path_patterns:
         args.add("--openapiv2_opt", "expand_slashed_path_patterns=true")
+
+    if preserve_rpc_order:
+        args.add("--openapiv2_opt", "preserve_rpc_order=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -265,6 +269,7 @@ def _proto_gen_openapi_impl(ctx):
                     disable_default_responses = ctx.attr.disable_default_responses,
                     enable_rpc_deprecation = ctx.attr.enable_rpc_deprecation,
                     expand_slashed_path_patterns = ctx.attr.expand_slashed_path_patterns,
+                    preserve_rpc_order = ctx.attr.preserve_rpc_order,
                 ),
             ),
         ),
@@ -431,6 +436,13 @@ protoc_gen_openapiv2 = rule(
             doc = "if set, expands path patterns containing slashes into URI." +
                   " It also creates a new path parameter for each wildcard in " +
                   " the path pattern.",
+        ),
+        "preserve_rpc_order": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, ensures the order of paths emitted in OpenAPI files" +
+                  " mirrors the order of RPC methods found in proto files." +
+                  " If false, emitted paths will be ordered alphabetically.",
         ),
         "use_proto3_field_semantics": attr.bool(
             default = False,
