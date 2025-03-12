@@ -1,5 +1,5 @@
 on:
-  pull_request:
+  push:
     paths:
       - .devcontainer/devcontainer.json
       - .github/workflows/devcontainer.yml
