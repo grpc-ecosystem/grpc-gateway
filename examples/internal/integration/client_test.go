@@ -115,7 +115,7 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		RequiredFieldBehaviorJsonNameCustom: "test",
 		RequiredFieldSchemaJsonNameCustom:   "test",
 	}
-	resp, _, err := cl.ABitOfEverythingServiceApi.ABitOfEverythingServiceCreate(
+	resp, _, err := cl.ABitOfEverythingApi.ABitOfEverythingServiceCreate(
 		context.Background(),
 		want.FloatValue,
 		want.DoubleValue,
