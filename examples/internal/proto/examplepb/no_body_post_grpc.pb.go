@@ -24,8 +24,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NoBodyPostService_RpcEmptyRpc_FullMethodName    = "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpc"
-	NoBodyPostService_RpcEmptyStream_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyStream"
+	NoBodyPostService_RpcEmptyRpc_FullMethodName                = "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpc"
+	NoBodyPostService_RpcEmptyStream_FullMethodName             = "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyStream"
+	NoBodyPostService_RpcEmptyRpcWithResponse_FullMethodName    = "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpcWithResponse"
+	NoBodyPostService_RpcEmptyStreamWithResponse_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyStreamWithResponse"
 )
 
 // NoBodyPostServiceClient is the client API for NoBodyPostService service.
@@ -34,6 +36,8 @@ const (
 type NoBodyPostServiceClient interface {
 	RpcEmptyRpc(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RpcEmptyStream(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[emptypb.Empty], error)
+	RpcEmptyRpcWithResponse(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	RpcEmptyStreamWithResponse(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[emptypb.Empty], error)
 }
 
 type noBodyPostServiceClient struct {
@@ -73,12 +77,43 @@ func (c *noBodyPostServiceClient) RpcEmptyStream(ctx context.Context, in *emptyp
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type NoBodyPostService_RpcEmptyStreamClient = grpc.ServerStreamingClient[emptypb.Empty]
 
+func (c *noBodyPostServiceClient) RpcEmptyRpcWithResponse(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, NoBodyPostService_RpcEmptyRpcWithResponse_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *noBodyPostServiceClient) RpcEmptyStreamWithResponse(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (grpc.ServerStreamingClient[emptypb.Empty], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &NoBodyPostService_ServiceDesc.Streams[1], NoBodyPostService_RpcEmptyStreamWithResponse_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[emptypb.Empty, emptypb.Empty]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type NoBodyPostService_RpcEmptyStreamWithResponseClient = grpc.ServerStreamingClient[emptypb.Empty]
+
 // NoBodyPostServiceServer is the server API for NoBodyPostService service.
 // All implementations should embed UnimplementedNoBodyPostServiceServer
 // for forward compatibility.
 type NoBodyPostServiceServer interface {
 	RpcEmptyRpc(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	RpcEmptyStream(*emptypb.Empty, grpc.ServerStreamingServer[emptypb.Empty]) error
+	RpcEmptyRpcWithResponse(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	RpcEmptyStreamWithResponse(*emptypb.Empty, grpc.ServerStreamingServer[emptypb.Empty]) error
 }
 
 // UnimplementedNoBodyPostServiceServer should be embedded to have
@@ -93,6 +128,12 @@ func (UnimplementedNoBodyPostServiceServer) RpcEmptyRpc(context.Context, *emptyp
 }
 func (UnimplementedNoBodyPostServiceServer) RpcEmptyStream(*emptypb.Empty, grpc.ServerStreamingServer[emptypb.Empty]) error {
 	return status.Errorf(codes.Unimplemented, "method RpcEmptyStream not implemented")
+}
+func (UnimplementedNoBodyPostServiceServer) RpcEmptyRpcWithResponse(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RpcEmptyRpcWithResponse not implemented")
+}
+func (UnimplementedNoBodyPostServiceServer) RpcEmptyStreamWithResponse(*emptypb.Empty, grpc.ServerStreamingServer[emptypb.Empty]) error {
+	return status.Errorf(codes.Unimplemented, "method RpcEmptyStreamWithResponse not implemented")
 }
 func (UnimplementedNoBodyPostServiceServer) testEmbeddedByValue() {}
 
@@ -143,6 +184,35 @@ func _NoBodyPostService_RpcEmptyStream_Handler(srv interface{}, stream grpc.Serv
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type NoBodyPostService_RpcEmptyStreamServer = grpc.ServerStreamingServer[emptypb.Empty]
 
+func _NoBodyPostService_RpcEmptyRpcWithResponse_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NoBodyPostServiceServer).RpcEmptyRpcWithResponse(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NoBodyPostService_RpcEmptyRpcWithResponse_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NoBodyPostServiceServer).RpcEmptyRpcWithResponse(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NoBodyPostService_RpcEmptyStreamWithResponse_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(emptypb.Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(NoBodyPostServiceServer).RpcEmptyStreamWithResponse(m, &grpc.GenericServerStream[emptypb.Empty, emptypb.Empty]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type NoBodyPostService_RpcEmptyStreamWithResponseServer = grpc.ServerStreamingServer[emptypb.Empty]
+
 // NoBodyPostService_ServiceDesc is the grpc.ServiceDesc for NoBodyPostService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,11 +224,20 @@ var NoBodyPostService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "RpcEmptyRpc",
 			Handler:    _NoBodyPostService_RpcEmptyRpc_Handler,
 		},
+		{
+			MethodName: "RpcEmptyRpcWithResponse",
+			Handler:    _NoBodyPostService_RpcEmptyRpcWithResponse_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "RpcEmptyStream",
 			Handler:       _NoBodyPostService_RpcEmptyStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "RpcEmptyStreamWithResponse",
+			Handler:       _NoBodyPostService_RpcEmptyStreamWithResponse_Handler,
 			ServerStreams: true,
 		},
 	},

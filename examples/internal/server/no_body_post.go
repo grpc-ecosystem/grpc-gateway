@@ -40,3 +40,18 @@ func (s noBodyPostServer) RpcEmptyStream(req *emptypb.Empty, stream grpc.ServerS
 	<-stream.Context().Done()
 	return status.Error(codes.Canceled, "context canceled")
 }
+
+func (s noBodyPostServer) RpcEmptyRpcWithResponse(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	noBodyPost_contextChRPC <- ctx
+	return &emptypb.Empty{}, nil
+}
+
+func (s noBodyPostServer) RpcEmptyStreamWithResponse(req *emptypb.Empty, stream grpc.ServerStreamingServer[emptypb.Empty]) error {
+	noBodyPost_contextChStream <- stream.Context()
+	for stream.Context().Err() == nil {
+		if err := stream.Send(&emptypb.Empty{}); err != nil {
+			return err
+		}
+	}
+	return nil
+}

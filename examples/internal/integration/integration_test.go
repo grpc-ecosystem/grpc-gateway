@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/gorilla/websocket"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
@@ -2681,5 +2682,134 @@ func testNoBodyPostStream(t *testing.T, port int) {
 	case <-ctxServer.Done():
 	case <-time.After(time.Second):
 		t.Errorf("server context not done")
+	}
+}
+
+func TestNoBodyPostWebSocket(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testNoBodyPostWebSocketRPC(t, 8088)
+	testNoBodyPostWebSocketStream(t, 8088)
+}
+
+func testNoBodyPostWebSocketRPC(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("ws://localhost:%d/rpc/no-body/rpc-with-response", port)
+	done := make(chan error)
+
+	go func() {
+		defer close(done)
+
+		conn, _, err := websocket.DefaultDialer.Dial(apiURL, nil)
+		if err != nil {
+			done <- fmt.Errorf("websocket.DefaultDialer.Dial(%q) failed with %v; want success", apiURL, err)
+			return
+		}
+		defer conn.Close()
+
+		// Wait for the server to start processing the request.
+		_ = server.NoBodyPostServer_RetrieveContextRPC()
+
+		var s string
+		for {
+			messageType, p, err := conn.ReadMessage()
+			if err != nil {
+				done <- fmt.Errorf("conn.ReadMessage() failed with %v; want success", err)
+				return
+			}
+			if messageType == websocket.TextMessage || messageType == websocket.BinaryMessage {
+				s = string(p)
+				break
+			}
+			if messageType == websocket.CloseMessage {
+				done <- fmt.Errorf("unexpected close message: %v", p)
+				return
+			}
+		}
+		if s != "{}" {
+			done <- fmt.Errorf("unexpected message %q", s)
+			return
+		}
+	}()
+
+	// Wait for server context to be done
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+	case <-time.After(time.Second):
+		t.Fatalf("timeout")
+	}
+}
+
+func testNoBodyPostWebSocketStream(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("ws://localhost:%d/rpc/no-body/stream-with-response", port)
+	done := make(chan error)
+
+	go func() {
+		defer close(done)
+
+		conn, _, err := websocket.DefaultDialer.Dial(apiURL, nil)
+		if err != nil {
+			done <- fmt.Errorf("websocket.DefaultDialer.Dial(%q) failed with %v; want success", apiURL, err)
+			return
+		}
+		defer conn.Close()
+
+		// Wait for the server to start processing the request.
+		_ = server.NoBodyPostServer_RetrieveContextStream()
+
+		var s string
+		for {
+			messageType, p, err := conn.ReadMessage()
+			if err != nil {
+				done <- fmt.Errorf("conn.ReadMessage() failed with %v; want success", err)
+				return
+			}
+			if messageType == websocket.TextMessage || messageType == websocket.BinaryMessage {
+				s = string(p)
+				break
+			}
+			if messageType == websocket.CloseMessage {
+				done <- fmt.Errorf("unexpected close message: %v", p)
+				return
+			}
+		}
+		if s != "{}" {
+			done <- fmt.Errorf("unexpected message %q", s)
+			return
+		}
+
+		// Send close message to websocket and wait for server to close
+		err = conn.WriteMessage(websocket.CloseMessage,
+			websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+		if err != nil {
+			done <- fmt.Errorf("conn.WriteMessage() failed with %v; want success", err)
+			return
+		}
+
+		for {
+			_, _, err := conn.ReadMessage()
+			if err != nil {
+				if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
+					break
+				}
+				done <- fmt.Errorf("conn.ReadMessage() failed with %v; want success", err)
+				return
+			}
+		}
+	}()
+
+	// Wait for server context to be done
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+	case <-time.After(time.Second):
+		t.Fatalf("timeout")
 	}
 }

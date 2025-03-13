@@ -40,9 +40,61 @@
         ]
       }
     },
+    "/rpc/no-body/rpc-with-response": {
+      "post": {
+        "operationId": "NoBodyPostService_RpcEmptyRpcWithResponse",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "NoBodyPostService"
+        ]
+      }
+    },
     "/rpc/no-body/stream": {
       "post": {
         "operationId": "NoBodyPostService_RpcEmptyStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {},
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of googleprotobufEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "NoBodyPostService"
+        ]
+      }
+    },
+    "/rpc/no-body/stream-with-response": {
+      "post": {
+        "operationId": "NoBodyPostService_RpcEmptyStreamWithResponse",
         "responses": {
           "200": {
             "description": "A successful response.(streaming responses)",
