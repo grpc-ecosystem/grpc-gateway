@@ -6,7 +6,6 @@ go_library(
     name = "abe",
     srcs = [
         "api_a_bit_of_everything.go",
-        "api_a_bit_of_everything_service.go",
         "api_camel_case_service_name.go",
         "api_echo_rpc.go",
         "api_snake_enum_service.go",

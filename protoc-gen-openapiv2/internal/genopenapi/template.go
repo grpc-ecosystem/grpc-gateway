@@ -1700,6 +1700,11 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					return err
 				}
 
+				// Set Tag with the user-defined service name
+				if svcOpts.GetName() != "" {
+					operationObject.Tags = []string{svcOpts.GetName()}
+				}
+
 				opts, err := getMethodOpenAPIOption(reg, meth)
 				if opts != nil {
 					if err != nil {
@@ -1720,8 +1725,6 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					if len(opts.Tags) > 0 {
 						operationObject.Tags = make([]string, len(opts.Tags))
 						copy(operationObject.Tags, opts.Tags)
-					} else if svcOpts.GetName() != "" {
-						operationObject.Tags = []string{svcOpts.GetName()}
 					}
 					if opts.OperationId != "" {
 						operationObject.OperationID = opts.OperationId
