@@ -523,13 +523,16 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		if schema.extensions == nil {
 			schema.extensions = []extension{}
 		}
+		goTypeName := msg.GetName()
+
+		goTypeName = casing.JSONCamelCase(goTypeName)
 		schema.extensions = append(schema.extensions, extension{
 			key: "x-go-type",
 			value: json.RawMessage(`{
                 "import": {
                     "package": "` + msg.File.GoPkg.Path + `"
                 },
-                "type": "` + msg.GetName() + `"
+                "type": "` + goTypeName + `"
             }`),
 		})
 	}
