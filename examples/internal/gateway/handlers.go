@@ -220,10 +220,6 @@ type responseForwarder struct {
 	h http.Header
 }
 
-func newResponseForwarder(w *io.PipeWriter, h http.Header) http.ResponseWriter {
-	return &responseForwarder{w, h}
-}
-
 func (rf *responseForwarder) Header() http.Header {
 	return rf.h
 }
