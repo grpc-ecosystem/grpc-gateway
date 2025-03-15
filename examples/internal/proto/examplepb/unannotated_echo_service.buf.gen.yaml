@@ -10,3 +10,4 @@ plugins:
     opt:
       - grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
       - openapi_configuration=examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml
+      - generate_x_go_type=true
