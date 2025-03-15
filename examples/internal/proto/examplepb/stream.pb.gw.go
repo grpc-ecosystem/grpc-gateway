@@ -85,7 +85,12 @@ func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq Options
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	ch := make(chan struct{})
+	defer func() { <-ch }()
+	go func() {
+		defer func() { ch <- struct{}{} }()
+		io.Copy(io.Discard, req.Body)
+	}()
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -197,7 +202,12 @@ func request_StreamService_Download_0(ctx context.Context, marshaler runtime.Mar
 		protoReq Options
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	ch := make(chan struct{})
+	defer func() { <-ch }()
+	go func() {
+		defer func() { ch <- struct{}{} }()
+		io.Copy(io.Discard, req.Body)
+	}()
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
