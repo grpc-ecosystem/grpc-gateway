@@ -448,6 +448,10 @@ definitions:
       note:
         type: "string"
     description: "Embedded represents a message embedded in SimpleMessage."
+    x-go-type:
+      import:
+        package: "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+      type: "UnannotatedEmbedded"
   examplepbUnannotatedNestedMessage:
     type: "object"
     properties:
@@ -455,6 +459,10 @@ definitions:
         type: "string"
       val:
         type: "string"
+    x-go-type:
+      import:
+        package: "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+      type: "UnannotatedNestedMessage"
   examplepbUnannotatedSimpleMessage:
     type: "object"
     required:
@@ -500,6 +508,10 @@ definitions:
       '@type':
         type: "string"
     additionalProperties: {}
+    x-go-type:
+      import:
+        package: "google.golang.org/protobuf/types/known/anypb"
+      type: "Any"
   rpcStatus:
     type: "object"
     properties:
@@ -512,6 +524,10 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/protobufAny"
+    x-go-type:
+      import:
+        package: "google.golang.org/genproto/googleapis/rpc/status"
+      type: "Status"
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"
