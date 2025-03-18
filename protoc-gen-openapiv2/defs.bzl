@@ -77,7 +77,8 @@ def _run_proto_gen_openapi(
         disable_default_responses,
         enable_rpc_deprecation,
         expand_slashed_path_patterns,
-        preserve_rpc_order):
+        preserve_rpc_order,
+        generate_x_go_type):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -159,6 +160,8 @@ def _run_proto_gen_openapi(
 
     if preserve_rpc_order:
         args.add("--openapiv2_opt", "preserve_rpc_order=true")
+    if generate_x_go_type:
+        args.add("--openapiv2_opt", "generate_x_go_type=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -270,6 +273,7 @@ def _proto_gen_openapi_impl(ctx):
                     enable_rpc_deprecation = ctx.attr.enable_rpc_deprecation,
                     expand_slashed_path_patterns = ctx.attr.expand_slashed_path_patterns,
                     preserve_rpc_order = ctx.attr.preserve_rpc_order,
+                    generate_x_go_type = ctx.attr.generate_x_go_type,
                 ),
             ),
         ),
@@ -449,6 +453,11 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
             doc = "if set, uses proto3 field semantics for the OpenAPI schema." +
                   "  This means that fields are required by default.",
+        ),
+        "generate_x_go_type": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "Generate x-go-type extension using the go_package option from proto files",
         ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",

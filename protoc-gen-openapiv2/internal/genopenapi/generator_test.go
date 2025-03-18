@@ -1,6 +1,7 @@
 package genopenapi_test
 
 import (
+	"bytes"
 	"os"
 	"reflect"
 	"sort"
@@ -1850,6 +1851,89 @@ func TestFindExpectedPaths(t *testing.T) {
 			findExpectedPaths(&foundPaths, tc.requiredPaths, tc.potentialPath)
 			if correctPathsFound := reflect.DeepEqual(foundPaths, tc.expectedPathsFound); !correctPathsFound {
 				t.Fatalf("Found paths differed from expected paths. Got: %#v, want %#v", foundPaths, tc.expectedPathsFound)
+			}
+		})
+	}
+}
+
+func TestGenerateXGoType(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name           string
+		inputProtoText string
+		wantYAML       string
+	}{
+		{
+			name:           "x-go-type extension",
+			inputProtoText: "testdata/generator/x_go_type.prototext",
+			wantYAML:       "testdata/generator/x_go_type.swagger.yaml",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			b, err := os.ReadFile(tt.inputProtoText)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var req pluginpb.CodeGeneratorRequest
+			if err := prototext.Unmarshal(b, &req); err != nil {
+				t.Fatal(err)
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetGenerateXGoType(true)
+			if err := reg.Load(&req); err != nil {
+				t.Fatalf("failed to load request: %s", err)
+			}
+
+			var targets []*descriptor.File
+			for _, target := range req.FileToGenerate {
+				f, err := reg.LookupFile(target)
+				if err != nil {
+					t.Fatalf("failed to lookup file: %s", err)
+				}
+				targets = append(targets, f)
+			}
+
+			g := genopenapi.New(reg, genopenapi.FormatYAML)
+			resp, err := g.Generate(targets)
+			if err != nil {
+				t.Fatalf("failed to generate: %s", err)
+			}
+
+			if len(resp) != 1 {
+				t.Fatalf("expected 1 file, got %d", len(resp))
+			}
+
+			want, err := os.ReadFile(tt.wantYAML)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var gotMap, wantMap map[string]interface{}
+			if err := yaml.Unmarshal([]byte(resp[0].GetContent()), &gotMap); err != nil {
+				t.Fatalf("failed to unmarshal generated YAML: %v", err)
+			}
+			if err := yaml.Unmarshal(want, &wantMap); err != nil {
+				t.Fatalf("failed to unmarshal expected YAML: %v", err)
+			}
+
+			gotYAML, err := yaml.Marshal(gotMap)
+			if err != nil {
+				t.Fatalf("failed to marshal got YAML: %v", err)
+			}
+			wantYAML, err := yaml.Marshal(wantMap)
+			if err != nil {
+				t.Fatalf("failed to marshal want YAML: %v", err)
+			}
+
+			if !bytes.Equal(gotYAML, wantYAML) {
+				t.Errorf("YAMLs don't match:\ngot:\n%s\nwant:\n%s", gotYAML, wantYAML)
 			}
 		})
 	}
