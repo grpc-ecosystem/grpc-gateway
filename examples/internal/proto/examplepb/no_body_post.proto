@@ -26,14 +26,14 @@ service NoBodyPostService {
   // Unfortunate naming, but related tests, so keeping them together.
   rpc RpcEmptyRpcWithBody(google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/rpc/no-body/rpc-with-body";
-      body: "*";
+      post: "/rpc/no-body/rpc-with-body"
+      body: "*"
     };
   }
   rpc RpcEmptyStreamWithBody(google.protobuf.Empty) returns (stream google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/rpc/no-body/stream-with-body";
-      body: "*";
+      post: "/rpc/no-body/stream-with-body"
+      body: "*"
     };
   }
 }
