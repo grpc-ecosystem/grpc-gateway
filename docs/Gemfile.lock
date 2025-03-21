@@ -224,7 +224,7 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.6.1)
     mercenary (0.3.6)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.8)
     minima (2.5.1)
       jekyll (>= 3.5, < 5.0)
       jekyll-feed (~> 0.9)
@@ -232,7 +232,7 @@ GEM
     minitest (5.25.1)
     net-http (0.4.1)
       uri
-    nokogiri (1.16.7)
+    nokogiri (1.18.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     octokit (4.25.1)
