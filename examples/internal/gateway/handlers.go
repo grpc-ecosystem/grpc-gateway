@@ -8,6 +8,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/tmc/grpc-websocket-proxy/wsproxy"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/grpclog"
@@ -111,4 +112,14 @@ func logRequestBody(h http.Handler) http.Handler {
 			grpclog.Errorf("http error %+v request body %+v", lw.statusCode, string(body))
 		}
 	})
+}
+
+// websocketGateway wraps handler in a wsproxy.WebsocketProxy, adding method
+// query parameter as method selector.
+func websocketGateway(h http.Handler) http.Handler {
+	proxy := wsproxy.WebsocketProxy(
+		h,
+		wsproxy.WithMethodParamOverride("method"),
+	)
+	return proxy
 }

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"time"
 
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"google.golang.org/grpc"
@@ -39,4 +40,44 @@ func (s noBodyPostServer) RpcEmptyStream(req *emptypb.Empty, stream grpc.ServerS
 	noBodyPost_contextChStream <- stream.Context()
 	<-stream.Context().Done()
 	return status.Error(codes.Canceled, "context canceled")
+}
+
+func (s noBodyPostServer) RpcEmptyRpcWithResponse(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	noBodyPost_contextChRPC <- ctx
+	<-ctx.Done()
+	return nil, status.Error(codes.Canceled, "context canceled")
+}
+
+func (s noBodyPostServer) RpcEmptyStreamWithResponse(req *emptypb.Empty, stream grpc.ServerStreamingServer[emptypb.Empty]) error {
+	noBodyPost_contextChStream <- stream.Context()
+	for {
+		select {
+		case <-stream.Context().Done():
+			return status.Error(codes.Canceled, "context canceled")
+		case <-time.After(time.Millisecond):
+			if err := stream.Send(&emptypb.Empty{}); err != nil {
+				return err
+			}
+		}
+	}
+}
+
+func (s noBodyPostServer) RpcEmptyRpcWithBody(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	noBodyPost_contextChRPC <- ctx
+	<-ctx.Done()
+	return nil, status.Error(codes.Canceled, "context canceled")
+}
+
+func (s noBodyPostServer) RpcEmptyStreamWithBody(req *emptypb.Empty, stream grpc.ServerStreamingServer[emptypb.Empty]) error {
+	noBodyPost_contextChStream <- stream.Context()
+	for {
+		select {
+		case <-stream.Context().Done():
+			return status.Error(codes.Canceled, "context canceled")
+		case <-time.After(time.Millisecond):
+			if err := stream.Send(&emptypb.Empty{}); err != nil {
+				return err
+			}
+		}
+	}
 }

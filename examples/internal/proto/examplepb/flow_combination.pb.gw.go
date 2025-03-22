@@ -40,7 +40,7 @@ func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtim
 		protoReq EmptyProto
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	msg, err := client.RpcEmptyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -59,7 +59,7 @@ func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, marshaler run
 		protoReq EmptyProto
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	stream, err := client.RpcEmptyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -164,6 +164,7 @@ func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -186,7 +187,7 @@ func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -256,7 +257,7 @@ func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime
 		protoReq NonEmptyProto
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -291,6 +292,7 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -350,6 +352,7 @@ func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -389,6 +392,7 @@ func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -442,7 +446,7 @@ func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -493,7 +497,7 @@ func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marsh
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -547,6 +551,7 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -616,7 +621,7 @@ func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -670,6 +675,7 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -723,6 +729,7 @@ func request_FlowCombination_RpcBodyStream_0(ctx context.Context, marshaler runt
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -741,7 +748,7 @@ func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runt
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -785,7 +792,7 @@ func request_FlowCombination_RpcBodyStream_2(ctx context.Context, marshaler runt
 		protoReq NonEmptyProto
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -813,6 +820,7 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -851,6 +859,7 @@ func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runt
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -880,6 +889,7 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -914,7 +924,7 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runt
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
@@ -949,7 +959,7 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, ma
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -987,6 +997,7 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -1029,7 +1040,7 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshale
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
@@ -1067,6 +1078,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["a.str"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")

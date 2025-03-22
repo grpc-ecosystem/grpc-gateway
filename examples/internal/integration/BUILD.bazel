@@ -17,6 +17,7 @@ go_test(
         "//examples/internal/proto/sub",
         "//examples/internal/server",
         "//runtime",
+        "@com_github_coder_websocket//:websocket",
         "@com_github_google_go_cmp//cmp",
         "@com_github_rogpeppe_fastuuid//:fastuuid",
         "@org_golang_google_genproto_googleapis_rpc//status",

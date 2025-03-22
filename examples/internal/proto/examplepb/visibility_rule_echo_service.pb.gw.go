@@ -43,7 +43,7 @@ func request_VisibilityRuleEchoService_Echo_0(ctx context.Context, marshaler run
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -93,7 +93,7 @@ func request_VisibilityRuleEchoService_EchoInternal_0(ctx context.Context, marsh
 		protoReq VisibilityRuleSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -126,7 +126,7 @@ func request_VisibilityRuleEchoService_EchoPreview_0(ctx context.Context, marsha
 		protoReq VisibilityRuleSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -159,7 +159,7 @@ func request_VisibilityRuleEchoService_EchoInternalAndPreview_0(ctx context.Cont
 		protoReq VisibilityRuleSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -193,7 +193,7 @@ func request_VisibilityRuleInternalEchoService_Echo_0(ctx context.Context, marsh
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
