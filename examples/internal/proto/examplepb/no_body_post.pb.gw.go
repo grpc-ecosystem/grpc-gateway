@@ -41,7 +41,7 @@ func request_NoBodyPostService_RpcEmptyRpc_0(ctx context.Context, marshaler runt
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	msg, err := client.RpcEmptyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -60,8 +60,91 @@ func request_NoBodyPostService_RpcEmptyStream_0(ctx context.Context, marshaler r
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	go io.Copy(io.Discard, req.Body)
 	stream, err := client.RpcEmptyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+}
+
+func request_NoBodyPostService_RpcEmptyRpcWithResponse_0(ctx context.Context, marshaler runtime.Marshaler, client NoBodyPostServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq emptypb.Empty
+		metadata runtime.ServerMetadata
+	)
+	go io.Copy(io.Discard, req.Body)
+	msg, err := client.RpcEmptyRpcWithResponse(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_NoBodyPostService_RpcEmptyRpcWithResponse_0(ctx context.Context, marshaler runtime.Marshaler, server NoBodyPostServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq emptypb.Empty
+		metadata runtime.ServerMetadata
+	)
+	msg, err := server.RpcEmptyRpcWithResponse(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_NoBodyPostService_RpcEmptyStreamWithResponse_0(ctx context.Context, marshaler runtime.Marshaler, client NoBodyPostServiceClient, req *http.Request, pathParams map[string]string) (NoBodyPostService_RpcEmptyStreamWithResponseClient, runtime.ServerMetadata, error) {
+	var (
+		protoReq emptypb.Empty
+		metadata runtime.ServerMetadata
+	)
+	go io.Copy(io.Discard, req.Body)
+	stream, err := client.RpcEmptyStreamWithResponse(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+}
+
+func request_NoBodyPostService_RpcEmptyRpcWithBody_0(ctx context.Context, marshaler runtime.Marshaler, client NoBodyPostServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq emptypb.Empty
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	go io.Copy(io.Discard, req.Body)
+	msg, err := client.RpcEmptyRpcWithBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_NoBodyPostService_RpcEmptyRpcWithBody_0(ctx context.Context, marshaler runtime.Marshaler, server NoBodyPostServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq emptypb.Empty
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.RpcEmptyRpcWithBody(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_NoBodyPostService_RpcEmptyStreamWithBody_0(ctx context.Context, marshaler runtime.Marshaler, client NoBodyPostServiceClient, req *http.Request, pathParams map[string]string) (NoBodyPostService_RpcEmptyStreamWithBodyClient, runtime.ServerMetadata, error) {
+	var (
+		protoReq emptypb.Empty
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	go io.Copy(io.Discard, req.Body)
+	stream, err := client.RpcEmptyStreamWithBody(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
 	}
@@ -101,6 +184,60 @@ func RegisterNoBodyPostServiceHandlerServer(ctx context.Context, mux *runtime.Se
 	})
 
 	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyRpcWithResponse_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpcWithResponse", runtime.WithHTTPPathPattern("/rpc/no-body/rpc-with-response"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NoBodyPostService_RpcEmptyRpcWithResponse_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_NoBodyPostService_RpcEmptyRpcWithResponse_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyStreamWithResponse_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyRpcWithBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpcWithBody", runtime.WithHTTPPathPattern("/rpc/no-body/rpc-with-body"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NoBodyPostService_RpcEmptyRpcWithBody_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_NoBodyPostService_RpcEmptyRpcWithBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyStreamWithBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -180,15 +317,91 @@ func RegisterNoBodyPostServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		}
 		forward_NoBodyPostService_RpcEmptyStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyRpcWithResponse_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpcWithResponse", runtime.WithHTTPPathPattern("/rpc/no-body/rpc-with-response"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NoBodyPostService_RpcEmptyRpcWithResponse_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_NoBodyPostService_RpcEmptyRpcWithResponse_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyStreamWithResponse_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyStreamWithResponse", runtime.WithHTTPPathPattern("/rpc/no-body/stream-with-response"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NoBodyPostService_RpcEmptyStreamWithResponse_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_NoBodyPostService_RpcEmptyStreamWithResponse_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyRpcWithBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyRpcWithBody", runtime.WithHTTPPathPattern("/rpc/no-body/rpc-with-body"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NoBodyPostService_RpcEmptyRpcWithBody_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_NoBodyPostService_RpcEmptyRpcWithBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_NoBodyPostService_RpcEmptyStreamWithBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.NoBodyPostService/RpcEmptyStreamWithBody", runtime.WithHTTPPathPattern("/rpc/no-body/stream-with-body"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NoBodyPostService_RpcEmptyStreamWithBody_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_NoBodyPostService_RpcEmptyStreamWithBody_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
 var (
-	pattern_NoBodyPostService_RpcEmptyRpc_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "no-body"}, ""))
-	pattern_NoBodyPostService_RpcEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "no-body", "stream"}, ""))
+	pattern_NoBodyPostService_RpcEmptyRpc_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "no-body"}, ""))
+	pattern_NoBodyPostService_RpcEmptyStream_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "no-body", "stream"}, ""))
+	pattern_NoBodyPostService_RpcEmptyRpcWithResponse_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "no-body", "rpc-with-response"}, ""))
+	pattern_NoBodyPostService_RpcEmptyStreamWithResponse_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "no-body", "stream-with-response"}, ""))
+	pattern_NoBodyPostService_RpcEmptyRpcWithBody_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "no-body", "rpc-with-body"}, ""))
+	pattern_NoBodyPostService_RpcEmptyStreamWithBody_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "no-body", "stream-with-body"}, ""))
 )
 
 var (
-	forward_NoBodyPostService_RpcEmptyRpc_0    = runtime.ForwardResponseMessage
-	forward_NoBodyPostService_RpcEmptyStream_0 = runtime.ForwardResponseStream
+	forward_NoBodyPostService_RpcEmptyRpc_0                = runtime.ForwardResponseMessage
+	forward_NoBodyPostService_RpcEmptyStream_0             = runtime.ForwardResponseStream
+	forward_NoBodyPostService_RpcEmptyRpcWithResponse_0    = runtime.ForwardResponseMessage
+	forward_NoBodyPostService_RpcEmptyStreamWithResponse_0 = runtime.ForwardResponseStream
+	forward_NoBodyPostService_RpcEmptyRpcWithBody_0        = runtime.ForwardResponseMessage
+	forward_NoBodyPostService_RpcEmptyStreamWithBody_0     = runtime.ForwardResponseStream
 )

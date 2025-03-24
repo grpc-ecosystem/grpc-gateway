@@ -56,6 +56,7 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 			protoReq.UpdateMask = fieldMask
 		}
 	}
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -116,6 +117,7 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 			protoReq.UpdateMask = fieldMask
 		}
 	}
+	go io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}

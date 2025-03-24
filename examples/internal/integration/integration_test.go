@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/coder/websocket"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
@@ -2681,5 +2682,157 @@ func testNoBodyPostStream(t *testing.T, port int) {
 	case <-ctxServer.Done():
 	case <-time.After(time.Second):
 		t.Errorf("server context not done")
+	}
+}
+
+func TestNoBodyPostWebSocket(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testNoBodyPostWebSocketRPC(t, 8088)
+	testNoBodyPostWebSocketStream(t, 8088)
+}
+
+func testNoBodyPostWebSocketRPC(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("ws://localhost:%d/rpc/no-body/rpc?method=POST", port)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	conn, _, err := websocket.Dial(ctx, apiURL, nil)
+	if err != nil {
+		t.Fatalf("websocket.Dial(%q) failed with %v; want success", apiURL, err)
+	}
+	defer conn.Close(websocket.StatusNormalClosure, "")
+
+	// Write request even though server doesn't expect it
+	err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
+	if err != nil {
+		t.Fatalf("conn.WriteMessage() failed with %v; want success", err)
+	}
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.NoBodyPostServer_RetrieveContextRPC()
+	conn.Close(websocket.StatusNormalClosure, "")
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Fatalf("server context not done")
+	}
+}
+
+func testNoBodyPostWebSocketStream(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("ws://localhost:%d/rpc/no-body/stream?method=POST", port)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	conn, _, err := websocket.Dial(ctx, apiURL, nil)
+	if err != nil {
+		t.Fatalf("websocket.DefaultDialer.DialContext(%q) failed with %v; want success", apiURL, err)
+	}
+	defer conn.Close(websocket.StatusNormalClosure, "")
+
+	// Write request even though server doesn't expect it
+	err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
+	if err != nil {
+		t.Fatalf("conn.WriteMessage() failed with %v; want success", err)
+	}
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.NoBodyPostServer_RetrieveContextStream()
+	conn.Close(websocket.StatusNormalClosure, "")
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Fatalf("server context not done")
+	}
+}
+
+func TestWithBodyPostWebSocket(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testWithBodyPostWebSocketRPC(t, 8088)
+	testWithBodyPostWebSocketStream(t, 8088)
+}
+
+func testWithBodyPostWebSocketRPC(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("ws://localhost:%d/rpc/no-body/rpc-with-body?method=POST", port)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	conn, _, err := websocket.Dial(ctx, apiURL, nil)
+	if err != nil {
+		t.Fatalf("websocket.Dial(%q) failed with %v; want success", apiURL, err)
+	}
+	defer conn.Close(websocket.StatusNormalClosure, "")
+
+	// Write request because server expects it
+	err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
+	if err != nil {
+		t.Fatalf("conn.WriteMessage() failed with %v; want success", err)
+	}
+
+	// Write another request even though server doesn't expect it
+	err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
+	if err != nil {
+		t.Fatalf("conn.WriteMessage() failed with %v; want success", err)
+	}
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.NoBodyPostServer_RetrieveContextRPC()
+	conn.Close(websocket.StatusNormalClosure, "")
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Fatalf("server context not done")
+	}
+}
+
+func testWithBodyPostWebSocketStream(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("ws://localhost:%d/rpc/no-body/stream-with-body?method=POST", port)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	conn, _, err := websocket.Dial(ctx, apiURL, nil)
+	if err != nil {
+		t.Fatalf("websocket.DefaultDialer.DialContext(%q) failed with %v; want success", apiURL, err)
+	}
+	defer conn.Close(websocket.StatusNormalClosure, "")
+
+	// Write request because server expects it
+	err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
+	if err != nil {
+		t.Fatalf("conn.WriteMessage() failed with %v; want success", err)
+	}
+
+	// Write another request even though server doesn't expect it
+	err = conn.Write(ctx, websocket.MessageText, []byte("{}"))
+	if err != nil {
+		t.Fatalf("conn.WriteMessage() failed with %v; want success", err)
+	}
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.NoBodyPostServer_RetrieveContextStream()
+	conn.Close(websocket.StatusNormalClosure, "")
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Fatalf("server context not done")
 	}
 }
