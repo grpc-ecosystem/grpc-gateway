@@ -365,9 +365,16 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{printf "%s" $protoReq }}
 	{{- end }}
 	{{- if not $isFieldMask }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF)  {
+    d := marshaler.NewDecoder(req.Body)
+	if err := d.Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+    if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
+        if err == nil {
+            err = errors.New("unexpected data")
+        }
+        return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+    }
 	{{- end }}
 	{{- if $isFieldMask }}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
@@ -382,7 +389,13 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	}
 	{{- end }}
 {{- else }}
-    io.Copy(io.Discard, req.Body)
+    n, err := io.Copy(io.Discard, req.Body)
+    if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+    }
+    if n != 0 {
+        return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
+    }
 {{- end }}
 {{- if .PathParams }}
 	{{- $binding := . }}

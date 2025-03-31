@@ -43,7 +43,13 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	n, err := io.Copy(io.Discard, req.Body)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if n != 0 {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
+	}
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -94,7 +100,13 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	io.Copy(io.Discard, req.Body)
+	n, err := io.Copy(io.Discard, req.Body)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if n != 0 {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
+	}
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -158,7 +170,14 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	d := marshaler.NewDecoder(req.Body)
+	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
+		if err == nil {
+			err = errors.New("unexpected data")
+		}
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -184,7 +203,13 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	n, err := io.Copy(io.Discard, req.Body)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if n != 0 {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
+	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
