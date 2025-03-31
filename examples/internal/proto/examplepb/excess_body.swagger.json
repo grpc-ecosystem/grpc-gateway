@@ -1,13 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/no_body_post.proto",
-    "description": "No-Body POST Service\nUsed to test server context cancellation with Unary and ServerStream methods\nwhen no body annotation is defined in the POST method.",
+    "title": "examples/internal/proto/examplepb/excess_body.proto",
+    "description": "Excess Body Service\nUsed to test server context cancellation with Unary and ServerStream methods\nwhen client sends more data than expected.",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "NoBodyPostService"
+      "name": "ExcessBodyService"
     }
   ],
   "consumes": [
@@ -17,9 +17,9 @@
     "application/json"
   ],
   "paths": {
-    "/rpc/no-body/rpc": {
+    "/rpc/excess-body/rpc": {
       "post": {
-        "operationId": "NoBodyPostService_RpcEmptyRpc",
+        "operationId": "ExcessBodyService_NoBodyRpc",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -36,13 +36,47 @@
           }
         },
         "tags": [
-          "NoBodyPostService"
+          "ExcessBodyService"
         ]
       }
     },
-    "/rpc/no-body/stream": {
+    "/rpc/excess-body/rpc/unexpected": {
       "post": {
-        "operationId": "NoBodyPostService_RpcEmptyStream",
+        "operationId": "ExcessBodyService_WithBodyRpc",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        ],
+        "tags": [
+          "ExcessBodyService"
+        ]
+      }
+    },
+    "/rpc/excess-body/stream": {
+      "post": {
+        "operationId": "ExcessBodyService_NoBodyServerStream",
         "responses": {
           "200": {
             "description": "A successful response.(streaming responses)",
@@ -65,7 +99,47 @@
           }
         },
         "tags": [
-          "NoBodyPostService"
+          "ExcessBodyService"
+        ]
+      }
+    },
+    "/rpc/excess-body/stream/unexpected": {
+      "post": {
+        "operationId": "ExcessBodyService_WithBodyServerStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {},
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of googleprotobufEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        ],
+        "tags": [
+          "ExcessBodyService"
         ]
       }
     }

@@ -56,11 +56,11 @@ func Run(ctx context.Context, opts Options) error {
 	}
 	mux.Handle("/", gw)
 
-	// Do not use logRequestBody for NoBodyPostServer because it will perform
+	// Do not use logRequestBody for ExcessBodyServer because it will perform
 	// io.ReadAll and mask the issue:
 	// https://github.com/grpc-ecosystem/grpc-gateway/issues/5236
 	hmux := http.NewServeMux()
-	hmux.Handle("/rpc/no-body/", allowCORS(mux))
+	hmux.Handle("/rpc/excess-body/", allowCORS(mux))
 	hmux.Handle("/", logRequestBody(allowCORS(mux)))
 
 	s := &http.Server{

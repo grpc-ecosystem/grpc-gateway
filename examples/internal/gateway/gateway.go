@@ -25,7 +25,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 		examplepb.RegisterStreamServiceHandler,
 		examplepb.RegisterABitOfEverythingServiceHandler,
 		examplepb.RegisterFlowCombinationHandler,
-		examplepb.RegisterNoBodyPostServiceHandler,
+		examplepb.RegisterExcessBodyServiceHandler,
 		examplepb.RegisterNonStandardServiceHandler,
 		examplepb.RegisterResponseBodyServiceHandler,
 	} {
