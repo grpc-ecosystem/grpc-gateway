@@ -41,7 +41,7 @@ func request_ServiceB_MethodOne_0(ctx context.Context, marshaler runtime.Marshal
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -72,7 +72,7 @@ func request_ServiceB_MethodTwo_0(ctx context.Context, marshaler runtime.Marshal
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {

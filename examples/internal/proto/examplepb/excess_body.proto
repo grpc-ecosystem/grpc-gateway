@@ -23,13 +23,13 @@ service ExcessBodyService {
   }
   rpc WithBodyRpc(google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/rpc/excess-body/rpc/unexpected"
+      post: "/rpc/excess-body/rpc/with-body"
       body: "*"
     };
   }
   rpc WithBodyServerStream(google.protobuf.Empty) returns (stream google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/rpc/excess-body/stream/unexpected"
+      post: "/rpc/excess-body/stream/with-body"
       body: "*"
     };
   }

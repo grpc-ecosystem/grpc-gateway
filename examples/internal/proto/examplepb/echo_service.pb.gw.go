@@ -540,7 +540,7 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -579,7 +579,7 @@ func request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_No, but: %t\n", protoReq.Ext)
 	}
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -688,7 +688,14 @@ func request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Mars
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && !errors.Is(err, io.EOF) {
+	d := marshaler.NewDecoder(newReader())
+	if err := d.Decode(&protoReq.Body); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
+		if err == nil {
+			err = errors.New("unexpected data")
+		}
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {

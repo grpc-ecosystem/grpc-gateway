@@ -91,7 +91,7 @@ func request_ExcessBodyService_WithBodyRpc_0(ctx context.Context, marshaler runt
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -122,7 +122,7 @@ func request_ExcessBodyService_WithBodyServerStream_0(ctx context.Context, marsh
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -182,7 +182,7 @@ func RegisterExcessBodyServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ExcessBodyService/WithBodyRpc", runtime.WithHTTPPathPattern("/rpc/excess-body/rpc/unexpected"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ExcessBodyService/WithBodyRpc", runtime.WithHTTPPathPattern("/rpc/excess-body/rpc/with-body"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -281,7 +281,7 @@ func RegisterExcessBodyServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ExcessBodyService/WithBodyRpc", runtime.WithHTTPPathPattern("/rpc/excess-body/rpc/unexpected"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ExcessBodyService/WithBodyRpc", runtime.WithHTTPPathPattern("/rpc/excess-body/rpc/with-body"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -298,7 +298,7 @@ func RegisterExcessBodyServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ExcessBodyService/WithBodyServerStream", runtime.WithHTTPPathPattern("/rpc/excess-body/stream/unexpected"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ExcessBodyService/WithBodyServerStream", runtime.WithHTTPPathPattern("/rpc/excess-body/stream/with-body"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -317,8 +317,8 @@ func RegisterExcessBodyServiceHandlerClient(ctx context.Context, mux *runtime.Se
 var (
 	pattern_ExcessBodyService_NoBodyRpc_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "excess-body"}, ""))
 	pattern_ExcessBodyService_NoBodyServerStream_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "excess-body", "stream"}, ""))
-	pattern_ExcessBodyService_WithBodyRpc_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 2, 2}, []string{"rpc", "excess-body", "unexpected"}, ""))
-	pattern_ExcessBodyService_WithBodyServerStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"rpc", "excess-body", "stream", "unexpected"}, ""))
+	pattern_ExcessBodyService_WithBodyRpc_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0, 2, 2}, []string{"rpc", "excess-body", "with-body"}, ""))
+	pattern_ExcessBodyService_WithBodyServerStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"rpc", "excess-body", "stream", "with-body"}, ""))
 )
 
 var (

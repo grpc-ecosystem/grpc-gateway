@@ -43,7 +43,7 @@ func request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Mar
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -74,7 +74,7 @@ func request_WrappersService_CreateStringValue_0(ctx context.Context, marshaler 
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -105,7 +105,7 @@ func request_WrappersService_CreateInt32Value_0(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -136,7 +136,7 @@ func request_WrappersService_CreateInt64Value_0(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -167,7 +167,7 @@ func request_WrappersService_CreateFloatValue_0(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -198,7 +198,7 @@ func request_WrappersService_CreateDoubleValue_0(ctx context.Context, marshaler 
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -229,7 +229,7 @@ func request_WrappersService_CreateBoolValue_0(ctx context.Context, marshaler ru
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -260,7 +260,7 @@ func request_WrappersService_CreateUInt32Value_0(ctx context.Context, marshaler 
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -291,7 +291,7 @@ func request_WrappersService_CreateUInt64Value_0(ctx context.Context, marshaler 
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -322,7 +322,7 @@ func request_WrappersService_CreateBytesValue_0(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -353,7 +353,7 @@ func request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler runtim
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {

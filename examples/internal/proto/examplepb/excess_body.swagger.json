@@ -40,7 +40,7 @@
         ]
       }
     },
-    "/rpc/excess-body/rpc/unexpected": {
+    "/rpc/excess-body/rpc/with-body": {
       "post": {
         "operationId": "ExcessBodyService_WithBodyRpc",
         "responses": {
@@ -103,7 +103,7 @@
         ]
       }
     },
-    "/rpc/excess-body/stream/unexpected": {
+    "/rpc/excess-body/stream/with-body": {
       "post": {
         "operationId": "ExcessBodyService_WithBodyServerStream",
         "responses": {

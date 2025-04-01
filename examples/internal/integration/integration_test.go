@@ -2626,18 +2626,20 @@ func TestExcessBody(t *testing.T) {
 	testExcessBodyStream(t, 8088)
 	testExcessBodyRPCUnexpected(t, 8088)
 	testExcessBodyStreamUnexpected(t, 8088)
+	// testExcessBodyRPCWithBody(t, 8088)
+	// testExcessBodyStreamWithBody(t, 8088)
+	// testExcessBodyRPCWithBodyUnexpected(t, 8088)
+	// testExcessBodyStreamWithBodyUnexpected(t, 8088)
 }
 
 func testExcessBodyRPC(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/rpc", port)
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}")
-
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
 		return
@@ -2658,15 +2660,13 @@ func testExcessBodyRPC(t *testing.T, port int) {
 }
 
 func testExcessBodyStream(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/stream", port)
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}")
-
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
 		return
@@ -2687,14 +2687,69 @@ func testExcessBodyStream(t *testing.T, port int) {
 }
 
 func testExcessBodyRPCUnexpected(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/rpc/unexpected", port)
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}...")
+	body := strings.NewReader("{}")
 
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
+	}
+}
+
+func testExcessBodyStreamUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
+	}
+}
+
+func testExcessBodyRPCWithBody(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
@@ -2715,15 +2770,14 @@ func testExcessBodyRPCUnexpected(t *testing.T, port int) {
 	}
 }
 
-func testExcessBodyStreamUnexpected(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/stream/unexpected", port)
+func testExcessBodyStreamWithBody(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream/with-body", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}...")
-
+	body := strings.NewReader("{}")
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
@@ -2741,5 +2795,111 @@ func testExcessBodyStreamUnexpected(t *testing.T, port int) {
 	case <-ctxServer.Done():
 	case <-time.After(time.Second):
 		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyRPCWithBodyNil(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
+		return
+	}
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
+	}
+}
+
+func testExcessBodyStreamWithBodyNil(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
+		return
+	}
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
+	}
+}
+
+func testExcessBodyRPCWithBodyUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}.")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
+	}
+}
+
+func testExcessBodyStreamWithBodyUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}.")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("unexpected status code: %d", resp.StatusCode)
+		return
 	}
 }

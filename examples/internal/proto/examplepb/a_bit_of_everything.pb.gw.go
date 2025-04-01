@@ -401,7 +401,7 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -435,7 +435,7 @@ func request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.Book); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -501,7 +501,14 @@ func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
+	d := marshaler.NewDecoder(newReader())
+	if err := d.Decode(&protoReq.Book); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
+		if err == nil {
+			err = errors.New("unexpected data")
+		}
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
@@ -731,7 +738,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -782,7 +789,7 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.Abe); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -848,7 +855,14 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
+	d := marshaler.NewDecoder(newReader())
+	if err := d.Decode(&protoReq.Abe); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
+		if err == nil {
+			err = errors.New("unexpected data")
+		}
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
@@ -921,7 +935,7 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -1407,7 +1421,7 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.Value); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.Value); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -1478,7 +1492,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -1577,7 +1591,7 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.Data); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.Data); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -1626,7 +1640,7 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -1803,7 +1817,7 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 		err      error
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.SingleNested); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.SingleNested); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -1863,7 +1877,7 @@ func request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.C
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -2214,7 +2228,7 @@ func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
@@ -2250,7 +2264,7 @@ func request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Conte
 		metadata runtime.ServerMetadata
 	)
 	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := d.Decode(&protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
