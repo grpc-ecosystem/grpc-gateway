@@ -2626,10 +2626,10 @@ func TestExcessBody(t *testing.T) {
 	testExcessBodyStream(t, 8088)
 	testExcessBodyRPCUnexpected(t, 8088)
 	testExcessBodyStreamUnexpected(t, 8088)
-	// testExcessBodyRPCWithBody(t, 8088)
-	// testExcessBodyStreamWithBody(t, 8088)
-	// testExcessBodyRPCWithBodyUnexpected(t, 8088)
-	// testExcessBodyStreamWithBodyUnexpected(t, 8088)
+	testExcessBodyRPCWithBody(t, 8088)
+	testExcessBodyStreamWithBody(t, 8088)
+	testExcessBodyRPCWithBodyUnexpected(t, 8088)
+	testExcessBodyStreamWithBodyUnexpected(t, 8088)
 }
 
 func testExcessBodyRPC(t *testing.T, port int) {
