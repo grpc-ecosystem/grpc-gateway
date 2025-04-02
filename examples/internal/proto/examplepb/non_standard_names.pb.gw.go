@@ -46,16 +46,10 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	d := marshaler.NewDecoder(newReader())
-	if err := d.Decode(&protoReq.Body); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Body); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -113,16 +107,10 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	d := marshaler.NewDecoder(newReader())
-	if err := d.Decode(&protoReq.Body); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Body); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)

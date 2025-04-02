@@ -43,13 +43,7 @@ func request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -100,13 +94,7 @@ func request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -173,13 +161,7 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -272,13 +254,7 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -371,13 +347,7 @@ func request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["no.note"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "no.note")
@@ -428,13 +398,7 @@ func request_EchoService_Echo_5(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["resource_id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "resource_id")
@@ -485,13 +449,7 @@ func request_EchoService_Echo_6(ctx context.Context, marshaler runtime.Marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["n_id.n_id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "n_id.n_id")
@@ -539,16 +497,10 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 		protoReq SimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -578,16 +530,10 @@ func request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marsh
 	} else if _, ok := protoReq.Ext.(*SimpleMessage_No); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_No, but: %t\n", protoReq.Ext)
 	}
-	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Ext.(*SimpleMessage_No).No); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -645,13 +591,7 @@ func request_EchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Mar
 		protoReq SimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -688,16 +628,10 @@ func request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Mars
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	d := marshaler.NewDecoder(newReader())
-	if err := d.Decode(&protoReq.Body); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Body); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -751,13 +685,7 @@ func request_EchoService_EchoUnauthorized_0(ctx context.Context, marshaler runti
 		protoReq SimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}

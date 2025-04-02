@@ -2624,11 +2624,13 @@ func TestExcessBody(t *testing.T) {
 
 	testExcessBodyRPC(t, 8088)
 	testExcessBodyStream(t, 8088)
+
 	testExcessBodyRPCUnexpected(t, 8088)
+
 	testExcessBodyStreamUnexpected(t, 8088)
 	testExcessBodyRPCWithBody(t, 8088)
 	testExcessBodyStreamWithBody(t, 8088)
-	testExcessBodyRPCWithBodyUnexpected(t, 8088)
+	testExcessBodyRPCWithBodyUnexpected(t, 8089)
 	testExcessBodyStreamWithBodyUnexpected(t, 8088)
 }
 
@@ -2701,16 +2703,17 @@ func testExcessBodyRPCUnexpected(t *testing.T, port int) {
 		return
 	}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
-		return
-	}
-	defer resp.Body.Close()
+	go http.DefaultClient.Do(req)
 
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("unexpected status code: %d", resp.StatusCode)
-		return
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextRPC()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
 	}
 }
 
@@ -2729,16 +2732,17 @@ func testExcessBodyStreamUnexpected(t *testing.T, port int) {
 		return
 	}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
-		return
-	}
-	defer resp.Body.Close()
+	go http.DefaultClient.Do(req)
 
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("unexpected status code: %d", resp.StatusCode)
-		return
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextStream()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
 	}
 }
 
@@ -2750,6 +2754,7 @@ func testExcessBodyRPCWithBody(t *testing.T, port int) {
 	defer cancel()
 
 	body := strings.NewReader("{}")
+
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
@@ -2778,6 +2783,7 @@ func testExcessBodyStreamWithBody(t *testing.T, port int) {
 	defer cancel()
 
 	body := strings.NewReader("{}")
+
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
@@ -2798,64 +2804,43 @@ func testExcessBodyStreamWithBody(t *testing.T, port int) {
 	}
 }
 
-func testExcessBodyRPCWithBodyNil(t *testing.T, port int) {
+func testExcessBodyRPCWithBodyUnexpected(t *testing.T, port int) {
 	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc/with-body", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
+	body := strings.NewReader("{}.")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
 		return
 	}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
-		return
-	}
+	go http.DefaultClient.Do(req)
 
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("unexpected status code: %d", resp.StatusCode)
-		return
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextRPC()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
 	}
 }
 
-func testExcessBodyStreamWithBodyNil(t *testing.T, port int) {
+func testExcessBodyStreamWithBodyUnexpected(t *testing.T, port int) {
 	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream/with-body", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
-	if err != nil {
-		t.Errorf("http.NewRequest() failed with %v; want success", err)
-		return
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
-		return
-	}
-
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("unexpected status code: %d", resp.StatusCode)
-		return
-	}
-}
-
-func testExcessBodyRPCWithBodyUnexpected(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc", port)
-
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	body := strings.NewReader("{}.")
+	body := strings.NewReader("{}" + strings.Repeat(".", 511))
 
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
@@ -2863,43 +2848,16 @@ func testExcessBodyRPCWithBodyUnexpected(t *testing.T, port int) {
 		return
 	}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
-		return
-	}
-	defer resp.Body.Close()
+	go http.DefaultClient.Do(req)
 
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("unexpected status code: %d", resp.StatusCode)
-		return
-	}
-}
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextStream()
+	cancel()
 
-func testExcessBodyStreamWithBodyUnexpected(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream", port)
-
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	body := strings.NewReader("{}.")
-
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
-	if err != nil {
-		t.Errorf("http.NewRequest() failed with %v; want success", err)
-		return
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("http.DefaultClient.Do(req) failed with %v; want success", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusBadRequest {
-		t.Errorf("unexpected status code: %d", resp.StatusCode)
-		return
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
 	}
 }

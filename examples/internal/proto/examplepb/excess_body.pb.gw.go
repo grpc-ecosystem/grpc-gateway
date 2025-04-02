@@ -41,13 +41,7 @@ func request_ExcessBodyService_NoBodyRpc_0(ctx context.Context, marshaler runtim
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.NoBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -66,13 +60,7 @@ func request_ExcessBodyService_NoBodyServerStream_0(ctx context.Context, marshal
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	n, err := io.Copy(io.Discard, req.Body)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if n != 0 {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "unexpected body")
-	}
+	io.Copy(io.Discard, req.Body)
 	stream, err := client.NoBodyServerStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -90,16 +78,10 @@ func request_ExcessBodyService_WithBodyRpc_0(ctx context.Context, marshaler runt
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.WithBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -121,16 +103,10 @@ func request_ExcessBodyService_WithBodyServerStream_0(ctx context.Context, marsh
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	d := marshaler.NewDecoder(req.Body)
-	if err := d.Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := d.Decode(&struct{}{}); !errors.Is(err, io.EOF) {
-		if err == nil {
-			err = errors.New("unexpected data")
-		}
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
+	io.Copy(io.Discard, req.Body)
 	stream, err := client.WithBodyServerStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
