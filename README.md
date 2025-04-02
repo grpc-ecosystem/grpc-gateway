@@ -136,7 +136,7 @@ This automatically updates `go.mod`, adding the tools under the `tool` directive
 Once the tool dependencies are properly recorded in the `go.mod` file, simply execute the following command in the root directory of your project:
 
 ```sh
-go install ./...
+go install tool
 ```
 
 ### Download the binaries
