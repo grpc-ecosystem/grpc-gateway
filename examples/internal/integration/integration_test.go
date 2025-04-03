@@ -223,7 +223,7 @@ func TestForwardResponseOptionHTTPPathPattern(t *testing.T) {
 
 func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
-	resp, err := http.Post(apiURL, "application/json", nil)
+	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
@@ -554,7 +554,7 @@ func testABECreate(t *testing.T, port int) {
 	}
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue, want.EnumValueAnnotation)
 
-	resp, err := http.Post(apiURL, "application/json", nil)
+	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
@@ -2541,7 +2541,7 @@ func testABETrace(t *testing.T, port int) {
 func testEchoWithNonASCIIHeaderValues(t *testing.T, port int, apiPrefix string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
 
-	req, err := http.NewRequest("POST", apiURL, nil)
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.NewRequest() = err: %v", err)
 		return
@@ -2579,7 +2579,7 @@ func testEchoWithNonASCIIHeaderValues(t *testing.T, port int, apiPrefix string) 
 func testEchoWithInvalidHeaderKey(t *testing.T, port int, apiPrefix string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
 
-	req, err := http.NewRequest("POST", apiURL, nil)
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.NewRequest() = err: %v", err)
 		return
@@ -2624,9 +2624,7 @@ func TestExcessBody(t *testing.T) {
 
 	testExcessBodyRPC(t, 8088)
 	testExcessBodyStream(t, 8088)
-
 	testExcessBodyRPCUnexpected(t, 8088)
-
 	testExcessBodyStreamUnexpected(t, 8088)
 	testExcessBodyRPCWithBody(t, 8088)
 	testExcessBodyStreamWithBody(t, 8088)
