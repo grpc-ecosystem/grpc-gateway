@@ -12,14 +12,10 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 
 service ExcessBodyService {
   rpc NoBodyRpc(google.protobuf.Empty) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/rpc/excess-body/rpc"
-    };
+    option (google.api.http) = {post: "/rpc/excess-body/rpc"};
   }
   rpc NoBodyServerStream(google.protobuf.Empty) returns (stream google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/rpc/excess-body/stream"
-    };
+    option (google.api.http) = {post: "/rpc/excess-body/stream"};
   }
   rpc WithBodyRpc(google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (google.api.http) = {
