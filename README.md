@@ -139,6 +139,15 @@ Once the tool dependencies are properly recorded in the `go.mod` file, simply ex
 go install tool
 ```
 
+This will place four binaries in your `$GOBIN`;
+
+- `protoc-gen-grpc-gateway`
+- `protoc-gen-openapiv2`
+- `protoc-gen-go`
+- `protoc-gen-go-grpc`
+
+Make sure that your `$GOBIN` is in your `$PATH`.
+
 ### Download the binaries
 
 You may alternatively download the binaries from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
