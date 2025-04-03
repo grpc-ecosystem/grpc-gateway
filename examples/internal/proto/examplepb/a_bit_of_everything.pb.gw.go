@@ -483,7 +483,7 @@ func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Book); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	io.Copy(io.Discard, req.Body)
@@ -801,7 +801,7 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	io.Copy(io.Discard, req.Body)

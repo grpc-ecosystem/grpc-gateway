@@ -628,7 +628,7 @@ func request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Mars
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	io.Copy(io.Discard, req.Body)
