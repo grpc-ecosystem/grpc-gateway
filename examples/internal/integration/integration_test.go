@@ -2616,26 +2616,30 @@ func testEchoWithInvalidHeaderKey(t *testing.T, port int, apiPrefix string) {
 
 // Test server context closing when body is sent on a POST method which has no
 // "body" annotation defined.
-func TestNoBodyPost(t *testing.T) {
+func TestExcessBody(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
 		return
 	}
 
-	testNoBodyPostRPC(t, 8088)
-	testNoBodyPostStream(t, 8088)
+	testExcessBodyRPC(t, 8088)
+	testExcessBodyStream(t, 8088)
+	testExcessBodyRPCUnexpected(t, 8088)
+	testExcessBodyStreamUnexpected(t, 8088)
+	testExcessBodyRPCWithBody(t, 8088)
+	testExcessBodyStreamWithBody(t, 8088)
+	testExcessBodyRPCWithBodyUnexpected(t, 8089)
+	testExcessBodyStreamWithBodyUnexpected(t, 8088)
 }
 
-func testNoBodyPostRPC(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/rpc", port)
+func testExcessBodyRPC(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}")
-
-	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
 		return
@@ -2644,7 +2648,7 @@ func testNoBodyPostRPC(t *testing.T, port int) {
 	go http.DefaultClient.Do(req)
 
 	// Wait for the server to start processing the request.
-	ctxServer := server.NoBodyPostServer_RetrieveContextRPC()
+	ctxServer := server.ExcessBodyServer_RetrieveContextRPC()
 	cancel()
 
 	// Wait for server context to be done
@@ -2655,8 +2659,35 @@ func testNoBodyPostRPC(t *testing.T, port int) {
 	}
 }
 
-func testNoBodyPostStream(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/rpc/no-body/stream", port)
+func testExcessBodyStream(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, nil)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextStream()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyRPCUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc", port)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -2673,7 +2704,152 @@ func testNoBodyPostStream(t *testing.T, port int) {
 	go http.DefaultClient.Do(req)
 
 	// Wait for the server to start processing the request.
-	ctxServer := server.NoBodyPostServer_RetrieveContextStream()
+	ctxServer := server.ExcessBodyServer_RetrieveContextRPC()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyStreamUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextStream()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyRPCWithBody(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextRPC()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyStreamWithBody(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextStream()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyRPCWithBodyUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/rpc/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}.")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextRPC()
+	cancel()
+
+	// Wait for server context to be done
+	select {
+	case <-ctxServer.Done():
+	case <-time.After(time.Second):
+		t.Errorf("server context not done")
+	}
+}
+
+func testExcessBodyStreamWithBodyUnexpected(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/rpc/excess-body/stream/with-body", port)
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	body := strings.NewReader("{}" + strings.Repeat(".", 511))
+
+	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	go http.DefaultClient.Do(req)
+
+	// Wait for the server to start processing the request.
+	ctxServer := server.ExcessBodyServer_RetrieveContextStream()
 	cancel()
 
 	// Wait for server context to be done

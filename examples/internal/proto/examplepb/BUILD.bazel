@@ -13,13 +13,13 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude enum_with_single_value.pb.gw.go
 # gazelle:exclude enum_with_single_value.pb.go
+# gazelle:exclude excess_body.pb.gw.go
+# gazelle:exclude excess_body_grpc.pb.go
 # gazelle:exclude flow_combination.pb.gw.go
 # gazelle:exclude flow_combination_grpc.pb.go
 # gazelle:exclude generate_unbound_methods.pb.gw.go
 # gazelle:exclude generate_unbound_methods_grpc.pb.go
 # gazelle:exclude generated_input.proto
-# gazelle:exclude no_body_post.pb.gw.go
-# gazelle:exclude no_body_post_grpc.pb.go
 # gazelle:exclude non_standard_names.pb.gw.go
 # gazelle:exclude non_standard_names_grpc.pb.go
 # gazelle:exclude response_body_service.pb.gw.go
@@ -54,11 +54,11 @@ proto_library(
         "a_bit_of_everything.proto",
         "echo_service.proto",
         "enum_with_single_value.proto",
+        "excess_body.proto",
         "flow_combination.proto",
         "generate_unbound_methods.proto",
         "generated_output.proto",
         "ignore_comment.proto",
-        "no_body_post.proto",
         "non_standard_names.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",

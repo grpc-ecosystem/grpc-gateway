@@ -397,6 +397,7 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.CreateBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -424,6 +425,7 @@ func request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["parent"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "parent")
@@ -484,6 +486,7 @@ func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Book); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -695,6 +698,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["uuid"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
@@ -739,6 +743,7 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["abe.uuid"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "abe.uuid")
@@ -799,6 +804,7 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Abe); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -871,6 +877,7 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["abe.uuid"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "abe.uuid")
@@ -1326,6 +1333,7 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -1384,6 +1392,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["single_nested.name"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "single_nested.name")
@@ -1464,6 +1473,7 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Data); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
@@ -1506,6 +1516,7 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["name"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "name")
@@ -1664,6 +1675,7 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.SingleNested); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	val, ok := pathParams["string_value"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "string_value")
@@ -1717,6 +1729,7 @@ func request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.C
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.OverwriteRequestContentType(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -2019,6 +2032,7 @@ func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marsha
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.PostOneofEnum(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -2048,6 +2062,7 @@ func request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Conte
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	io.Copy(io.Discard, req.Body)
 	msg, err := client.PostRequiredMessageType(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }

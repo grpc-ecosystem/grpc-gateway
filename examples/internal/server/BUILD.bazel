@@ -7,10 +7,10 @@ go_library(
     srcs = [
         "a_bit_of_everything.go",
         "echo.go",
+        "excess_body.go",
         "fieldmask_helper.go",
         "flow_combination.go",
         "main.go",
-        "no_body_post.go",
         "non_standard_names.go",
         "responsebody.go",
         "unannotatedecho.go",
