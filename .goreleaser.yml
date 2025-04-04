@@ -27,4 +27,7 @@ builds:
 archives:
   - name_template: '{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{if eq .Arch "amd64"}}x86_64{{else}}{{ .Arch }}{{end}}'
     format: binary
+source:
+  enabled: true
+  name_template: '{{ .ProjectName }}-{{ .Tag }}'
 dist: _output
