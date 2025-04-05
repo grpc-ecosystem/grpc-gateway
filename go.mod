@@ -6,7 +6,7 @@ require (
 	github.com/antihax/optional v1.0.0
 	github.com/google/go-cmp v0.7.0
 	github.com/rogpeppe/fastuuid v1.2.0
-	golang.org/x/oauth2 v0.28.0
+	golang.org/x/oauth2 v0.29.0
 	golang.org/x/text v0.23.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250404141209-ee84b53bf3d0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250404141209-ee84b53bf3d0
