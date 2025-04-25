@@ -1430,31 +1430,51 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								schema.Properties = &openapiSchemaObjectProperties{}
 							}
 						} else {
-							messageSchema, err := renderMessageAsDefinition(meth.RequestType, reg, customRefs, b.PathParams)
-							if err != nil {
-								return err
-							}
-							if len(b.PathParams) == 0 {
-								if err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg); err != nil {
-									return err
-								}
-								desc = messageSchema.Description
-							} else {
-								if meth.Name != nil {
-									methFQN, ok := fullyQualifiedNameToOpenAPIName(meth.FQMN(), reg)
-									if !ok {
-										panic(fmt.Errorf("failed to resolve method FQN: '%s'", meth.FQMN()))
-									}
-									defName := methFQN + "Body"
-									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
-									defs[defName] = messageSchema
-								} else {
-									schema = messageSchema
-									if schema.Properties == nil || len(*schema.Properties) == 0 {
-										grpclog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
-									}
-								}
-							}
+
+                            // Always render the message definition first to get its content.
+                            // Crucially, this still passes b.PathParams, so the resulting
+                            // messageSchema content will be correctly filtered if path params exist.
+                            messageSchema, err := renderMessageAsDefinition(meth.RequestType, reg, customRefs, b.PathParams)
+                            if err != nil {
+                                return err // Propagate error
+                            }
+                            // Use the description from the rendered schema for the body parameter description
+                            desc = messageSchema.Description
+
+                            // Consistently use <ServiceName><OperationName>Bodyx naming convention
+                            if meth.Name != nil {
+                                // Get the OpenAPI name derived from the METHOD's FQN (e.g., UserServiceSetEmail)
+                                methFQN, ok := fullyQualifiedNameToOpenAPIName(meth.FQMN(), reg)
+                                if !ok {
+                                    // Use proper error handling instead of panic
+                                    return fmt.Errorf("failed to resolve OpenAPI name for method FQN: '%s'", meth.FQMN())
+                                }
+
+                                // Construct the consistent definition name by appending "Bodyx"
+                                // e.g., "UserServiceSetEmail" + "Bodyx" -> "UserServiceSetEmailBodyx"
+                                defName := methFQN + "Bodyx"
+
+                                // Set the body parameter's schema to reference this new definition name
+                                schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
+
+                                // Add the actual schema definition (messageSchema, which might be filtered)
+                                // to the global definitions map under the new consistent name.
+                                // If a definition with this name already exists (e.g., from another binding),
+                                // it will typically be overwritten by this map assignment.
+                                defs[defName] = messageSchema
+
+                            } else {
+                                // Fallback if method name is somehow nil (should be rare for service methods).
+                                // Log a warning and attempt to reference the standard message definition as a fallback.
+                                grpclog.Warningf("Method name is nil for FQMN %s, cannot generate specific 'Bodyx' definition. Falling back to standard message ref.", meth.RequestType.FQMN())
+                                errFallback := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
+                                if errFallback != nil {
+                                     // If fallback also fails, return an error as we can't define the body schema reference.
+                                     grpclog.Errorf("Fallback ref generation failed for method FQMN '%s': %v", meth.RequestType.FQMN(), errFallback)
+                                     return fmt.Errorf("method name nil and fallback ref generation failed for FQMN %s: %w", meth.RequestType.FQMN(), errFallback)
+                                }
+                            }
+                            // --- End Replacement Block ---
 						}
 					} else {
 						// Body field path is limited to one path component. From google.api.HttpRule.body:
