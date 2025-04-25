@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ResponseBodyService_GetResponseBody_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBody"
-	ResponseBodyService_ListResponseBodies_FullMethodName    = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseBodies"
-	ResponseBodyService_ListResponseStrings_FullMethodName   = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseStrings"
-	ResponseBodyService_GetResponseBodyStream_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream"
+	ResponseBodyService_GetResponseBody_FullMethodName         = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBody"
+	ResponseBodyService_ListResponseBodies_FullMethodName      = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseBodies"
+	ResponseBodyService_ListResponseStrings_FullMethodName     = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseStrings"
+	ResponseBodyService_GetResponseBodyStream_FullMethodName   = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream"
+	ResponseBodyService_GetResponseBodySameName_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodySameName"
 )
 
 // ResponseBodyServiceClient is the client API for ResponseBodyService service.
@@ -33,6 +34,7 @@ type ResponseBodyServiceClient interface {
 	ListResponseBodies(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*RepeatedResponseBodyOut, error)
 	ListResponseStrings(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*RepeatedResponseStrings, error)
 	GetResponseBodyStream(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ResponseBodyOut], error)
+	GetResponseBodySameName(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*ResponseBodyValue, error)
 }
 
 type responseBodyServiceClient struct {
@@ -92,6 +94,16 @@ func (c *responseBodyServiceClient) GetResponseBodyStream(ctx context.Context, i
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type ResponseBodyService_GetResponseBodyStreamClient = grpc.ServerStreamingClient[ResponseBodyOut]
 
+func (c *responseBodyServiceClient) GetResponseBodySameName(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*ResponseBodyValue, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResponseBodyValue)
+	err := c.cc.Invoke(ctx, ResponseBodyService_GetResponseBodySameName_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResponseBodyServiceServer is the server API for ResponseBodyService service.
 // All implementations should embed UnimplementedResponseBodyServiceServer
 // for forward compatibility.
@@ -100,6 +112,7 @@ type ResponseBodyServiceServer interface {
 	ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
 	ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error)
 	GetResponseBodyStream(*ResponseBodyIn, grpc.ServerStreamingServer[ResponseBodyOut]) error
+	GetResponseBodySameName(context.Context, *ResponseBodyIn) (*ResponseBodyValue, error)
 }
 
 // UnimplementedResponseBodyServiceServer should be embedded to have
@@ -120,6 +133,9 @@ func (UnimplementedResponseBodyServiceServer) ListResponseStrings(context.Contex
 }
 func (UnimplementedResponseBodyServiceServer) GetResponseBodyStream(*ResponseBodyIn, grpc.ServerStreamingServer[ResponseBodyOut]) error {
 	return status.Errorf(codes.Unimplemented, "method GetResponseBodyStream not implemented")
+}
+func (UnimplementedResponseBodyServiceServer) GetResponseBodySameName(context.Context, *ResponseBodyIn) (*ResponseBodyValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetResponseBodySameName not implemented")
 }
 func (UnimplementedResponseBodyServiceServer) testEmbeddedByValue() {}
 
@@ -206,6 +222,24 @@ func _ResponseBodyService_GetResponseBodyStream_Handler(srv interface{}, stream 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type ResponseBodyService_GetResponseBodyStreamServer = grpc.ServerStreamingServer[ResponseBodyOut]
 
+func _ResponseBodyService_GetResponseBodySameName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResponseBodyIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResponseBodyServiceServer).GetResponseBodySameName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResponseBodyService_GetResponseBodySameName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResponseBodyServiceServer).GetResponseBodySameName(ctx, req.(*ResponseBodyIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ResponseBodyService_ServiceDesc is the grpc.ServiceDesc for ResponseBodyService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -224,6 +258,10 @@ var ResponseBodyService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListResponseStrings",
 			Handler:    _ResponseBodyService_ListResponseStrings_Handler,
+		},
+		{
+			MethodName: "GetResponseBodySameName",
+			Handler:    _ResponseBodyService_GetResponseBodySameName_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
