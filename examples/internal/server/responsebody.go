@@ -59,3 +59,9 @@ func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn,
 		},
 	})
 }
+
+func (s *responseBodyServer) GetResponseBodySameName(ctx context.Context, req *examples.ResponseBodyIn) (*examples.ResponseBodyValue, error) {
+	return &examples.ResponseBodyValue{
+		ResponseBodyValue: req.Data,
+	}, nil
+}
