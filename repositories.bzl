@@ -1901,8 +1901,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
         importpath = "google.golang.org/genproto/googleapis/rpc",
-        sum = "h1:IkAfh6J/yllPtpYFU0zZN1hUPYdT0ogkBT/9hMxHjvg=",
-        version = "v0.0.0-20250512202823-5a2f75b736a9",
+        sum = "h1:cJfm9zPbe1e873mHJzmQ1nwVEeRDU/T1wXDK2kUSU34=",
+        version = "v0.0.0-20250519155744-55703ea1f237",
     )
     go_repository(
         name = "org_golang_google_grpc",
