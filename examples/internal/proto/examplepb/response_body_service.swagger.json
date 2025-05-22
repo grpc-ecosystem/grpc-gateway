@@ -50,6 +50,36 @@
         ]
       }
     },
+    "/responsebody/samename/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_GetResponseBodySameName",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
     "/responsebody/stream/{data}": {
       "get": {
         "operationId": "ResponseBodyService_GetResponseBodyStream",
@@ -210,6 +240,14 @@
       "type": "object",
       "properties": {
         "data": {
+          "type": "string"
+        }
+      }
+    },
+    "examplepbResponseBodyValue": {
+      "type": "object",
+      "properties": {
+        "responseBodyValue": {
           "type": "string"
         }
       }

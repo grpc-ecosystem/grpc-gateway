@@ -37,6 +37,10 @@ message RepeatedResponseStrings {
   repeated string values = 1;
 }
 
+message ResponseBodyValue {
+  string response_body_value = 1;
+}
+
 service ResponseBodyService {
   rpc GetResponseBody(ResponseBodyIn) returns (ResponseBodyOut) {
     option (google.api.http) = {
@@ -61,6 +65,13 @@ service ResponseBodyService {
     option (google.api.http) = {
       get: "/responsebody/stream/{data}"
       response_body: "response"
+    };
+  }
+
+  rpc GetResponseBodySameName(ResponseBodyIn) returns (ResponseBodyValue) {
+    option (google.api.http) = {
+      get: "/responsebody/samename/{data}"
+      response_body: "response_body_value"
     };
   }
 }

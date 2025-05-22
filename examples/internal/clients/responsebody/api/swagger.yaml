@@ -32,6 +32,26 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
+  /responsebody/samename/{data}:
+    get:
+      tags:
+      - "ResponseBodyService"
+      operationId: "ResponseBodyService_GetResponseBodySameName"
+      parameters:
+      - name: "data"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Data"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "string"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /responsebody/stream/{data}:
     get:
       tags:
@@ -145,6 +165,11 @@ definitions:
         type: "string"
     example:
       data: "data"
+  examplepbResponseBodyValue:
+    type: "object"
+    properties:
+      responseBodyValue:
+        type: "string"
   protobufAny:
     type: "object"
     properties:

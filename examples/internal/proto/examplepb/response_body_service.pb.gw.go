@@ -173,6 +173,43 @@ func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, ma
 	return stream, metadata, nil
 }
 
+func request_ResponseBodyService_GetResponseBodySameName_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ResponseBodyIn
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	io.Copy(io.Discard, req.Body)
+	val, ok := pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+	protoReq.Data, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+	msg, err := client.GetResponseBodySameName(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_ResponseBodyService_GetResponseBodySameName_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq ResponseBodyIn
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	val, ok := pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+	protoReq.Data, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+	msg, err := server.GetResponseBodySameName(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterResponseBodyServiceHandlerServer registers the http handlers for service ResponseBodyService to "mux".
 // UnaryRPC     :call ResponseBodyServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -245,6 +282,26 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
+	})
+	mux.Handle(http.MethodGet, pattern_ResponseBodyService_GetResponseBodySameName_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodySameName", runtime.WithHTTPPathPattern("/responsebody/samename/{data}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ResponseBodyService_GetResponseBodySameName_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_ResponseBodyService_GetResponseBodySameName_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBodySameName_0{resp.(*ResponseBodyValue)}, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -357,6 +414,23 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			return response_ResponseBodyService_GetResponseBodyStream_0{res}, err
 		}, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_ResponseBodyService_GetResponseBodySameName_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodySameName", runtime.WithHTTPPathPattern("/responsebody/samename/{data}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_GetResponseBodySameName_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_ResponseBodyService_GetResponseBodySameName_0(annotatedContext, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBodySameName_0{resp.(*ResponseBodyValue)}, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
@@ -365,7 +439,8 @@ type response_ResponseBodyService_GetResponseBody_0 struct {
 }
 
 func (m response_ResponseBodyService_GetResponseBody_0) XXX_ResponseBody() interface{} {
-	return m.Response
+	response := m.ResponseBodyOut
+	return response.Response
 }
 
 type response_ResponseBodyService_ListResponseBodies_0 struct {
@@ -373,7 +448,8 @@ type response_ResponseBodyService_ListResponseBodies_0 struct {
 }
 
 func (m response_ResponseBodyService_ListResponseBodies_0) XXX_ResponseBody() interface{} {
-	return m.Response
+	response := m.RepeatedResponseBodyOut
+	return response.Response
 }
 
 type response_ResponseBodyService_ListResponseStrings_0 struct {
@@ -381,7 +457,8 @@ type response_ResponseBodyService_ListResponseStrings_0 struct {
 }
 
 func (m response_ResponseBodyService_ListResponseStrings_0) XXX_ResponseBody() interface{} {
-	return m.Values
+	response := m.RepeatedResponseStrings
+	return response.Values
 }
 
 type response_ResponseBodyService_GetResponseBodyStream_0 struct {
@@ -389,19 +466,31 @@ type response_ResponseBodyService_GetResponseBodyStream_0 struct {
 }
 
 func (m response_ResponseBodyService_GetResponseBodyStream_0) XXX_ResponseBody() interface{} {
-	return m.Response
+	response := m.ResponseBodyOut
+	return response.Response
+}
+
+type response_ResponseBodyService_GetResponseBodySameName_0 struct {
+	*ResponseBodyValue
+}
+
+func (m response_ResponseBodyService_GetResponseBodySameName_0) XXX_ResponseBody() interface{} {
+	response := m.ResponseBodyValue
+	return response.ResponseBodyValue
 }
 
 var (
-	pattern_ResponseBodyService_GetResponseBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebody", "data"}, ""))
-	pattern_ResponseBodyService_ListResponseBodies_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebodies", "data"}, ""))
-	pattern_ResponseBodyService_ListResponseStrings_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsestrings", "data"}, ""))
-	pattern_ResponseBodyService_GetResponseBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"responsebody", "stream", "data"}, ""))
+	pattern_ResponseBodyService_GetResponseBody_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebody", "data"}, ""))
+	pattern_ResponseBodyService_ListResponseBodies_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebodies", "data"}, ""))
+	pattern_ResponseBodyService_ListResponseStrings_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsestrings", "data"}, ""))
+	pattern_ResponseBodyService_GetResponseBodyStream_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"responsebody", "stream", "data"}, ""))
+	pattern_ResponseBodyService_GetResponseBodySameName_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"responsebody", "samename", "data"}, ""))
 )
 
 var (
-	forward_ResponseBodyService_GetResponseBody_0       = runtime.ForwardResponseMessage
-	forward_ResponseBodyService_ListResponseBodies_0    = runtime.ForwardResponseMessage
-	forward_ResponseBodyService_ListResponseStrings_0   = runtime.ForwardResponseMessage
-	forward_ResponseBodyService_GetResponseBodyStream_0 = runtime.ForwardResponseStream
+	forward_ResponseBodyService_GetResponseBody_0         = runtime.ForwardResponseMessage
+	forward_ResponseBodyService_ListResponseBodies_0      = runtime.ForwardResponseMessage
+	forward_ResponseBodyService_ListResponseStrings_0     = runtime.ForwardResponseMessage
+	forward_ResponseBodyService_GetResponseBodyStream_0   = runtime.ForwardResponseStream
+	forward_ResponseBodyService_GetResponseBodySameName_0 = runtime.ForwardResponseMessage
 )

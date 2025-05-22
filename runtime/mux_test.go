@@ -867,6 +867,9 @@ func (g *dummyHealthCheckClient) Check(ctx context.Context, r *grpc_health_v1.He
 func (g *dummyHealthCheckClient) Watch(ctx context.Context, r *grpc_health_v1.HealthCheckRequest, opts ...grpc.CallOption) (grpc_health_v1.Health_WatchClient, error) {
 	return nil, status.Error(codes.Unimplemented, "unimplemented")
 }
+func (g *dummyHealthCheckClient) List(ctx context.Context, r *grpc_health_v1.HealthListRequest, opts ...grpc.CallOption) (*grpc_health_v1.HealthListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "unimplemented")
+}
 
 func TestServeMux_HandleMiddlewares(t *testing.T) {
 	var mws []int

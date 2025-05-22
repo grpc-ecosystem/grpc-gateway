@@ -1817,6 +1817,29 @@ func testResponseBody(t *testing.T, port int) {
 	}
 }
 
+func TestResponseBodySameName(t *testing.T) {
+	apiURL := "http://localhost:8088/responsebody/samename/foo"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+	}
+
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("io.ReadAll(resp.Body) failed with %v; want success", err)
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	if diff := cmp.Diff(string(buf), `"foo"`); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func TestResponseBodyStream(t *testing.T) {
 	apiURL := "http://localhost:8088/responsebody/stream/foo"
 	resp, err := http.Get(apiURL)
