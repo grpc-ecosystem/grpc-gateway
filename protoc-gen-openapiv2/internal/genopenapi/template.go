@@ -1120,7 +1120,6 @@ func processParametersInSegment(segment string, fields []*descriptor.Field, msgs
 	result := segment
 	depth := 0
 	var paramStart int
-
 	for i, char := range segment {
 		switch char {
 		case '{':
@@ -1146,7 +1145,6 @@ func processParametersInSegment(segment string, fields []*descriptor.Field, msgs
 			}
 		}
 	}
-
 	return result
 }
 
