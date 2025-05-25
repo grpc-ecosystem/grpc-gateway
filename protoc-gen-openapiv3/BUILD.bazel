@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+package(default_visibility = ["//visibility:private"])
+
+go_library(
+    name = "protoc-gen-openapiv3_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3",
+    deps = ["//utilities"],
+)
+
+go_binary(
+    name = "protoc-gen-openapiv3",
+    embed = [":protoc-gen-openapiv3_lib"],
+    visibility = ["//visibility:public"],
+)
+#
+# go_test(
+#     name = "protoc-gen-openapiv3_test",
+#     size = "small",
+#     srcs = ["main_test.go"],
+#     embed = [":protoc-gen-openapiv3_lib"],
+# )

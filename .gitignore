@@ -13,3 +13,5 @@ vendor
 
 # Generated travis files
 .travis.yml
+
+protoc-gen-openapiv3
