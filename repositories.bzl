@@ -1907,8 +1907,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_grpc",
         importpath = "google.golang.org/grpc",
-        sum = "h1:HR03wO6eyZ7lknl75XlxABNVLLFc2PAb6mHlYh756mA=",
-        version = "v1.72.1",
+        sum = "h1:TdbGzwb82ty4OusHWepvFWGLgIbNo1/SUynEN0ssqv8=",
+        version = "v1.72.2",
     )
 
     go_repository(
