@@ -1089,18 +1089,18 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 			buffer += string(char)
 		case ':':
 			if depth == 0 {
-				// As soon as we find a ":" outside a variable,
-				// everything following is a verb. But we need to continue processing
-				// the remaining path to handle parameter camelCase conversion.
-				parts = append(parts, buffer)
-				verbSegment := path[i:]
-
-				if reg.GetUseJSONNamesForFields() {
-					verbSegment = processParametersInSegment(verbSegment, fields, msgs)
+				// Only treat this as a verb if we're at the end of the path or
+				// if there are no more path segments (only more literals after the colon)
+				remainingPath := path[i:]
+				if !strings.Contains(remainingPath, "/") {
+					parts = append(parts, buffer)
+					verbSegment := remainingPath
+					if reg.GetUseJSONNamesForFields() {
+						verbSegment = processParametersInSegment(verbSegment, fields, msgs)
+					}
+					parts = append(parts, verbSegment)
+					return parts
 				}
-
-				parts = append(parts, verbSegment)
-				return parts
 			}
 			buffer += string(char)
 		default:
