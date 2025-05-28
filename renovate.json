@@ -56,6 +56,15 @@
                 "slsa-framework/slsa-github-generator"
             ],
             "pinDigests": false
+        },
+        {
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchPackageNames": [
+                "bazel-contrib/publish-to-bcr"
+            ],
+            "automerge": true
         }
     ]
 }
