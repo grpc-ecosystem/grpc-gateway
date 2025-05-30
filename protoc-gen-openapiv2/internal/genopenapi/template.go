@@ -1059,7 +1059,6 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 	var parts []string
 	depth := 0
 	buffer := ""
-pathLoop:
 	for i, char := range path {
 		switch char {
 		case '{':
@@ -1090,11 +1089,18 @@ pathLoop:
 			buffer += string(char)
 		case ':':
 			if depth == 0 {
-				// As soon as we find a ":" outside a variable,
-				// everything following is a verb
-				parts = append(parts, buffer)
-				buffer = path[i:]
-				break pathLoop
+				// Only treat this as a verb if we're at the end of the path or
+				// if there are no more path segments (only more literals after the colon)
+				remainingPath := path[i:]
+				if !strings.Contains(remainingPath, "/") {
+					parts = append(parts, buffer)
+					verbSegment := remainingPath
+					if reg.GetUseJSONNamesForFields() {
+						verbSegment = processParametersInSegment(verbSegment, fields, msgs)
+					}
+					parts = append(parts, verbSegment)
+					return parts
+				}
 			}
 			buffer += string(char)
 		default:
@@ -1106,6 +1112,40 @@ pathLoop:
 	parts = append(parts, buffer)
 
 	return parts
+}
+
+// processParametersInSegment processes a path segment (like ":verb/{param}") to convert
+// parameter names to camelCase while preserving the overall structure
+func processParametersInSegment(segment string, fields []*descriptor.Field, msgs []*descriptor.Message) string {
+	result := segment
+	depth := 0
+	var paramStart int
+	for i, char := range segment {
+		switch char {
+		case '{':
+			if depth == 0 {
+				paramStart = i
+			}
+			depth++
+		case '}':
+			depth--
+			if depth == 0 {
+				paramContent := segment[paramStart+1 : i]
+				paramNameProto := strings.SplitN(paramContent, "=", 2)[0]
+				paramNameCamelCase := lowerCamelCase(paramNameProto, fields, msgs)
+
+				oldParam := "{" + paramContent + "}"
+				newParam := "{" + paramNameCamelCase
+				if strings.Contains(paramContent, "=") {
+					newParam += paramContent[len(paramNameProto):]
+				}
+				newParam += "}"
+
+				result = strings.Replace(result, oldParam, newParam, 1)
+			}
+		}
+	}
+	return result
 }
 
 // partsToOpenAPIPath converts each path part of the form /path/{string_value=strprefix/*} which is defined in
