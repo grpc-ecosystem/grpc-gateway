@@ -45,7 +45,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		doc.Components = &components
 
 		for _, msg := range t.Messages {
-			g.addMessageToSchemes(msg, components.Schemas)
+			msgName := g.getMessageName(msg.FQMN())
+			schemaRef := g.generateMessageSchema(msg, components.Schemas)
+			components.Schemas[msgName] = schemaRef
 		}
 
 		contentBytes, err := g.format.MarshalOpenAPIDoc(doc)
@@ -69,13 +71,12 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	return respFiles, nil
 }
 
-func (g *generator) addMessageToSchemes(msg *descriptor.Message, schemas openapi3.Schemas) {
+func (g *generator) generateMessageSchema(msg *descriptor.Message, schemas openapi3.Schemas) *openapi3.SchemaRef {
 	msgName := g.getMessageName(msg.FQMN())
 	if scheme, ok := wktSchemas[msgName]; ok {
-		schemas[msgName] = &openapi3.SchemaRef{
+		return &openapi3.SchemaRef{
 			Value: scheme,
 		}
-		return
 	}
 
 	schema := &openapi3.Schema{
@@ -90,7 +91,7 @@ func (g *generator) addMessageToSchemes(msg *descriptor.Message, schemas openapi
 
 	schema.Properties = properties
 
-	schemas[msgName] = &openapi3.SchemaRef{
+	return &openapi3.SchemaRef{
 		Value: schema,
 	}
 }
