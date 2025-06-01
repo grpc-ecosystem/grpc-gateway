@@ -3,6 +3,8 @@ package genopenapiv3
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
+	"sync"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -13,71 +15,6 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 )
-
-var wktSchemas = map[string]*openapi3.Schema{
-	".google.protobuf.FieldMask": {
-		Type: &openapi3.Types{"string"},
-	},
-	".google.protobuf.Timestamp": {
-		Type:   &openapi3.Types{"string"},
-		Format: "date-time",
-	},
-	".google.protobuf.Duration": {
-		Type: &openapi3.Types{"string"},
-	},
-	".google.protobuf.StringValue": {
-		Type: &openapi3.Types{"string"},
-	},
-	".google.protobuf.BytesValue": {
-		Type:   &openapi3.Types{"string"},
-		Format: "byte",
-	},
-	".google.protobuf.Int32Value": {
-		Type:   &openapi3.Types{"integer"},
-		Format: "int32",
-	},
-	".google.protobuf.UInt32Value": {
-		Type:   &openapi3.Types{"integer"},
-		Format: "int64",
-	},
-	".google.protobuf.Int64Value": {
-		Type:   &openapi3.Types{"string"},
-		Format: "int64",
-	},
-	".google.protobuf.UInt64Value": {
-		Type:   &openapi3.Types{"string"},
-		Format: "uint64",
-	},
-	".google.protobuf.FloatValue": {
-		Type:   &openapi3.Types{"number"},
-		Format: "float",
-	},
-	".google.protobuf.DoubleValue": {
-		Type:   &openapi3.Types{"number"},
-		Format: "double",
-	},
-	".google.protobuf.BoolValue": {
-		Type: &openapi3.Types{"boolean"},
-	},
-	".google.protobuf.Empty": {
-		Type: &openapi3.Types{"object"},
-	},
-	".google.protobuf.Struct": {
-		Type: &openapi3.Types{"object"},
-	},
-	".google.protobuf.Value": {},
-	".google.protobuf.ListValue": {
-		Type: &openapi3.Types{"array"},
-		Items: &openapi3.SchemaRef{
-			Value: &openapi3.Schema{
-				Type: &openapi3.Types{"object"},
-			},
-		},
-	},
-	".google.protobuf.NullValue": {
-		Type: &openapi3.Types{"string"},
-	},
-}
 
 type generator struct {
 	reg    *descriptor.Registry
@@ -104,6 +41,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 
 		components := openapi3.NewComponents()
+		components.Schemas = make(openapi3.Schemas)
+		doc.Components = &components
+
 		for _, msg := range t.Messages {
 			g.addMessageToSchemes(msg, components.Schemas)
 		}
@@ -130,14 +70,91 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 }
 
 func (g *generator) addMessageToSchemes(msg *descriptor.Message, schemas openapi3.Schemas) {
-	if scheme, ok := wktSchemas[msg.FQMN()]; ok {
-		schemas[msg.FQMN()] = &openapi3.SchemaRef{
+	msgName := g.getMessageName(msg.FQMN())
+	if scheme, ok := wktSchemas[msgName]; ok {
+		schemas[msgName] = &openapi3.SchemaRef{
 			Value: scheme,
 		}
 		return
 	}
 
-	// TODO: Implement schema generation for custom messages
+	schema := &openapi3.Schema{
+		Type: &openapi3.Types{openapi3.TypeObject},
+	}
+
+	properties := make(openapi3.Schemas)
+
+	for _, field := range msg.Fields {
+		properties[field.GetName()] = g.generateFieldDoc(field, schemas)
+	}
+
+	schema.Properties = properties
+
+	schemas[msgName] = &openapi3.SchemaRef{
+		Value: schema,
+	}
+}
+
+func (g *generator) generateFieldDoc(field *descriptor.Field, schemas openapi3.Schemas) *openapi3.SchemaRef {
+	fd := field.FieldDescriptorProto
+	location := ""
+	if ix := strings.LastIndex(field.Message.FQMN(), "."); ix > 0 {
+		location = field.Message.FQMN()[0:ix]
+	}
+
+	if m, err := g.reg.LookupMsg(location, field.GetTypeName()); err == nil {
+		if opt := m.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
+			// Generate Map<k, v> schema
+			return &openapi3.SchemaRef{
+				Value: &openapi3.Schema{
+					AdditionalProperties: openapi3.AdditionalProperties{
+						Schema: g.generateFieldTypeSchema(m.GetField()[1], schemas),
+					},
+				},
+			}
+		}
+	}
+
+	if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+		return &openapi3.SchemaRef{
+			Value: &openapi3.Schema{
+				Type:  &openapi3.Types{openapi3.TypeArray},
+				Items: g.generateFieldTypeSchema(fd, schemas),
+			},
+		}
+	}
+
+	return g.generateFieldTypeSchema(fd, schemas)
+}
+
+func (g *generator) generateFieldTypeSchema(fd *descriptorpb.FieldDescriptorProto, schemas openapi3.Schemas) *openapi3.SchemaRef {
+	if schema, ok := primitiveTypeSchemas[fd.GetType()]; ok {
+		return &openapi3.SchemaRef{
+			Value: schema,
+		}
+	}
+
+	switch ft := fd.GetType(); ft {
+	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
+		openAPIRef, ok := g.fullyQualifiedNameToOpenAPIName(fd.GetTypeName())
+		if !ok {
+			panic(fmt.Sprintf("can't resolve OpenAPI ref from typename %q", fd.GetTypeName()))
+		}
+
+		return &openapi3.SchemaRef{
+			Ref: "#/definitions/" + openAPIRef,
+		}
+	default:
+		return &openapi3.SchemaRef{
+			Value: &openapi3.Schema{Type: &openapi3.Types{ft.String()}, Format: "UNKNOWN"},
+		}
+	}
+
+}
+
+func (g *generator) getMessageName(fqmn string) string {
+	// TODO: have different naming stratgies
+	return fqmn[1:]
 }
 
 func (g *generator) generateServiceDoc(svc *descriptor.Service) {
@@ -238,97 +255,54 @@ func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescrip
 	return opts, nil
 }
 
-func primitiveTypeSchema(t descriptorpb.FieldDescriptorProto_Type) (*openapi3.Schema, bool) {
-	switch t {
-	case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"number"},
-			Format: "double",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"number"},
-			Format: "float",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_INT64:
-		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
-		// This maintains compatibility with JSON's limited number precision.
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"string"},
-			Format: "int64",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_UINT64:
-		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
-		// TODO(yugui) Add an option to declare 64bit integers as int64.
-		//
-		// NOTE: uint64 is not a standard format in OpenAPI spec.
-		// So we cannot expect that uint64 is commonly supported by OpenAPI processors.
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"string"},
-			Format: "uint64",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_INT32:
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"integer"},
-			Format: "int32",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_FIXED64:
-		// 64bit types marshaled as string for JSON compatibility
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"string"},
-			Format: "uint64",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_FIXED32:
-		// Fixed 32-bit unsigned integer
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"integer"},
-			Format: "int32",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
-		// NOTE: In OpenAPI v3 specification, format should be empty on boolean type
-		return &openapi3.Schema{
-			Type: &openapi3.Types{"boolean"},
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: In OpenAPI v3 specification, format can be empty on string type
-		return &openapi3.Schema{
-			Type: &openapi3.Types{"string"},
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
-		// Base64 encoded string representation
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"string"},
-			Format: "byte",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_UINT32:
-		// 32-bit unsigned integer
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"integer"},
-			Format: "int32",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"integer"},
-			Format: "int32",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
-		// 64bit types marshaled as string for JSON compatibility
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"string"},
-			Format: "int64",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_SINT32:
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"integer"},
-			Format: "int32",
-		}, true
-	case descriptorpb.FieldDescriptorProto_TYPE_SINT64:
-		// 64bit types marshaled as string for JSON compatibility
-		return &openapi3.Schema{
-			Type:   &openapi3.Types{"string"},
-			Format: "int64",
-		}, true
-	default:
-		return nil, false
+// Take in a FQMN or FQEN and return a OpenAPI safe version of the FQMN and
+// a boolean indicating if FQMN was properly resolved.
+func (g *generator) fullyQualifiedNameToOpenAPIName(fqn string) (string, bool) {
+	registriesSeenMutex.Lock()
+	defer registriesSeenMutex.Unlock()
+	if mapping, present := registriesSeen[g.reg]; present {
+		ret, ok := mapping[fqn]
+		return ret, ok
 	}
+
+	mapping := g.resolveFullyQualifiedNameToOpenAPINames(append(g.reg.GetAllFQMNs(), append(g.reg.GetAllFQENs(), g.reg.GetAllFQMethNs()...)...), g.reg.GetOpenAPINamingStrategy())
+	registriesSeen[g.reg] = mapping
+	ret, ok := mapping[fqn]
+
+	return ret, ok
+}
+
+// Lookup message type by location.name and return an openapiv2-safe version
+// of its FQMN.
+func (g *generator) lookupMsgAndOpenAPIName(location, name string) (*descriptor.Message, string, error) {
+	msg, err := g.reg.LookupMsg(location, name)
+	if err != nil {
+		return nil, "", err
+	}
+	swgName, ok := g.fullyQualifiedNameToOpenAPIName(msg.FQMN())
+	if !ok {
+		return nil, "", fmt.Errorf("can't map OpenAPI name from FQMN %q", msg.FQMN())
+	}
+	return msg, swgName, nil
+}
+
+// registriesSeen is used to memoise calls to resolveFullyQualifiedNameToOpenAPINames so
+// we don't repeat it unnecessarily, since it can take some time.
+var (
+	registriesSeen      = map[*descriptor.Registry]map[string]string{}
+	registriesSeenMutex sync.Mutex
+)
+
+// Take the names of every proto message and generate a unique reference for each, according to the given strategy.
+func (g *generator) resolveFullyQualifiedNameToOpenAPINames(messages []string, _ string) map[string]string {
+	strategyFn := func(messages []string) map[string]string {
+		res := make(map[string]string)
+		for _, msg := range messages {
+			res[msg] = g.getMessageName(msg)
+		}
+
+		return res
+	}
+
+	return strategyFn(messages)
 }
