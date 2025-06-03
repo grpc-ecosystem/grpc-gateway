@@ -26,6 +26,7 @@ var (
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
 	preserveRPCOrder               = flag.Bool("preserve_rpc_order", false, "if true, will ensure the order of paths emitted in openapi swagger files mirror the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.")
+	oneOfStrategy                  = flag.String("oneof_strategy", "oneOf", "how to handle oneofs")
 	enableRpcDeprecation           = flag.Bool("enable_rpc_deprecation", false, "whether to process grpc method's deprecated option.")
 	outputFormat                   = flag.String("output_format", string(genopenapiv3.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapiv3.FormatJSON, genopenapiv3.FormatYAML))
 )
@@ -63,7 +64,7 @@ func main() {
 	var openFile *os.File
 	var err error
 
-	if  *file == "-" {
+	if *file == "-" {
 		openFile = os.Stdin
 	} else {
 		openFile, err = os.Open(*file)
@@ -85,7 +86,6 @@ func main() {
 		grpclog.Fatal(err)
 	}
 
-	
 	if req.Parameter != nil {
 		parseReqParam(req.GetParameter(), flag.CommandLine)
 	}
@@ -99,6 +99,7 @@ func main() {
 	reg.SetDisableServiceTags(*disableServiceTags)
 	reg.SetPreserveRPCOrder(*preserveRPCOrder)
 	reg.SetEnableRpcDeprecation(*enableRpcDeprecation)
+	reg.SetOneOfStrategy(*oneOfStrategy)
 
 	if err := reg.Load(req); err != nil {
 		emitError(err)
@@ -106,7 +107,6 @@ func main() {
 	}
 
 	generator := genopenapiv3.NewGenerator(reg, genopenapiv3.Format(*outputFormat))
-
 
 	targets := make([]*descriptor.File, 0, len(req.FileToGenerate))
 	for _, target := range req.FileToGenerate {
