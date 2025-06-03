@@ -181,6 +181,9 @@ type Registry struct {
 
 	// generateXGoType is a global generator option for generating x-go-type annotations
 	generateXGoType bool
+
+	// indicates how the one ofs are handled
+	oneOfStrategy string
 }
 
 type repeatedFieldSeparator struct {
@@ -929,4 +932,12 @@ func (r *Registry) SetGenerateXGoType(generateXGoType bool) {
 
 func (r *Registry) GetGenerateXGoType() bool {
 	return r.generateXGoType
+}
+
+func (r *Registry) SetOneOfStrategy(oneOfStrategy string) {
+	r.oneOfStrategy = oneOfStrategy 
+}
+
+func (r *Registry) GetOneOfStrategy() string {
+	return r.oneOfStrategy 
 }
