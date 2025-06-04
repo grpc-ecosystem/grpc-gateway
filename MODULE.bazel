@@ -6,7 +6,7 @@ module(
 )
 
 # Bazel Central Registry modules.
-bazel_dep(name = "bazel_features", version = "1.30.0")
+bazel_dep(name = "bazel_features", version = "1.31.0")
 bazel_dep(name = "rules_license", version = "1.0.0")
 bazel_dep(name = "rules_python", version = "1.4.1")
 bazel_dep(name = "rules_proto", version = "7.1.0")
