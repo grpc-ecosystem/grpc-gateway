@@ -33,3 +33,15 @@ func (f Format) MarshalOpenAPIDoc(doc *openapi3.T) ([]byte, error) {
 		return nil, ErrUnSupportedFormat
 	}
 }
+
+type OneOfStrategy string
+
+const (
+	OneOfStrategyOneOf = "oneof"
+	OneOfStrategyAllOf = "allof"
+)
+
+type methodDoc struct{
+	operation *openapi3.Operation
+	externalSchemas []*openapi3.Schema
+}

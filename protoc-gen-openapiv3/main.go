@@ -4,13 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"runtime/debug"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapiv3"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -18,16 +16,8 @@ import (
 
 var (
 	file                           = flag.String("file", "-", "where to load data from")
-	proto3OptionalNullable         = flag.Bool("proto3_optional_nullable", false, "whether Proto3 Optional fields should be marked as x-nullable")
 	openAPIConfiguration           = flag.String("openapi_configuration", "", "path to file which describes the OpenAPI Configuration in YAML format")
-	recursiveDepth                 = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
-	versionFlag                    = flag.Bool("gizmocore.testversion", false, "print the current version")
-	omitEnumDefaultValue           = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
-	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
-	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
-	preserveRPCOrder               = flag.Bool("preserve_rpc_order", false, "if true, will ensure the order of paths emitted in openapi swagger files mirror the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.")
 	oneOfStrategy                  = flag.String("oneof_strategy", "oneOf", "how to handle oneofs")
-	enableRpcDeprecation           = flag.Bool("enable_rpc_deprecation", false, "whether to process grpc method's deprecated option.")
 	outputFormat                   = flag.String("output_format", string(genopenapiv3.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapiv3.FormatJSON, genopenapiv3.FormatYAML))
 )
 
@@ -41,25 +31,6 @@ var (
 func main() {
 
 	flag.Parse()
-
-	if *versionFlag {
-		if commit == "unknown" {
-			buildInfo, ok := debug.ReadBuildInfo()
-			if ok {
-				version = buildInfo.Main.Version
-				for _, setting := range buildInfo.Settings {
-					if setting.Key == "vcs.revision" {
-						commit = setting.Value
-					}
-					if setting.Key == "vcs.time" {
-						date = setting.Value
-					}
-				}
-			}
-		}
-		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
-		os.Exit(0)
-	}
 
 	var openFile *os.File
 	var err error
@@ -87,18 +58,13 @@ func main() {
 	}
 
 	if req.Parameter != nil {
-		parseReqParam(req.GetParameter(), flag.CommandLine)
+		err := parseReqParam(req.GetParameter(), flag.CommandLine)
+		if err != nil {
+			emitError(err)
+			return
+		}
 	}
 
-	// Set the naming strategy either directly from the flag, or via the value of the legacy fqn_for_openapi_name
-	// flag.
-	reg.SetProto3OptionalNullable(*proto3OptionalNullable)
-	reg.SetRecursiveDepth(*recursiveDepth)
-	reg.SetOmitEnumDefaultValue(*omitEnumDefaultValue)
-	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
-	reg.SetDisableServiceTags(*disableServiceTags)
-	reg.SetPreserveRPCOrder(*preserveRPCOrder)
-	reg.SetEnableRpcDeprecation(*enableRpcDeprecation)
 	reg.SetOneOfStrategy(*oneOfStrategy)
 
 	if err := reg.Load(req); err != nil {
@@ -138,36 +104,7 @@ func parseReqParam(param string, f *flag.FlagSet) error {
 	for _, p := range strings.Split(param, ",") {
 		flagName, value, valueExists := strings.Cut(p, "=")
 		if !valueExists {
-			switch flagName {
-			case "allow_delete_body":
-				if err := f.Set(flagName, "true"); err != nil {
-					return fmt.Errorf("cannot set flag %s: %w", p, err)
-				}
-				continue
-			case "allow_merge":
-				if err := f.Set(flagName, "true"); err != nil {
-					return fmt.Errorf("cannot set flag %s: %w", p, err)
-				}
-				continue
-			case "allow_repeated_fields_in_body":
-				if err := f.Set(flagName, "true"); err != nil {
-					return fmt.Errorf("cannot set flag %s: %w", p, err)
-				}
-				continue
-			case "include_package_in_tags":
-				if err := f.Set(flagName, "true"); err != nil {
-					return fmt.Errorf("cannot set flag %s: %w", p, err)
-				}
-				continue
-			}
-			if err := f.Set(flagName, ""); err != nil {
-				return fmt.Errorf("cannot set flag %s: %w", p, err)
-			}
-			continue
-		}
-
-		if strings.HasPrefix(flagName, "M") {
-			continue
+			return fmt.Errorf("no value exists for flag: %s", flagName)
 		}
 
 		if err := f.Set(flagName, value); err != nil {
