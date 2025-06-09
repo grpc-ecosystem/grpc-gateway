@@ -14,10 +14,3 @@ go_binary(
     embed = [":protoc-gen-openapiv3_lib"],
     visibility = ["//visibility:public"],
 )
-#
-# go_test(
-#     name = "protoc-gen-openapiv3_test",
-#     size = "small",
-#     srcs = ["main_test.go"],
-#     embed = [":protoc-gen-openapiv3_lib"],
-# )
