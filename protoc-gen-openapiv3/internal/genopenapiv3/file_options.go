@@ -10,7 +10,7 @@ import (
 func (g *generator) extractFileOptions(target *descriptor.File) (*openapi3.T, bool) {
 	if openAPIAno := proto.GetExtension(target.GetOptions(), options.E_Openapiv3Document).(*options.OpenAPI); openAPIAno != nil {
 		doc := &openapi3.T{
-			OpenAPI: "3.0.2",
+			OpenAPI: OpenAPIVersion,
 		}
 		doc.Info = g.extractInfo(openAPIAno.GetInfo())
 		// TODO: implement other openapi file annotation fields
