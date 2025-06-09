@@ -41,7 +41,7 @@ func request_ExcessBodyService_NoBodyRpc_0(ctx context.Context, marshaler runtim
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	_, _ = io.Copy(io.Discard, req.Body)
 	msg, err := client.NoBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -60,7 +60,7 @@ func request_ExcessBodyService_NoBodyServerStream_0(ctx context.Context, marshal
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	io.Copy(io.Discard, req.Body)
+	_, _ = io.Copy(io.Discard, req.Body)
 	stream, err := client.NoBodyServerStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
