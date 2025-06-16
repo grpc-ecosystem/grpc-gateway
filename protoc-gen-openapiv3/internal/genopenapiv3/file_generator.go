@@ -1,11 +1,14 @@
 package genopenapiv3
 
 import (
+	"fmt"
 	"maps"
 	"slices"
+	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -37,7 +40,7 @@ func (fg *fileGenerator) generateFileDoc(file *descriptor.File) *openapi3.T {
 	}
 
 	for _, msg := range file.Messages {
-		fg.getMessageSchema(msg)
+		fg.getMessageSchemaRef(msg)
 	}
 
 	for _, enum := range file.Enums {
@@ -47,20 +50,21 @@ func (fg *fileGenerator) generateFileDoc(file *descriptor.File) *openapi3.T {
 	return fg.doc
 }
 
-func (fg *fileGenerator) getMessageSchema(msg *descriptor.Message) *openapi3.SchemaRef {
+func (fg *fileGenerator) getMessageSchemaRef(msg *descriptor.Message) *openapi3.SchemaRef {
 	name := fg.resolveName(msg.FQMN())
-	schemaRef, ok := fg.doc.Components.Schemas[name]
+	resultRef := openapi3.NewSchemaRef(fmt.Sprintf("#/components/schemas/%s", name), nil)
+
+	_, ok := fg.doc.Components.Schemas[name]
 	if ok {
-		return schemaRef.Value.NewRef()
+		return resultRef
 	}
 
-	schemaRef = fg.generateMessageSchema(msg).NewRef()
-	fg.doc.Components.Schemas[name] = schemaRef
+	fg.doc.Components.Schemas[name] = fg.generateMessageSchema(msg, nil).NewRef()
 
-	return schemaRef
+	return resultRef
 }
 
-func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message) *openapi3.Schema {
+func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message, excludeFields []string) *openapi3.Schema {
 	msgName := fg.resolveName(msg.FQMN())
 	if scheme, ok := wktSchemas[msgName]; ok {
 		return scheme
@@ -193,9 +197,7 @@ func (fg *fileGenerator) generateFieldDoc(field *descriptor.Field) *openapi3.Sch
 
 func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescriptorProto, location string) *openapi3.SchemaRef {
 	if schema, ok := primitiveTypeSchemas[fd.GetType()]; ok {
-		return &openapi3.SchemaRef{
-			Value: schema,
-		}
+		return schema.NewRef()
 	}
 
 	switch ft := fd.GetType(); ft {
@@ -216,7 +218,7 @@ func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescripto
 				if err != nil {
 					panic(err)
 				}
-				return fg.getMessageSchema(fieldTypeMsg)
+				return fg.getMessageSchemaRef(fieldTypeMsg)
 			}
 		}
 	default:
@@ -259,95 +261,160 @@ func (fg *fileGenerator) generateServiceDoc(svc *descriptor.Service) {
 }
 
 func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
-	return nil
-	// for bindingIdx, binding := range meth.Bindings {
-	// 	opOpts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
-	// 	if err != nil {
-	// 		return fmt.Errorf("error extracting method %s operations: %v", meth.GetName(), err)
-	// 	}
-	//
-	// 	pathParams, err := fg.generatePathParameters(binding.PathParams)
-	// 	if err != nil {
-	// 		return fmt.Errorf("error generating path parameters for method %s: %v", meth.GetName(), err)
-	// 	}
-	//
-	// 	if meth.RequestType != nil {
-	// 		switch binding.HTTPMethod {
-	// 		case "GET", "DELETE":
-	// 			queryParams, err := fg.messageToQueryParameters(meth.RequestType, binding.PathParams, binding.Body, binding.HTTPMethod)
-	// 			if err != nil {
-	// 				grpclog.Errorf("error generating query parameters for method %s: %v", meth.GetName(), err)
-	// 			} else {
-	// 				pathParams = append(pathParams, queryParams...)
-	// 			}
-	// 		case "POST", "PUT", "PATCH":
-	// 			// For POST, PUT, PATCH, add request body
-	// 			operation.RequestBody = fg.generateRequestBody(binding, meth.RequestType)
-	//
-	// 			queryParams, err := fg.messageToQueryParameters(meth.RequestType, binding.PathParams, binding.Body, binding.HTTPMethod)
-	// 			if err != nil {
-	// 				grpclog.Errorf("error generating query parameters for method %s: %v", meth.GetName(), err)
-	// 			} else {
-	// 				pathParams = append(pathParams, queryParams...)
-	// 			}
-	// 		}
-	// 	}
-	//
-	// 	var responses *openapi3.Responses
-	//
-	// 	operation := &openapi3.Operation{
-	// 		Tags:        []string{meth.Service.GetName()},
-	// 		Summary:     opOpts.GetSummary(),
-	// 		Description: opOpts.GetDescription(),
-	// 		OperationID: fg.getOperationName(meth.Service.GetName(), meth.GetName(), bindingIdx),
-	// 		Parameters:  pathParams,
-	// 		Responses:   openapi3.NewResponses(),
-	// 	}
-	//
-	// 	fg.addMethodResponses(operation, meth)
-	//
-	// 	if opOpts.GetSecurity() != nil {
-	// 		operation.Security = fg.convertSecurity(opOpts.GetSecurity())
-	// 	}
-	//
-	// 	pathTemplate := fg.convertPathTemplate(binding.PathTmpl.Template)
-	// 	pathItem := doc.Paths.Find(pathTemplate)
-	// 	if pathItem == nil {
-	// 		pathItem = &openapi3.PathItem{}
-	// 		doc.Paths.Set(pathTemplate, pathItem)
-	// 	}
-	//
-	// 	switch binding.HTTPMethod {
-	// 	case "GET":
-	// 		pathItem.Get = operation
-	// 	case "POST":
-	// 		pathItem.Post = operation
-	// 	case "PUT":
-	// 		pathItem.Put = operation
-	// 	case "PATCH":
-	// 		pathItem.Patch = operation
-	// 	case "DELETE":
-	// 		pathItem.Delete = operation
-	// 	case "HEAD":
-	// 		pathItem.Head = operation
-	// 	case "OPTIONS":
-	// 		pathItem.Options = operation
-	// 	}
-	// }
-	//
-	// return nil
-}
+	for bindingIdx, binding := range meth.Bindings {
+		opOpts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
+		if err != nil {
+			return fmt.Errorf("error extracting method %s operations: %v", meth.GetName(), err)
+		}
 
-func (fg *fileGenerator) generatePathParameters(params []descriptor.Parameter) (any, error) {
-	panic("unimplemented")
-}
+		var params openapi3.Parameters
+		var requestBody *openapi3.RequestBodyRef
 
-func (fg *fileGenerator) generateResponseSchema(responseType *descriptor.Message) *openapi3.SchemaRef {
-	if responseType == nil {
-		return &openapi3.SchemaRef{
-			Value: &openapi3.Schema{Type: &openapi3.Types{openapi3.TypeObject}},
+		if meth.RequestType != nil {
+			tmpParams, err := fg.messageToParameters(meth.RequestType, binding.PathParams, binding.Body,
+				binding.HTTPMethod, "")
+			if err != nil {
+				grpclog.Errorf("error generating query parameters for method %s: %v", meth.GetName(), err)
+			} else {
+				params = append(params, tmpParams...)
+			}
+
+			switch binding.HTTPMethod {
+			case "POST", "PUT", "PATCH":
+				// For POST, PUT, PATCH, add request body
+				requestBody = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().WithContent(
+					openapi3.NewContentWithJSONSchemaRef(fg.getMessageSchemaRef(meth.RequestType)))}
+
+			}
+		}
+
+		responseSchema := &openapi3.ResponseRef{
+			Ref: fg.getMessageSchemaRef(meth.ResponseType).RefString(),
+		}
+
+		operation := &openapi3.Operation{
+			Tags:        []string{meth.Service.GetName()},
+			Summary:     opOpts.GetSummary(),
+			Description: opOpts.GetDescription(),
+			OperationID: fg.getOperationName(meth.Service.GetName(), meth.GetName(), bindingIdx),
+			RequestBody: requestBody,
+			Responses:   openapi3.NewResponses(openapi3.WithStatus(200, responseSchema)),
+			Parameters:  params,
+		}
+
+		if opOpts.GetSecurity() != nil {
+			operation.Security = fg.generateSecurity(opOpts.GetSecurity())
+		}
+
+		path := fg.convertPathTemplate(binding.PathTmpl.Template)
+		pathItem := fg.doc.Paths.Find(path)
+		if pathItem == nil {
+			pathItem = &openapi3.PathItem{}
+			fg.doc.Paths.Set(path, pathItem)
+		}
+
+		switch binding.HTTPMethod {
+		case "GET":
+			pathItem.Get = operation
+		case "POST":
+			pathItem.Post = operation
+		case "PUT":
+			pathItem.Put = operation
+		case "PATCH":
+			pathItem.Patch = operation
+		case "DELETE":
+			pathItem.Delete = operation
+		case "HEAD":
+			pathItem.Head = operation
+		case "OPTIONS":
+			pathItem.Options = operation
 		}
 	}
 
-	return fg.getMessageSchema(responseType)
+	return nil
+}
+
+func (fg *fileGenerator) generateSecurity(requirements []*options.SecurityRequirement) *openapi3.SecurityRequirements {
+	res := openapi3.NewSecurityRequirements()
+
+	for _, req := range requirements {
+		oAPISecReq := openapi3.NewSecurityRequirement()
+		for authenticator, scopes := range req.GetAdditionalProperties() {
+			oAPISecReq.Authenticate(authenticator, scopes.GetScopes()...)
+		}
+
+		res.With(oAPISecReq)
+	}
+
+	return res
+}
+
+func (fg *fileGenerator) convertPathTemplate(template string) string {
+	// TODO: handle /{args=foo/*}
+	return template
+}
+
+func (fg *fileGenerator) messageToParameters(message *descriptor.Message,
+	pathParams []descriptor.Parameter, body *descriptor.Body,
+	httpMethod string, paramPrefix string) (openapi3.Parameters, error) {
+
+	params := openapi3.NewParameters()
+	for _, field := range message.Fields {
+		paramType, isParam := fg.getParamType(field, pathParams, body, message, httpMethod)
+		if !isParam {
+			// TODO: handle nested path parameter reference
+			continue
+		}
+
+		schema := fg.generateFieldTypeSchema(field.FieldDescriptorProto, fg.fqmnToLocation(field.FQFN()))
+
+		switch paramType {
+		case openapi3.ParameterInPath:
+			param := openapi3.NewPathParameter(field.GetJsonName())
+			param.Schema = schema
+			params = append(params, &openapi3.ParameterRef{
+				Value: param,
+			})
+		case openapi3.ParameterInQuery:
+			param := openapi3.NewQueryParameter(field.GetJsonName())
+			param.Schema = schema
+			params = append(params, &openapi3.ParameterRef{
+				Value: param,
+			})
+		}
+	}
+
+	return params, nil
+}
+
+func (fg *fileGenerator) getParamType(field *descriptor.Field, pathParams []descriptor.Parameter, body *descriptor.Body,
+	message *descriptor.Message, httpMethod string) (string, bool) {
+
+	for _, pathParam := range pathParams {
+		if pathParam.Target.FQFN() == field.FQFN() {
+			return openapi3.ParameterInPath, true
+		}
+
+		if strings.HasSuffix(pathParam.Target.FQFN(), message.FQMN()) {
+			return "", false
+		}
+	}
+
+	if httpMethod == "GET" || httpMethod == "DELETE" {
+		return openapi3.ParameterInQuery, true
+	}
+
+	if body == nil {
+		return openapi3.ParameterInQuery, true
+	}
+
+	if len(body.FieldPath) == 0 {
+		return "", false
+	}
+
+	if body.FieldPath[len(body.FieldPath)-1].Target.FQFN() == field.FQFN() {
+		return "", false
+	}
+
+	return openapi3.ParameterInQuery, true
 }
