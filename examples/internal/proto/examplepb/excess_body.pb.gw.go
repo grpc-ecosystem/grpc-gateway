@@ -41,7 +41,9 @@ func request_ExcessBodyService_NoBodyRpc_0(ctx context.Context, marshaler runtim
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	_, _ = io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.NoBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -60,7 +62,9 @@ func request_ExcessBodyService_NoBodyServerStream_0(ctx context.Context, marshal
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	_, _ = io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	stream, err := client.NoBodyServerStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -81,7 +85,9 @@ func request_ExcessBodyService_WithBodyRpc_0(ctx context.Context, marshaler runt
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	msg, err := client.WithBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -106,7 +112,9 @@ func request_ExcessBodyService_WithBodyServerStream_0(ctx context.Context, marsh
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	stream, err := client.WithBodyServerStream(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err

@@ -49,7 +49,9 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Body); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -110,7 +112,9 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Body); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)

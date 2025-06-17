@@ -368,13 +368,17 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _  = io.Copy(io.Discard, req.Body)
+	}
 	{{- end }}
 	{{- if $isFieldMask }}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _  = io.Copy(io.Discard, req.Body)
+	}
 	if protoReq.{{ .FieldMaskField }} == nil || len(protoReq.{{ .FieldMaskField }}.GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.{{ .GetBodyFieldStructName }}); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -384,7 +388,9 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	}
 	{{- end }}
 {{- else }}
-	_, _  = io.Copy(io.Discard, req.Body)
+	if req.Body != nil {
+		_, _  = io.Copy(io.Discard, req.Body)
+	}
 {{- end }}
 {{- if .PathParams }}
 	{{- $binding := . }}
