@@ -781,7 +781,7 @@ type response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} struct {
 }
 
 func (m response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}) XXX_ResponseBody() interface{} {
-	response := m.{{ $m.ResponseType.GoType $m.Service.File.GoPkg.Path }}
+	response := m.{{ $m.ResponseType.GetName }}
 	return {{ $b.ResponseBody.AssignableExpr "response" $m.Service.File.GoPkg.Path }}
 }
 {{ end }}
