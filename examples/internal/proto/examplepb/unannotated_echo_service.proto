@@ -59,4 +59,7 @@ service UnannotatedEchoService {
 
   // EchoDelete method receives a simple message and returns it.
   rpc EchoDelete(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
+
+  // EchoNested method receives a simple message and returns it.
+  rpc EchoNested(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
 }

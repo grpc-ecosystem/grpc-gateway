@@ -39,3 +39,8 @@ func (s *unannotatedEchoServer) EchoDelete(ctx context.Context, msg *examples.Un
 	grpclog.Info(msg)
 	return msg, nil
 }
+
+func (s *unannotatedEchoServer) EchoNested(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
+	grpclog.Info(msg)
+	return msg, nil
+}
