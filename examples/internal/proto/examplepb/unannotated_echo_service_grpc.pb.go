@@ -30,6 +30,7 @@ const (
 	UnannotatedEchoService_Echo_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService/Echo"
 	UnannotatedEchoService_EchoBody_FullMethodName   = "/grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService/EchoBody"
 	UnannotatedEchoService_EchoDelete_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService/EchoDelete"
+	UnannotatedEchoService_EchoNested_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService/EchoNested"
 )
 
 // UnannotatedEchoServiceClient is the client API for UnannotatedEchoService service.
@@ -47,6 +48,8 @@ type UnannotatedEchoServiceClient interface {
 	EchoBody(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error)
 	// EchoDelete method receives a simple message and returns it.
 	EchoDelete(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error)
+	// EchoNested method receives a simple message and returns it.
+	EchoNested(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error)
 }
 
 type unannotatedEchoServiceClient struct {
@@ -87,6 +90,16 @@ func (c *unannotatedEchoServiceClient) EchoDelete(ctx context.Context, in *Unann
 	return out, nil
 }
 
+func (c *unannotatedEchoServiceClient) EchoNested(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnannotatedSimpleMessage)
+	err := c.cc.Invoke(ctx, UnannotatedEchoService_EchoNested_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UnannotatedEchoServiceServer is the server API for UnannotatedEchoService service.
 // All implementations should embed UnimplementedUnannotatedEchoServiceServer
 // for forward compatibility.
@@ -102,6 +115,8 @@ type UnannotatedEchoServiceServer interface {
 	EchoBody(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error)
 	// EchoDelete method receives a simple message and returns it.
 	EchoDelete(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error)
+	// EchoNested method receives a simple message and returns it.
+	EchoNested(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error)
 }
 
 // UnimplementedUnannotatedEchoServiceServer should be embedded to have
@@ -119,6 +134,9 @@ func (UnimplementedUnannotatedEchoServiceServer) EchoBody(context.Context, *Unan
 }
 func (UnimplementedUnannotatedEchoServiceServer) EchoDelete(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoDelete not implemented")
+}
+func (UnimplementedUnannotatedEchoServiceServer) EchoNested(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EchoNested not implemented")
 }
 func (UnimplementedUnannotatedEchoServiceServer) testEmbeddedByValue() {}
 
@@ -194,6 +212,24 @@ func _UnannotatedEchoService_EchoDelete_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UnannotatedEchoService_EchoNested_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnannotatedSimpleMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UnannotatedEchoServiceServer).EchoNested(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UnannotatedEchoService_EchoNested_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UnannotatedEchoServiceServer).EchoNested(ctx, req.(*UnannotatedSimpleMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UnannotatedEchoService_ServiceDesc is the grpc.ServiceDesc for UnannotatedEchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -212,6 +248,10 @@ var UnannotatedEchoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EchoDelete",
 			Handler:    _UnannotatedEchoService_EchoDelete_Handler,
+		},
+		{
+			MethodName: "EchoNested",
+			Handler:    _UnannotatedEchoService_EchoNested_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

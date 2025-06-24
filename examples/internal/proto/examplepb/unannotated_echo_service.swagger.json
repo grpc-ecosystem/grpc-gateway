@@ -488,6 +488,51 @@
           "UnannotatedEchoService"
         ]
       }
+    },
+    "/v1/example/echo_nested": {
+      "put": {
+        "summary": "EchoNested method receives a simple message and returns it.",
+        "operationId": "UnannotatedEchoService_EchoNested",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbUnannotatedNestedMessage"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "A simple message with many types",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
+            }
+          }
+        ],
+        "tags": [
+          "UnannotatedEchoService"
+        ]
+      }
     }
   },
   "definitions": {

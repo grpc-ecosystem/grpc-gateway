@@ -219,6 +219,33 @@ func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, mars
 	return msg, metadata, err
 }
 
+func request_UnannotatedEchoService_EchoNested_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UnannotatedSimpleMessage
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.EchoNested(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_UnannotatedEchoService_EchoNested_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq UnannotatedSimpleMessage
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.EchoNested(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterUnannotatedEchoServiceHandlerServer registers the http handlers for service UnannotatedEchoService to "mux".
 // UnaryRPC     :call UnannotatedEchoServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -304,6 +331,26 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 		forward_UnannotatedEchoService_EchoDelete_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPut, pattern_UnannotatedEchoService_EchoNested_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService/EchoNested", runtime.WithHTTPPathPattern("/v1/example/echo_nested"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_UnannotatedEchoService_EchoNested_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_UnannotatedEchoService_EchoNested_0(annotatedContext, mux, outboundMarshaler, w, req, response_UnannotatedEchoService_EchoNested_0{resp.(*UnannotatedSimpleMessage)}, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -413,7 +460,33 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 		}
 		forward_UnannotatedEchoService_EchoDelete_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPut, pattern_UnannotatedEchoService_EchoNested_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService/EchoNested", runtime.WithHTTPPathPattern("/v1/example/echo_nested"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_UnannotatedEchoService_EchoNested_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_UnannotatedEchoService_EchoNested_0(annotatedContext, mux, outboundMarshaler, w, req, response_UnannotatedEchoService_EchoNested_0{resp.(*UnannotatedSimpleMessage)}, mux.GetForwardResponseOptions()...)
+	})
 	return nil
+}
+
+type response_UnannotatedEchoService_EchoNested_0 struct {
+	*UnannotatedSimpleMessage
+}
+
+func (m response_UnannotatedEchoService_EchoNested_0) XXX_ResponseBody() interface{} {
+	response := m.UnannotatedSimpleMessage
+	return response.NId
 }
 
 var (
@@ -421,6 +494,7 @@ var (
 	pattern_UnannotatedEchoService_Echo_1       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "example", "echo", "id", "num"}, ""))
 	pattern_UnannotatedEchoService_EchoBody_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_body"}, ""))
 	pattern_UnannotatedEchoService_EchoDelete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_delete"}, ""))
+	pattern_UnannotatedEchoService_EchoNested_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_nested"}, ""))
 )
 
 var (
@@ -428,4 +502,5 @@ var (
 	forward_UnannotatedEchoService_Echo_1       = runtime.ForwardResponseMessage
 	forward_UnannotatedEchoService_EchoBody_0   = runtime.ForwardResponseMessage
 	forward_UnannotatedEchoService_EchoDelete_0 = runtime.ForwardResponseMessage
+	forward_UnannotatedEchoService_EchoNested_0 = runtime.ForwardResponseMessage
 )

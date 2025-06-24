@@ -427,6 +427,38 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/example/echo_nested:
+    put:
+      tags:
+      - "UnannotatedEchoService"
+      summary: "EchoNested method receives a simple message and returns it."
+      operationId: "UnannotatedEchoService_EchoNested"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "A simple message with many types"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbUnannotatedNestedMessage"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
 securityDefinitions:
   ApiKeyAuth:
     type: "apiKey"
@@ -459,6 +491,9 @@ definitions:
         type: "string"
       val:
         type: "string"
+    example:
+      val: "val"
+      nId: "nId"
     x-go-type:
       import:
         package: "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"

@@ -12,4 +12,7 @@ http:
     body: "*"
   - selector: grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService.EchoDelete
     delete: "/v1/example/echo_delete"
-
+  - selector: grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService.EchoNested
+    put: "/v1/example/echo_nested"
+    body: "*"
+    response_body: "n_id"
