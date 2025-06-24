@@ -1,0 +1,13 @@
+{
+  "homepage": "https://grpc-ecosystem.github.io/grpc-gateway",
+  "maintainers": [
+    {
+      "name": "Johan Brandhorst-Satzkorn",
+      "email": "johan.brandhorst@gmail.com",
+      "github": "johanbrandhorst"
+    }
+  ],
+  "repository": ["github:grpc-ecosystem/grpc-gateway"],
+  "versions": [],
+  "yanked_versions": {}
+}
