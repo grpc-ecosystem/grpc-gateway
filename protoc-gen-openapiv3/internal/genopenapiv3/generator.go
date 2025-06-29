@@ -9,9 +9,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
-	"google.golang.org/grpc/grpclog"
+	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
@@ -28,6 +30,11 @@ func NewGenerator(reg *descriptor.Registry, format Format) gen.Generator {
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
+	err := g.loadPrequisiteProtos()
+	if err != nil {
+		return nil, fmt.Errorf("could not load prequisite proto files in registry: %w", err)
+	}
+
 	respFiles := make([]*descriptor.ResponseFile, len(targets))
 	for i, t := range targets {
 		fileGenerator := &fileGenerator{generator: g, doc: &openapi3.T{}}
@@ -70,13 +77,28 @@ func (g *generator) fqmnToLocation(fqmn string) string {
 }
 
 func (g *generator) resolveName(fqmn string) string {
-	grpclog.Infof("resolveFQMN: %s", fqmn)
 	return fqmn
 }
 
 func (g *generator) resolveType(typeName string) string {
-	grpclog.Infof("resolveType: %s", typeName)
 	return typeName
+}
+
+func (g *generator) loadPrequisiteProtos() error {
+	any := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())
+	any.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
+	status := protodesc.ToFileDescriptorProto((&statuspb.Status{}).ProtoReflect().Descriptor().ParentFile())
+	status.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
+	return g.reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
+			any,
+			status,
+		},
+	})
+}
+
+func (g *generator) defaultResponse() (*descriptor.Message, error) {
+	return g.reg.LookupMsg("", ".google.rpc.Status")
 }
 
 func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescriptorProto) (*options.Operation, error) {

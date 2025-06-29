@@ -40,8 +40,3 @@ const (
 	OneOfStrategyOneOf = "oneof"
 	OneOfStrategyAllOf = "allof"
 )
-
-type methodDoc struct{
-	operation *openapi3.Operation
-	externalSchemas []*openapi3.Schema
-}

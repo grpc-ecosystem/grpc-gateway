@@ -30,13 +30,17 @@ func (fg *fileGenerator) generateFileDoc(file *descriptor.File) *openapi3.T {
 
 	fg.doc.Components = new(openapi3.Components)
 	fg.doc.Components.Schemas = make(openapi3.Schemas)
+	fg.doc.Components.RequestBodies = make(openapi3.RequestBodies)
 
 	if fg.doc.Paths == nil {
 		fg.doc.Paths = &openapi3.Paths{}
 	}
 
 	for _, svc := range file.Services {
-		fg.generateServiceDoc(svc)
+		err := fg.generateServiceDoc(svc)
+		if err != nil {
+			grpclog.Errorf("could not generate service document: %v", err)
+		}
 	}
 
 	for _, msg := range file.Messages {
@@ -77,6 +81,10 @@ func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message, excludeF
 	properties := make(openapi3.Schemas)
 	tempOneOfsProperties := make(map[int32]openapi3.Schemas)
 	for _, field := range msg.Fields {
+		if slices.Contains(excludeFields, field.FQFN()) {
+			continue
+		}
+
 		fieldDoc := fg.generateFieldDoc(field)
 		if field.OneofIndex != nil {
 			if tempOneOfsProperties[*field.OneofIndex] == nil {
@@ -254,10 +262,15 @@ func (fg *fileGenerator) generateEnumSchema(enum *descriptor.Enum) *openapi3.Sch
 	}
 }
 
-func (fg *fileGenerator) generateServiceDoc(svc *descriptor.Service) {
+func (fg *fileGenerator) generateServiceDoc(svc *descriptor.Service) error {
 	for _, meth := range svc.Methods {
-		fg.generateMethodDoc(meth)
+		err := fg.generateMethodDoc(meth)
+		if err != nil {
+			return fmt.Errorf("could not generate method %s doc: %w", meth.GetName(), err)
+		}
 	}
+
+	return nil
 }
 
 func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
@@ -279,18 +292,44 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 				params = append(params, tmpParams...)
 			}
 
+			pathParamsFQFNs := make([]string, len(binding.PathParams))
+			for i, param := range binding.PathParams {
+				pathParamsFQFNs[i] = param.Target.FQFN()
+			}
+
 			switch binding.HTTPMethod {
 			case "POST", "PUT", "PATCH":
 				// For POST, PUT, PATCH, add request body
-				requestBody = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().WithContent(
-					openapi3.NewContentWithJSONSchemaRef(fg.getMessageSchemaRef(meth.RequestType)))}
+				if len(pathParamsFQFNs) > 0 {
+					messageSchema := fg.generateMessageSchema(meth.RequestType, pathParamsFQFNs)
 
+					name := fg.resolveName(meth.RequestType.FQMN())
+					resultRef := fmt.Sprintf("#/components/requestBodies/%s", name)
+
+					fg.doc.Components.RequestBodies[name] = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().WithContent(
+						openapi3.NewContentWithJSONSchemaRef(messageSchema.NewRef()))}
+
+					requestBody = &openapi3.RequestBodyRef{Ref: resultRef}
+				} else {
+					requestBody = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().
+						WithJSONSchemaRef(fg.getMessageSchemaRef(meth.RequestType))}
+				}
 			}
 		}
 
-		responseSchema := &openapi3.ResponseRef{
-			Ref: fg.getMessageSchemaRef(meth.ResponseType).RefString(),
+		defaultResponse, err := fg.defaultResponse()
+		if err != nil {
+			return fmt.Errorf("could not get default response: %w", err)
 		}
+
+		successResponseSchema := openapi3.NewResponse().
+			WithJSONSchemaRef(fg.getMessageSchemaRef(meth.ResponseType))
+
+		defaultResponseSchema := openapi3.NewResponse().
+			WithJSONSchemaRef(fg.getMessageSchemaRef(defaultResponse))
+
+		responses := openapi3.NewResponses(openapi3.WithStatus(200, &openapi3.ResponseRef{Value: successResponseSchema}),
+			openapi3.WithName("default", defaultResponseSchema))
 
 		operation := &openapi3.Operation{
 			Tags:        []string{meth.Service.GetName()},
@@ -298,7 +337,7 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 			Description: opOpts.GetDescription(),
 			OperationID: fg.getOperationName(meth.Service.GetName(), meth.GetName(), bindingIdx),
 			RequestBody: requestBody,
-			Responses:   openapi3.NewResponses(openapi3.WithStatus(200, responseSchema)),
+			Responses:   responses,
 			Parameters:  params,
 		}
 
@@ -370,13 +409,13 @@ func (fg *fileGenerator) messageToParameters(message *descriptor.Message,
 
 		switch paramType {
 		case openapi3.ParameterInPath:
-			param := openapi3.NewPathParameter(field.GetJsonName())
+			param := openapi3.NewPathParameter(field.GetName())
 			param.Schema = schema
 			params = append(params, &openapi3.ParameterRef{
 				Value: param,
 			})
 		case openapi3.ParameterInQuery:
-			param := openapi3.NewQueryParameter(field.GetJsonName())
+			param := openapi3.NewQueryParameter(field.GetName())
 			param.Schema = schema
 			params = append(params, &openapi3.ParameterRef{
 				Value: param,
