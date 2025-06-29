@@ -19,15 +19,10 @@ type fileGenerator struct {
 }
 
 func (fg *fileGenerator) generateFileDoc(file *descriptor.File) *openapi3.T {
-	var ok bool
-	fg.doc, ok = fg.extractFileOptions(file)
-	if !ok {
-		fg.doc = &openapi3.T{
-			OpenAPI: OpenAPIVersion,
-		}
-	}
 
-	fg.doc.Components = new(openapi3.Components)
+	fg.doc = convertFileOptions(file)
+
+	fg.doc.Components = &openapi3.Components{}
 	fg.doc.Components.Schemas = make(openapi3.Schemas)
 	fg.doc.Components.RequestBodies = make(openapi3.RequestBodies)
 
@@ -250,7 +245,7 @@ func (fg *fileGenerator) getEnumSchema(enum *descriptor.Enum) *openapi3.SchemaRe
 }
 
 func (fg *fileGenerator) generateEnumSchema(enum *descriptor.Enum) *openapi3.Schema {
-	var enumValues []interface{}
+	var enumValues []any
 	for _, value := range enum.GetValue() {
 		enumValues = append(enumValues, value.GetName())
 	}
