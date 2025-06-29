@@ -8,7 +8,6 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -342,7 +341,7 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 		}
 
 		if opOpts.GetSecurity() != nil {
-			operation.Security = fg.generateSecurity(opOpts.GetSecurity())
+			operation.Security = convertSecurityRequiremnt(opOpts.GetSecurity())
 		}
 
 		path := fg.convertPathTemplate(binding.PathTmpl.Template)
@@ -371,21 +370,6 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 	}
 
 	return nil
-}
-
-func (fg *fileGenerator) generateSecurity(requirements []*options.SecurityRequirement) *openapi3.SecurityRequirements {
-	res := openapi3.NewSecurityRequirements()
-
-	for _, req := range requirements {
-		oAPISecReq := openapi3.NewSecurityRequirement()
-		for authenticator, scopes := range req.GetAdditionalProperties() {
-			oAPISecReq.Authenticate(authenticator, scopes.GetScopes()...)
-		}
-
-		res.With(oAPISecReq)
-	}
-
-	return res
 }
 
 func (fg *fileGenerator) convertPathTemplate(template string) string {
