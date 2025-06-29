@@ -7,12 +7,14 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func (g *generator) extractFileOptions(target *descriptor.File) (*openapi3.T, bool) {
+func (g *generator) convertFileOptions(target *descriptor.File) (*openapi3.T, bool) {
 	if openAPIAno := proto.GetExtension(target.GetOptions(), options.E_Openapiv3Document).(*options.OpenAPI); openAPIAno != nil {
 		doc := &openapi3.T{
-			OpenAPI: OpenAPIVersion,
+			OpenAPI:  OpenAPIVersion,
+			Info:     g.convertInfo(openAPIAno.GetInfo()),
+			Security: *convertSecurityRequiremnt(openAPIAno.GetSecurity()),
+			Servers:  g.convertServers(openAPIAno.GetServers()),
 		}
-		doc.Info = g.extractInfo(openAPIAno.GetInfo())
 		// TODO: implement other openapi file annotation fields
 		return doc, true
 	}
@@ -20,38 +22,60 @@ func (g *generator) extractFileOptions(target *descriptor.File) (*openapi3.T, bo
 	return nil, false
 }
 
-func (g *generator) extractInfo(openAPIInfo *options.Info) *openapi3.Info {
+func (g *generator) convertServers(servers []*options.Server) openapi3.Servers {
+	oAPIservers := make(openapi3.Servers, len(servers))
+
+	for i, srv := range servers {
+		vars := map[string]*openapi3.ServerVariable{}
+
+		for k, v := range srv.GetVariables() {
+			vars[k] = &openapi3.ServerVariable{
+				Enum:        v.GetEnum(),
+				Default:     v.GetDefault(),
+				Description: v.GetDescription(),
+			}
+		}
+
+		oAPIservers[i] = &openapi3.Server{
+			URL:         srv.GetUrl(),
+			Description: srv.GetDescription(),
+			Variables:   vars,
+		}
+	}
+
+	return oAPIservers
+}
+
+func (g *generator) convertInfo(openAPIInfo *options.Info) *openapi3.Info {
 	return &openapi3.Info{
-		Title: openAPIInfo.GetTitle(),
-		Description: openAPIInfo.GetDescription(),
-		Version: openAPIInfo.GetVersion(),
+		Title:          openAPIInfo.GetTitle(),
+		Description:    openAPIInfo.GetDescription(),
+		Version:        openAPIInfo.GetVersion(),
 		TermsOfService: openAPIInfo.GetTermsOfService(),
-		Contact: g.extractContact(openAPIInfo.GetContact()),
-		License: g.extractLicense(openAPIInfo.GetLicense()),
+		Contact:        g.convertContact(openAPIInfo.GetContact()),
+		License:        g.convertLicense(openAPIInfo.GetLicense()),
 	}
 }
 
-func (g *generator) extractContact(contactOption *options.Contact) *openapi3.Contact {
+func (g *generator) convertContact(contactOption *options.Contact) *openapi3.Contact {
 	if contactOption == nil {
 		return nil
 	}
 
-	contact := &openapi3.Contact{}
-	contact.Name = contactOption.GetName()
-	contact.URL = contactOption.GetUrl()
-	contact.Email = contactOption.GetEmail()
-
-	return contact
+	return &openapi3.Contact{
+		Name:  contactOption.GetName(),
+		URL:   contactOption.GetUrl(),
+		Email: contactOption.GetEmail(),
+	}
 }
 
-func (g *generator) extractLicense(licenseOption *options.License) *openapi3.License {
+func (g *generator) convertLicense(licenseOption *options.License) *openapi3.License {
 	if licenseOption == nil {
 		return nil
 	}
 
-	license := &openapi3.License{}
-	license.Name = licenseOption.GetName()
-	license.URL = licenseOption.GetUrl()
-
-	return license
+	return &openapi3.License{
+		Name: licenseOption.GetName(),
+		URL:  licenseOption.GetUrl(),
+	}
 }
