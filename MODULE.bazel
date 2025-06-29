@@ -20,7 +20,7 @@ bazel_dep(name = "googleapis", version = "0.0.0-20241220-5e258e33.bcr.1")
 # This is required as a transitive dependency and not directly needed by this module.
 # We have this version pinned to solve for differences in the MODULE.bazel.lock file
 # when running CI.
-bazel_dep(name = "rules_rust", version = "0.61.0")
+bazel_dep(name = "rules_rust", version = "0.62.0")
 
 go_sdk = use_extension("@io_bazel_rules_go//go:extensions.bzl", "go_sdk")
 go_sdk.download(version = "1.24.0")
