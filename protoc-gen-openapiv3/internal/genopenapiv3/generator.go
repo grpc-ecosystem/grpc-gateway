@@ -35,10 +35,12 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		return nil, fmt.Errorf("could not load prequisite proto files in registry: %w", err)
 	}
 
-	respFiles := make([]*descriptor.ResponseFile, len(targets))
-	for i, t := range targets {
+	respFiles := make([]*descriptor.ResponseFile, 0, len(targets))
+	docs := make([]*openapi3.T, 0, len(targets))
+	for _, t := range targets {
 		fileGenerator := &fileGenerator{generator: g, doc: &openapi3.T{}}
 		doc := fileGenerator.generateFileDoc(t)
+		docs = append(docs, doc)
 
 		contentBytes, err := g.format.MarshalOpenAPIDoc(doc)
 		if err != nil {
@@ -49,14 +51,31 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		ext := filepath.Ext(base)
 		fileName := fmt.Sprintf("%s.openapiv3.%s", base[:len(base)-len(ext)], g.format)
 
-		respFiles[i] = &descriptor.ResponseFile{
-			GoPkg: t.GoPkg,
+		respFiles = append(respFiles, &descriptor.ResponseFile{
 			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
 				Name:    proto.String(fileName),
 				Content: proto.String(string(contentBytes)),
 			},
-		}
+		})
+
 	}
+
+	mergedDocs, err := MergeOpenAPISpecs(docs...)
+	if err != nil {
+		return nil, fmt.Errorf("could not merge docs: %w", err)
+	}
+
+	contentBytes, err := g.format.MarshalOpenAPIDoc(mergedDocs)
+	if err != nil {
+		return nil, err
+	}
+
+	respFiles = append(respFiles, &descriptor.ResponseFile{
+		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
+			Name:    proto.String(fmt.Sprintf("merged.openapiv3.%s", g.format)),
+			Content: proto.String(string(contentBytes)),
+		},
+	})
 
 	return respFiles, nil
 }
@@ -98,7 +117,7 @@ func (g *generator) loadPrequisiteProtos() error {
 }
 
 func (g *generator) defaultResponse() (*descriptor.Message, error) {
-	return g.reg.LookupMsg("", ".google.rpc.Status")
+	return g.reg.LookupMsg("", statusProtoFQMN)
 }
 
 func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescriptorProto) (*options.Operation, error) {
