@@ -9,6 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
+	"google.golang.org/genproto/googleapis/api/visibility"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
@@ -21,6 +22,7 @@ type generator struct {
 	reg    *descriptor.Registry
 	format Format
 }
+
 
 func NewGenerator(reg *descriptor.Registry, format Format) gen.Generator {
 	return &generator{
@@ -38,8 +40,8 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	respFiles := make([]*descriptor.ResponseFile, 0, len(targets))
 	docs := make([]*openapi3.T, 0, len(targets))
 	for _, t := range targets {
-		fileGenerator := &fileGenerator{generator: g, doc: &openapi3.T{}}
-		doc := fileGenerator.generateFileDoc(t)
+		fileGenerator := &fileGenerator{generator: g, spec: &openapi3.T{}}
+		doc := fileGenerator.generateFileSpec(t)
 		docs = append(docs, doc)
 
 		contentBytes, err := g.format.MarshalOpenAPIDoc(doc)
@@ -78,6 +80,84 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	})
 
 	return respFiles, nil
+}
+
+func (g *generator) IsMessageVisible(msg *descriptor.Message) bool {
+	if !proto.HasExtension(msg, visibility.E_MessageVisibility) {
+		return true
+	}
+
+	ext := proto.GetExtension(msg.DescriptorProto, visibility.E_MessageVisibility)
+	visibilityOpt, ok := ext.(*visibility.VisibilityRule)
+	if ok {
+		return g.isVisible(visibilityOpt)
+	}
+
+	return true
+}
+
+func (g *generator) IsFieldVisible(field *descriptor.Field) bool {
+	if !proto.HasExtension(field, visibility.E_MessageVisibility) {
+		return true
+	}
+
+	ext := proto.GetExtension(field.FieldDescriptorProto, visibility.E_MessageVisibility)
+	visibilityOpt, ok := ext.(*visibility.VisibilityRule)
+	if ok {
+		return g.isVisible(visibilityOpt)
+	}
+
+	return true
+}
+func (g *generator) IsEnumVisible(enum *descriptor.Enum) bool {
+
+	if !proto.HasExtension(enum, visibility.E_MessageVisibility) {
+		return true
+	}
+
+	ext := proto.GetExtension(enum.EnumDescriptorProto, visibility.E_EnumVisibility)
+	visibilityOpt, ok := ext.(*visibility.VisibilityRule)
+	if ok {
+		return g.isVisible(visibilityOpt)
+	}
+
+	return true
+}
+
+func (g *generator) IsMethodVisible(meth *descriptor.Method) bool {
+	if !proto.HasExtension(meth, visibility.E_MessageVisibility) {
+		return true
+	}
+
+	ext := proto.GetExtension(meth.MethodDescriptorProto, visibility.E_MethodVisibility)
+	visibilityOpt, ok := ext.(*visibility.VisibilityRule)
+	if ok {
+		return g.isVisible(visibilityOpt)
+	}
+
+	return true
+}
+
+func (g *generator) IsServiceVisible(svc *descriptor.Service) bool {
+	if !proto.HasExtension(svc, visibility.E_ApiVisibility) {
+		return true
+	}
+
+	ext := proto.GetExtension(svc.ServiceDescriptorProto, visibility.E_ApiVisibility)
+	visibilityOpt, ok := ext.(*visibility.VisibilityRule)
+	if ok {
+		return g.isVisible(visibilityOpt)
+	}
+
+	return true
+}
+
+func (g *generator) isVisible(rule *visibility.VisibilityRule) bool {
+	if rule == nil {
+		return true
+	}
+
+	return g.reg.GetVisibilityRestrictionSelectors()[rule.GetRestriction()]
 }
 
 func (g *generator) getOperationName(serviceName, methodName string, bindingIdx int) string {
