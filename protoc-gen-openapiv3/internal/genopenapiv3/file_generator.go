@@ -15,49 +15,55 @@ import (
 type fileGenerator struct {
 	*generator
 
-	doc *openapi3.T
+	spec *openapi3.T
 }
 
-func (fg *fileGenerator) generateFileDoc(file *descriptor.File) *openapi3.T {
+func (fg *fileGenerator) generateFileSpec(file *descriptor.File) *openapi3.T {
 
-	fg.doc = convertFileOptions(file)
+	fg.spec = convertFileOptions(file)
 
-	fg.doc.Components = &openapi3.Components{}
-	fg.doc.Components.Schemas = make(openapi3.Schemas)
-	fg.doc.Components.RequestBodies = make(openapi3.RequestBodies)
+	fg.spec.Components = &openapi3.Components{}
+	fg.spec.Components.Schemas = make(openapi3.Schemas)
+	fg.spec.Components.RequestBodies = make(openapi3.RequestBodies)
 
-	if fg.doc.Paths == nil {
-		fg.doc.Paths = &openapi3.Paths{}
+	if fg.spec.Paths == nil {
+		fg.spec.Paths = &openapi3.Paths{}
 	}
 
 	for _, svc := range file.Services {
-		err := fg.generateServiceDoc(svc)
-		if err != nil {
-			grpclog.Errorf("could not generate service document: %v", err)
+		if fg.IsServiceVisible(svc) {
+			err := fg.generateServiceSpec(svc)
+			if err != nil {
+				grpclog.Errorf("could not generate service document: %v", err)
+			}
 		}
 	}
 
 	for _, msg := range file.Messages {
-		fg.getMessageSchemaRef(msg)
+		if fg.IsMessageVisible(msg) {
+			fg.generateMessageSchemaRef(msg)
+		}
 	}
 
 	for _, enum := range file.Enums {
-		fg.getEnumSchema(enum)
+		if fg.IsEnumVisible(enum) {
+			fg.generateEnumSchemaRef(enum)
+		}
 	}
 
-	return fg.doc
+	return fg.spec
 }
 
-func (fg *fileGenerator) getMessageSchemaRef(msg *descriptor.Message) *openapi3.SchemaRef {
+func (fg *fileGenerator) generateMessageSchemaRef(msg *descriptor.Message) *openapi3.SchemaRef {
 	name := fg.resolveName(msg.FQMN())
 	resultRef := openapi3.NewSchemaRef(fmt.Sprintf("#/components/schemas/%s", name), nil)
 
-	_, ok := fg.doc.Components.Schemas[name]
+	_, ok := fg.spec.Components.Schemas[name]
 	if ok {
 		return resultRef
 	}
 
-	fg.doc.Components.Schemas[name] = fg.generateMessageSchema(msg, nil).NewRef()
+	fg.spec.Components.Schemas[name] = fg.generateMessageSchema(msg, nil).NewRef()
 
 	return resultRef
 }
@@ -110,7 +116,7 @@ func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message, excludeF
 		switch fg.reg.GetOneOfStrategy() {
 		case "oneOf":
 			return &openapi3.Schema{
-				OneOf: fg.generateMessageWithOneOfsSchemas(allOneOfsProperties, properties, msg.GetOneofDecl()),
+				OneOf: fg.generateMessageWithOneOfsSchemas(allOneOfsProperties, properties, msg.GetOneofDecl(), ""),
 			}
 		default:
 			grpclog.Fatal("unknown oneof strategy")
@@ -139,7 +145,7 @@ e.g.: if you have a proto like this:
 2 * 2 = 4, object schemas will be generate for each combination of set {field_one, field_two} and {field_three, field_four}
 */
 func (fg *fileGenerator) generateMessageWithOneOfsSchemas(allOneOfsProperties map[int32]openapi3.Schemas, properties openapi3.Schemas,
-	oneOfs []*descriptorpb.OneofDescriptorProto) openapi3.SchemaRefs {
+	oneOfs []*descriptorpb.OneofDescriptorProto, namePrefix string) openapi3.SchemaRefs {
 	if len(oneOfs) == 0 {
 		return openapi3.SchemaRefs{&openapi3.SchemaRef{
 			Value: &openapi3.Schema{
@@ -162,7 +168,7 @@ func (fg *fileGenerator) generateMessageWithOneOfsSchemas(allOneOfsProperties ma
 	for fieldName, fieldSchema := range oneOfProperties {
 		newProperties := maps.Clone(properties)
 		newProperties[fieldName] = fieldSchema
-		res = append(res, fg.generateMessageWithOneOfsSchemas(newAllOneOfsProperties, newProperties, newOneOfs)...)
+		res = append(res, fg.generateMessageWithOneOfsSchemas(newAllOneOfsProperties, newProperties, newOneOfs, namePrefix + fieldName)...)
 	}
 
 	return res
@@ -205,7 +211,7 @@ func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescripto
 	switch ft := fd.GetType(); ft {
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 		openAPIRef := fg.resolveType(fd.GetTypeName())
-		if schema, ok := fg.doc.Components.Schemas[openAPIRef]; ok {
+		if schema, ok := fg.spec.Components.Schemas[openAPIRef]; ok {
 			return schema
 		} else {
 			if fd.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM {
@@ -214,13 +220,13 @@ func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescripto
 					panic(err)
 				}
 
-				return fg.getEnumSchema(fieldTypeEnum)
+				return fg.generateEnumSchemaRef(fieldTypeEnum)
 			} else {
 				fieldTypeMsg, err := fg.reg.LookupMsg(location, fd.GetTypeName())
 				if err != nil {
 					panic(err)
 				}
-				return fg.getMessageSchemaRef(fieldTypeMsg)
+				return fg.generateMessageSchemaRef(fieldTypeMsg)
 			}
 		}
 	default:
@@ -230,16 +236,16 @@ func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescripto
 	}
 }
 
-func (fg *fileGenerator) getEnumSchema(enum *descriptor.Enum) *openapi3.SchemaRef {
+func (fg *fileGenerator) generateEnumSchemaRef(enum *descriptor.Enum) *openapi3.SchemaRef {
 	name := fg.resolveName(enum.FQEN())
 
-	schemaRef, ok := fg.doc.Components.Schemas[name]
+	schemaRef, ok := fg.spec.Components.Schemas[name]
 	if ok {
 		return schemaRef
 	}
 
 	schemaRef = fg.generateEnumSchema(enum).NewRef()
-	fg.doc.Components.Schemas[name] = schemaRef
+	fg.spec.Components.Schemas[name] = schemaRef
 
 	return schemaRef
 }
@@ -256,11 +262,13 @@ func (fg *fileGenerator) generateEnumSchema(enum *descriptor.Enum) *openapi3.Sch
 	}
 }
 
-func (fg *fileGenerator) generateServiceDoc(svc *descriptor.Service) error {
+func (fg *fileGenerator) generateServiceSpec(svc *descriptor.Service) error {
 	for _, meth := range svc.Methods {
-		err := fg.generateMethodDoc(meth)
-		if err != nil {
-			return fmt.Errorf("could not generate method %s doc: %w", meth.GetName(), err)
+		if fg.IsMethodVisible(meth) {
+			err := fg.generateMethodDoc(meth)
+			if err != nil {
+				return fmt.Errorf("could not generate method %s doc: %w", meth.GetName(), err)
+			}
 		}
 	}
 
@@ -300,13 +308,13 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 					name := fg.resolveName(meth.RequestType.FQMN())
 					resultRef := fmt.Sprintf("#/components/requestBodies/%s", name)
 
-					fg.doc.Components.RequestBodies[name] = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().WithContent(
+					fg.spec.Components.RequestBodies[name] = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().WithContent(
 						openapi3.NewContentWithJSONSchemaRef(messageSchema.NewRef()))}
 
 					requestBody = &openapi3.RequestBodyRef{Ref: resultRef}
 				} else {
 					requestBody = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().
-						WithJSONSchemaRef(fg.getMessageSchemaRef(meth.RequestType))}
+						WithJSONSchemaRef(fg.generateMessageSchemaRef(meth.RequestType))}
 				}
 			}
 		}
@@ -317,10 +325,10 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 		}
 
 		successResponseSchema := openapi3.NewResponse().
-			WithJSONSchemaRef(fg.getMessageSchemaRef(meth.ResponseType))
+			WithJSONSchemaRef(fg.generateMessageSchemaRef(meth.ResponseType))
 
 		defaultResponseSchema := openapi3.NewResponse().
-			WithJSONSchemaRef(fg.getMessageSchemaRef(defaultResponse))
+			WithJSONSchemaRef(fg.generateMessageSchemaRef(defaultResponse))
 
 		responses := openapi3.NewResponses(openapi3.WithStatus(200, &openapi3.ResponseRef{Value: successResponseSchema}),
 			openapi3.WithName("default", defaultResponseSchema))
@@ -340,10 +348,10 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 		}
 
 		path := fg.convertPathTemplate(binding.PathTmpl.Template)
-		pathItem := fg.doc.Paths.Find(path)
+		pathItem := fg.spec.Paths.Find(path)
 		if pathItem == nil {
 			pathItem = &openapi3.PathItem{}
-			fg.doc.Paths.Set(path, pathItem)
+			fg.spec.Paths.Set(path, pathItem)
 		}
 
 		switch binding.HTTPMethod {
@@ -368,13 +376,16 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 }
 
 func (fg *fileGenerator) convertPathTemplate(template string) string {
-	// TODO: handle /{args=foo/*}
+	// TODO: handle /{arg=foo/*} and /{arg=foo/**}
 	return template
 }
 
 func (fg *fileGenerator) messageToParameters(message *descriptor.Message,
 	pathParams []descriptor.Parameter, body *descriptor.Body,
 	httpMethod string, paramPrefix string) (openapi3.Parameters, error) {
+
+	// TODO: remove this after handling nested path parameters
+	_ = paramPrefix
 
 	params := openapi3.NewParameters()
 	for _, field := range message.Fields {
