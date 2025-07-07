@@ -6,11 +6,12 @@ import (
 	"go/format"
 	"path"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
@@ -22,11 +23,12 @@ type generator struct {
 	registerFuncSuffix string
 	allowPatchFeature  bool
 	standalone         bool
+	useOpaqueAPI       bool
 }
 
 // New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix string,
-	allowPatchFeature, standalone bool) gen.Generator {
+	allowPatchFeature, standalone bool, useOpaqueAPI bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
@@ -66,6 +68,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 		registerFuncSuffix: registerFuncSuffix,
 		allowPatchFeature:  allowPatchFeature,
 		standalone:         standalone,
+		useOpaqueAPI:       useOpaqueAPI,
 	}
 }
 
@@ -132,6 +135,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		UseRequestContext:  g.useRequestContext,
 		RegisterFuncSuffix: g.registerFuncSuffix,
 		AllowPatchFeature:  g.allowPatchFeature,
+		UseOpaqueAPI:       g.useOpaqueAPI,
 	}
 	if g.reg != nil {
 		params.OmitPackageDoc = g.reg.GetOmitPackageDoc()
