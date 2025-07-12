@@ -4,10 +4,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -965,7 +966,7 @@ func TestDuplicatePathsInDifferentService(t *testing.T) {
 	}
 	_, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
 	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed; want success", file)
+		t.Errorf("applyTemplate(%#v) failed; want success - %s", file, err)
 		return
 	}
 }
