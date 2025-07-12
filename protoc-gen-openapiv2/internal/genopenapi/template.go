@@ -667,11 +667,8 @@ func renderFieldAsDefinition(f *descriptor.Field, reg *descriptor.Registry, refs
 		return openapiSchemaObject{}, err
 	}
 	comments := fieldProtoComments(reg, f.Message, f)
-	if len(comments) > 0 {
-		// Use title and description from field instead of nested message if present.
-		paragraphs := strings.Split(comments, paragraphDeliminator)
-		schema.Title = strings.TrimSpace(paragraphs[0])
-		schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
+	if err := updateOpenAPIDataFromComments(reg, &schema, f, comments, false); err != nil {
+		return openapiSchemaObject{}, err
 	}
 
 	// to handle case where path param is present inside the field of descriptorpb.FieldDescriptorProto_TYPE_MESSAGE type
