@@ -1,6 +1,6 @@
-# \ResponseBodyServiceApi
+# {{classname}}
 
-All URIs are relative to *https://localhost*
+All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -9,7 +9,6 @@ Method | HTTP request | Description
 [**ResponseBodyServiceGetResponseBodyStream**](ResponseBodyServiceApi.md#ResponseBodyServiceGetResponseBodyStream) | **Get** /responsebody/stream/{data} | 
 [**ResponseBodyServiceListResponseBodies**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseBodies) | **Get** /responsebodies/{data} | 
 [**ResponseBodyServiceListResponseStrings**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseStrings) | **Get** /responsestrings/{data} | 
-
 
 # **ResponseBodyServiceGetResponseBody**
 > ExamplepbResponseBodyOutResponse ResponseBodyServiceGetResponseBody(ctx, data)
@@ -32,7 +31,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -58,7 +57,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -84,7 +83,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -110,7 +109,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -136,7 +135,7 @@ No authorization required
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
