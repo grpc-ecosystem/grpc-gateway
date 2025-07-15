@@ -15,7 +15,7 @@ bazel_dep(name = "rules_shell", version = "0.5.0")
 bazel_dep(name = "gazelle", version = "0.44.0", repo_name = "bazel_gazelle")
 bazel_dep(name = "bazel_skylib", version = "1.8.1")
 bazel_dep(name = "protobuf", version = "31.1", repo_name = "com_google_protobuf")
-bazel_dep(name = "googleapis", version = "0.0.0-20250604-de157ca3")
+bazel_dep(name = "googleapis", version = "0.0.0-20250703-f9d6fe4a")
 
 # This is required as a transitive dependency and not directly needed by this module.
 # We have this version pinned to solve for differences in the MODULE.bazel.lock file
