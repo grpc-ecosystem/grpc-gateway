@@ -5070,7 +5070,8 @@
                   "readOnly": true
                 }
               },
-              "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123",
+              "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
+              "title": "The book to update.",
               "required": [
                 "book"
               ]

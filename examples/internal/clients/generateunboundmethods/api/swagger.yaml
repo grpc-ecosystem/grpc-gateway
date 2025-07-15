@@ -1,142 +1,124 @@
-openapi: 3.0.1
+---
+swagger: "2.0"
 info:
-  title: examples/internal/proto/examplepb/generate_unbound_methods.proto
-  description: |-
-    Generate Unannotated Methods Echo Service
-    Similar to echo_service.proto but without annotations and without external configuration.
-
-    Generate Unannotated Methods Echo Service API consists of a single service which returns
-    a message.
-  version: version not set
-servers:
-- url: /
+  description: "Generate Unannotated Methods Echo Service\nSimilar to echo_service.proto\
+    \ but without annotations and without external configuration.\n\nGenerate Unannotated\
+    \ Methods Echo Service API consists of a single service which returns\na message."
+  version: "version not set"
+  title: "examples/internal/proto/examplepb/generate_unbound_methods.proto"
 tags:
-- name: GenerateUnboundMethodsEchoService
+- name: "GenerateUnboundMethodsEchoService"
+consumes:
+- "application/json"
+produces:
+- "application/json"
 paths:
   /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo:
     post:
       tags:
-      - GenerateUnboundMethodsEchoService
-      summary: Echo method receives a simple message and returns it.
-      description: |-
-        The message posted as the id parameter will also be
-        returned.
-      operationId: GenerateUnboundMethodsEchoService_Echo
-      requestBody:
-        description: GenerateUnboundMethodsSimpleMessage represents a simple message
-          sent to the unannotated GenerateUnboundMethodsEchoService service.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/examplepbGenerateUnboundMethodsSimpleMessage"
+      - "GenerateUnboundMethodsEchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "GenerateUnboundMethodsEchoService_Echo"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+          \ sent to the unannotated GenerateUnboundMethodsEchoService service."
         required: true
+        schema:
+          $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
+        x-exportParamName: "Body"
       responses:
-        "200":
-          description: A successful response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/examplepbGenerateUnboundMethodsSimpleMessage"
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
         default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/rpcStatus"
-      x-codegen-request-body-name: body
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody:
     post:
       tags:
-      - GenerateUnboundMethodsEchoService
-      summary: EchoBody method receives a simple message and returns it.
-      operationId: GenerateUnboundMethodsEchoService_EchoBody
-      requestBody:
-        description: GenerateUnboundMethodsSimpleMessage represents a simple message
-          sent to the unannotated GenerateUnboundMethodsEchoService service.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/examplepbGenerateUnboundMethodsSimpleMessage"
+      - "GenerateUnboundMethodsEchoService"
+      summary: "EchoBody method receives a simple message and returns it."
+      operationId: "GenerateUnboundMethodsEchoService_EchoBody"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+          \ sent to the unannotated GenerateUnboundMethodsEchoService service."
         required: true
+        schema:
+          $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
+        x-exportParamName: "Body"
       responses:
-        "200":
-          description: A successful response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/examplepbGenerateUnboundMethodsSimpleMessage"
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
         default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/rpcStatus"
-      x-codegen-request-body-name: body
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete:
     post:
       tags:
-      - GenerateUnboundMethodsEchoService
-      summary: EchoDelete method receives a simple message and returns it.
-      operationId: GenerateUnboundMethodsEchoService_EchoDelete
-      requestBody:
-        description: GenerateUnboundMethodsSimpleMessage represents a simple message
-          sent to the unannotated GenerateUnboundMethodsEchoService service.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/examplepbGenerateUnboundMethodsSimpleMessage"
+      - "GenerateUnboundMethodsEchoService"
+      summary: "EchoDelete method receives a simple message and returns it."
+      operationId: "GenerateUnboundMethodsEchoService_EchoDelete"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+          \ sent to the unannotated GenerateUnboundMethodsEchoService service."
         required: true
+        schema:
+          $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
+        x-exportParamName: "Body"
       responses:
-        "200":
-          description: A successful response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/examplepbGenerateUnboundMethodsSimpleMessage"
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
         default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/rpcStatus"
-      x-codegen-request-body-name: body
-components:
-  schemas:
-    examplepbGenerateUnboundMethodsSimpleMessage:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Id represents the message identifier.
-        num:
-          type: string
-          format: int64
-        duration:
-          type: string
-      description: GenerateUnboundMethodsSimpleMessage represents a simple message
-        sent to the unannotated GenerateUnboundMethodsEchoService service.
-      example:
-        duration: duration
-        num: num
-        id: id
-    protobufAny:
-      type: object
-      properties:
-        '@type':
-          type: string
-      additionalProperties:
-        type: object
-      x-schema-name: protobufAny
-    rpcStatus:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/protobufAny"
-x-original-swagger-version: "2.0"
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+definitions:
+  examplepbGenerateUnboundMethodsSimpleMessage:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Id represents the message identifier."
+      num:
+        type: "string"
+        format: "int64"
+      duration:
+        type: "string"
+    description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+      \ sent to the unannotated GenerateUnboundMethodsEchoService service."
+    example:
+      duration: "duration"
+      num: "num"
+      id: "id"
+  protobufAny:
+    type: "object"
+    properties:
+      '@type':
+        type: "string"
+    additionalProperties: {}
+  rpcStatus:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      details:
+        type: "array"
+        items:
+          $ref: "#/definitions/protobufAny"
