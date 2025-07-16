@@ -346,10 +346,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -357,10 +357,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -368,10 +368,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -516,10 +516,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -779,10 +779,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: uuid
         in: query
         required: true
@@ -892,10 +892,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -903,10 +903,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -914,10 +914,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -1062,10 +1062,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -1099,10 +1099,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -1414,10 +1414,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -1425,10 +1425,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -1436,10 +1436,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -1584,10 +1584,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -1629,10 +1629,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -1886,10 +1886,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: floatValue
         in: query
         description: Float value field
@@ -1988,10 +1988,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -1999,10 +1999,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -2010,10 +2010,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -2158,10 +2158,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -2203,10 +2203,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -2603,10 +2603,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: uuid
         in: query
         required: true
@@ -2758,10 +2758,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -3088,10 +3088,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: floatValue
         in: query
         description: Float value field
@@ -3190,10 +3190,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -3201,10 +3201,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -3212,10 +3212,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -3360,10 +3360,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -3405,10 +3405,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -3608,10 +3608,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: floatValue
         in: query
         description: Float value field
@@ -3710,10 +3710,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -3721,10 +3721,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -3732,10 +3732,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -3880,10 +3880,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -3925,10 +3925,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -4129,10 +4129,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: floatValue
         in: query
         description: Float value field
@@ -4231,10 +4231,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -4242,10 +4242,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -4253,10 +4253,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -4401,10 +4401,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -4446,10 +4446,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -4690,10 +4690,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: floatValue
         in: query
         description: Float value field
@@ -4792,10 +4792,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: pathEnumValue
         in: query
         required: false
@@ -4803,10 +4803,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ABC
           enum:
           - ABC
           - DEF
-          default: ABC
       - name: nestedPathEnumValue
         in: query
         required: false
@@ -4814,10 +4814,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: GHI
           enum:
           - GHI
           - JKL
-          default: GHI
       - name: sfixed32Value
         in: query
         required: false
@@ -4962,10 +4962,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: ZERO
           enum:
           - ZERO
           - ONE
-          default: ZERO
       - name: repeatedStringAnnotation
         in: query
         description: |-
@@ -5007,10 +5007,10 @@ paths:
         explode: true
         schema:
           type: string
+          default: "FALSE"
           enum:
           - "FALSE"
           - "TRUE"
-          default: "FALSE"
       - name: int64OverrideType
         in: query
         required: false
@@ -7537,10 +7537,10 @@ components:
           description: The paths to update.
     MessagePathEnumNestedPathEnum:
       type: string
+      default: GHI
       enum:
       - GHI
       - JKL
-      default: GHI
     NestedDeepEnum:
       type: string
       description: |-
@@ -7548,10 +7548,10 @@ components:
 
          - FALSE: FALSE is false.
          - TRUE: TRUE is true.
+      default: "FALSE"
       enum:
       - "FALSE"
       - "TRUE"
-      default: "FALSE"
     examplepbABitOfEverything:
       title: A bit of everything
       required:
@@ -8125,10 +8125,10 @@ components:
       externalDocs:
         description: Find out more about ABitOfEverything
         url: https://github.com/grpc-ecosystem/grpc-gateway
+      default: ZERO
       enum:
       - ZERO
       - ONE
-      default: ZERO
       x-a-bit-of-everything-foo: bar
     examplepbRequiredMessageTypeRequest:
       title: |-
@@ -8154,10 +8154,10 @@ components:
       description: |-
         - value_e: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
          - value_f: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+      default: value_e
       enum:
       - value_e
       - value_f
-      default: value_e
     examplepbsnake_case_enum:
       title: |-
         Ignoring lint warnings as this enum type exist to validate proper functionality
@@ -8167,22 +8167,22 @@ components:
       description: |-
         - value_c: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
          - value_d: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+      default: value_c
       enum:
       - value_c
       - value_d
-      default: value_c
     oneofenumExampleEnum:
       type: string
+      default: EXAMPLE_ENUM_UNSPECIFIED
       enum:
       - EXAMPLE_ENUM_UNSPECIFIED
       - EXAMPLE_ENUM_FIRST
-      default: EXAMPLE_ENUM_UNSPECIFIED
     pathenumPathEnum:
       type: string
+      default: ABC
       enum:
       - ABC
       - DEF
-      default: ABC
     pathenumsnake_case_for_import:
       title: |-
         Ignoring lint warnings as this enum type exist to validate proper functionality
@@ -8192,10 +8192,10 @@ components:
       description: |-
         - value_x: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
          - value_y: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+      default: value_x
       enum:
       - value_x
       - value_y
-      default: value_x
     protobufAny:
       type: object
       properties:

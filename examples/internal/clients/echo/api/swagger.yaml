@@ -1380,9 +1380,9 @@ components:
         The JSON representation for `NullValue` is JSON `null`.
 
          - NULL_VALUE: Null value.
+      default: NULL_VALUE
       enum:
       - NULL_VALUE
-      default: NULL_VALUE
     rpcStatus:
       type: object
       properties:

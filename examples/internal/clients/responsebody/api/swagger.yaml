@@ -152,11 +152,11 @@ components:
          - A: A is 1
          - B: B is 2
       type: string
+      default: UNKNOWN
       enum:
       - UNKNOWN
       - A
       - B
-      default: UNKNOWN
     examplepbRepeatedResponseBodyOut:
       type: object
       properties:
