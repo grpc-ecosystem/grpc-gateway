@@ -8,11 +8,10 @@ import (
 	"strings"
 	"text/template"
 
-	"google.golang.org/grpc/grpclog"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"google.golang.org/grpc/grpclog"
 )
 
 type param struct {

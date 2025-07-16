@@ -15,13 +15,12 @@ import (
 	"os"
 	"runtime/debug"
 	"strings"
-
-	"google.golang.org/grpc/grpclog"
-	"google.golang.org/protobuf/compiler/protogen"
-
+	
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
+	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/compiler/protogen"
 )
 
 var (

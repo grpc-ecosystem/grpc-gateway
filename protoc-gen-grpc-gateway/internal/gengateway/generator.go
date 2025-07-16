@@ -6,12 +6,11 @@ import (
 	"go/format"
 	"path"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
-
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
