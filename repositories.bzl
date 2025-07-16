@@ -139,8 +139,8 @@ def go_repositories():
     go_repository(
         name = "com_github_cncf_xds_go",
         importpath = "github.com/cncf/xds/go",
-        sum = "h1:C5bqEmzEPLsHm9Mv73lSE9e9bKV23aB1vxOsmZrkl3k=",
-        version = "v0.0.0-20250326154945-ae57f3c0d45f",
+        sum = "h1:aQ3y1lwWyqYPiWZThqv1aFbZMiM9vblcSArJRf2Irls=",
+        version = "v0.0.0-20250501225837-2ac532fd4443",
     )
 
     go_repository(
@@ -282,8 +282,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_logr_logr",
         importpath = "github.com/go-logr/logr",
-        sum = "h1:6pFjapn8bFcIbiKo3XT4j/BhANplGihG6tvd+8rYgrY=",
-        version = "v1.4.2",
+        sum = "h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=",
+        version = "v1.4.3",
     )
     go_repository(
         name = "com_github_go_logr_stdr",
@@ -319,8 +319,8 @@ def go_repositories():
     go_repository(
         name = "com_github_golang_glog",
         importpath = "github.com/golang/glog",
-        sum = "h1:CNNw5U8lSiiBk7druxtSHHTsRWcxKoac6kZKm2peBBc=",
-        version = "v1.2.4",
+        sum = "h1:DrW6hGnjIhtvhOIiAKT6Psh/Kd/ldepEa81DKeiRJ5I=",
+        version = "v1.2.5",
     )
 
     go_repository(
@@ -1155,8 +1155,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_compute_metadata",
         importpath = "cloud.google.com/go/compute/metadata",
-        sum = "h1:A6hENjEsCDtC1k8byVsgwvVcioamEHvZ4j01OwKxG9I=",
-        version = "v0.6.0",
+        sum = "h1:PBWF+iiAerVNe8UCHxdOt6eHLVc3ydFeOCw78U8ytSU=",
+        version = "v0.7.0",
     )
     go_repository(
         name = "com_google_cloud_go_contactcenterinsights",
@@ -1745,8 +1745,8 @@ def go_repositories():
     go_repository(
         name = "dev_cel_expr",
         importpath = "cel.dev/expr",
-        sum = "h1:wUb94w6OYQS4uXraxo9U+wUAs9jT47Xvl4iPgAwM2ss=",
-        version = "v0.23.0",
+        sum = "h1:56OvJKSH3hDGL0ml5uSxZmz3/3Pq4tJ+fb1unVLAFcY=",
+        version = "v0.24.0",
     )
 
     go_repository(
@@ -1815,38 +1815,38 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_contrib_detectors_gcp",
         importpath = "go.opentelemetry.io/contrib/detectors/gcp",
-        sum = "h1:bGvFt68+KTiAKFlacHW6AhA56GF2rS0bdD3aJYEnmzA=",
-        version = "v1.35.0",
+        sum = "h1:F7q2tNlCaHY9nMKHR6XH9/qkp8FktLnIcy6jJNyOCQw=",
+        version = "v1.36.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel",
         importpath = "go.opentelemetry.io/otel",
-        sum = "h1:xKWKPxrxB6OtMCbmMY021CqC45J+3Onta9MqjhnusiQ=",
-        version = "v1.35.0",
+        sum = "h1:UumtzIklRBY6cI/lllNZlALOF5nNIzJVb16APdvgTXg=",
+        version = "v1.36.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_metric",
         importpath = "go.opentelemetry.io/otel/metric",
-        sum = "h1:0znxYu2SNyuMSQT4Y9WDWej0VpcsxkuklLa4/siN90M=",
-        version = "v1.35.0",
+        sum = "h1:MoWPKVhQvJ+eeXWHFBOPoBOi20jh6Iq2CcCREuTYufE=",
+        version = "v1.36.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_sdk",
         importpath = "go.opentelemetry.io/otel/sdk",
-        sum = "h1:iPctf8iprVySXSKJffSS79eOjl9pvxV9ZqOWT0QejKY=",
-        version = "v1.35.0",
+        sum = "h1:b6SYIuLRs88ztox4EyrvRti80uXIFy+Sqzoh9kFULbs=",
+        version = "v1.36.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_sdk_metric",
         importpath = "go.opentelemetry.io/otel/sdk/metric",
-        sum = "h1:1RriWBmCKgkeHEhM7a2uMjMUfP7MsOF5JpUCaEqEI9o=",
-        version = "v1.35.0",
+        sum = "h1:r0ntwwGosWGaa0CrSt8cuNuTcccMXERFwHX4dThiPis=",
+        version = "v1.36.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_trace",
         importpath = "go.opentelemetry.io/otel/trace",
-        sum = "h1:dPpEfJu1sDIqruz7BHFG3c7528f6ddfSWfFDVt/xgMs=",
-        version = "v1.35.0",
+        sum = "h1:ahxWNuqZjpdiFAyrIoQ4GIiAIhxAunQR6MUoKrsNd4w=",
+        version = "v1.36.0",
     )
 
     go_repository(
@@ -1907,8 +1907,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_grpc",
         importpath = "google.golang.org/grpc",
-        sum = "h1:VIWSmpI2MegBtTuFt5/JWy2oXxtjJ/e89Z70ImfD2ok=",
-        version = "v1.73.0",
+        sum = "h1:sxRSkyLxlceWQiqDofxDot3d4u7DyoHPc7SBXMj8gGY=",
+        version = "v1.74.0",
     )
 
     go_repository(
@@ -1926,8 +1926,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_crypto",
         importpath = "golang.org/x/crypto",
-        sum = "h1:AnAEvhDddvBdpY+uR+MyHmuZzzNqXSe/GvuDeob5L34=",
-        version = "v0.36.0",
+        sum = "h1:jt+WWG8IZlBnVbomuhg2Mdq0+BBQaHbtqHEFEigjUV8=",
+        version = "v0.38.0",
     )
     go_repository(
         name = "org_golang_x_exp",
@@ -1964,8 +1964,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_net",
         importpath = "golang.org/x/net",
-        sum = "h1:vRMAPTMaeGqVhG5QyLJHqNDwecKTomGeqbnfZyKlBI8=",
-        version = "v0.38.0",
+        sum = "h1:79Xs7wF06Gbdcg4kdCCIQArK11Z1hr5POQ6+fIYHNuY=",
+        version = "v0.40.0",
     )
     go_repository(
         name = "org_golang_x_oauth2",
@@ -1982,14 +1982,14 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_sys",
         importpath = "golang.org/x/sys",
-        sum = "h1:ioabZlmFYtWhL+TRYpcnNlLwhyxaM9kWTDEmfnprqik=",
-        version = "v0.31.0",
+        sum = "h1:q3i8TbbEz+JRD9ywIRlyRAQbM0qF7hu24q3teo2hbuw=",
+        version = "v0.33.0",
     )
     go_repository(
         name = "org_golang_x_term",
         importpath = "golang.org/x/term",
-        sum = "h1:PQ39fJZ+mfadBm0y5WlL4vlM7Sx1Hgf13sMIY2+QS9Y=",
-        version = "v0.30.0",
+        sum = "h1:DR4lr0TjUs3epypdhTOkMmuF5CDFJ/8pOnbzMZPQ7bg=",
+        version = "v0.32.0",
     )
     go_repository(
         name = "org_golang_x_text",
