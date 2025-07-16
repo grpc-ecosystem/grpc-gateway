@@ -3,10 +3,9 @@ package gengateway
 import (
 	"testing"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
-
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 )
 
 func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage, filenamePrefix string) *descriptor.File {
