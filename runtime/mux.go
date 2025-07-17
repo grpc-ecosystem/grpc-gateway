@@ -532,6 +532,7 @@ type handler struct {
 }
 
 func (s *ServeMux) handleHandler(h handler, w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	r.Pattern = h.pat.GetPathPattern()
 	h.h(w, r.WithContext(withHTTPPattern(r.Context(), h.pat)), pathParams)
 }
 
