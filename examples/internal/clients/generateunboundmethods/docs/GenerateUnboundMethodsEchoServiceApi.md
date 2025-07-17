@@ -1,13 +1,12 @@
-# \GenerateUnboundMethodsEchoServiceApi
+# {{classname}}
 
-All URIs are relative to *https://localhost*
+All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**GenerateUnboundMethodsEchoServiceEcho**](GenerateUnboundMethodsEchoServiceApi.md#GenerateUnboundMethodsEchoServiceEcho) | **Post** /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo | Echo method receives a simple message and returns it.
 [**GenerateUnboundMethodsEchoServiceEchoBody**](GenerateUnboundMethodsEchoServiceApi.md#GenerateUnboundMethodsEchoServiceEchoBody) | **Post** /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody | EchoBody method receives a simple message and returns it.
 [**GenerateUnboundMethodsEchoServiceEchoDelete**](GenerateUnboundMethodsEchoServiceApi.md#GenerateUnboundMethodsEchoServiceEchoDelete) | **Post** /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete | EchoDelete method receives a simple message and returns it.
-
 
 # **GenerateUnboundMethodsEchoServiceEcho**
 > ExamplepbGenerateUnboundMethodsSimpleMessage GenerateUnboundMethodsEchoServiceEcho(ctx, body)

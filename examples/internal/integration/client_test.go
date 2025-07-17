@@ -63,7 +63,7 @@ func TestEchoBody2Client(t *testing.T) {
 
 	cl := echo.NewAPIClient(cfg)
 	req := echo.ExamplepbEmbedded{Note: "note"}
-	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody2(context.Background(), "foo", req, nil)
+	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody2(context.Background(), req, "foo", nil)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}
