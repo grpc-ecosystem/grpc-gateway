@@ -13,6 +13,7 @@ go_library(
     deps = [
         "@org_golang_google_protobuf//compiler/protogen",
         "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/descriptorpb",
         "@org_golang_google_protobuf//types/pluginpb",
     ],
 )

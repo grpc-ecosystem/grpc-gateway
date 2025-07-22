@@ -60,6 +60,7 @@ proto_library(
         "generated_output.proto",
         "ignore_comment.proto",
         "non_standard_names.proto",
+        "opaque.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",
         "stream.proto",
@@ -129,6 +130,7 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
+        "opaque.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
