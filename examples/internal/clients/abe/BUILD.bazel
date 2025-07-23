@@ -57,6 +57,8 @@ go_library(
         "model_the_book_to_update_the_books_name_field_is_used_to_identify_the_book_to_be_updated_format_publisherspublisherbooksbook.go",
         "model_update_v2_request_request_for_update_includes_the_message_and_the_update_mask.go",
         "model_update_v2_request_request_for_update_includes_the_message_and_the_update_mask_1.go",
+        "model_v1_book_name_body.go",
+        "model_v1_book_name_body_1.go",
         "model_v1exampledeep_pathsingle_nested_name_single_nested.go",
         "response.go",
     ],
