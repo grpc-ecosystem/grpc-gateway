@@ -482,3 +482,4 @@ func (e GenericSwaggerError) Body() []byte {
 func (e GenericSwaggerError) Model() interface{} {
 	return e.model
 }
+
