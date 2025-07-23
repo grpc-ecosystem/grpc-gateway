@@ -11,8 +11,36 @@
 package abe
 
 import (
+	"encoding/json"
+	"strconv"
 	"time"
 )
+
+// FlexibleInt64 can unmarshal from both string and int64
+type FlexibleInt64 int64
+
+func (f *FlexibleInt64) UnmarshalJSON(data []byte) error {
+	// Try to unmarshal as int64 first
+	var i int64
+	if err := json.Unmarshal(data, &i); err == nil {
+		*f = FlexibleInt64(i)
+		return nil
+	}
+	
+	// If that fails, try to unmarshal as string and convert
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	
+	parsed, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return err
+	}
+	
+	*f = FlexibleInt64(parsed)
+	return nil
+}
 
 // Intentionally complicated message type to cover many features of Protobuf.
 type ExamplepbABitOfEverything struct {
@@ -58,7 +86,7 @@ type ExamplepbABitOfEverything struct {
 	RepeatedNestedAnnotation []ABitOfEverythingNested `json:"repeatedNestedAnnotation,omitempty"`
 	// Nested object description.
 	NestedAnnotation *ABitOfEverythingNested `json:"nestedAnnotation,omitempty"`
-	Int64OverrideType int64 `json:"int64OverrideType,omitempty"`
+	Int64OverrideType FlexibleInt64 `json:"int64OverrideType,omitempty"`
 	RequiredStringViaFieldBehaviorAnnotation string `json:"requiredStringViaFieldBehaviorAnnotation"`
 	OutputOnlyStringViaFieldBehaviorAnnotation string `json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
 	OptionalStringValue string `json:"optionalStringValue,omitempty"`
