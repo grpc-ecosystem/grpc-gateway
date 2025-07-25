@@ -199,7 +199,9 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 	}
 
 	if timeout != 0 {
-		ctx, _ = context.WithTimeout(ctx, timeout)
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, timeout)
+		defer cancel()
 	}
 	if len(pairs) == 0 {
 		return ctx, nil, nil
