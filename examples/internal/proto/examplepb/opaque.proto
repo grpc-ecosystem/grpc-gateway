@@ -4,9 +4,9 @@ package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 
@@ -15,17 +15,13 @@ service OpaqueEcommerceService {
   // OpaqueGetProduct - Unary request, unary response
   // Retrieves detailed information about a specific product
   rpc OpaqueGetProduct(OpaqueGetProductRequest) returns (OpaqueGetProductResponse) {
-    option (google.api.http) = {
-      get: "/v1/products/{product_id}"
-    };
+    option (google.api.http) = {get: "/v1/products/{product_id}"};
   }
 
   // OpaqueSearchProducts - Unary request, stream response
   // Searches for products based on criteria and streams results back
   rpc OpaqueSearchProducts(OpaqueSearchProductsRequest) returns (stream OpaqueSearchProductsResponse) {
-    option (google.api.http) = {
-      get: "/v1/products/search"
-    };
+    option (google.api.http) = {get: "/v1/products/search"};
   }
 
   // OpaqueProcessOrders - Stream request, unary response
@@ -96,22 +92,22 @@ message OpaqueSearchProductsResponse {
 
 // OpaqueProcessOrdersRequest represents a request to process order
 message OpaqueProcessOrdersRequest {
-    OpaqueOrder order = 1;
+  OpaqueOrder order = 1;
 }
 
 // OpaqueProcessOrdersResponse represents orders processing result
 message OpaqueProcessOrdersResponse {
-    OpaqueOrderSummary summary = 1;
+  OpaqueOrderSummary summary = 1;
 }
 
 // OpaqueStreamCustomerActivityRequest represents a report of user activity
 message OpaqueStreamCustomerActivityRequest {
-    OpaqueCustomerEvent event = 1;
+  OpaqueCustomerEvent event = 1;
 }
 
 // OpaqueStreamCustomerActivityRequest represents a report of server activity
 message OpaqueStreamCustomerActivityResponse {
-    OpaqueActivityUpdate event = 2;
+  OpaqueActivityUpdate event = 2;
 }
 
 // OpaqueAddress represents a physical address
