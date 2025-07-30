@@ -42,10 +42,10 @@ http_archive(
 
 http_archive(
     name = "googleapis",
-    sha256 = "85f0295d640b3442da505ffb0b0856eba009c2d188eb6f8aeeb30059ebef20a9",
-    strip_prefix = "googleapis-71d04acb8cdb389b443a67253645558cacb44bf9",
+    sha256 = "4cbea79c1665b93942dd618d225617392f6e90f614f2d053e6ef1b5196b8a440",
+    strip_prefix = "googleapis-472278b29c8cf9adde8945d88383e8e4d8137feb",
     urls = [
-        "https://github.com/googleapis/googleapis/archive/71d04acb8cdb389b443a67253645558cacb44bf9.zip",
+        "https://github.com/googleapis/googleapis/archive/472278b29c8cf9adde8945d88383e8e4d8137feb.zip",
     ],
 )
 
