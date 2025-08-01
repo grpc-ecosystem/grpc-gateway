@@ -125,53 +125,29 @@ func mergePathItems(existing, new *openapi3.PathItem) (*openapi3.PathItem, error
 		merged.Trace = existing.Trace
 	}
 
-	// Add new operations (will overwrite if same method exists)
+	// Add new operations (overwrite existing operations with new ones)
 	if new.Get != nil {
-		if merged.Get != nil {
-			return nil, fmt.Errorf("conflicting GET operation")
-		}
 		merged.Get = new.Get
 	}
 	if new.Put != nil {
-		if merged.Put != nil {
-			return nil, fmt.Errorf("conflicting PUT operation")
-		}
 		merged.Put = new.Put
 	}
 	if new.Post != nil {
-		if merged.Post != nil {
-			return nil, fmt.Errorf("conflicting POST operation")
-		}
 		merged.Post = new.Post
 	}
 	if new.Delete != nil {
-		if merged.Delete != nil {
-			return nil, fmt.Errorf("conflicting DELETE operation")
-		}
 		merged.Delete = new.Delete
 	}
 	if new.Options != nil {
-		if merged.Options != nil {
-			return nil, fmt.Errorf("conflicting OPTIONS operation")
-		}
 		merged.Options = new.Options
 	}
 	if new.Head != nil {
-		if merged.Head != nil {
-			return nil, fmt.Errorf("conflicting HEAD operation")
-		}
 		merged.Head = new.Head
 	}
 	if new.Patch != nil {
-		if merged.Patch != nil {
-			return nil, fmt.Errorf("conflicting PATCH operation")
-		}
 		merged.Patch = new.Patch
 	}
 	if new.Trace != nil {
-		if merged.Trace != nil {
-			return nil, fmt.Errorf("conflicting TRACE operation")
-		}
 		merged.Trace = new.Trace
 	}
 
