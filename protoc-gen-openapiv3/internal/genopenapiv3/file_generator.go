@@ -7,9 +7,10 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/types/descriptorpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 )
 
 type fileGenerator struct {
@@ -41,7 +42,7 @@ func (fg *fileGenerator) generateFileSpec(file *descriptor.File) *openapi3.T {
 
 	for _, msg := range file.Messages {
 		if fg.IsMessageVisible(msg) {
-			fg.generateMessageSchemaRef(msg)
+			fg.generateMessageSchemaRef(msg, map[string]bool{})
 		}
 	}
 
@@ -54,7 +55,7 @@ func (fg *fileGenerator) generateFileSpec(file *descriptor.File) *openapi3.T {
 	return fg.spec
 }
 
-func (fg *fileGenerator) generateMessageSchemaRef(msg *descriptor.Message) *openapi3.SchemaRef {
+func (fg *fileGenerator) generateMessageSchemaRef(msg *descriptor.Message, generationPath map[string]bool) *openapi3.SchemaRef {
 	name := fg.resolveName(msg.FQMN())
 	resultRef := openapi3.NewSchemaRef(fmt.Sprintf("#/components/schemas/%s", name), nil)
 
@@ -63,14 +64,22 @@ func (fg *fileGenerator) generateMessageSchemaRef(msg *descriptor.Message) *open
 		return resultRef
 	}
 
-	fg.spec.Components.Schemas[name] = fg.generateMessageSchema(msg, nil).NewRef()
+	_, ok = generationPath[msg.FQMN()]
+	if ok {
+		return resultRef
+	}
+
+	generationPath[msg.FQMN()] = true
+
+	fg.spec.Components.Schemas[name] = fg.generateMessageSchema(msg, nil, generationPath).NewRef()
+
+	generationPath[msg.FQMN()] = false
 
 	return resultRef
 }
 
-func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message, excludeFields []string) *openapi3.Schema {
-	msgName := fg.resolveName(msg.FQMN())
-	if scheme, ok := wktSchemas[msgName]; ok {
+func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message, excludeFields []string, generationPath map[string]bool) *openapi3.Schema {
+	if scheme, ok := wktSchemas[msg.FQMN()]; ok {
 		return scheme
 	}
 
@@ -85,7 +94,7 @@ func (fg *fileGenerator) generateMessageSchema(msg *descriptor.Message, excludeF
 			continue
 		}
 
-		fieldDoc := fg.generateFieldDoc(field)
+		fieldDoc := fg.generateFieldDoc(field, generationPath)
 		if field.OneofIndex != nil {
 			if tempOneOfsProperties[*field.OneofIndex] == nil {
 				tempOneOfsProperties[*field.OneofIndex] = make(openapi3.Schemas)
@@ -168,13 +177,13 @@ func (fg *fileGenerator) generateMessageWithOneOfsSchemas(allOneOfsProperties ma
 	for fieldName, fieldSchema := range oneOfProperties {
 		newProperties := maps.Clone(properties)
 		newProperties[fieldName] = fieldSchema
-		res = append(res, fg.generateMessageWithOneOfsSchemas(newAllOneOfsProperties, newProperties, newOneOfs, namePrefix + fieldName)...)
+		res = append(res, fg.generateMessageWithOneOfsSchemas(newAllOneOfsProperties, newProperties, newOneOfs, namePrefix+fieldName)...)
 	}
 
 	return res
 }
 
-func (fg *fileGenerator) generateFieldDoc(field *descriptor.Field) *openapi3.SchemaRef {
+func (fg *fileGenerator) generateFieldDoc(field *descriptor.Field, generationPath map[string]bool) *openapi3.SchemaRef {
 	location := fg.fqmnToLocation(field.Message.FQMN())
 	if m, err := fg.reg.LookupMsg(location, field.GetTypeName()); err == nil {
 		if opt := m.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
@@ -184,7 +193,7 @@ func (fg *fileGenerator) generateFieldDoc(field *descriptor.Field) *openapi3.Sch
 				Value: &openapi3.Schema{
 					Type: &openapi3.Types{openapi3.TypeObject},
 					AdditionalProperties: openapi3.AdditionalProperties{
-						Schema: fg.generateFieldTypeSchema(FieldDesc, location),
+						Schema: fg.generateFieldTypeSchema(FieldDesc, location, generationPath),
 					},
 				},
 			}
@@ -195,15 +204,15 @@ func (fg *fileGenerator) generateFieldDoc(field *descriptor.Field) *openapi3.Sch
 		return &openapi3.SchemaRef{
 			Value: &openapi3.Schema{
 				Type:  &openapi3.Types{openapi3.TypeArray},
-				Items: fg.generateFieldTypeSchema(field.FieldDescriptorProto, location),
+				Items: fg.generateFieldTypeSchema(field.FieldDescriptorProto, location, generationPath),
 			},
 		}
 	}
 
-	return fg.generateFieldTypeSchema(field.FieldDescriptorProto, location)
+	return fg.generateFieldTypeSchema(field.FieldDescriptorProto, location, generationPath)
 }
 
-func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescriptorProto, location string) *openapi3.SchemaRef {
+func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescriptorProto, location string, generationPath map[string]bool) *openapi3.SchemaRef {
 	if schema, ok := primitiveTypeSchemas[fd.GetType()]; ok {
 		return schema.NewRef()
 	}
@@ -226,7 +235,7 @@ func (fg *fileGenerator) generateFieldTypeSchema(fd *descriptorpb.FieldDescripto
 				if err != nil {
 					panic(err)
 				}
-				return fg.generateMessageSchemaRef(fieldTypeMsg)
+				return fg.generateMessageSchemaRef(fieldTypeMsg, generationPath)
 			}
 		}
 	default:
@@ -303,7 +312,7 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 			case "POST", "PUT", "PATCH":
 				// For POST, PUT, PATCH, add request body
 				if len(pathParamsFQFNs) > 0 {
-					messageSchema := fg.generateMessageSchema(meth.RequestType, pathParamsFQFNs)
+					messageSchema := fg.generateMessageSchema(meth.RequestType, pathParamsFQFNs, map[string]bool{})
 
 					name := fg.resolveName(meth.RequestType.FQMN())
 					resultRef := fmt.Sprintf("#/components/requestBodies/%s", name)
@@ -314,7 +323,7 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 					requestBody = &openapi3.RequestBodyRef{Ref: resultRef}
 				} else {
 					requestBody = &openapi3.RequestBodyRef{Value: openapi3.NewRequestBody().
-						WithJSONSchemaRef(fg.generateMessageSchemaRef(meth.RequestType))}
+						WithJSONSchemaRef(fg.generateMessageSchemaRef(meth.RequestType, map[string]bool{}))}
 				}
 			}
 		}
@@ -325,10 +334,10 @@ func (fg *fileGenerator) generateMethodDoc(meth *descriptor.Method) error {
 		}
 
 		successResponseSchema := openapi3.NewResponse().
-			WithJSONSchemaRef(fg.generateMessageSchemaRef(meth.ResponseType))
+			WithJSONSchemaRef(fg.generateMessageSchemaRef(meth.ResponseType, map[string]bool{}))
 
 		defaultResponseSchema := openapi3.NewResponse().
-			WithJSONSchemaRef(fg.generateMessageSchemaRef(defaultResponse))
+			WithJSONSchemaRef(fg.generateMessageSchemaRef(defaultResponse, map[string]bool{}))
 
 		responses := openapi3.NewResponses(openapi3.WithStatus(200, &openapi3.ResponseRef{Value: successResponseSchema}),
 			openapi3.WithName("default", defaultResponseSchema))
@@ -395,7 +404,7 @@ func (fg *fileGenerator) messageToParameters(message *descriptor.Message,
 			continue
 		}
 
-		schema := fg.generateFieldTypeSchema(field.FieldDescriptorProto, fg.fqmnToLocation(field.FQFN()))
+		schema := fg.generateFieldTypeSchema(field.FieldDescriptorProto, fg.fqmnToLocation(field.FQFN()), map[string]bool{})
 
 		switch paramType {
 		case openapi3.ParameterInPath:
