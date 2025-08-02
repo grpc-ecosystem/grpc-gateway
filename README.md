@@ -628,6 +628,8 @@ gRPC-Gateway, and a gRPC server, see
 - Automatically translating PATCH requests into Field Mask gRPC requests. See
   [the docs](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/patch_feature/)
   for more information.
+- [Protobuf Editions](https://protobuf.dev/editions/overview/) support (edition 2023).
+- Go [Opaque API](https://go.dev/blog/protobuf-opaque) support.
 
 ### No plan to support
 
