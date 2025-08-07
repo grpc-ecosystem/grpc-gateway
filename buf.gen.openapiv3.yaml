@@ -1,0 +1,4 @@
+version: v2
+plugins:
+  - local: protoc-gen-openapiv3
+    out: .

@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+
+// This file is a placeholder for OpenAPI v3 options.
