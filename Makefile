@@ -151,6 +151,10 @@ proto:
 		--template ./protoc-gen-openapiv2/options/buf.gen.yaml \
 		--path ./protoc-gen-openapiv2/options/annotations.proto \
 		--path ./protoc-gen-openapiv2/options/openapiv2.proto
+	buf generate \
+		--template ./protoc-gen-openapiv3/options/buf.gen.yaml \
+		--path ./protoc-gen-openapiv3/options/annotations.proto \
+		--path ./protoc-gen-openapiv3/options/openapiv3.proto
 
 generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 
