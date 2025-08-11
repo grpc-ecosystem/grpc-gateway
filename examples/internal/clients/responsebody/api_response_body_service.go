@@ -1,3 +1,4 @@
+
 /*
  * examples/internal/proto/examplepb/response_body_service.proto
  *
@@ -25,7 +26,7 @@ var (
 
 type ResponseBodyServiceApiService service
 
-/* 
+/*
 ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
@@ -85,9 +86,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBody(ctx c
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -124,7 +123,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBody(ctx c
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
@@ -184,9 +183,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBodySameNa
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -223,7 +220,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBodySameNa
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
@@ -283,9 +280,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBodyStream
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -322,7 +317,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBodyStream
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
@@ -382,9 +377,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodies(ct
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -421,7 +414,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodies(ct
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
@@ -481,9 +474,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStrings(c
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -519,3 +510,4 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStrings(c
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
