@@ -828,7 +828,7 @@ func schemaOfFieldBase(f *descriptor.Field, reg *descriptor.Registry, refs refMa
 		}
 	}
 
-	ret := openapiSchemaObject{}
+	var ret openapiSchemaObject
 
 	switch aggregate {
 	case array:
