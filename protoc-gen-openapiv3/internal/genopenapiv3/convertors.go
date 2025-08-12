@@ -2,9 +2,10 @@ package genopenapiv3
 
 import (
 	"github.com/getkin/kin-openapi/openapi3"
+	"google.golang.org/protobuf/proto"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
-	"google.golang.org/protobuf/proto"
 )
 
 func convertFileOptions(target *descriptor.File) *openapi3.T {
@@ -17,7 +18,10 @@ func convertFileOptions(target *descriptor.File) *openapi3.T {
 		}
 	}
 
-	return &openapi3.T{OpenAPI: OpenAPIVersion}
+	return &openapi3.T{OpenAPI: OpenAPIVersion, Info: &openapi3.Info{
+		Title:   target.GetName(),
+		Version: "versoin is not set",
+	}}
 }
 
 func convertServers(servers []*options.Server) openapi3.Servers {
@@ -91,4 +95,3 @@ func convertSecurityRequiremnt(requirements []*options.SecurityRequirement) *ope
 
 	return oAPIReqs
 }
-
