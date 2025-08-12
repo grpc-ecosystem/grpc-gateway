@@ -6,18 +6,18 @@ import (
 	"os"
 	"strings"
 
+	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapiv3"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-	"google.golang.org/grpc/grpclog"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var (
 	file                           = flag.String("file", "-", "where to load data from")
-	openAPIConfiguration           = flag.String("openapi_configuration", "", "path to file which describes the OpenAPI Configuration in YAML format")
 	oneOfStrategy                  = flag.String("oneof_strategy", "oneOf", "how to handle oneofs")
 	outputFormat                   = flag.String("output_format", string(genopenapiv3.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapiv3.FormatJSON, genopenapiv3.FormatYAML))
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")

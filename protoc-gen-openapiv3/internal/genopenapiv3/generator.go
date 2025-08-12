@@ -6,9 +6,6 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
@@ -16,13 +13,16 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 )
 
 type generator struct {
 	reg    *descriptor.Registry
 	format Format
 }
-
 
 func NewGenerator(reg *descriptor.Registry, format Format) gen.Generator {
 	return &generator{
@@ -35,6 +35,10 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	err := g.loadPrequisiteProtos()
 	if err != nil {
 		return nil, fmt.Errorf("could not load prequisite proto files in registry: %w", err)
+	}
+
+	if len(targets) == 0 {
+		return nil, nil
 	}
 
 	respFiles := make([]*descriptor.ResponseFile, 0, len(targets))
@@ -50,12 +54,14 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 
 		base := filepath.Base(t.GetName())
+		fileDir := filepath.Dir(t.GetName())
 		ext := filepath.Ext(base)
 		fileName := fmt.Sprintf("%s.openapiv3.%s", base[:len(base)-len(ext)], g.format)
+		docPath := filepath.Join(fileDir, fileName)
 
 		respFiles = append(respFiles, &descriptor.ResponseFile{
 			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
-				Name:    proto.String(fileName),
+				Name:    proto.String(docPath),
 				Content: proto.String(string(contentBytes)),
 			},
 		})
@@ -72,9 +78,12 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		return nil, err
 	}
 
+	mergedDir := filepath.Dir(targets[0].GetName())
+	mergedPath := filepath.Join(mergedDir, fmt.Sprintf("merged.openapiv3.%s", g.format))
+
 	respFiles = append(respFiles, &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(fmt.Sprintf("merged.openapiv3.%s", g.format)),
+			Name:    proto.String(mergedPath),
 			Content: proto.String(string(contentBytes)),
 		},
 	})
