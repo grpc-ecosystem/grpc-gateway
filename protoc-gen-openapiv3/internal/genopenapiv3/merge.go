@@ -53,14 +53,12 @@ func MergeOpenAPISpecs(specs ...*openapi3.T) (*openapi3.T, error) {
 		if spec.Paths != nil {
 			for path, pathItem := range spec.Paths.Map() {
 				if existingPathItem, exists := merged.Paths.Map()[path]; exists {
-					mergedPathItem, err := mergePathItems(existingPathItem, pathItem)
+					err := mergePathItems(existingPathItem, pathItem)
 					if err != nil {
 						return nil, fmt.Errorf("error merging path %s from spec %d: %v", path, i, err)
 					}
 
-					merged.Paths.Set(path, mergedPathItem)
 				} else {
-
 					merged.Paths.Set(path, pathItem)
 				}
 			}
@@ -89,89 +87,49 @@ func MergeOpenAPISpecs(specs ...*openapi3.T) (*openapi3.T, error) {
 	return merged, nil
 }
 
-// mergePathItems merges two path items, combining their operations
-func mergePathItems(existing, new *openapi3.PathItem) (*openapi3.PathItem, error) {
-	merged := &openapi3.PathItem{
-		Ref:         existing.Ref,
-		Summary:     existing.Summary,
-		Description: existing.Description,
-		Servers:     existing.Servers,
-		Parameters:  existing.Parameters,
-	}
-
-	// Copy existing operations
-	if existing.Get != nil {
-		merged.Get = existing.Get
-	}
-	if existing.Put != nil {
-		merged.Put = existing.Put
-	}
-	if existing.Post != nil {
-		merged.Post = existing.Post
-	}
-	if existing.Delete != nil {
-		merged.Delete = existing.Delete
-	}
-	if existing.Options != nil {
-		merged.Options = existing.Options
-	}
-	if existing.Head != nil {
-		merged.Head = existing.Head
-	}
-	if existing.Patch != nil {
-		merged.Patch = existing.Patch
-	}
-	if existing.Trace != nil {
-		merged.Trace = existing.Trace
-	}
-
-	// Add new operations (overwrite existing operations with new ones)
+func mergePathItems(existing, new *openapi3.PathItem) error {
+	// TODO: error and log warn when new one overrides existing one
 	if new.Get != nil {
-		merged.Get = new.Get
+		existing.Get = new.Get
 	}
 	if new.Put != nil {
-		merged.Put = new.Put
+		existing.Put = new.Put
 	}
 	if new.Post != nil {
-		merged.Post = new.Post
+		existing.Post = new.Post
 	}
 	if new.Delete != nil {
-		merged.Delete = new.Delete
+		existing.Delete = new.Delete
 	}
 	if new.Options != nil {
-		merged.Options = new.Options
+		existing.Options = new.Options
 	}
 	if new.Head != nil {
-		merged.Head = new.Head
+		existing.Head = new.Head
 	}
 	if new.Patch != nil {
-		merged.Patch = new.Patch
+		existing.Patch = new.Patch
 	}
 	if new.Trace != nil {
-		merged.Trace = new.Trace
+		existing.Trace = new.Trace
 	}
 
-	// Merge parameters
 	if new.Parameters != nil {
-		merged.Parameters = append(merged.Parameters, new.Parameters...)
+		existing.Parameters = mergeParameters(existing.Parameters, new.Parameters)
 	}
 
-	// Merge servers
 	if new.Servers != nil {
-		merged.Servers = append(merged.Servers, new.Servers...)
+		existing.Servers = append(existing.Servers, new.Servers...)
 	}
 
-	return merged, nil
+	return nil
 }
 
-// mergeComponents merges components from source into target
 func mergeComponents(target, source *openapi3.Components, specIndex int) error {
-	// Merge schemas
 	if source.Schemas != nil {
 		maps.Copy(target.Schemas, source.Schemas)
 	}
 
-	// Merge parameters
 	if source.Parameters != nil {
 		for name, param := range source.Parameters {
 			if _, exists := target.Parameters[name]; exists {
@@ -181,7 +139,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge headers
 	if source.Headers != nil {
 		for name, header := range source.Headers {
 			if _, exists := target.Headers[name]; exists {
@@ -191,7 +148,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge request bodies
 	if source.RequestBodies != nil {
 		for name, requestBody := range source.RequestBodies {
 			if _, exists := target.RequestBodies[name]; exists {
@@ -201,7 +157,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge responses
 	if source.Responses != nil {
 		for name, response := range source.Responses {
 			if _, exists := target.Responses[name]; exists {
@@ -211,7 +166,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge security schemes
 	if source.SecuritySchemes != nil {
 		for name, securityScheme := range source.SecuritySchemes {
 			if _, exists := target.SecuritySchemes[name]; exists {
@@ -221,7 +175,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge examples
 	if source.Examples != nil {
 		for name, example := range source.Examples {
 			if _, exists := target.Examples[name]; exists {
@@ -231,7 +184,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge links
 	if source.Links != nil {
 		for name, link := range source.Links {
 			if _, exists := target.Links[name]; exists {
@@ -241,7 +193,6 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 		}
 	}
 
-	// Merge callbacks
 	if source.Callbacks != nil {
 		for name, callback := range source.Callbacks {
 			if _, exists := target.Callbacks[name]; exists {
@@ -252,4 +203,49 @@ func mergeComponents(target, source *openapi3.Components, specIndex int) error {
 	}
 
 	return nil
+}
+
+func mergeParameters(existing, new openapi3.Parameters) openapi3.Parameters {
+	if len(existing) == 0 {
+		return new
+	}
+	if len(new) == 0 {
+		return existing
+	}
+
+	paramMap := make(map[string]*openapi3.ParameterRef)
+	var result openapi3.Parameters
+
+	for _, param := range existing {
+		if param != nil && param.Value != nil {
+			key := getParameterKey(param.Value)
+			paramMap[key] = param
+			result = append(result, param)
+		}
+	}
+
+	for _, param := range new {
+		if param != nil && param.Value != nil {
+			key := getParameterKey(param.Value)
+			if existingParam, exists := paramMap[key]; exists {
+				for i, resultParam := range result {
+					if resultParam == existingParam {
+						result[i] = param
+						break
+					}
+				}
+				paramMap[key] = param
+			} else {
+				// Add new parameter
+				paramMap[key] = param
+				result = append(result, param)
+			}
+		}
+	}
+
+	return result
+}
+
+func getParameterKey(param *openapi3.Parameter) string {
+	return param.Name + ":" + param.In
 }
