@@ -771,8 +771,8 @@ func filterOutExcludedFields(fields []string, excluded []descriptor.Parameter) [
 	return filtered
 }
 
-// schemaOfField returns a OpenAPI Schema Object for a protobuf field.
-func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) openapiSchemaObject {
+// schemaOfFieldBase returns a base Schema Object for a protobuf field.
+func schemaOfFieldBase(f *descriptor.Field, reg *descriptor.Registry, refs refMap) openapiSchemaObject {
 	const (
 		singular = 0
 		array    = 1
@@ -828,7 +828,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		}
 	}
 
-	ret := openapiSchemaObject{}
+	var ret openapiSchemaObject
 
 	switch aggregate {
 	case array:
@@ -854,6 +854,12 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 			Properties: props,
 		}
 	}
+	return ret
+}
+
+// schemaOfField returns a OpenAPI Schema Object for a protobuf field.
+func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) openapiSchemaObject {
+	ret := schemaOfFieldBase(f, reg, refs)
 
 	if j, err := getFieldOpenAPIOption(reg, f); err == nil {
 		updateswaggerObjectFromJSONSchema(&ret, j, reg, f)
@@ -1534,10 +1540,17 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						}
 						// Align pathParams with body field path.
 						pathParams := subPathParams(bodyField.Name, b.PathParams)
-						var err error
-						schema, err = renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
-						if err != nil {
-							return err
+
+						if len(pathParams) == 0 {
+							// When there are no path parameters, we only need the base schema of the field.
+							// https://github.com/grpc-ecosystem/grpc-gateway/issues/3058
+							schema = schemaOfFieldBase(bodyField.Target, reg, customRefs)
+						} else {
+							var err error
+							schema, err = renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
+							if err != nil {
+								return err
+							}
 						}
 						if schema.Title != "" {
 							desc = mergeDescription(schema)
