@@ -19,7 +19,10 @@
       "bazel.buildifierExecutable": "/go/bin/buildifier",
       "bazel.buildifierFixOnFormat": true,
       "bazel.enableCodeLens": true,
-      "extensions": ["golang.Go", "bazelbuild.vscode-bazel"]
+      "extensions": [
+        "golang.Go",
+        "bazelbuild.vscode-bazel"
+      ]
     }
   }
 }

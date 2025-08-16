@@ -1,0 +1,32 @@
+file_to_generate: "test/service/v1/service.proto"
+proto_file: {
+  name: "test/service/v1/service.proto"
+  package: "test.service.v1"
+  message_type: {
+    name: "TestMessage"
+    field: {
+      name: "value"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "value"
+    }
+  }
+  service: {
+    name: "TestService"
+    method: {
+      name: "Test"
+      input_type: ".test.service.v1.TestMessage"
+      output_type: ".test.service.v1.TestMessage"
+      options: {
+        [google.api.http]: {
+          post: "/v1/test"
+          body: "*"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/grpc-ecosystem/grpc-gateway/v2/test/service/v1;servicev1"
+  }
+}

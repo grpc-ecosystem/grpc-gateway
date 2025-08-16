@@ -7,7 +7,9 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfigv3"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	optionsv3 "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -131,6 +133,22 @@ type Registry struct {
 	// fieldOptions is a mapping of the fully-qualified name of the parent message concat
 	// field name and a period to additional OpenAPI field options
 	fieldOptions map[string]*options.JSONSchema
+
+	// fileOptions is a mapping of file name to additional OpenAPI file options
+	fileOptionsv3 map[string]*optionsv3.Swagger
+
+	// methodOptions is a mapping of fully-qualified method name to additional OpenAPI method options
+	methodOptionsv3 map[string]*optionsv3.Operation
+
+	// messageOptions is a mapping of fully-qualified message name to additional OpenAPI message options
+	messageOptionsv3 map[string]*optionsv3.Schema
+
+	//serviceOptions is a mapping of fully-qualified service name to additional OpenAPI service options
+	serviceOptionsv3 map[string]*optionsv3.Tag
+
+	// fieldOptions is a mapping of the fully-qualified name of the parent message concat
+	// field name and a period to additional OpenAPI field options
+	fieldOptionsv3 map[string]*optionsv3.JSONSchema
 
 	// generateUnboundMethods causes the registry to generate proxy methods even for
 	// RPC methods that have no HttpRule annotation.
@@ -809,9 +827,81 @@ func (r *Registry) RegisterOpenAPIOptions(opts *openapiconfig.OpenAPIOptions) er
 	return nil
 }
 
+// RegisterOpenAPIOptions registers OpenAPI options
+func (r *Registry) RegisterOpenAPIOptionsv3(opts *openapiconfigv3.OpenAPIOptions) error {
+	if opts == nil {
+		return nil
+	}
+
+	for _, opt := range opts.File {
+		if _, ok := r.files[opt.File]; !ok {
+			return fmt.Errorf("no file %s found", opt.File)
+		}
+		r.fileOptionsv3[opt.File] = opt.Option
+	}
+
+	// build map of all registered methods
+	methods := make(map[string]struct{})
+	services := make(map[string]struct{})
+	for _, f := range r.files {
+		for _, s := range f.Services {
+			services[s.FQSN()] = struct{}{}
+			for _, m := range s.Methods {
+				methods[m.FQMN()] = struct{}{}
+			}
+		}
+	}
+
+	for _, opt := range opts.Method {
+		qualifiedMethod := "." + opt.Method
+		if _, ok := methods[qualifiedMethod]; !ok {
+			return fmt.Errorf("no method %s found", opt.Method)
+		}
+		r.methodOptionsv3[qualifiedMethod] = opt.Option
+	}
+
+	for _, opt := range opts.Message {
+		qualifiedMessage := "." + opt.Message
+		if _, ok := r.msgs[qualifiedMessage]; !ok {
+			return fmt.Errorf("no message %s found", opt.Message)
+		}
+		r.messageOptionsv3[qualifiedMessage] = opt.Option
+	}
+
+	for _, opt := range opts.Service {
+		qualifiedService := "." + opt.Service
+		if _, ok := services[qualifiedService]; !ok {
+			return fmt.Errorf("no service %s found", opt.Service)
+		}
+		r.serviceOptionsv3[qualifiedService] = opt.Option
+	}
+
+	// build map of all registered fields
+	fields := make(map[string]struct{})
+	for _, m := range r.msgs {
+		for _, f := range m.Fields {
+			fields[f.FQFN()] = struct{}{}
+		}
+	}
+	for _, opt := range opts.Field {
+		qualifiedField := "." + opt.Field
+		if _, ok := fields[qualifiedField]; !ok {
+			return fmt.Errorf("no field %s found", opt.Field)
+		}
+		r.fieldOptionsv3[qualifiedField] = opt.Option
+	}
+	return nil
+}
+
 // GetOpenAPIFileOption returns a registered OpenAPI option for a file
 func (r *Registry) GetOpenAPIFileOption(file string) (*options.Swagger, bool) {
 	opt, ok := r.fileOptions[file]
+	return opt, ok
+}
+
+// GetOpenAPIFileOption returns a registered OpenAPI option for a file
+func (r *Registry) GetOpenAPIFileOptionv3(file string) (*optionsv3.Swagger, bool) {
+	opt, ok := r.fileOptionsv3[file]
 	return opt, ok
 }
 
@@ -821,9 +911,21 @@ func (r *Registry) GetOpenAPIMethodOption(qualifiedMethod string) (*options.Oper
 	return opt, ok
 }
 
+// GetOpenAPIMethodOptionv3 returns a registered OpenAPI option for a method
+func (r *Registry) GetOpenAPIMethodOptionv3(qualifiedMethod string) (*optionsv3.Operation, bool) {
+	opt, ok := r.methodOptionsv3[qualifiedMethod]
+	return opt, ok
+}
+
 // GetOpenAPIMessageOption returns a registered OpenAPI option for a message
 func (r *Registry) GetOpenAPIMessageOption(qualifiedMessage string) (*options.Schema, bool) {
 	opt, ok := r.messageOptions[qualifiedMessage]
+	return opt, ok
+}
+
+// GetOpenAPIMessageOptionv3 returns a registered OpenAPI option for a message
+func (r *Registry) GetOpenAPIMessageOptionv3(qualifiedMessage string) (*optionsv3.Schema, bool) {
+	opt, ok := r.messageOptionsv3[qualifiedMessage]
 	return opt, ok
 }
 
@@ -833,9 +935,21 @@ func (r *Registry) GetOpenAPIServiceOption(qualifiedService string) (*options.Ta
 	return opt, ok
 }
 
+// GetOpenAPIServiceOptionv3 returns a registered OpenAPI option for a service
+func (r *Registry) GetOpenAPIServiceOptionv3(qualifiedService string) (*optionsv3.Tag, bool) {
+	opt, ok := r.serviceOptionsv3[qualifiedService]
+	return opt, ok
+}
+
 // GetOpenAPIFieldOption returns a registered OpenAPI option for a field
 func (r *Registry) GetOpenAPIFieldOption(qualifiedField string) (*options.JSONSchema, bool) {
 	opt, ok := r.fieldOptions[qualifiedField]
+	return opt, ok
+}
+
+// GetOpenAPIFieldOption returns a registered OpenAPI option for a field
+func (r *Registry) GetOpenAPIFieldOptionv3(qualifiedField string) (*optionsv3.JSONSchema, bool) {
+	opt, ok := r.fieldOptionsv3[qualifiedField]
 	return opt, ok
 }
 
