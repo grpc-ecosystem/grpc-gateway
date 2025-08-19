@@ -6,13 +6,13 @@ require (
 	github.com/antihax/optional v1.0.0
 	github.com/google/go-cmp v0.7.0
 	github.com/rogpeppe/fastuuid v1.2.0
+	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/text v0.28.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20250818200422-3122310a409c
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250818200422-3122310a409c
 	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.7
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
