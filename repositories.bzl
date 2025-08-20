@@ -1794,6 +1794,13 @@ def go_repositories():
         version = "v3.0.1",
     )
     go_repository(
+        name = "in_yaml_go_yaml_v3",
+        importpath = "go.yaml.in/yaml/v3",
+        sum = "h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=",
+        version = "v3.0.4",
+    )
+
+    go_repository(
         name = "io_etcd_go_bbolt",
         importpath = "go.etcd.io/bbolt",
         sum = "h1:Z/90sZLPOeCy2PwprqkFa25PdkusRzaj9P8zm/KNyvk=",

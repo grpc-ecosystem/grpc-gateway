@@ -57,7 +57,7 @@ use_repo(
     "com_github_golang_protobuf",
     "com_github_google_go_cmp",
     "com_github_rogpeppe_fastuuid",
-    "in_gopkg_yaml_v3",
+    "in_yaml_go_yaml_v3",
     "org_golang_google_genproto_googleapis_api",
     "org_golang_google_genproto_googleapis_rpc",
     "org_golang_google_grpc",

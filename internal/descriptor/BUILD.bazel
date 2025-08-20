@@ -19,7 +19,7 @@ go_library(
         "//internal/descriptor/openapiconfig",
         "//internal/httprule",
         "//protoc-gen-openapiv2/options",
-        "@in_gopkg_yaml_v3//:yaml_v3",
+        "@in_yaml_go_yaml_v3//:yaml",
         "@org_golang_google_genproto_googleapis_api//annotations",
         "@org_golang_google_grpc//grpclog",
         "@org_golang_google_protobuf//compiler/protogen",
