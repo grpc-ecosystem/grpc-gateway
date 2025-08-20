@@ -8399,6 +8399,163 @@ func TestRenderServicesWithBodyFieldHasFieldMask(t *testing.T) {
 	}
 }
 
+func TestRenderServicesWithBodyFieldHasRequiredField(t *testing.T) {
+	fieldBehaviorRequired := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
+
+	userDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("User"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:    proto.String("name"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(1),
+				Options: requiredFieldOptions,
+			},
+			{
+				Name:    proto.String("role"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(2),
+				Options: requiredFieldOptions,
+			},
+		},
+	}
+	createDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("CreateUserRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("user_object"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.User"),
+				Number:   proto.Int32(1),
+				Options:  requiredFieldOptions,
+			},
+		},
+	}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("CreateUser"),
+		InputType:  proto.String("CreateUserRequest"),
+		OutputType: proto.String("User"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("UserService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	userMsg := &descriptor.Message{
+		DescriptorProto: userDesc,
+	}
+	createMsg := &descriptor.Message{
+		DescriptorProto: createDesc,
+	}
+	nameField := &descriptor.Field{
+		Message:              userMsg,
+		FieldDescriptorProto: userMsg.GetField()[0],
+	}
+	nameField.JsonName = proto.String("name")
+	roleField := &descriptor.Field{
+		Message:              userMsg,
+		FieldDescriptorProto: userMsg.GetField()[1],
+	}
+	roleField.JsonName = proto.String("role")
+	userMsg.Fields = []*descriptor.Field{nameField, roleField}
+	userField := &descriptor.Field{
+		Message:              createMsg,
+		FieldMessage:         userMsg,
+		FieldDescriptorProto: createMsg.GetField()[0],
+	}
+	userField.JsonName = proto.String("userObject")
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Package:        proto.String("example"),
+			Name:           proto.String("user_service.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{userDesc, createDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{userMsg, createMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           createMsg,
+						ResponseType:          userMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/users",
+								},
+								Body: &descriptor.Body{
+									FieldPath: []descriptor.FieldPathComponent{
+										{
+											Name:   "user_object",
+											Target: userField,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	err := reg.Load(reqFromFile(&file))
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := GetPaths(result)
+	if got, want := len(paths), 1; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+
+	if got, want := paths[0], "/v1/users"; got != want {
+		t.Fatalf("Wrong results path, got %s want %s", got, want)
+	}
+
+	operation := *result.getPathItemObject("/v1/users").Post
+	if got, want := len(operation.Parameters), 1; got != want {
+		t.Fatalf("Parameters length differed, got %d want %d", got, want)
+	}
+
+	if got, want := operation.Parameters[0].Name, "userObject"; got != want {
+		t.Fatalf("Wrong parameter name, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[0].In, "body"; got != want {
+		t.Fatalf("Wrong parameter location, got %s want %s", got, want)
+	}
+
+	if got := operation.Parameters[0].Required; got != true {
+		t.Fatalf("Wrong parameter required, got %v want %v", got, true)
+	}
+
+	if got, want := len(operation.Parameters[0].Schema.Required), 0; got != want {
+		t.Fatalf("Wrong parameter schema required, got %v want %v", got, want)
+	}
+}
+
 func TestRenderServicesWithColonInPath(t *testing.T) {
 	jsonSchema := &openapi_options.JSONSchema{
 		FieldConfiguration: &openapi_options.JSONSchema_FieldConfiguration{
