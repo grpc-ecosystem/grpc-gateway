@@ -1,0 +1,32 @@
+swagger: "2.0"
+info:
+  title: your/service/v1/your_service.proto
+  version: version not set
+tags:
+  - name: YourService
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/echo:
+    post:
+      operationId: YourService_Echo
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1StringMessage'
+      parameters:
+        - name: value
+          in: query
+          required: false
+          type: string
+      tags:
+        - YourService
+definitions:
+  v1StringMessage:
+    type: object
+    properties:
+      value:
+        type: string

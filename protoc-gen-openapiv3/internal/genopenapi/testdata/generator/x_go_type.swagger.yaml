@@ -1,0 +1,37 @@
+swagger: "2.0"
+info:
+  title: test/service/v1/service.proto
+  version: version not set
+tags:
+- name: TestService
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /v1/test:
+    post:
+      operationId: TestService_Test
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1TestMessage'
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/v1TestMessage'
+      tags:
+      - TestService
+definitions:
+  v1TestMessage:
+    type: object
+    properties:
+      value:
+        type: string
+    x-go-type:
+      import:
+        package: "github.com/grpc-ecosystem/grpc-gateway/v2/test/service/v1"
+      type: "TestMessage"
