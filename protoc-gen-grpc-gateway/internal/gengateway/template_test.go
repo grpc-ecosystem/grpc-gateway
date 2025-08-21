@@ -965,7 +965,7 @@ func TestDuplicatePathsInDifferentService(t *testing.T) {
 	}
 	_, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
 	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed; want success", file)
+		t.Errorf("applyTemplate(%#v) failed; want success - %s", file, err)
 		return
 	}
 }
