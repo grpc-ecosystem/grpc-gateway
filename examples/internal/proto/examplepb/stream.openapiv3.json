@@ -1,0 +1,329 @@
+{
+  "components": {
+    "schemas": {
+      ".google.api.HttpBody": {
+        "properties": {
+          "content_type": {
+            "type": "string"
+          },
+          "data": {
+            "format": "byte",
+            "type": "string"
+          },
+          "extensions": {
+            "items": {
+              "properties": {
+                "type_url": {
+                  "type": "string"
+                },
+                "value": {
+                  "format": "byte",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.Duration": {
+        "type": "string"
+      },
+      ".google.protobuf.Empty": {
+        "type": "object"
+      },
+      ".google.protobuf.Timestamp": {
+        "format": "date-time",
+        "type": "string"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum": {
+        "enum": [
+          "GHI",
+          "JKL"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.pathenum.PathEnum": {
+        "enum": [
+          "ABC",
+          "DEF"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything": {},
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested": {
+        "properties": {
+          "amount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ok": {
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested.DeepEnum": {
+        "enum": [
+          "FALSE",
+          "TRUE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.NumericEnum": {
+        "enum": [
+          "ZERO",
+          "ONE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Options": {
+        "properties": {
+          "error": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.sub.StringMessage": {
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/stream.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/a_bit_of_everything": {
+      "get": {
+        "operationId": "StreamService_List",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "error",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/bulk": {
+      "post": {
+        "operationId": "StreamService_BulkCreate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo": {
+      "post": {
+        "operationId": "StreamService_BulkEcho",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.sub.StringMessage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.sub.StringMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo_duration": {
+      "post": {
+        "operationId": "StreamService_BulkEchoDuration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.Duration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Duration"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamService"
+        ]
+      }
+    },
+    "/v1/example/download": {
+      "get": {
+        "operationId": "StreamService_Download",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "error",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.api.HttpBody"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "StreamService"
+        ]
+      }
+    }
+  }
+}

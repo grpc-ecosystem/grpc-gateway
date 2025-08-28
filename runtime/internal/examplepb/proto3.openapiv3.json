@@ -1,0 +1,234 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.BoolValue": {
+        "type": "boolean"
+      },
+      ".google.protobuf.BytesValue": {
+        "format": "byte",
+        "type": "string"
+      },
+      ".google.protobuf.DoubleValue": {
+        "format": "double",
+        "type": "number"
+      },
+      ".google.protobuf.Duration": {
+        "type": "string"
+      },
+      ".google.protobuf.FieldMask": {
+        "type": "string"
+      },
+      ".google.protobuf.FloatValue": {
+        "format": "float",
+        "type": "number"
+      },
+      ".google.protobuf.Int32Value": {
+        "format": "int32",
+        "type": "integer"
+      },
+      ".google.protobuf.Int64Value": {
+        "format": "int64",
+        "type": "string"
+      },
+      ".google.protobuf.StringValue": {
+        "type": "string"
+      },
+      ".google.protobuf.Struct": {
+        "type": "object"
+      },
+      ".google.protobuf.Timestamp": {
+        "format": "date-time",
+        "type": "string"
+      },
+      ".google.protobuf.UInt32Value": {
+        "format": "int64",
+        "type": "integer"
+      },
+      ".google.protobuf.UInt64Value": {
+        "format": "uint64",
+        "type": "string"
+      },
+      ".google.protobuf.Value": {},
+      ".grpc.gateway.runtime.internal.examplepb.EnumValue": {
+        "enum": [
+          "X",
+          "Y",
+          "Z"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message": {},
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue10Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "float",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue12Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue14Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue15Entry": {
+        "properties": {
+          "key": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue16Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "uint64",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue2Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue3Entry": {
+        "properties": {
+          "key": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue4Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "int64",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue5Entry": {
+        "properties": {
+          "key": {
+            "format": "int64",
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue6Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue7Entry": {
+        "properties": {
+          "key": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue8Entry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "format": "uint64",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValue9Entry": {
+        "properties": {
+          "key": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.Proto3Message.MapValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "runtime/internal/examplepb/proto3.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

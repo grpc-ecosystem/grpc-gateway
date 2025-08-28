@@ -1,0 +1,187 @@
+{
+  "components": {
+    "schemas": {
+      ".google.api.CustomHttpPattern": {
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.api.Http": {
+        "properties": {
+          "fully_decode_reserved_expansion": {
+            "type": "boolean"
+          },
+          "rules": {
+            "items": {
+              "$ref": "#/components/schemas/.google.api.HttpRule"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".google.api.HttpRule": {
+        "oneOf": [
+          {
+            "properties": {
+              "additional_bindings": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.api.HttpRule"
+                },
+                "type": "array"
+              },
+              "body": {
+                "type": "string"
+              },
+              "post": {
+                "type": "string"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "additional_bindings": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.api.HttpRule"
+                },
+                "type": "array"
+              },
+              "body": {
+                "type": "string"
+              },
+              "delete": {
+                "type": "string"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "additional_bindings": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.api.HttpRule"
+                },
+                "type": "array"
+              },
+              "body": {
+                "type": "string"
+              },
+              "patch": {
+                "type": "string"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "additional_bindings": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.api.HttpRule"
+                },
+                "type": "array"
+              },
+              "body": {
+                "type": "string"
+              },
+              "custom": {
+                "$ref": "#/components/schemas/.google.api.CustomHttpPattern"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "additional_bindings": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.api.HttpRule"
+                },
+                "type": "array"
+              },
+              "body": {
+                "type": "string"
+              },
+              "get": {
+                "type": "string"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "additional_bindings": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.api.HttpRule"
+                },
+                "type": "array"
+              },
+              "body": {
+                "type": "string"
+              },
+              "put": {
+                "type": "string"
+              },
+              "response_body": {
+                "type": "string"
+              },
+              "selector": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      ".grpc.gateway.internal.descriptor.apiconfig.GrpcAPIService": {
+        "properties": {
+          "http": {
+            "$ref": "#/components/schemas/.google.api.Http"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "internal/descriptor/apiconfig/apiconfig.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

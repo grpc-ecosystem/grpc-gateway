@@ -1,0 +1,315 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Duration": {
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UnannotatedEmbedded": {
+        "oneOf": [
+          {
+            "properties": {
+              "progress": {
+                "format": "int64",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "note": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UnannotatedNestedMessage": {
+        "properties": {
+          "n_id": {
+            "type": "string"
+          },
+          "val": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UnannotatedSimpleMessage": {
+        "oneOf": [
+          {
+            "properties": {
+              "duration": {
+                "$ref": "#/components/schemas/.google.protobuf.Duration"
+              },
+              "en": {
+                "format": "int64",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "line_num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "duration": {
+                "$ref": "#/components/schemas/.google.protobuf.Duration"
+              },
+              "en": {
+                "format": "int64",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "duration": {
+                "$ref": "#/components/schemas/.google.protobuf.Duration"
+              },
+              "id": {
+                "type": "string"
+              },
+              "line_num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "no": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "duration": {
+                "$ref": "#/components/schemas/.google.protobuf.Duration"
+              },
+              "id": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "no": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/unannotated_echo_service.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

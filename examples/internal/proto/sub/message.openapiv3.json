@@ -1,0 +1,20 @@
+{
+  "components": {
+    "schemas": {
+      ".grpc.gateway.examples.internal.proto.sub.StringMessage": {
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/sub/message.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}
