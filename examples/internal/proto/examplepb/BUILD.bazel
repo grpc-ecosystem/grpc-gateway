@@ -37,8 +37,6 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude unannotated_echo_service_grpc.pb.go
 # gazelle:exclude visibility_rule_echo_service.pb.gw.go
 # gazelle:exclude visibility_rule_echo_service_grpc.pb.go
-# gazelle:exclude opaque.pb.gw.go
-# gazelle:exclude opaque_grpc.pb.go
 # gazelle:exclude openapi_merge_a.proto
 # gazelle:exclude openapi_merge_b.proto
 # gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc, //protoc-gen-grpc-gateway:go_gen_grpc_gateway
@@ -106,12 +104,13 @@ proto_library(
     ],
 )
 
+# keep
 go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
         "//:go_apiv2",
-        "//:go_grpc_use_opaque_api",
         "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
+        "//:go_grpc_use_opaque_api",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_proto",
@@ -132,6 +131,7 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
+        "opaque.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
