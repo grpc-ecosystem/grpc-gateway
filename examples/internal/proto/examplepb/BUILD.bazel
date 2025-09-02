@@ -110,7 +110,7 @@ go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
         "//:go_apiv2",
-        "//:go_grpc",
+        "//:go_grpc_use_opaque_api",
         "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",

@@ -68,3 +68,20 @@ go_proto_compiler(
         "@org_golang_google_grpc//status:go_default_library",
     ],
 )
+
+go_proto_compiler(
+    name = "go_grpc_use_opaque_api",
+    options = [
+        "paths=source_relative",
+        "require_unimplemented_servers=false",
+        "default_api_level=API_OPAQUE",
+    ],
+    plugin = "@org_golang_google_grpc_cmd_protoc_gen_go_grpc//:protoc-gen-go-grpc",
+    suffix = "_grpc.pb.go",
+    visibility = ["//visibility:public"],
+    deps = PROTO_RUNTIME_DEPS + [
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_grpc//status:go_default_library",
+    ],
+)
