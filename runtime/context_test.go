@@ -36,6 +36,30 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_WorksWithNoIncomingHeaders(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	expectedHTTPPathPattern := "/v1"
+	md1 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"foo": "bar"}) }
+	expected := metadata.New(map[string]string{"foo": "bar"})
+	request, err := http.NewRequestWithContext(ctx, "GET", "/v1", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "/v1", err)
+	}
+	serveMux := runtime.NewServeMux(runtime.WithMetadata(md1))
+	annotated, err := runtime.AnnotateContext(ctx, serveMux, request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	actual, _ := metadata.FromOutgoingContext(annotated)
+	for key, e := range expected {
+		if a, ok := actual[key]; !ok || !reflect.DeepEqual(e, a) {
+			t.Errorf("metadata.MD[%s] = %v; want %v", key, a, e)
+		}
+	}
+}
+
 func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
