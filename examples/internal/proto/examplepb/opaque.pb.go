@@ -6570,7 +6570,7 @@ var File_examples_internal_proto_examplepb_opaque_proto protoreflect.FileDescrip
 
 const file_examples_internal_proto_examplepb_opaque_proto_rawDesc = "" +
 	"\n" +
-	".examples/internal/proto/examplepb/opaque.proto\x12.grpc.gateway.examples.internal.proto.examplepb\x1a\x1cgoogle/api/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a google/protobuf/field_mask.proto\"\xe7\x01\n" +
+	".examples/internal/proto/examplepb/opaque.proto\x12.grpc.gateway.examples.internal.proto.examplepb\x1a\x1cgoogle/api/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xe7\x01\n" +
 	"\x17OpaqueGetProductRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12)\n" +

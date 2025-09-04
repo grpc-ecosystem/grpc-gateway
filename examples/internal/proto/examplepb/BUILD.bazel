@@ -37,6 +37,7 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude unannotated_echo_service_grpc.pb.go
 # gazelle:exclude visibility_rule_echo_service.pb.gw.go
 # gazelle:exclude visibility_rule_echo_service_grpc.pb.go
+# gazelle:exclude opaque.proto
 # gazelle:exclude opaque.pb.gw.go
 # gazelle:exclude opaque_grpc.pb.go
 # gazelle:exclude openapi_merge_a.proto
@@ -62,7 +63,6 @@ proto_library(
         "generated_output.proto",
         "ignore_comment.proto",
         "non_standard_names.proto",
-        "opaque.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",
         "stream.proto",
@@ -93,6 +93,21 @@ proto_library(
 
 #keep
 proto_library(
+    name = "examplepb_opaque_proto",
+    srcs = [
+        "opaque.proto",
+    ],
+    deps = [
+        "@com_google_protobuf//:duration_proto",
+        "@com_google_protobuf//:field_mask_proto",
+        "@com_google_protobuf//:timestamp_proto",
+        "@com_google_protobuf//:wrappers_proto",
+        "@googleapis//google/api:annotations_proto",
+    ],
+)
+
+#keep
+proto_library(
     name = "openapi_merge_proto",
     srcs = [
         "openapi_merge_a.proto",
@@ -106,6 +121,7 @@ proto_library(
     ],
 )
 
+#keep
 go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
@@ -129,6 +145,22 @@ go_proto_library(
     ],
 )
 
+#keep
+go_proto_library(
+    name = "examplepb_opaque_go_proto",
+    compilers = [
+        "//:go_apiv2_opaque",
+        "//:go_grpc",
+        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway_opaque",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
+    proto = ":examplepb_opaque_proto",
+    deps = [
+        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
+        "@org_golang_google_genproto_googleapis_api//annotations",
+    ],
+)
+
 go_library(
     name = "examplepb",
     srcs = [
@@ -139,7 +171,10 @@ go_library(
         "openapi_merge_b.pb.gw.go",
         "openapi_merge_b_grpc.pb.go",
     ],
-    embed = [":examplepb_go_proto"],
+    embed = [
+        ":examplepb_go_proto",
+        ":examplepb_opaque_go_proto",  #keep
+    ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     deps = [
         "//runtime",
