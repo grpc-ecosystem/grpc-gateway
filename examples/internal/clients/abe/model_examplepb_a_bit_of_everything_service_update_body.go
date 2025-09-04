@@ -38,7 +38,7 @@ type ExamplepbABitOfEverythingServiceUpdateBody struct {
 	Sint32Value int32 `json:"sint32Value,omitempty"`
 	Sint64Value string `json:"sint64Value,omitempty"`
 	RepeatedStringValue []string `json:"repeatedStringValue,omitempty"`
-	OneofEmpty *interface{} `json:"oneofEmpty,omitempty"`
+	OneofEmpty interface{} `json:"oneofEmpty,omitempty"`
 	OneofString string `json:"oneofString,omitempty"`
 	MapValue map[string]ExamplepbNumericEnum `json:"mapValue,omitempty"`
 	// Map of string description.
