@@ -38,6 +38,7 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude visibility_rule_echo_service.pb.gw.go
 # gazelle:exclude visibility_rule_echo_service_grpc.pb.go
 # gazelle:exclude opaque.proto
+# gazelle:exclude opaque.pb.go
 # gazelle:exclude opaque.pb.gw.go
 # gazelle:exclude opaque_grpc.pb.go
 # gazelle:exclude openapi_merge_a.proto
