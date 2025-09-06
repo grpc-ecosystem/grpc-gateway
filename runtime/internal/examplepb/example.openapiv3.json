@@ -1,0 +1,1234 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.Empty": {
+        "type": "object"
+      },
+      ".google.protobuf.FieldMask": {
+        "type": "string"
+      },
+      ".google.protobuf.Timestamp": {
+        "format": "date-time",
+        "type": "string"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ABitOfEverything": {
+        "oneOf": [
+          {
+            "properties": {
+              "anytype": {
+                "$ref": "#/components/schemas/.google.protobuf.Any"
+              },
+              "bool_value": {
+                "type": "boolean"
+              },
+              "bytes_value": {
+                "format": "byte",
+                "type": "string"
+              },
+              "double_value": {
+                "format": "double",
+                "type": "number"
+              },
+              "enum_value": {
+                "enum": [
+                  "ZERO",
+                  "ONE"
+                ],
+                "type": "string"
+              },
+              "enum_value_annotation": {
+                "enum": [
+                  "ZERO",
+                  "ONE"
+                ],
+                "type": "string"
+              },
+              "fixed32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "fixed64_value": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "float_value": {
+                "format": "float",
+                "type": "number"
+              },
+              "int32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "int64_override_type": {
+                "format": "int64",
+                "type": "string"
+              },
+              "int64_value": {
+                "format": "int64",
+                "type": "string"
+              },
+              "map_value": {
+                "additionalProperties": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "mapped_nested_value": {
+                "additionalProperties": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              "mapped_string_value": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "nested": {
+                "items": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "nested_annotation": {
+                "properties": {
+                  "amount": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "ok": {
+                    "enum": [
+                      "FALSE",
+                      "TRUE"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "nonConventionalNameValue": {
+                "type": "string"
+              },
+              "oneof_empty": {
+                "$ref": "#/components/schemas/.google.protobuf.Empty"
+              },
+              "repeated_anytype": {
+                "items": {
+                  "properties": {
+                    "type_url": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "format": "byte",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "repeated_enum_annotation": {
+                "items": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "repeated_enum_value": {
+                "items": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "repeated_nested_annotation": {
+                "items": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "repeated_string_annotation": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "repeated_string_value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "sfixed32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "sfixed64_value": {
+                "format": "int64",
+                "type": "string"
+              },
+              "single_nested": {
+                "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested"
+              },
+              "sint32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "sint64_value": {
+                "format": "int64",
+                "type": "string"
+              },
+              "string_value": {
+                "type": "string"
+              },
+              "timestamp_value": {
+                "$ref": "#/components/schemas/.google.protobuf.Timestamp"
+              },
+              "uint32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "uint64_value": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "uuid": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "anytype": {
+                "$ref": "#/components/schemas/.google.protobuf.Any"
+              },
+              "bool_value": {
+                "type": "boolean"
+              },
+              "bytes_value": {
+                "format": "byte",
+                "type": "string"
+              },
+              "double_value": {
+                "format": "double",
+                "type": "number"
+              },
+              "enum_value": {
+                "enum": [
+                  "ZERO",
+                  "ONE"
+                ],
+                "type": "string"
+              },
+              "enum_value_annotation": {
+                "enum": [
+                  "ZERO",
+                  "ONE"
+                ],
+                "type": "string"
+              },
+              "fixed32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "fixed64_value": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "float_value": {
+                "format": "float",
+                "type": "number"
+              },
+              "int32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "int64_override_type": {
+                "format": "int64",
+                "type": "string"
+              },
+              "int64_value": {
+                "format": "int64",
+                "type": "string"
+              },
+              "map_value": {
+                "additionalProperties": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "mapped_nested_value": {
+                "additionalProperties": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "object"
+              },
+              "mapped_string_value": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "nested": {
+                "items": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "nested_annotation": {
+                "properties": {
+                  "amount": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "ok": {
+                    "enum": [
+                      "FALSE",
+                      "TRUE"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "nonConventionalNameValue": {
+                "type": "string"
+              },
+              "oneof_string": {
+                "type": "string"
+              },
+              "repeated_anytype": {
+                "items": {
+                  "properties": {
+                    "type_url": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "format": "byte",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "repeated_enum_annotation": {
+                "items": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "repeated_enum_value": {
+                "items": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "repeated_nested_annotation": {
+                "items": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "repeated_string_annotation": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "repeated_string_value": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "sfixed32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "sfixed64_value": {
+                "format": "int64",
+                "type": "string"
+              },
+              "single_nested": {
+                "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested"
+              },
+              "sint32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "sint64_value": {
+                "format": "int64",
+                "type": "string"
+              },
+              "string_value": {
+                "type": "string"
+              },
+              "timestamp_value": {
+                "$ref": "#/components/schemas/.google.protobuf.Timestamp"
+              },
+              "uint32_value": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "uint64_value": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "uuid": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "properties": {
+              "amount": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "ok": {
+                "enum": [
+                  "FALSE",
+                  "TRUE"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedStringValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested": {
+        "properties": {
+          "amount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ok": {
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested.DeepEnum": {
+        "enum": [
+          "FALSE",
+          "TRUE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NestedOne": {
+        "properties": {
+          "two": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NestedTwo"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NestedOuter": {
+        "properties": {
+          "one": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NestedOne"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NestedThree": {
+        "properties": {
+          "a": {
+            "type": "boolean"
+          },
+          "b": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NestedTwo": {
+        "properties": {
+          "three": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NestedThree"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NumericEnum": {
+        "enum": [
+          "ZERO",
+          "ONE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut": {
+        "properties": {
+          "response": {
+            "items": {
+              "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response": {
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "UNKNOWN",
+              "A",
+              "B"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response.ResponseType": {
+        "enum": [
+          "UNKNOWN",
+          "A",
+          "B"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ResponseBodyOut": {
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.Response"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.Response": {
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.SimpleMessage": {
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.UpdateMessage": {
+        "properties": {
+          "a_bit_of_everything": {
+            "oneOf": [
+              {
+                "properties": {
+                  "anytype": {
+                    "$ref": "#/components/schemas/.google.protobuf.Any"
+                  },
+                  "bool_value": {
+                    "type": "boolean"
+                  },
+                  "bytes_value": {
+                    "format": "byte",
+                    "type": "string"
+                  },
+                  "double_value": {
+                    "format": "double",
+                    "type": "number"
+                  },
+                  "enum_value": {
+                    "enum": [
+                      "ZERO",
+                      "ONE"
+                    ],
+                    "type": "string"
+                  },
+                  "enum_value_annotation": {
+                    "enum": [
+                      "ZERO",
+                      "ONE"
+                    ],
+                    "type": "string"
+                  },
+                  "fixed32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "fixed64_value": {
+                    "format": "uint64",
+                    "type": "string"
+                  },
+                  "float_value": {
+                    "format": "float",
+                    "type": "number"
+                  },
+                  "int32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "int64_override_type": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "int64_value": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "map_value": {
+                    "additionalProperties": {
+                      "enum": [
+                        "ZERO",
+                        "ONE"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "mapped_nested_value": {
+                    "additionalProperties": {
+                      "properties": {
+                        "amount": {
+                          "format": "int32",
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "ok": {
+                          "enum": [
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "object"
+                  },
+                  "mapped_string_value": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "nested": {
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "format": "int32",
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "ok": {
+                          "enum": [
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "nested_annotation": {
+                    "properties": {
+                      "amount": {
+                        "format": "int32",
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "ok": {
+                        "enum": [
+                          "FALSE",
+                          "TRUE"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "nonConventionalNameValue": {
+                    "type": "string"
+                  },
+                  "oneof_empty": {
+                    "$ref": "#/components/schemas/.google.protobuf.Empty"
+                  },
+                  "repeated_anytype": {
+                    "items": {
+                      "properties": {
+                        "type_url": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "format": "byte",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_enum_annotation": {
+                    "items": {
+                      "enum": [
+                        "ZERO",
+                        "ONE"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_enum_value": {
+                    "items": {
+                      "enum": [
+                        "ZERO",
+                        "ONE"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_nested_annotation": {
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "format": "int32",
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "ok": {
+                          "enum": [
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_string_annotation": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_string_value": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "sfixed32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "sfixed64_value": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "single_nested": {
+                    "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested"
+                  },
+                  "sint32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "sint64_value": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "string_value": {
+                    "type": "string"
+                  },
+                  "timestamp_value": {
+                    "$ref": "#/components/schemas/.google.protobuf.Timestamp"
+                  },
+                  "uint32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "uint64_value": {
+                    "format": "uint64",
+                    "type": "string"
+                  },
+                  "uuid": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "anytype": {
+                    "$ref": "#/components/schemas/.google.protobuf.Any"
+                  },
+                  "bool_value": {
+                    "type": "boolean"
+                  },
+                  "bytes_value": {
+                    "format": "byte",
+                    "type": "string"
+                  },
+                  "double_value": {
+                    "format": "double",
+                    "type": "number"
+                  },
+                  "enum_value": {
+                    "enum": [
+                      "ZERO",
+                      "ONE"
+                    ],
+                    "type": "string"
+                  },
+                  "enum_value_annotation": {
+                    "enum": [
+                      "ZERO",
+                      "ONE"
+                    ],
+                    "type": "string"
+                  },
+                  "fixed32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "fixed64_value": {
+                    "format": "uint64",
+                    "type": "string"
+                  },
+                  "float_value": {
+                    "format": "float",
+                    "type": "number"
+                  },
+                  "int32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "int64_override_type": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "int64_value": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "map_value": {
+                    "additionalProperties": {
+                      "enum": [
+                        "ZERO",
+                        "ONE"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "mapped_nested_value": {
+                    "additionalProperties": {
+                      "properties": {
+                        "amount": {
+                          "format": "int32",
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "ok": {
+                          "enum": [
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "object"
+                  },
+                  "mapped_string_value": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "nested": {
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "format": "int32",
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "ok": {
+                          "enum": [
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "nested_annotation": {
+                    "properties": {
+                      "amount": {
+                        "format": "int32",
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "ok": {
+                        "enum": [
+                          "FALSE",
+                          "TRUE"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "nonConventionalNameValue": {
+                    "type": "string"
+                  },
+                  "oneof_string": {
+                    "type": "string"
+                  },
+                  "repeated_anytype": {
+                    "items": {
+                      "properties": {
+                        "type_url": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "format": "byte",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_enum_annotation": {
+                    "items": {
+                      "enum": [
+                        "ZERO",
+                        "ONE"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_enum_value": {
+                    "items": {
+                      "enum": [
+                        "ZERO",
+                        "ONE"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_nested_annotation": {
+                    "items": {
+                      "properties": {
+                        "amount": {
+                          "format": "int32",
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "ok": {
+                          "enum": [
+                            "FALSE",
+                            "TRUE"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_string_annotation": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "repeated_string_value": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "sfixed32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "sfixed64_value": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "single_nested": {
+                    "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested"
+                  },
+                  "sint32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "sint64_value": {
+                    "format": "int64",
+                    "type": "string"
+                  },
+                  "string_value": {
+                    "type": "string"
+                  },
+                  "timestamp_value": {
+                    "$ref": "#/components/schemas/.google.protobuf.Timestamp"
+                  },
+                  "uint32_value": {
+                    "format": "int32",
+                    "type": "integer"
+                  },
+                  "uint64_value": {
+                    "format": "uint64",
+                    "type": "string"
+                  },
+                  "uuid": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "update_mask": {
+            "$ref": "#/components/schemas/.google.protobuf.FieldMask"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.UpdateNestedRequest": {
+        "properties": {
+          "nested": {
+            "properties": {
+              "one": {
+                "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NestedOne"
+              }
+            },
+            "type": "object"
+          },
+          "update_mask": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "runtime/internal/examplepb/example.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

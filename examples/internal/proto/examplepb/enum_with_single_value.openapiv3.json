@@ -1,0 +1,100 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValue": {
+        "enum": [
+          "ENUM_WITH_SINGLE_VALUE_UNSPECIFIED"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueServiceEchoRequest": {
+        "properties": {
+          "value": {
+            "enum": [
+              "ENUM_WITH_SINGLE_VALUE_UNSPECIFIED"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueServiceEchoResponse": {
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/enum_with_single_value.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/enum-with-single-value/echo": {
+      "post": {
+        "operationId": "EnumWithSingleValueService_Echo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueServiceEchoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.EnumWithSingleValueServiceEchoResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EnumWithSingleValueService"
+        ]
+      }
+    }
+  }
+}

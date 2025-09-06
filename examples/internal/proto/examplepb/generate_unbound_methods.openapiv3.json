@@ -1,0 +1,30 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Duration": {
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsSimpleMessage": {
+        "properties": {
+          "duration": {
+            "$ref": "#/components/schemas/.google.protobuf.Duration"
+          },
+          "id": {
+            "type": "string"
+          },
+          "num": {
+            "format": "int64",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/generate_unbound_methods.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

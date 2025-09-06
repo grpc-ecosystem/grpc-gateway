@@ -1,0 +1,270 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.FieldMask": {
+        "type": "string"
+      },
+      ".google.protobuf.Struct": {
+        "type": "object"
+      },
+      ".google.protobuf.Value": {},
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardMessage": {
+        "properties": {
+          "Num": {
+            "format": "int64",
+            "type": "string"
+          },
+          "STATUS": {
+            "type": "string"
+          },
+          "en_GB": {
+            "format": "int64",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "langIdent": {
+            "type": "string"
+          },
+          "line_num": {
+            "format": "int64",
+            "type": "string"
+          },
+          "no": {
+            "type": "string"
+          },
+          "struct_field": {
+            "$ref": "#/components/schemas/.google.protobuf.Struct"
+          },
+          "thing": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessage.Thing"
+          },
+          "value_field": {
+            "$ref": "#/components/schemas/.google.protobuf.Value"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardMessage.Thing": {
+        "properties": {
+          "subThing": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessage.Thing.SubThing"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardMessage.Thing.SubThing": {
+        "properties": {
+          "sub_value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames": {
+        "properties": {
+          "Num": {
+            "format": "int64",
+            "type": "string"
+          },
+          "STATUS": {
+            "type": "string"
+          },
+          "en_GB": {
+            "format": "int64",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "langIdent": {
+            "type": "string"
+          },
+          "line_num": {
+            "format": "int64",
+            "type": "string"
+          },
+          "no": {
+            "type": "string"
+          },
+          "struct_field": {
+            "type": "object"
+          },
+          "thing": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames.Thing"
+          },
+          "value_field": {}
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames.Thing": {
+        "properties": {
+          "subThing": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames.Thing.SubThing"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames.Thing.SubThing": {
+        "properties": {
+          "sub_value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardUpdateRequest": {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessage"
+          },
+          "update_mask": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.runtime.internal.examplepb.NonStandardWithJSONNamesUpdateRequest": {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames"
+          },
+          "update_mask": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "runtime/internal/examplepb/non_standard_names.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/non_standard/update": {
+      "patch": {
+        "operationId": "NonStandardService_Update",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "update_mask",
+            "schema": {
+              "$ref": "#/components/schemas/.google.protobuf.FieldMask"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NonStandardService"
+        ]
+      }
+    },
+    "/v1/example/non_standard/update_with_json_names": {
+      "patch": {
+        "operationId": "NonStandardService_UpdateWithJSONNames",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "update_mask",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardWithJSONNamesUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.runtime.internal.examplepb.NonStandardMessageWithJSONNames"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NonStandardService"
+        ]
+      }
+    }
+  }
+}

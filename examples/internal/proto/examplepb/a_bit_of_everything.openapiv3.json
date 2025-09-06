@@ -1,0 +1,6466 @@
+{
+  "components": {
+    "requestBodies": {
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything": {
+        "content": {
+          "application/json": {
+            "schema": {}
+          }
+        }
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Body": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.CreateBookRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "book": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Book"
+                },
+                "book_id": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.MessageWithBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "data": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Body"
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UpdateBookRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "allow_missing": {
+                  "type": "boolean"
+                },
+                "book": {
+                  "properties": {
+                    "create_time": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "update_mask": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UpdateV2Request": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "abe": {},
+                "update_mask": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.Empty": {
+        "type": "object"
+      },
+      ".google.protobuf.FieldMask": {
+        "type": "string"
+      },
+      ".google.protobuf.StringValue": {
+        "type": "string"
+      },
+      ".google.protobuf.Timestamp": {
+        "format": "date-time",
+        "type": "string"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum": {
+        "enum": [
+          "GHI",
+          "JKL"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.pathenum.PathEnum": {
+        "enum": [
+          "ABC",
+          "DEF"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.pathenum.snake_case_for_import": {
+        "enum": [
+          "value_x",
+          "value_y"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything": {},
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MapValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedNestedValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "properties": {
+              "amount": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "ok": {
+                "enum": [
+                  "FALSE",
+                  "TRUE"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedStringValueEntry": {
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested": {
+        "properties": {
+          "amount": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ok": {
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested.DeepEnum": {
+        "enum": [
+          "FALSE",
+          "TRUE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingRepeated": {
+        "properties": {
+          "path_repeated_bool_value": {
+            "items": {
+              "type": "boolean"
+            },
+            "type": "array"
+          },
+          "path_repeated_bytes_value": {
+            "items": {
+              "format": "byte",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_double_value": {
+            "items": {
+              "format": "double",
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "path_repeated_enum_value": {
+            "items": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_fixed32_value": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "path_repeated_fixed64_value": {
+            "items": {
+              "format": "uint64",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_float_value": {
+            "items": {
+              "format": "float",
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "path_repeated_int32_value": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "path_repeated_int64_value": {
+            "items": {
+              "format": "int64",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_sfixed32_value": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "path_repeated_sfixed64_value": {
+            "items": {
+              "format": "int64",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_sint32_value": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "path_repeated_sint64_value": {
+            "items": {
+              "format": "int64",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_string_value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "path_repeated_uint32_value": {
+            "items": {
+              "format": "int32",
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "path_repeated_uint64_value": {
+            "items": {
+              "format": "uint64",
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Bar": {
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Body": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Book": {
+        "properties": {
+          "create_time": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.CheckStatusResponse": {
+        "properties": {
+          "status": {
+            "properties": {
+              "code": {
+                "format": "int32",
+                "type": "integer"
+              },
+              "details": {
+                "items": {
+                  "$ref": "#/components/schemas/.google.protobuf.Any"
+                },
+                "type": "array"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.CreateBookRequest": {
+        "properties": {
+          "book": {
+            "properties": {
+              "create_time": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "book_id": {
+            "type": "string"
+          },
+          "parent": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ErrorObject": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ErrorResponse": {
+        "properties": {
+          "correlationId": {
+            "type": "string"
+          },
+          "error": {
+            "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ErrorObject"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Foo": {
+        "properties": {
+          "bar": {
+            "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Bar"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.MessageWithBody": {
+        "properties": {
+          "data": {
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.NumericEnum": {
+        "enum": [
+          "ZERO",
+          "ONE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.RequiredMessageTypeRequest": {
+        "properties": {
+          "foo": {
+            "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Foo"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.SnakeEnumRequest": {
+        "properties": {
+          "what": {
+            "enum": [
+              "value_c",
+              "value_d"
+            ],
+            "type": "string"
+          },
+          "where": {
+            "enum": [
+              "value_x",
+              "value_y"
+            ],
+            "type": "string"
+          },
+          "who": {
+            "enum": [
+              "value_e",
+              "value_f"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.SnakeEnumResponse": {
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UpdateBookRequest": {
+        "properties": {
+          "allow_missing": {
+            "type": "boolean"
+          },
+          "book": {
+            "properties": {
+              "create_time": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "update_mask": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.UpdateV2Request": {
+        "properties": {
+          "abe": {},
+          "update_mask": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.snake_case_0_enum": {
+        "enum": [
+          "value_e",
+          "value_f"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.snake_case_enum": {
+        "enum": [
+          "value_c",
+          "value_d"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.oneofenum.ExampleEnum": {
+        "enum": [
+          "EXAMPLE_ENUM_UNSPECIFIED",
+          "EXAMPLE_ENUM_FIRST"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.oneofenum.OneofEnumMessage": {
+        "properties": {
+          "example_enum": {
+            "enum": [
+              "EXAMPLE_ENUM_UNSPECIFIED",
+              "EXAMPLE_ENUM_FIRST"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.sub.StringMessage": {
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/a_bit_of_everything.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/a_bit_of_everything": {
+      "post": {
+        "operationId": "ABitOfEverythingService_CreateBody",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo/{value}": {
+      "get": {
+        "operationId": "ABitOfEverythingService_Echo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.sub.StringMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/params/get/nested_enum/{single_nested.ok}": {
+      "get": {
+        "operationId": "ABitOfEverythingService_CheckNestedEnumGetQueryParams",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/params/get/{single_nested.name}": {
+      "get": {
+        "operationId": "ABitOfEverythingService_CheckGetQueryParams",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/params/post/{string_value}": {
+      "post": {
+        "operationId": "ABitOfEverythingService_CheckPostQueryParams",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "path",
+            "name": "string_value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/query/{uuid}": {
+      "get": {
+        "operationId": "ABitOfEverythingService_GetQuery",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}": {
+      "post": {
+        "operationId": "ABitOfEverythingService_Create",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "path",
+            "name": "float_value",
+            "required": true,
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "path",
+            "name": "double_value",
+            "required": true,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "path",
+            "name": "int64_value",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uint64_value",
+            "required": true,
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "int32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "fixed64_value",
+            "required": true,
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "fixed32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bool_value",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "path",
+            "name": "string_value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uint32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "enum_value",
+            "required": true,
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_enum_value",
+            "required": true,
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "nested_path_enum_value",
+            "required": true,
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sfixed32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sfixed64_value",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sint32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sint64_value",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "$ref": "#/components/schemas/.google.protobuf.Empty"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MapValueEntry"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedStringValueEntry"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedNestedValueEntry"
+            }
+          },
+          {
+            "in": "path",
+            "name": "nonConventionalNameValue",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "$ref": "#/components/schemas/.google.protobuf.Timestamp"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "enum_value_annotation",
+            "required": true,
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{uuid}": {
+      "delete": {
+        "operationId": "ABitOfEverythingService_Delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "get": {
+        "operationId": "ABitOfEverythingService_Lookup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "head": {
+        "operationId": "ABitOfEverythingService_Exists",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "options": {
+        "operationId": "ABitOfEverythingService_CustomOptionsRequest",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "put": {
+        "operationId": "ABitOfEverythingService_Update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{uuid}:custom": {
+      "post": {
+        "operationId": "ABitOfEverythingService_Custom",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{uuid}:custom:custom": {
+      "post": {
+        "operationId": "ABitOfEverythingService_DoubleColon",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "single_nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "float_value",
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "double_value",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed64_value",
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bool_value",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "bytes_value",
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "path_enum_value",
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_path_enum_value",
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sfixed64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint32_value",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sint64_value",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_empty",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "oneof_string",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "map_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "enum": [
+                    "ZERO",
+                    "ONE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_string_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mapped_nested_value",
+            "schema": {
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "properties": {
+                    "amount": {
+                      "format": "int32",
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "enum": [
+                        "FALSE",
+                        "TRUE"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nonConventionalNameValue",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "timestamp_value",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_value",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_enum_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "enum_value_annotation",
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_string_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repeated_nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "nested_annotation",
+            "schema": {
+              "properties": {
+                "amount": {
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ok": {
+                  "enum": [
+                    "FALSE",
+                    "TRUE"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "int64_override_type",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "output_only_string_via_field_behavior_annotation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_value",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "optional_string_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_string_field_2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_behavior_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "required_field_schema_json_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_only_dot",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_both",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "trailing_multiline",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "uuids",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}": {
+      "get": {
+        "operationId": "ABitOfEverythingService_GetRepeatedQuery",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "path_repeated_float_value",
+            "required": true,
+            "schema": {
+              "format": "float",
+              "type": "number"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_double_value",
+            "required": true,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_int64_value",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_uint64_value",
+            "required": true,
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_int32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_fixed64_value",
+            "required": true,
+            "schema": {
+              "format": "uint64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_fixed32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_bool_value",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_string_value",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_bytes_value",
+            "required": true,
+            "schema": {
+              "format": "byte",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_uint32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_enum_value",
+            "required": true,
+            "schema": {
+              "enum": [
+                "ZERO",
+                "ONE"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_sfixed32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_sfixed64_value",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_sint32_value",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path_repeated_sint64_value",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingRepeated"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/checkStatus": {
+      "get": {
+        "operationId": "ABitOfEverythingService_CheckStatus",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.CheckStatusResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/deep_path/{single_nested.name}": {
+      "post": {
+        "operationId": "ABitOfEverythingService_DeepPathEcho",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/oneofenum": {
+      "post": {
+        "operationId": "ABitOfEverythingService_PostOneofEnum",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.oneofenum.OneofEnumMessage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/requiredmessagetype": {
+      "post": {
+        "operationId": "ABitOfEverythingService_PostRequiredMessageType",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.RequiredMessageTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/snake/{who}/{what}/{where}": {
+      "get": {
+        "operationId": "SnakeEnumService_SnakeEnum",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "what",
+            "required": true,
+            "schema": {
+              "enum": [
+                "value_c",
+                "value_d"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "who",
+            "required": true,
+            "schema": {
+              "enum": [
+                "value_e",
+                "value_f"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "where",
+            "required": true,
+            "schema": {
+              "enum": [
+                "value_x",
+                "value_y"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SnakeEnumResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SnakeEnumService"
+        ]
+      }
+    },
+    "/v1/{book.name=publishers/*/books/*}": {
+      "patch": {
+        "operationId": "ABitOfEverythingService_UpdateBook",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "update_mask",
+            "schema": {
+              "$ref": "#/components/schemas/.google.protobuf.FieldMask"
+            }
+          },
+          {
+            "in": "query",
+            "name": "allow_missing",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.UpdateBookRequest"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Book"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/{parent=publishers/*}/books": {
+      "post": {
+        "operationId": "ABitOfEverythingService_CreateBook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "book_id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.CreateBookRequest"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Book"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/a_bit_of_everything/{abe.uuid}": {
+      "patch": {
+        "operationId": "ABitOfEverythingService_UpdateV2_1",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "update_mask",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.UpdateV2Request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "put": {
+        "operationId": "ABitOfEverythingService_UpdateV2",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "update_mask",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.UpdateV2Request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/echo": {
+      "get": {
+        "operationId": "ABitOfEverythingService_Echo_2",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "value",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.sub.StringMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "post": {
+        "operationId": "ABitOfEverythingService_Echo_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.sub.StringMessage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.sub.StringMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/empty": {
+      "get": {
+        "operationId": "camelCaseServiceName_Empty",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "camelCaseServiceName"
+        ]
+      }
+    },
+    "/v2/example/errorwithdetails": {
+      "get": {
+        "operationId": "ABitOfEverythingService_ErrorWithDetails",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/overwriterequestcontenttype": {
+      "post": {
+        "operationId": "ABitOfEverythingService_OverwriteRequestContentType",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/overwriteresponsecontenttype": {
+      "get": {
+        "operationId": "ABitOfEverythingService_OverwriteResponseContentType",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.StringValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/postwithemptybody/{name}": {
+      "post": {
+        "operationId": "ABitOfEverythingService_PostWithEmptyBody",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.Body"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/timeout": {
+      "get": {
+        "operationId": "ABitOfEverythingService_Timeout",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/withbody/{id}": {
+      "post": {
+        "operationId": "ABitOfEverythingService_GetMessageWithBody",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.MessageWithBody"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/{value}:check": {
+      "get": {
+        "operationId": "ABitOfEverythingService_CheckExternalPathEnum",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "enum": [
+                "ABC",
+                "DEF"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2a/example/a_bit_of_everything/{abe.uuid}": {
+      "patch": {
+        "operationId": "ABitOfEverythingService_UpdateV2_2",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.UpdateV2Request"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v3/{value}:check": {
+      "get": {
+        "operationId": "ABitOfEverythingService_CheckExternalNestedPathEnum",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "value",
+            "required": true,
+            "schema": {
+              "enum": [
+                "GHI",
+                "JKL"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    }
+  }
+}

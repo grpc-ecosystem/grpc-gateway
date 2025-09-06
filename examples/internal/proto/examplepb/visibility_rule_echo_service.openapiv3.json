@@ -1,0 +1,1805 @@
+{
+  "components": {
+    "requestBodies": {
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "ahidden_default_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                      ],
+                      "type": "string"
+                    },
+                    "an_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_UNSPECIFIED",
+                        "VISIBILITY_ENUM_VISIBLE",
+                        "VISIBILITY_ENUM_INTERNAL",
+                        "VISIBILITY_ENUM_PREVIEW"
+                      ],
+                      "type": "string"
+                    },
+                    "en": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "internal_field": {
+                      "type": "string"
+                    },
+                    "line_num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "preview_field": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "internal_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "preview_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "ahidden_default_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                      ],
+                      "type": "string"
+                    },
+                    "an_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_UNSPECIFIED",
+                        "VISIBILITY_ENUM_VISIBLE",
+                        "VISIBILITY_ENUM_INTERNAL",
+                        "VISIBILITY_ENUM_PREVIEW"
+                      ],
+                      "type": "string"
+                    },
+                    "en": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "internal_field": {
+                      "type": "string"
+                    },
+                    "lang": {
+                      "type": "string"
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "preview_field": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "internal_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "preview_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "ahidden_default_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                      ],
+                      "type": "string"
+                    },
+                    "an_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_UNSPECIFIED",
+                        "VISIBILITY_ENUM_VISIBLE",
+                        "VISIBILITY_ENUM_INTERNAL",
+                        "VISIBILITY_ENUM_PREVIEW"
+                      ],
+                      "type": "string"
+                    },
+                    "internal_field": {
+                      "type": "string"
+                    },
+                    "line_num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "no": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "internal_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "preview_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "preview_field": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "internal_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "preview_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "ahidden_default_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                        "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                      ],
+                      "type": "string"
+                    },
+                    "an_enum": {
+                      "enum": [
+                        "VISIBILITY_ENUM_UNSPECIFIED",
+                        "VISIBILITY_ENUM_VISIBLE",
+                        "VISIBILITY_ENUM_INTERNAL",
+                        "VISIBILITY_ENUM_PREVIEW"
+                      ],
+                      "type": "string"
+                    },
+                    "internal_field": {
+                      "type": "string"
+                    },
+                    "lang": {
+                      "type": "string"
+                    },
+                    "no": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "internal_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "preview_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "preview_field": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "internal_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "preview_field": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded": {
+        "oneOf": [
+          {
+            "properties": {
+              "progress": {
+                "format": "int64",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "note": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "internal_field": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "preview_field": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEnumInPreviewMethod": {
+        "enum": [
+          "VISIBILITY_RULE_ENUM_IN_PREVIEW_METHOD_UNSPECIFIED"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleMessageInPreviewMethod": {
+        "properties": {
+          "enum": {
+            "enum": [
+              "VISIBILITY_RULE_ENUM_IN_PREVIEW_METHOD_UNSPECIFIED"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "sub_message": {
+            "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSubMessageInPreviewMethod"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage": {
+        "oneOf": [
+          {
+            "properties": {
+              "ahidden_default_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                ],
+                "type": "string"
+              },
+              "an_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_UNSPECIFIED",
+                  "VISIBILITY_ENUM_VISIBLE",
+                  "VISIBILITY_ENUM_INTERNAL",
+                  "VISIBILITY_ENUM_PREVIEW"
+                ],
+                "type": "string"
+              },
+              "en": {
+                "format": "int64",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "internal_field": {
+                "type": "string"
+              },
+              "line_num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "preview_field": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "internal_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "preview_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "ahidden_default_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                ],
+                "type": "string"
+              },
+              "an_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_UNSPECIFIED",
+                  "VISIBILITY_ENUM_VISIBLE",
+                  "VISIBILITY_ENUM_INTERNAL",
+                  "VISIBILITY_ENUM_PREVIEW"
+                ],
+                "type": "string"
+              },
+              "en": {
+                "format": "int64",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "internal_field": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "preview_field": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "internal_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "preview_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "ahidden_default_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                ],
+                "type": "string"
+              },
+              "an_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_UNSPECIFIED",
+                  "VISIBILITY_ENUM_VISIBLE",
+                  "VISIBILITY_ENUM_INTERNAL",
+                  "VISIBILITY_ENUM_PREVIEW"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "internal_field": {
+                "type": "string"
+              },
+              "line_num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "no": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "internal_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "preview_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "preview_field": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "internal_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "preview_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "ahidden_default_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                  "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+                ],
+                "type": "string"
+              },
+              "an_enum": {
+                "enum": [
+                  "VISIBILITY_ENUM_UNSPECIFIED",
+                  "VISIBILITY_ENUM_VISIBLE",
+                  "VISIBILITY_ENUM_INTERNAL",
+                  "VISIBILITY_ENUM_PREVIEW"
+                ],
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "internal_field": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "no": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "internal_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "preview_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "preview_field": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "internal_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "preview_field": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum": {
+        "enum": [
+          "VISIBILITY_ENUM_UNSPECIFIED",
+          "VISIBILITY_ENUM_VISIBLE",
+          "VISIBILITY_ENUM_INTERNAL",
+          "VISIBILITY_ENUM_PREVIEW"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault": {
+        "enum": [
+          "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+          "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSubMessageInPreviewMethod": {
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/visibility_rule_echo_service.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/echo/{id}": {
+      "post": {
+        "operationId": "VisibilityRuleEchoService_Echo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "internal_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "preview_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "an_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_UNSPECIFIED",
+                "VISIBILITY_ENUM_VISIBLE",
+                "VISIBILITY_ENUM_INTERNAL",
+                "VISIBILITY_ENUM_PREVIEW"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ahidden_default_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_internal": {
+      "get": {
+        "operationId": "VisibilityRuleEchoService_EchoInternal",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "internal_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "preview_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "an_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_UNSPECIFIED",
+                "VISIBILITY_ENUM_VISIBLE",
+                "VISIBILITY_ENUM_INTERNAL",
+                "VISIBILITY_ENUM_PREVIEW"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ahidden_default_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_internal_and_preview": {
+      "get": {
+        "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "internal_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "preview_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "an_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_UNSPECIFIED",
+                "VISIBILITY_ENUM_VISIBLE",
+                "VISIBILITY_ENUM_INTERNAL",
+                "VISIBILITY_ENUM_PREVIEW"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ahidden_default_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_preview": {
+      "get": {
+        "operationId": "VisibilityRuleEchoService_EchoPreview",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "internal_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "preview_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "an_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_UNSPECIFIED",
+                "VISIBILITY_ENUM_VISIBLE",
+                "VISIBILITY_ENUM_INTERNAL",
+                "VISIBILITY_ENUM_PREVIEW"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ahidden_default_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleMessageInPreviewMethod"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
+      }
+    },
+    "/v1/example/internal/echo/{id}": {
+      "post": {
+        "operationId": "VisibilityRuleInternalEchoService_Echo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "internal_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "preview_field": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "internal_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "preview_field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "an_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_UNSPECIFIED",
+                "VISIBILITY_ENUM_VISIBLE",
+                "VISIBILITY_ENUM_INTERNAL",
+                "VISIBILITY_ENUM_PREVIEW"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ahidden_default_enum",
+            "schema": {
+              "enum": [
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+                "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "VisibilityRuleInternalEchoService"
+        ]
+      }
+    }
+  }
+}

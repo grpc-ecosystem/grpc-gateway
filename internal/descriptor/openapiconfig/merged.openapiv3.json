@@ -1,0 +1,1341 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Value": {},
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIConfig": {
+        "properties": {
+          "openapi_options": {
+            "properties": {
+              "field": {
+                "items": {
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "option": {
+                      "properties": {
+                        "array": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "default": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "enum": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "example": {
+                          "type": "string"
+                        },
+                        "exclusive_maximum": {
+                          "type": "boolean"
+                        },
+                        "exclusive_minimum": {
+                          "type": "boolean"
+                        },
+                        "extensions": {
+                          "additionalProperties": {},
+                          "type": "object"
+                        },
+                        "field_configuration": {
+                          "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration"
+                        },
+                        "format": {
+                          "type": "string"
+                        },
+                        "max_items": {
+                          "format": "uint64",
+                          "type": "string"
+                        },
+                        "max_length": {
+                          "format": "uint64",
+                          "type": "string"
+                        },
+                        "max_properties": {
+                          "format": "uint64",
+                          "type": "string"
+                        },
+                        "maximum": {
+                          "format": "double",
+                          "type": "number"
+                        },
+                        "min_items": {
+                          "format": "uint64",
+                          "type": "string"
+                        },
+                        "min_length": {
+                          "format": "uint64",
+                          "type": "string"
+                        },
+                        "min_properties": {
+                          "format": "uint64",
+                          "type": "string"
+                        },
+                        "minimum": {
+                          "format": "double",
+                          "type": "number"
+                        },
+                        "multiple_of": {
+                          "format": "double",
+                          "type": "number"
+                        },
+                        "pattern": {
+                          "type": "string"
+                        },
+                        "read_only": {
+                          "type": "boolean"
+                        },
+                        "ref": {
+                          "type": "string"
+                        },
+                        "required": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "items": {
+                            "enum": [
+                              "UNKNOWN",
+                              "ARRAY",
+                              "BOOLEAN",
+                              "INTEGER",
+                              "NULL",
+                              "NUMBER",
+                              "OBJECT",
+                              "STRING"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "unique_items": {
+                          "type": "boolean"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "file": {
+                "items": {
+                  "properties": {
+                    "file": {
+                      "type": "string"
+                    },
+                    "option": {
+                      "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Swagger"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "message": {
+                "items": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "option": {
+                      "properties": {
+                        "discriminator": {
+                          "type": "string"
+                        },
+                        "example": {
+                          "type": "string"
+                        },
+                        "external_docs": {
+                          "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation"
+                        },
+                        "json_schema": {
+                          "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema"
+                        },
+                        "read_only": {
+                          "type": "boolean"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "method": {
+                "items": {
+                  "properties": {
+                    "method": {
+                      "type": "string"
+                    },
+                    "option": {
+                      "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Operation"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "service": {
+                "items": {
+                  "properties": {
+                    "option": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "extensions": {
+                          "additionalProperties": {},
+                          "type": "object"
+                        },
+                        "external_docs": {
+                          "properties": {
+                            "description": {
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "service": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIFieldOption": {
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "option": {
+            "properties": {
+              "array": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "default": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "enum": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "example": {
+                "type": "string"
+              },
+              "exclusive_maximum": {
+                "type": "boolean"
+              },
+              "exclusive_minimum": {
+                "type": "boolean"
+              },
+              "extensions": {
+                "additionalProperties": {},
+                "type": "object"
+              },
+              "field_configuration": {
+                "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration"
+              },
+              "format": {
+                "type": "string"
+              },
+              "max_items": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "max_length": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "max_properties": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "maximum": {
+                "format": "double",
+                "type": "number"
+              },
+              "min_items": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "min_length": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "min_properties": {
+                "format": "uint64",
+                "type": "string"
+              },
+              "minimum": {
+                "format": "double",
+                "type": "number"
+              },
+              "multiple_of": {
+                "format": "double",
+                "type": "number"
+              },
+              "pattern": {
+                "type": "string"
+              },
+              "read_only": {
+                "type": "boolean"
+              },
+              "ref": {
+                "type": "string"
+              },
+              "required": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "title": {
+                "type": "string"
+              },
+              "type": {
+                "items": {
+                  "enum": [
+                    "UNKNOWN",
+                    "ARRAY",
+                    "BOOLEAN",
+                    "INTEGER",
+                    "NULL",
+                    "NUMBER",
+                    "OBJECT",
+                    "STRING"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "unique_items": {
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIFileOption": {
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "option": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Swagger"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIMessageOption": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "option": {
+            "properties": {
+              "discriminator": {
+                "type": "string"
+              },
+              "example": {
+                "type": "string"
+              },
+              "external_docs": {
+                "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation"
+              },
+              "json_schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema"
+              },
+              "read_only": {
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIMethodOption": {
+        "properties": {
+          "method": {
+            "type": "string"
+          },
+          "option": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Operation"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIOptions": {
+        "properties": {
+          "field": {
+            "items": {
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "option": {
+                  "properties": {
+                    "array": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "default": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "enum": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "example": {
+                      "type": "string"
+                    },
+                    "exclusive_maximum": {
+                      "type": "boolean"
+                    },
+                    "exclusive_minimum": {
+                      "type": "boolean"
+                    },
+                    "extensions": {
+                      "additionalProperties": {},
+                      "type": "object"
+                    },
+                    "field_configuration": {
+                      "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration"
+                    },
+                    "format": {
+                      "type": "string"
+                    },
+                    "max_items": {
+                      "format": "uint64",
+                      "type": "string"
+                    },
+                    "max_length": {
+                      "format": "uint64",
+                      "type": "string"
+                    },
+                    "max_properties": {
+                      "format": "uint64",
+                      "type": "string"
+                    },
+                    "maximum": {
+                      "format": "double",
+                      "type": "number"
+                    },
+                    "min_items": {
+                      "format": "uint64",
+                      "type": "string"
+                    },
+                    "min_length": {
+                      "format": "uint64",
+                      "type": "string"
+                    },
+                    "min_properties": {
+                      "format": "uint64",
+                      "type": "string"
+                    },
+                    "minimum": {
+                      "format": "double",
+                      "type": "number"
+                    },
+                    "multiple_of": {
+                      "format": "double",
+                      "type": "number"
+                    },
+                    "pattern": {
+                      "type": "string"
+                    },
+                    "read_only": {
+                      "type": "boolean"
+                    },
+                    "ref": {
+                      "type": "string"
+                    },
+                    "required": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "items": {
+                        "enum": [
+                          "UNKNOWN",
+                          "ARRAY",
+                          "BOOLEAN",
+                          "INTEGER",
+                          "NULL",
+                          "NUMBER",
+                          "OBJECT",
+                          "STRING"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "unique_items": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file": {
+            "items": {
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "option": {
+                  "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Swagger"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "message": {
+            "items": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "option": {
+                  "properties": {
+                    "discriminator": {
+                      "type": "string"
+                    },
+                    "example": {
+                      "type": "string"
+                    },
+                    "external_docs": {
+                      "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation"
+                    },
+                    "json_schema": {
+                      "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema"
+                    },
+                    "read_only": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "method": {
+            "items": {
+              "properties": {
+                "method": {
+                  "type": "string"
+                },
+                "option": {
+                  "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Operation"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "service": {
+            "items": {
+              "properties": {
+                "option": {
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "extensions": {
+                      "additionalProperties": {},
+                      "type": "object"
+                    },
+                    "external_docs": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "service": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.internal.descriptor.openapiconfig.OpenAPIServiceOption": {
+        "properties": {
+          "option": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "extensions": {
+                "additionalProperties": {},
+                "type": "object"
+              },
+              "external_docs": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "service": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Contact": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Header": {
+        "properties": {
+          "default": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "type": {
+            "enum": [
+              "UNKNOWN",
+              "STRING",
+              "NUMBER",
+              "INTEGER",
+              "BOOLEAN"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter.Type": {
+        "enum": [
+          "UNKNOWN",
+          "STRING",
+          "NUMBER",
+          "INTEGER",
+          "BOOLEAN"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Info": {
+        "properties": {
+          "contact": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Contact"
+          },
+          "description": {
+            "type": "string"
+          },
+          "extensions": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/.google.protobuf.Value"
+            },
+            "type": "object"
+          },
+          "license": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.License"
+          },
+          "terms_of_service": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.JSONSchema": {
+        "properties": {
+          "array": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "default": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "enum": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "example": {
+            "type": "string"
+          },
+          "exclusive_maximum": {
+            "type": "boolean"
+          },
+          "exclusive_minimum": {
+            "type": "boolean"
+          },
+          "extensions": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "field_configuration": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration"
+          },
+          "format": {
+            "type": "string"
+          },
+          "max_items": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "max_length": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "max_properties": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "maximum": {
+            "format": "double",
+            "type": "number"
+          },
+          "min_items": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "min_length": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "min_properties": {
+            "format": "uint64",
+            "type": "string"
+          },
+          "minimum": {
+            "format": "double",
+            "type": "number"
+          },
+          "multiple_of": {
+            "format": "double",
+            "type": "number"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "read_only": {
+            "type": "boolean"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "required": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "items": {
+              "enum": [
+                "UNKNOWN",
+                "ARRAY",
+                "BOOLEAN",
+                "INTEGER",
+                "NULL",
+                "NUMBER",
+                "OBJECT",
+                "STRING"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "unique_items": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration": {
+        "properties": {
+          "path_param_name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.JSONSchemaSimpleTypes": {
+        "enum": [
+          "UNKNOWN",
+          "ARRAY",
+          "BOOLEAN",
+          "INTEGER",
+          "NULL",
+          "NUMBER",
+          "OBJECT",
+          "STRING"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.License": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Operation": {
+        "properties": {
+          "consumes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "deprecated": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "extensions": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "external_docs": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "operation_id": {
+            "type": "string"
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Parameters"
+          },
+          "produces": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "responses": {
+            "additionalProperties": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "examples": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "extensions": {
+                  "additionalProperties": {},
+                  "type": "object"
+                },
+                "headers": {
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Header"
+                  },
+                  "type": "object"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Schema"
+                }
+              },
+              "type": "object"
+            },
+            "type": "object"
+          },
+          "schemes": {
+            "items": {
+              "enum": [
+                "UNKNOWN",
+                "HTTP",
+                "HTTPS",
+                "WS",
+                "WSS"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "security": {
+            "items": {
+              "properties": {
+                "security_requirement": {
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement.SecurityRequirementValue"
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Parameters": {
+        "properties": {
+          "headers": {
+            "items": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Response": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "examples": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "extensions": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "headers": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Header"
+            },
+            "type": "object"
+          },
+          "schema": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Schema"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Schema": {
+        "properties": {
+          "discriminator": {
+            "type": "string"
+          },
+          "example": {
+            "type": "string"
+          },
+          "external_docs": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation"
+          },
+          "json_schema": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.JSONSchema"
+          },
+          "read_only": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Scheme": {
+        "enum": [
+          "UNKNOWN",
+          "HTTP",
+          "HTTPS",
+          "WS",
+          "WSS"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Scopes": {
+        "properties": {
+          "scope": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityDefinitions": {
+        "properties": {
+          "security": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement": {
+        "properties": {
+          "security_requirement": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement.SecurityRequirementValue"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement.SecurityRequirementValue": {
+        "properties": {
+          "scope": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme": {
+        "properties": {
+          "authorization_url": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "extensions": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "flow": {
+            "enum": [
+              "FLOW_INVALID",
+              "FLOW_IMPLICIT",
+              "FLOW_PASSWORD",
+              "FLOW_APPLICATION",
+              "FLOW_ACCESS_CODE"
+            ],
+            "type": "string"
+          },
+          "in": {
+            "enum": [
+              "IN_INVALID",
+              "IN_QUERY",
+              "IN_HEADER"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "scopes": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Scopes"
+          },
+          "token_url": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "TYPE_INVALID",
+              "TYPE_BASIC",
+              "TYPE_API_KEY",
+              "TYPE_OAUTH2"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.Flow": {
+        "enum": [
+          "FLOW_INVALID",
+          "FLOW_IMPLICIT",
+          "FLOW_PASSWORD",
+          "FLOW_APPLICATION",
+          "FLOW_ACCESS_CODE"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.In": {
+        "enum": [
+          "IN_INVALID",
+          "IN_QUERY",
+          "IN_HEADER"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.Type": {
+        "enum": [
+          "TYPE_INVALID",
+          "TYPE_BASIC",
+          "TYPE_API_KEY",
+          "TYPE_OAUTH2"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Swagger": {
+        "properties": {
+          "base_path": {
+            "type": "string"
+          },
+          "consumes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "extensions": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "external_docs": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "host": {
+            "type": "string"
+          },
+          "info": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Info"
+          },
+          "produces": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "responses": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Response"
+            },
+            "type": "object"
+          },
+          "schemes": {
+            "items": {
+              "enum": [
+                "UNKNOWN",
+                "HTTP",
+                "HTTPS",
+                "WS",
+                "WSS"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "security": {
+            "items": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement"
+            },
+            "type": "array"
+          },
+          "security_definitions": {
+            "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.SecurityDefinitions"
+          },
+          "swagger": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/.grpc.gateway.protoc_gen_openapiv2.options.Tag"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.protoc_gen_openapiv2.options.Tag": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "extensions": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "external_docs": {
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "internal/descriptor/openapiconfig/openapiconfig.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

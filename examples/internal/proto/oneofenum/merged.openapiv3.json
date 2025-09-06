@@ -1,0 +1,31 @@
+{
+  "components": {
+    "schemas": {
+      ".grpc.gateway.examples.internal.proto.oneofenum.ExampleEnum": {
+        "enum": [
+          "EXAMPLE_ENUM_UNSPECIFIED",
+          "EXAMPLE_ENUM_FIRST"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.oneofenum.OneofEnumMessage": {
+        "properties": {
+          "example_enum": {
+            "enum": [
+              "EXAMPLE_ENUM_UNSPECIFIED",
+              "EXAMPLE_ENUM_FIRST"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/oneofenum/oneof_enum.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}
