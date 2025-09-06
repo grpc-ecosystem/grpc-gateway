@@ -76,8 +76,22 @@ func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage, filenamePrefix 
 }
 
 func TestGenerator_Generate(t *testing.T) {
+
+	// Test with Open Struct API (default)
+	t.Run("OpenStructAPI", func(t *testing.T) {
+		testGeneratorGenerate(t, false)
+	})
+
+	// Test with Opaque API
+	t.Run("OpaqueAPI", func(t *testing.T) {
+		testGeneratorGenerate(t, true)
+	})
+}
+
+func testGeneratorGenerate(t *testing.T, useOpaqueAPI bool) {
 	g := new(generator)
 	g.reg = descriptor.NewRegistry()
+	g.useOpaqueAPI = useOpaqueAPI
 	result, err := g.Generate([]*descriptor.File{
 		crossLinkFixture(newExampleFileDescriptorWithGoPkg(&descriptor.GoPackage{
 			Path: "example.com/path/to/example",

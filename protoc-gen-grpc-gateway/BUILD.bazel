@@ -34,3 +34,20 @@ go_proto_compiler(
         "@org_golang_google_grpc//metadata:go_default_library",
     ],
 )
+
+go_proto_compiler(
+    name = "go_gen_grpc_gateway_opaque",
+    options = [
+        "paths=source_relative",
+        "use_opaque_api=true",
+    ],
+    plugin = ":protoc-gen-grpc-gateway",
+    suffix = ".pb.gw.go",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//runtime:go_default_library",
+        "//utilities:go_default_library",
+        "@org_golang_google_grpc//grpclog:go_default_library",
+        "@org_golang_google_grpc//metadata:go_default_library",
+    ],
+)

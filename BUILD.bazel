@@ -54,6 +54,18 @@ go_proto_compiler(
 )
 
 go_proto_compiler(
+    name = "go_apiv2_opaque",
+    options = [
+        "paths=source_relative",
+        "default_api_level=API_OPAQUE",
+    ],
+    plugin = "@org_golang_google_protobuf//cmd/protoc-gen-go",
+    suffix = ".pb.go",
+    visibility = ["//visibility:public"],
+    deps = PROTO_RUNTIME_DEPS + WELL_KNOWN_TYPES_APIV2,
+)
+
+go_proto_compiler(
     name = "go_grpc",
     options = [
         "paths=source_relative",
