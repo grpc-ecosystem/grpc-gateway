@@ -1,0 +1,1069 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "examples/internal/proto/examplepb/opaque.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "OpaqueEcommerceService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/customer/activity": {
+      "post": {
+        "summary": "OpaqueStreamCustomerActivity - Stream request, stream response\nBidirectional streaming for real-time customer activity monitoring",
+        "operationId": "OpaqueEcommerceService_OpaqueStreamCustomerActivity",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/examplepbOpaqueStreamCustomerActivityResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of examplepbOpaqueStreamCustomerActivityResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueStreamCustomerActivityRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
+    "/v1/orders/process": {
+      "post": {
+        "summary": "OpaqueProcessOrders - Stream request, unary response\nProcesses multiple orders in a batch and returns a summary",
+        "operationId": "OpaqueEcommerceService_OpaqueProcessOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueProcessOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueProcessOrdersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
+    "/v1/products/search": {
+      "get": {
+        "summary": "OpaqueSearchProducts - Unary request, stream response\nSearches for products based on criteria and streams results back",
+        "operationId": "OpaqueEcommerceService_OpaqueSearchProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/examplepbOpaqueSearchProductsResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of examplepbOpaqueSearchProductsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "categoryIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "brands",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "minPrice.amount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "minPrice.currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "minPrice.isDiscounted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "minPrice.originalAmount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "minPrice.priceValidUntil",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "maxPrice.amount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "maxPrice.currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "maxPrice.isDiscounted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "maxPrice.originalAmount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "maxPrice.priceValidUntil",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "OPAQUE_SORT_ORDER_UNSPECIFIED",
+              "OPAQUE_SORT_ORDER_RELEVANCE",
+              "OPAQUE_SORT_ORDER_PRICE_LOW_TO_HIGH",
+              "OPAQUE_SORT_ORDER_PRICE_HIGH_TO_LOW",
+              "OPAQUE_SORT_ORDER_NEWEST_FIRST",
+              "OPAQUE_SORT_ORDER_RATING",
+              "OPAQUE_SORT_ORDER_POPULARITY"
+            ],
+            "default": "OPAQUE_SORT_ORDER_UNSPECIFIED"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fieldMask",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
+    "/v1/products/{productId}": {
+      "get": {
+        "summary": "OpaqueGetProduct - Unary request, unary response\nRetrieves detailed information about a specific product",
+        "operationId": "OpaqueEcommerceService_OpaqueGetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueGetProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "includeVariants",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "includeRelatedProducts",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "OpaqueActivityUpdateOpaqueUpdateType": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_UPDATE_TYPE_UNSPECIFIED",
+        "OPAQUE_UPDATE_TYPE_RECOMMENDATION",
+        "OPAQUE_UPDATE_TYPE_NOTIFICATION",
+        "OPAQUE_UPDATE_TYPE_OFFER",
+        "OPAQUE_UPDATE_TYPE_INVENTORY_UPDATE",
+        "OPAQUE_UPDATE_TYPE_PRICE_CHANGE",
+        "OPAQUE_UPDATE_TYPE_CART_REMINDER"
+      ],
+      "default": "OPAQUE_UPDATE_TYPE_UNSPECIFIED"
+    },
+    "OpaqueAddressOpaqueAddressType": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_ADDRESS_TYPE_UNSPECIFIED",
+        "OPAQUE_ADDRESS_TYPE_RESIDENTIAL",
+        "OPAQUE_ADDRESS_TYPE_BUSINESS",
+        "OPAQUE_ADDRESS_TYPE_SHIPPING",
+        "OPAQUE_ADDRESS_TYPE_BILLING"
+      ],
+      "default": "OPAQUE_ADDRESS_TYPE_UNSPECIFIED"
+    },
+    "OpaqueCustomerEventOpaqueEventType": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_EVENT_TYPE_UNSPECIFIED",
+        "OPAQUE_EVENT_TYPE_PAGE_VIEW",
+        "OPAQUE_EVENT_TYPE_PRODUCT_VIEW",
+        "OPAQUE_EVENT_TYPE_ADD_TO_CART",
+        "OPAQUE_EVENT_TYPE_REMOVE_FROM_CART",
+        "OPAQUE_EVENT_TYPE_CHECKOUT_START",
+        "OPAQUE_EVENT_TYPE_CHECKOUT_COMPLETE",
+        "OPAQUE_EVENT_TYPE_SEARCH",
+        "OPAQUE_EVENT_TYPE_ACCOUNT_UPDATE"
+      ],
+      "default": "OPAQUE_EVENT_TYPE_UNSPECIFIED"
+    },
+    "OpaqueOrderOpaqueOrderStatus": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_ORDER_STATUS_UNSPECIFIED",
+        "OPAQUE_ORDER_STATUS_PENDING",
+        "OPAQUE_ORDER_STATUS_PROCESSING",
+        "OPAQUE_ORDER_STATUS_SHIPPED",
+        "OPAQUE_ORDER_STATUS_DELIVERED",
+        "OPAQUE_ORDER_STATUS_CANCELLED",
+        "OPAQUE_ORDER_STATUS_RETURNED"
+      ],
+      "default": "OPAQUE_ORDER_STATUS_UNSPECIFIED"
+    },
+    "OpaqueOrderOpaqueShippingInfo": {
+      "type": "object",
+      "properties": {
+        "carrier": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string"
+        },
+        "estimatedDeliveryTime": {
+          "type": "string"
+        },
+        "trackingUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "OpaqueOrderSummaryOpaqueOrderError": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "errorCode": {
+          "type": "string"
+        },
+        "errorMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "OpaqueProductDimensionsOpaqueUnit": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_UNIT_UNSPECIFIED",
+        "OPAQUE_UNIT_METRIC",
+        "OPAQUE_UNIT_IMPERIAL"
+      ],
+      "default": "OPAQUE_UNIT_UNSPECIFIED"
+    },
+    "OpaqueProductOpaqueProductDimensions": {
+      "type": "object",
+      "properties": {
+        "length": {
+          "type": "number",
+          "format": "double"
+        },
+        "width": {
+          "type": "number",
+          "format": "double"
+        },
+        "height": {
+          "type": "number",
+          "format": "double"
+        },
+        "weight": {
+          "type": "number",
+          "format": "double"
+        },
+        "unit": {
+          "$ref": "#/definitions/OpaqueProductDimensionsOpaqueUnit"
+        }
+      }
+    },
+    "OpaqueProductOpaqueProductStatus": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_PRODUCT_STATUS_UNSPECIFIED",
+        "OPAQUE_PRODUCT_STATUS_DRAFT",
+        "OPAQUE_PRODUCT_STATUS_ACTIVE",
+        "OPAQUE_PRODUCT_STATUS_OUT_OF_STOCK",
+        "OPAQUE_PRODUCT_STATUS_DISCONTINUED"
+      ],
+      "default": "OPAQUE_PRODUCT_STATUS_UNSPECIFIED"
+    },
+    "OpaqueSearchProductsRequestOpaqueSortOrder": {
+      "type": "string",
+      "enum": [
+        "OPAQUE_SORT_ORDER_UNSPECIFIED",
+        "OPAQUE_SORT_ORDER_RELEVANCE",
+        "OPAQUE_SORT_ORDER_PRICE_LOW_TO_HIGH",
+        "OPAQUE_SORT_ORDER_PRICE_HIGH_TO_LOW",
+        "OPAQUE_SORT_ORDER_NEWEST_FIRST",
+        "OPAQUE_SORT_ORDER_RATING",
+        "OPAQUE_SORT_ORDER_POPULARITY"
+      ],
+      "default": "OPAQUE_SORT_ORDER_UNSPECIFIED"
+    },
+    "examplepbOpaqueActivityUpdate": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "updateType": {
+          "$ref": "#/definitions/OpaqueActivityUpdateOpaqueUpdateType"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "message": {
+          "type": "string"
+        },
+        "productIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "priceUpdate": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "inventoryCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "offerCode": {
+          "type": "string"
+        },
+        "offerExpiry": {
+          "type": "string"
+        },
+        "discountPercentage": {
+          "type": "number",
+          "format": "double"
+        },
+        "updateData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "priority": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "redirectUrl": {
+          "type": "string"
+        },
+        "notificationId": {
+          "type": "string"
+        }
+      },
+      "title": "OpaqueActivityUpdate represents a server response to customer activity"
+    },
+    "examplepbOpaqueAddress": {
+      "type": "object",
+      "properties": {
+        "streetLine1": {
+          "type": "string"
+        },
+        "streetLine2": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "addressType": {
+          "$ref": "#/definitions/OpaqueAddressOpaqueAddressType"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "OpaqueAddress represents a physical address"
+    },
+    "examplepbOpaqueCustomerEvent": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "eventType": {
+          "$ref": "#/definitions/OpaqueCustomerEventOpaqueEventType"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "categoryId": {
+          "type": "string"
+        },
+        "searchQuery": {
+          "type": "string"
+        },
+        "pageUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "eventData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "deviceType": {
+          "type": "string"
+        },
+        "ipAddress": {
+          "type": "string"
+        },
+        "userAgent": {
+          "type": "string"
+        }
+      },
+      "title": "OpaqueCustomerEvent represents a customer activity event"
+    },
+    "examplepbOpaqueGetProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueGetProductResponse represents a response with product information"
+    },
+    "examplepbOpaqueOrder": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/examplepbOpaqueOrderItem"
+          }
+        },
+        "subtotal": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "tax": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "shipping": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "total": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "shippingAddress": {
+          "$ref": "#/definitions/examplepbOpaqueAddress"
+        },
+        "billingAddress": {
+          "$ref": "#/definitions/examplepbOpaqueAddress"
+        },
+        "status": {
+          "$ref": "#/definitions/OpaqueOrderOpaqueOrderStatus"
+        },
+        "paymentMethodId": {
+          "type": "string"
+        },
+        "trackingNumber": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "shippedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deliveredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "shippingInfo": {
+          "$ref": "#/definitions/OpaqueOrderOpaqueShippingInfo"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "couponCode": {
+          "type": "string"
+        },
+        "promotionId": {
+          "type": "string"
+        }
+      },
+      "title": "OpaqueOrder represents a customer order"
+    },
+    "examplepbOpaqueOrderItem": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "variantId": {
+          "type": "string"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitPrice": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "totalPrice": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "selectedAttributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "giftWrapped": {
+          "type": "boolean"
+        },
+        "giftMessage": {
+          "type": "string"
+        }
+      },
+      "title": "OpaqueOrderItem represents an item in an order"
+    },
+    "examplepbOpaqueOrderSummary": {
+      "type": "object",
+      "properties": {
+        "totalOrdersProcessed": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "successfulOrders": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "failedOrders": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalValue": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "orderIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errorDetails": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "processingTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/OpaqueOrderSummaryOpaqueOrderError"
+          }
+        }
+      },
+      "title": "OpaqueOrderSummary represents a summary of processed orders"
+    },
+    "examplepbOpaquePrice": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "currencyCode": {
+          "type": "string"
+        },
+        "isDiscounted": {
+          "type": "boolean"
+        },
+        "originalAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "priceValidUntil": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "OpaquePrice represents a monetary value with currency"
+    },
+    "examplepbOpaqueProcessOrdersRequest": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "$ref": "#/definitions/examplepbOpaqueOrder"
+        }
+      },
+      "title": "OpaqueProcessOrdersRequest represents a request to process order"
+    },
+    "examplepbOpaqueProcessOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "$ref": "#/definitions/examplepbOpaqueOrderSummary"
+        }
+      },
+      "title": "OpaqueProcessOrdersResponse represents orders processing result"
+    },
+    "examplepbOpaqueProduct": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "basePrice": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "category": {
+          "$ref": "#/definitions/examplepbOpaqueProductCategory"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/examplepbOpaqueProductVariant"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "averageRating": {
+          "type": "number",
+          "format": "double"
+        },
+        "reviewCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "isFeatured": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "averageShippingTime": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/OpaqueProductOpaqueProductStatus"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "regionalPrices": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/examplepbOpaquePrice"
+          }
+        },
+        "dimensions": {
+          "$ref": "#/definitions/OpaqueProductOpaqueProductDimensions"
+        },
+        "taxPercentage": {
+          "type": "number",
+          "format": "double"
+        },
+        "taxExempt": {
+          "type": "boolean"
+        }
+      },
+      "title": "OpaqueProduct represents a product in the e-commerce system"
+    },
+    "examplepbOpaqueProductCategory": {
+      "type": "object",
+      "properties": {
+        "categoryId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "parentCategory": {
+          "$ref": "#/definitions/examplepbOpaqueProductCategory"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "OpaqueProductCategory represents a product category"
+    },
+    "examplepbOpaqueProductVariant": {
+      "type": "object",
+      "properties": {
+        "variantId": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "$ref": "#/definitions/examplepbOpaquePrice"
+        },
+        "inventoryCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "imageData": {
+          "type": "string",
+          "format": "byte"
+        },
+        "imageUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isAvailable": {
+          "type": "boolean"
+        },
+        "percentageOff": {
+          "type": "number",
+          "format": "double"
+        },
+        "fixedAmountOff": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "OpaqueProductVariant represents a specific variant of a product"
+    },
+    "examplepbOpaqueSearchProductsResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueSearchProductsResponse represents a single product in search results"
+    },
+    "examplepbOpaqueStreamCustomerActivityRequest": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/examplepbOpaqueCustomerEvent"
+        }
+      },
+      "title": "OpaqueStreamCustomerActivityRequest represents a report of user activity"
+    },
+    "examplepbOpaqueStreamCustomerActivityResponse": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/examplepbOpaqueActivityUpdate"
+        }
+      },
+      "title": "OpaqueStreamCustomerActivityRequest represents a report of server activity"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string",
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com. As of May 2023, there are no widely used type server\nimplementations and no plans to implement one.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+        }
+      },
+      "additionalProperties": {},
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n    // or ...\n    if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n      foo = any.unpack(Foo.getDefaultInstance());\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+        },
+        "message": {
+          "type": "string",
+          "description": "A developer-facing error message, which should be in English. Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client."
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          },
+          "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."
+        }
+      },
+      "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https://cloud.google.com/apis/design/errors)."
+    }
+  }
+}

@@ -21,12 +21,14 @@ type param struct {
 	RegisterFuncSuffix string
 	AllowPatchFeature  bool
 	OmitPackageDoc     bool
+	UseOpaqueAPI       bool
 }
 
 type binding struct {
 	*descriptor.Binding
 	Registry          *descriptor.Registry
 	AllowPatchFeature bool
+	UseOpaqueAPI      bool
 }
 
 // GetBodyFieldPath returns the binding body's field path.
@@ -147,6 +149,7 @@ type trailerParams struct {
 	Services           []*descriptor.Service
 	UseRequestContext  bool
 	RegisterFuncSuffix string
+	UseOpaqueAPI       bool
 }
 
 func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
@@ -182,6 +185,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 					Binding:           b,
 					Registry:          reg,
 					AllowPatchFeature: p.AllowPatchFeature,
+					UseOpaqueAPI:      p.UseOpaqueAPI,
 				}); err != nil {
 					return "", err
 				}
@@ -191,6 +195,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 					Binding:           b,
 					Registry:          reg,
 					AllowPatchFeature: p.AllowPatchFeature,
+					UseOpaqueAPI:      p.UseOpaqueAPI,
 				}); err != nil {
 					return "", err
 				}
@@ -208,6 +213,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		Services:           targetServices,
 		UseRequestContext:  p.UseRequestContext,
 		RegisterFuncSuffix: p.RegisterFuncSuffix,
+		UseOpaqueAPI:       p.UseOpaqueAPI,
 	}
 	// Local
 	if err := localTrailerTemplate.Execute(w, tp); err != nil {
@@ -335,6 +341,7 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Funcs(funcMap).Parse(`
 {{ $AllowPatchFeature := .AllowPatchFeature }}
+{{ $UseOpaqueAPI := .UseOpaqueAPI }}
 {{ if .HasQueryParam }}
 var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{ .QueryParamFilter }}
 {{ end }}
@@ -365,20 +372,53 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{printf "%s" $protoReq }}
 	{{- end }}
 	{{- if not $isFieldMask }}
+	{{- if $UseOpaqueAPI }}
+	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	{{- if eq "*" .GetBodyFieldPath }}
+	protoReq = bodyData
+	{{- else }}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	{{- end }}
+	{{- else }}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	{{- end }}
 	if req.Body != nil {
 		_, _  = io.Copy(io.Discard, req.Body)
 	}
 	{{- end }}
 	{{- if $isFieldMask }}
+	{{- if $UseOpaqueAPI }}
+	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	{{- if eq "*" .GetBodyFieldPath }}
+	protoReq = bodyData
+	{{- else }}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	{{- end }}
+	{{- else }}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	{{- end }}
 	if req.Body != nil {
 		_, _  = io.Copy(io.Discard, req.Body)
 	}
+	{{- if $UseOpaqueAPI }}
+	if !protoReq.Has{{ .FieldMaskField }}() || len(protoReq.Get{{ .FieldMaskField }}().GetPaths()) == 0 {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Get{{ .GetBodyFieldStructName }}()); err != nil {
+				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			} else {
+				protoReq.Set{{ .FieldMaskField }}(fieldMask)
+			}
+	}
+	{{- else }}
 	if protoReq.{{ .FieldMaskField }} == nil || len(protoReq.{{ .FieldMaskField }}.GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.{{ .GetBodyFieldStructName }}); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -386,6 +426,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 				protoReq.{{ .FieldMaskField }} = fieldMask
 			}
 	}
+	{{- end }}
 	{{- end }}
 {{- else }}
 	if req.Body != nil {
@@ -421,19 +462,35 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- if ne "" $protoReq }}
 	{{ printf "%s" $protoReq }}
 	{{- end}}
+	{{- if $UseOpaqueAPI }}
+	converted{{ $param.FieldPath.String | camelIdentifier }}, err := {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
+	}
+	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(converted{{ $param.FieldPath.String | camelIdentifier }})
+	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
 	}
+	{{- end }}
 {{- end}}
 {{- if and $enum $param.IsRepeated }}
 	s := make([]{{ $enum.GoType $param.Method.Service.File.GoPkg.Path }}, len(es))
 	for i, v := range es {
 		s[i] = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path}}(v)
 	}
+	{{- if $UseOpaqueAPI }}
+	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(s)
+	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = s
+	{{- end }}
 {{- else if $enum}}
+	{{- if $UseOpaqueAPI }}
+	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
+	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
+	{{- end }}
 {{- end}}
 	{{- end }}
 {{- end }}
@@ -524,6 +581,7 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 
 	_ = template.Must(localHandlerTemplate.New("local-client-rpc-request-func").Funcs(funcMap).Parse(`
 {{ $AllowPatchFeature := .AllowPatchFeature }}
+{{ $UseOpaqueAPI := .UseOpaqueAPI }}
 {{ template "local-request-func-signature" . }} {
 	var (
 		protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
@@ -551,14 +609,47 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{ printf "%s" $protoReq }}
 	{{- end }}
 	{{- if not $isFieldMask }}
+	{{- if $UseOpaqueAPI }}
+	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	{{- if eq "*" .GetBodyFieldPath }}
+	protoReq = bodyData
+	{{- else }}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	{{- end }}
+	{{- else }}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
+	{{- end }}
 	{{- if $isFieldMask }}
+	{{- if $UseOpaqueAPI }}
+	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	{{- if eq "*" .GetBodyFieldPath }}
+	protoReq = bodyData
+	{{- else }}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	{{- end }}
+	{{- else }}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	{{- end }}
+	{{- if $UseOpaqueAPI }}
+	if !protoReq.Has{{ .FieldMaskField }}() || len(protoReq.Get{{ .FieldMaskField }}().GetPaths()) == 0 {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Get{{ .GetBodyFieldStructName }}()); err != nil {
+				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			} else {
+				protoReq.Set{{ .FieldMaskField }}(fieldMask)
+			}
+	}
+	{{- else }}
 	if protoReq.{{ .FieldMaskField }} == nil || len(protoReq.{{ .FieldMaskField }}.GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.{{ .GetBodyFieldStructName }}); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -566,6 +657,7 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 				protoReq.{{.FieldMaskField}} = fieldMask
 			}
 	}
+	{{- end }}
 	{{- end }}
 {{- end }}
 {{- if .PathParams}}
@@ -596,20 +688,36 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- $protoReq := $param.AssignableExprPrep "protoReq" $binding.Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{ printf "%s" $protoReq }}
-	{{- end }}
+	{{- end}}
+	{{- if $UseOpaqueAPI }}
+	converted{{ $param.FieldPath.String | camelIdentifier }}, err := {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
+	}
+	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(converted{{ $param.FieldPath.String | camelIdentifier }})
+	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q" }}, err)
 	}
+	{{- end }}
 {{- end}}
 {{- if and $enum $param.IsRepeated }}
 	s := make([]{{ $enum.GoType $param.Method.Service.File.GoPkg.Path }}, len(es))
 	for i, v := range es {
 		s[i] = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path }}(v)
 	}
+	{{- if $UseOpaqueAPI }}
+	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(s)
+	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = s
+	{{- end }}
 {{- else if $enum }}
+	{{- if $UseOpaqueAPI }}
+	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
+	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
+	{{- end }}
 {{- end }}
 	{{- end }}
 {{- end }}
@@ -689,6 +797,7 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Server(ctx context.Cont
 
 	trailerTemplate = template.Must(template.New("trailer").Funcs(funcMap).Parse(`
 {{ $UseRequestContext := .UseRequestContext }}
+{{ $UseOpaqueAPI := .UseOpaqueAPI }}
 {{range $svc := .Services}}
 // Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}FromEndpoint is same as Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }} but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
@@ -782,7 +891,15 @@ type response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} struct {
 
 func (m response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}) XXX_ResponseBody() interface{} {
 	response := m.{{ $m.ResponseType.GetName }}
+	{{- if $UseOpaqueAPI }}
+	{{- if eq "*" $b.ResponseBody.FieldPath.String }}
+	return response
+	{{- else }}
+	return response.Get{{ $b.ResponseBody.FieldPath.String | camelIdentifier }}()
+	{{- end }}
+	{{- else }}
 	return {{ $b.ResponseBody.AssignableExpr "response" $m.Service.File.GoPkg.Path }}
+	{{- end }}
 }
 {{ end }}
 {{ end }}

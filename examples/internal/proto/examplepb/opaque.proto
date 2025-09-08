@@ -1,0 +1,401 @@
+edition = "2023";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+// OpaqueEcommerceService provides a comprehensive e-commerce API with various request/response patterns
+service OpaqueEcommerceService {
+  // OpaqueGetProduct - Unary request, unary response
+  // Retrieves detailed information about a specific product
+  rpc OpaqueGetProduct(OpaqueGetProductRequest) returns (OpaqueGetProductResponse) {
+    option (google.api.http) = {get: "/v1/products/{product_id}"};
+  }
+
+  // OpaqueSearchProducts - Unary request, stream response
+  // Searches for products based on criteria and streams results back
+  rpc OpaqueSearchProducts(OpaqueSearchProductsRequest) returns (stream OpaqueSearchProductsResponse) {
+    option (google.api.http) = {get: "/v1/products/search"};
+  }
+
+  // OpaqueProcessOrders - Stream request, unary response
+  // Processes multiple orders in a batch and returns a summary
+  rpc OpaqueProcessOrders(stream OpaqueProcessOrdersRequest) returns (OpaqueProcessOrdersResponse) {
+    option (google.api.http) = {
+      post: "/v1/orders/process"
+      body: "*"
+    };
+  }
+
+  // OpaqueStreamCustomerActivity - Stream request, stream response
+  // Bidirectional streaming for real-time customer activity monitoring
+  rpc OpaqueStreamCustomerActivity(stream OpaqueStreamCustomerActivityRequest) returns (stream OpaqueStreamCustomerActivityResponse) {
+    option (google.api.http) = {
+      post: "/v1/customer/activity"
+      body: "*"
+    };
+  }
+}
+
+// OpaqueGetProductRequest represents a request for product information
+message OpaqueGetProductRequest {
+  string product_id = 1;
+  bool include_variants = 2;
+  bool include_related_products = 3;
+  string language_code = 4;
+  string currency_code = 5;
+}
+
+// OpaqueGetProductResponse represents a response with product information
+message OpaqueGetProductResponse {
+  OpaqueProduct product = 1;
+}
+
+// OpaqueSearchProductsRequest represents a product search request
+message OpaqueSearchProductsRequest {
+  string query = 1;
+  repeated string category_ids = 2;
+  repeated string brands = 3;
+  OpaquePrice min_price = 4;
+  OpaquePrice max_price = 5;
+  repeated string tags = 6;
+
+  enum OpaqueSortOrder {
+    OPAQUE_SORT_ORDER_UNSPECIFIED = 0;
+    OPAQUE_SORT_ORDER_RELEVANCE = 1;
+    OPAQUE_SORT_ORDER_PRICE_LOW_TO_HIGH = 2;
+    OPAQUE_SORT_ORDER_PRICE_HIGH_TO_LOW = 3;
+    OPAQUE_SORT_ORDER_NEWEST_FIRST = 4;
+    OPAQUE_SORT_ORDER_RATING = 5;
+    OPAQUE_SORT_ORDER_POPULARITY = 6;
+  }
+  OpaqueSortOrder sort_by = 7;
+
+  int32 page = 8;
+  int32 page_size = 9;
+  string language_code = 10;
+  string currency_code = 11;
+  google.protobuf.FieldMask field_mask = 12;
+  map<string, string> filters = 13;
+}
+
+// OpaqueSearchProductsResponse represents a single product in search results
+message OpaqueSearchProductsResponse {
+  OpaqueProduct product = 1;
+}
+
+// OpaqueProcessOrdersRequest represents a request to process order
+message OpaqueProcessOrdersRequest {
+  OpaqueOrder order = 1;
+}
+
+// OpaqueProcessOrdersResponse represents orders processing result
+message OpaqueProcessOrdersResponse {
+  OpaqueOrderSummary summary = 1;
+}
+
+// OpaqueStreamCustomerActivityRequest represents a report of user activity
+message OpaqueStreamCustomerActivityRequest {
+  OpaqueCustomerEvent event = 1;
+}
+
+// OpaqueStreamCustomerActivityRequest represents a report of server activity
+message OpaqueStreamCustomerActivityResponse {
+  OpaqueActivityUpdate event = 2;
+}
+
+// OpaqueAddress represents a physical address
+message OpaqueAddress {
+  string street_line1 = 1;
+  string street_line2 = 2;
+  string city = 3;
+  string state = 4;
+  string country = 5;
+  string postal_code = 6;
+  enum OpaqueAddressType {
+    OPAQUE_ADDRESS_TYPE_UNSPECIFIED = 0;
+    OPAQUE_ADDRESS_TYPE_RESIDENTIAL = 1;
+    OPAQUE_ADDRESS_TYPE_BUSINESS = 2;
+    OPAQUE_ADDRESS_TYPE_SHIPPING = 3;
+    OPAQUE_ADDRESS_TYPE_BILLING = 4;
+  }
+  OpaqueAddressType address_type = 7;
+  google.protobuf.BoolValue is_default = 8;
+  map<string, string> metadata = 9;
+}
+
+// OpaquePrice represents a monetary value with currency
+message OpaquePrice {
+  double amount = 1;
+  string currency_code = 2;
+  bool is_discounted = 3;
+  google.protobuf.DoubleValue original_amount = 4;
+  google.protobuf.Timestamp price_valid_until = 5;
+}
+
+// OpaqueProductCategory represents a product category
+message OpaqueProductCategory {
+  string category_id = 1;
+  string name = 2;
+  string description = 3;
+  OpaqueProductCategory parent_category = 4;
+  repeated string tags = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// OpaqueProductVariant represents a specific variant of a product
+message OpaqueProductVariant {
+  string variant_id = 1;
+  string sku = 2;
+  string name = 3;
+  OpaquePrice price = 4;
+  int32 inventory_count = 5;
+  map<string, string> attributes = 6;
+  bytes image_data = 7;
+  repeated string image_urls = 8;
+  google.protobuf.BoolValue is_available = 9;
+  oneof discount_info {
+    double percentage_off = 10;
+    double fixed_amount_off = 11;
+  }
+}
+
+// OpaqueProduct represents a product in the e-commerce system
+message OpaqueProduct {
+  string product_id = 1;
+  string name = 2;
+  string description = 3;
+  string brand = 4;
+  OpaquePrice base_price = 5;
+  OpaqueProductCategory category = 6;
+  repeated OpaqueProductVariant variants = 7;
+  repeated string tags = 8;
+  double average_rating = 9;
+  int32 review_count = 10;
+  google.protobuf.BoolValue is_featured = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  google.protobuf.Duration average_shipping_time = 14;
+
+  enum OpaqueProductStatus {
+    OPAQUE_PRODUCT_STATUS_UNSPECIFIED = 0;
+    OPAQUE_PRODUCT_STATUS_DRAFT = 1;
+    OPAQUE_PRODUCT_STATUS_ACTIVE = 2;
+    OPAQUE_PRODUCT_STATUS_OUT_OF_STOCK = 3;
+    OPAQUE_PRODUCT_STATUS_DISCONTINUED = 4;
+  }
+  OpaqueProductStatus status = 15;
+
+  map<string, string> metadata = 16;
+  map<string, OpaquePrice> regional_prices = 17;
+
+  message OpaqueProductDimensions {
+    double length = 1;
+    double width = 2;
+    double height = 3;
+    double weight = 4;
+    enum OpaqueUnit {
+      OPAQUE_UNIT_UNSPECIFIED = 0;
+      OPAQUE_UNIT_METRIC = 1;
+      OPAQUE_UNIT_IMPERIAL = 2;
+    }
+    OpaqueUnit unit = 5;
+  }
+
+  OpaqueProductDimensions dimensions = 18;
+
+  oneof tax_info {
+    double tax_percentage = 19;
+    bool tax_exempt = 20;
+  }
+}
+
+// OpaqueCustomer represents a customer in the e-commerce system
+message OpaqueCustomer {
+  string customer_id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string phone_number = 5;
+  repeated OpaqueAddress addresses = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp last_login = 8;
+
+  enum OpaqueCustomerStatus {
+    OPAQUE_CUSTOMER_STATUS_UNSPECIFIED = 0;
+    OPAQUE_CUSTOMER_STATUS_ACTIVE = 1;
+    OPAQUE_CUSTOMER_STATUS_INACTIVE = 2;
+    OPAQUE_CUSTOMER_STATUS_SUSPENDED = 3;
+    OPAQUE_CUSTOMER_STATUS_DELETED = 4;
+  }
+  OpaqueCustomerStatus status = 9;
+
+  message OpaqueLoyaltyInfo {
+    string tier = 1;
+    int32 points = 2;
+    google.protobuf.Timestamp tier_expiry = 3;
+    repeated string rewards = 4;
+  }
+
+  OpaqueLoyaltyInfo loyalty_info = 10;
+  map<string, string> preferences = 11;
+
+  message OpaquePaymentMethod {
+    string payment_id = 1;
+    string type = 2;
+    string last_four = 3;
+    string provider = 4;
+    google.protobuf.Timestamp expires_at = 5;
+    bool is_default = 6;
+  }
+
+  repeated OpaquePaymentMethod payment_methods = 12;
+}
+
+// OpaqueOrderItem represents an item in an order
+message OpaqueOrderItem {
+  string product_id = 1;
+  string variant_id = 2;
+  string product_name = 3;
+  int32 quantity = 4;
+  OpaquePrice unit_price = 5;
+  OpaquePrice total_price = 6;
+  map<string, string> selected_attributes = 7;
+  google.protobuf.BoolValue gift_wrapped = 8;
+  string gift_message = 9;
+}
+
+// OpaqueOrder represents a customer order
+message OpaqueOrder {
+  string order_id = 1;
+  string customer_id = 2;
+  repeated OpaqueOrderItem items = 3;
+  OpaquePrice subtotal = 4;
+  OpaquePrice tax = 5;
+  OpaquePrice shipping = 6;
+  OpaquePrice total = 7;
+  OpaqueAddress shipping_address = 8;
+  OpaqueAddress billing_address = 9;
+
+  enum OpaqueOrderStatus {
+    OPAQUE_ORDER_STATUS_UNSPECIFIED = 0;
+    OPAQUE_ORDER_STATUS_PENDING = 1;
+    OPAQUE_ORDER_STATUS_PROCESSING = 2;
+    OPAQUE_ORDER_STATUS_SHIPPED = 3;
+    OPAQUE_ORDER_STATUS_DELIVERED = 4;
+    OPAQUE_ORDER_STATUS_CANCELLED = 5;
+    OPAQUE_ORDER_STATUS_RETURNED = 6;
+  }
+  OpaqueOrderStatus status = 10;
+
+  string payment_method_id = 11;
+  string tracking_number = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+  google.protobuf.Timestamp shipped_at = 15;
+  google.protobuf.Timestamp delivered_at = 16;
+
+  message OpaqueShippingInfo {
+    string carrier = 1;
+    string method = 2;
+    google.protobuf.Duration estimated_delivery_time = 3;
+    repeated string tracking_urls = 4;
+  }
+
+  OpaqueShippingInfo shipping_info = 17;
+  map<string, string> metadata = 18;
+
+  oneof discount_applied {
+    string coupon_code = 19;
+    string promotion_id = 20;
+  }
+}
+
+// OpaqueOrderSummary represents a summary of processed orders
+message OpaqueOrderSummary {
+  int32 total_orders_processed = 1;
+  int32 successful_orders = 2;
+  int32 failed_orders = 3;
+  OpaquePrice total_value = 4;
+  repeated string order_ids = 5;
+  map<string, string> error_details = 6;
+  google.protobuf.Timestamp processing_time = 7;
+
+  message OpaqueOrderError {
+    string order_id = 1;
+    string error_code = 2;
+    string error_message = 3;
+  }
+
+  repeated OpaqueOrderError errors = 8;
+}
+
+// OpaqueCustomerEvent represents a customer activity event
+message OpaqueCustomerEvent {
+  string customer_id = 1;
+  string session_id = 2;
+
+  enum OpaqueEventType {
+    OPAQUE_EVENT_TYPE_UNSPECIFIED = 0;
+    OPAQUE_EVENT_TYPE_PAGE_VIEW = 1;
+    OPAQUE_EVENT_TYPE_PRODUCT_VIEW = 2;
+    OPAQUE_EVENT_TYPE_ADD_TO_CART = 3;
+    OPAQUE_EVENT_TYPE_REMOVE_FROM_CART = 4;
+    OPAQUE_EVENT_TYPE_CHECKOUT_START = 5;
+    OPAQUE_EVENT_TYPE_CHECKOUT_COMPLETE = 6;
+    OPAQUE_EVENT_TYPE_SEARCH = 7;
+    OPAQUE_EVENT_TYPE_ACCOUNT_UPDATE = 8;
+  }
+  OpaqueEventType event_type = 3;
+
+  google.protobuf.Timestamp timestamp = 4;
+  string product_id = 5;
+  string category_id = 6;
+  string search_query = 7;
+  string page_url = 8;
+  int32 value = 9;
+  map<string, string> event_data = 10;
+  string device_type = 11;
+  string ip_address = 12;
+  string user_agent = 13;
+}
+
+// OpaqueActivityUpdate represents a server response to customer activity
+message OpaqueActivityUpdate {
+  string customer_id = 1;
+  string session_id = 2;
+
+  enum OpaqueUpdateType {
+    OPAQUE_UPDATE_TYPE_UNSPECIFIED = 0;
+    OPAQUE_UPDATE_TYPE_RECOMMENDATION = 1;
+    OPAQUE_UPDATE_TYPE_NOTIFICATION = 2;
+    OPAQUE_UPDATE_TYPE_OFFER = 3;
+    OPAQUE_UPDATE_TYPE_INVENTORY_UPDATE = 4;
+    OPAQUE_UPDATE_TYPE_PRICE_CHANGE = 5;
+    OPAQUE_UPDATE_TYPE_CART_REMINDER = 6;
+  }
+  OpaqueUpdateType update_type = 3;
+
+  google.protobuf.Timestamp timestamp = 4;
+  string message = 5;
+  repeated string product_ids = 6;
+  OpaquePrice price_update = 7;
+  int32 inventory_count = 8;
+  string offer_code = 9;
+  google.protobuf.Duration offer_expiry = 10;
+  double discount_percentage = 11;
+  map<string, string> update_data = 12;
+  int32 priority = 13;
+
+  oneof action_data {
+    string redirect_url = 14;
+    string notification_id = 15;
+  }
+}
