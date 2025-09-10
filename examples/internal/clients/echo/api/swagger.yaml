@@ -97,7 +97,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -191,7 +191,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -285,7 +285,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -378,7 +378,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -470,7 +470,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -556,7 +556,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -644,7 +644,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -667,7 +667,7 @@ paths:
           $ref: "#/definitions/examplepbSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -746,7 +746,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -840,7 +840,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -862,7 +862,7 @@ paths:
           $ref: "#/definitions/examplepbDynamicMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbDynamicMessageUpdate"
@@ -958,7 +958,7 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
