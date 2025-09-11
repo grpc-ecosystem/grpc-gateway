@@ -1,0 +1,519 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.BoolValue": {
+        "type": "boolean"
+      },
+      ".google.protobuf.BytesValue": {
+        "format": "byte",
+        "type": "string"
+      },
+      ".google.protobuf.DoubleValue": {
+        "format": "double",
+        "type": "number"
+      },
+      ".google.protobuf.Empty": {
+        "type": "object"
+      },
+      ".google.protobuf.FloatValue": {
+        "format": "float",
+        "type": "number"
+      },
+      ".google.protobuf.Int32Value": {
+        "format": "int32",
+        "type": "integer"
+      },
+      ".google.protobuf.Int64Value": {
+        "format": "int64",
+        "type": "string"
+      },
+      ".google.protobuf.StringValue": {
+        "type": "string"
+      },
+      ".google.protobuf.UInt32Value": {
+        "format": "int64",
+        "type": "integer"
+      },
+      ".google.protobuf.UInt64Value": {
+        "format": "uint64",
+        "type": "string"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Wrappers": {
+        "properties": {
+          "bool_value": {
+            "$ref": "#/components/schemas/.google.protobuf.BoolValue"
+          },
+          "bytes_value": {
+            "$ref": "#/components/schemas/.google.protobuf.BytesValue"
+          },
+          "double_value": {
+            "$ref": "#/components/schemas/.google.protobuf.DoubleValue"
+          },
+          "float_value": {
+            "$ref": "#/components/schemas/.google.protobuf.FloatValue"
+          },
+          "int32_value": {
+            "$ref": "#/components/schemas/.google.protobuf.Int32Value"
+          },
+          "int64_value": {
+            "$ref": "#/components/schemas/.google.protobuf.Int64Value"
+          },
+          "string_value": {
+            "$ref": "#/components/schemas/.google.protobuf.StringValue"
+          },
+          "uint32_value": {
+            "$ref": "#/components/schemas/.google.protobuf.UInt32Value"
+          },
+          "uint64_value": {
+            "$ref": "#/components/schemas/.google.protobuf.UInt64Value"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/wrappers.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/wrappers": {
+      "post": {
+        "operationId": "WrappersService_Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Wrappers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Wrappers"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testBool": {
+      "post": {
+        "operationId": "WrappersService_CreateBoolValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.BoolValue"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.BoolValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testBytes": {
+      "post": {
+        "operationId": "WrappersService_CreateBytesValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.BytesValue"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.BytesValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testDouble": {
+      "post": {
+        "operationId": "WrappersService_CreateDoubleValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.DoubleValue"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.DoubleValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testEmpty": {
+      "post": {
+        "operationId": "WrappersService_CreateEmpty",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.Empty"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testFloat": {
+      "post": {
+        "operationId": "WrappersService_CreateFloatValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.FloatValue"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.FloatValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testInt32": {
+      "post": {
+        "operationId": "WrappersService_CreateInt32Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.Int32Value"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Int32Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testInt64": {
+      "post": {
+        "operationId": "WrappersService_CreateInt64Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.Int64Value"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.Int64Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testString": {
+      "post": {
+        "operationId": "WrappersService_CreateStringValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.StringValue"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.StringValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testUint32": {
+      "post": {
+        "operationId": "WrappersService_CreateUInt32Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.UInt32Value"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.UInt32Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    },
+    "/v1/testUint64": {
+      "post": {
+        "operationId": "WrappersService_CreateUInt64Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.google.protobuf.UInt64Value"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.protobuf.UInt64Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "WrappersService"
+        ]
+      }
+    }
+  }
+}

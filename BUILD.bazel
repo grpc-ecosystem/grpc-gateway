@@ -39,6 +39,7 @@ package_group(
     packages = [
         "//protoc-gen-grpc-gateway/...",
         "//protoc-gen-openapiv2/...",
+        "//protoc-gen-openapiv3/...",
     ],
 )
 

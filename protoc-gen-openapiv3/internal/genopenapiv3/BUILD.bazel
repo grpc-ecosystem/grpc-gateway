@@ -1,0 +1,38 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+package(default_visibility = ["//protoc-gen-openapiv3:__subpackages__"])
+
+alias(
+    name = "go_default_library",
+    actual = ":genopenapiv3",
+    visibility = ["//protoc-gen-openapiv3:__subpackages__"],
+)
+
+go_library(
+    name = "genopenapiv3",
+    srcs = [
+        "consts.go",
+        "convertors.go",
+        "file_generator.go",
+        "generator.go",
+        "merge.go",
+        "schema_mappings.go",
+        "types.go",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapiv3",
+    deps = [
+        "//internal/descriptor",
+        "//internal/generator",
+        "//protoc-gen-openapiv3/options",
+        "@com_github_getkin_kin_openapi//openapi3",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_genproto_googleapis_api//visibility",
+        "@org_golang_google_genproto_googleapis_rpc//status",
+        "@org_golang_google_grpc//grpclog",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protodesc",
+        "@org_golang_google_protobuf//types/descriptorpb",
+        "@org_golang_google_protobuf//types/known/anypb",
+        "@org_golang_google_protobuf//types/pluginpb",
+    ],
+)

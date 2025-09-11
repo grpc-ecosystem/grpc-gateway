@@ -1,0 +1,311 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut": {
+        "properties": {
+          "response": {
+            "items": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response": {
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "UNKNOWN",
+              "A",
+              "B"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response.ResponseType": {
+        "enum": [
+          "UNKNOWN",
+          "A",
+          "B"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseStrings": {
+        "properties": {
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ResponseBodyIn": {
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut": {
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut.Response"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut.Response": {
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.ResponseBodyValue": {
+        "properties": {
+          "response_body_value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/response_body_service.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/responsebodies/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_ListResponseBodies",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
+    "/responsebody/samename/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_GetResponseBodySameName",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ResponseBodyValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
+    "/responsebody/stream/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_GetResponseBodyStream",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
+    "/responsebody/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_GetResponseBody",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
+    "/responsestrings/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_ListResponseStrings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "data",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseStrings"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    }
+  }
+}

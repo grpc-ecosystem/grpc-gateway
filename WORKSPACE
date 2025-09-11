@@ -109,12 +109,96 @@ http_archive(
     ],
 )
 
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
 
 # Use gazelle to declare Go dependencies in Bazel.
 # gazelle:repository_macro repositories.bzl%go_repositories
 
 load("//:repositories.bzl", "go_repositories")
+
+go_repository(
+    name = "com_github_getkin_kin_openapi",
+    importpath = "github.com/getkin/kin-openapi",
+    sum = "h1:3ISeLMsQzcb5v26yeJrBcdTCEQTag36ZjaGk7MIRUwk=",
+    version = "v0.132.0",
+)
+
+go_repository(
+    name = "com_github_go_openapi_jsonpointer",
+    importpath = "github.com/go-openapi/jsonpointer",
+    sum = "h1:YgdVicSA9vH5RiHs9TZW5oyafXZFc6+2Vc1rr/O9oNQ=",
+    version = "v0.21.0",
+)
+
+go_repository(
+    name = "com_github_go_openapi_swag",
+    importpath = "github.com/go-openapi/swag",
+    sum = "h1:vsEVJDUo2hPJ2tu0/Xc+4noaxyEffXNIs3cOULZ+GrE=",
+    version = "v0.23.0",
+)
+
+go_repository(
+    name = "com_github_go_test_deep",
+    importpath = "github.com/go-test/deep",
+    sum = "h1:TDsG77qcSprGbC6vTN8OuXp5g+J+b5Pcguhf7Zt61VM=",
+    version = "v1.0.8",
+)
+
+go_repository(
+    name = "com_github_gorilla_mux",
+    importpath = "github.com/gorilla/mux",
+    sum = "h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=",
+    version = "v1.8.0",
+)
+
+go_repository(
+    name = "com_github_josharian_intern",
+    importpath = "github.com/josharian/intern",
+    sum = "h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=",
+    version = "v1.0.0",
+)
+
+go_repository(
+    name = "com_github_mailru_easyjson",
+    importpath = "github.com/mailru/easyjson",
+    sum = "h1:UGYAvKxe3sBsEDzO8ZeWOSlIQfWFlxbzLZe7hwFURr0=",
+    version = "v0.7.7",
+)
+
+go_repository(
+    name = "com_github_mohae_deepcopy",
+    importpath = "github.com/mohae/deepcopy",
+    sum = "h1:RWengNIwukTxcDr9M+97sNutRR1RKhG96O6jWumTTnw=",
+    version = "v0.0.0-20170929034955-c48cc78d4826",
+)
+
+go_repository(
+    name = "com_github_oasdiff_yaml",
+    importpath = "github.com/oasdiff/yaml",
+    sum = "h1:G7ERwszslrBzRxj//JalHPu/3yz+De2J+4aLtSRlHiY=",
+    version = "v0.0.0-20250309154309-f31be36b4037",
+)
+
+go_repository(
+    name = "com_github_oasdiff_yaml3",
+    importpath = "github.com/oasdiff/yaml3",
+    sum = "h1:bQx3WeLcUWy+RletIKwUIt4x3t8n2SxavmoclizMb8c=",
+    version = "v0.0.0-20250309153720-d2182401db90",
+)
+
+go_repository(
+    name = "com_github_perimeterx_marshmallow",
+    importpath = "github.com/perimeterx/marshmallow",
+    sum = "h1:a2LALqQ1BlHM8PZblsDdidgv1mWi1DgC2UmX50IvK2s=",
+    version = "v1.1.5",
+)
+
+go_repository(
+    name = "com_github_ugorji_go_codec",
+    importpath = "github.com/ugorji/go/codec",
+    sum = "h1:YPXUKf7fYbp/y8xloBqZOw2qaVggbfwMlI8WM3wZUJ0=",
+    version = "v1.2.7",
+)
 
 go_repositories()
 

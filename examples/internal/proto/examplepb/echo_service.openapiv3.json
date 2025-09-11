@@ -1,0 +1,2060 @@
+{
+  "components": {
+    "requestBodies": {
+      ".grpc.gateway.examples.internal.proto.examplepb.SimpleMessage": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "en": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "line_num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "n_id": {
+                      "properties": {
+                        "n_id": {
+                          "type": "string"
+                        },
+                        "val": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "resource_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "en": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "lang": {
+                      "type": "string"
+                    },
+                    "n_id": {
+                      "properties": {
+                        "n_id": {
+                          "type": "string"
+                        },
+                        "val": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "resource_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "line_num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "n_id": {
+                      "properties": {
+                        "n_id": {
+                          "type": "string"
+                        },
+                        "val": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "no": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "resource_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "lang": {
+                      "type": "string"
+                    },
+                    "n_id": {
+                      "properties": {
+                        "n_id": {
+                          "type": "string"
+                        },
+                        "val": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "no": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "num": {
+                      "format": "int64",
+                      "type": "string"
+                    },
+                    "resource_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "progress": {
+                              "format": "int64",
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "properties": {
+                            "note": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.protobuf.FieldMask": {
+        "type": "string"
+      },
+      ".google.protobuf.Struct": {
+        "type": "object"
+      },
+      ".google.protobuf.Value": {},
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.DynamicMessage": {
+        "properties": {
+          "struct_field": {
+            "$ref": "#/components/schemas/.google.protobuf.Struct"
+          },
+          "value_field": {
+            "$ref": "#/components/schemas/.google.protobuf.Value"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.DynamicMessageUpdate": {
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.DynamicMessage"
+          },
+          "update_mask": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.Embedded": {
+        "oneOf": [
+          {
+            "properties": {
+              "progress": {
+                "format": "int64",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "note": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.NestedMessage": {
+        "properties": {
+          "n_id": {
+            "type": "string"
+          },
+          "val": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.SimpleMessage": {
+        "oneOf": [
+          {
+            "properties": {
+              "en": {
+                "format": "int64",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "line_num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "en": {
+                "format": "int64",
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "line_num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "no": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "lang": {
+                "type": "string"
+              },
+              "n_id": {
+                "properties": {
+                  "n_id": {
+                    "type": "string"
+                  },
+                  "val": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "no": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "num": {
+                "format": "int64",
+                "type": "string"
+              },
+              "resource_id": {
+                "type": "string"
+              },
+              "status": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "progress": {
+                        "format": "int64",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/echo_service.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/echo/nested/{n_id.n_id}": {
+      "get": {
+        "operationId": "EchoService_Echo_6",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo/resource/{resource_id}": {
+      "get": {
+        "operationId": "EchoService_Echo_5",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo/{id}": {
+      "post": {
+        "operationId": "EchoService_Echo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo/{id}/{num}": {
+      "get": {
+        "operationId": "EchoService_Echo_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "num",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo/{id}/{num}/{lang}": {
+      "get": {
+        "operationId": "EchoService_Echo_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "num",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "lang",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo1/{id}/{line_num}/{status.note}": {
+      "get": {
+        "operationId": "EchoService_Echo_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "line_num",
+            "required": true,
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo2/{no.note}": {
+      "get": {
+        "operationId": "EchoService_Echo_4",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_body": {
+      "post": {
+        "operationId": "EchoService_EchoBody",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_body/{id}": {
+      "put": {
+        "operationId": "EchoService_EchoBody_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_delete": {
+      "delete": {
+        "operationId": "EchoService_EchoDelete",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_patch": {
+      "patch": {
+        "operationId": "EchoService_EchoPatch",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "update_mask",
+            "schema": {
+              "$ref": "#/components/schemas/.google.protobuf.FieldMask"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.DynamicMessageUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.DynamicMessageUpdate"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_unauthorized": {
+      "get": {
+        "operationId": "EchoService_EchoUnauthorized",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "line_num",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lang",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "en",
+            "schema": {
+              "format": "int64",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "no",
+            "schema": {
+              "oneOf": [
+                {
+                  "properties": {
+                    "progress": {
+                      "format": "int64",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                {
+                  "properties": {
+                    "note": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "resource_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n_id",
+            "schema": {
+              "properties": {
+                "n_id": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "EchoService"
+        ]
+      }
+    }
+  }
+}

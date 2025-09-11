@@ -1,0 +1,60 @@
+{
+  "components": {
+    "schemas": {
+      ".grpc.gateway.examples.internal.pathenum.MessagePathEnum": {
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum": {
+        "enum": [
+          "GHI",
+          "JKL"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.pathenum.MessageWithNestedPathEnum": {
+        "properties": {
+          "value": {
+            "enum": [
+              "GHI",
+              "JKL"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.pathenum.MessageWithPathEnum": {
+        "properties": {
+          "value": {
+            "enum": [
+              "ABC",
+              "DEF"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.pathenum.PathEnum": {
+        "enum": [
+          "ABC",
+          "DEF"
+        ],
+        "type": "string"
+      },
+      ".grpc.gateway.examples.internal.pathenum.snake_case_for_import": {
+        "enum": [
+          "value_x",
+          "value_y"
+        ],
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/pathenum/path_enum.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

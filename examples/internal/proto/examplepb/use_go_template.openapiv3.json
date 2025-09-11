@@ -1,0 +1,165 @@
+{
+  "components": {
+    "schemas": {
+      ".google.protobuf.Any": {
+        "properties": {
+          "type_url": {
+            "type": "string"
+          },
+          "value": {
+            "format": "byte",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".google.rpc.Status": {
+        "properties": {
+          "code": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/.google.protobuf.Any"
+            },
+            "type": "array"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.LoginReply": {
+        "properties": {
+          "access": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.LoginRequest": {
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.LogoutReply": {
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      ".grpc.gateway.examples.internal.proto.examplepb.LogoutRequest": {
+        "properties": {
+          "stringarray": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "test": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "timeoflogout": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "examples/internal/proto/examplepb/use_go_template.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/example/login": {
+      "post": {
+        "operationId": "LoginService_Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.LoginReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "LoginService"
+        ]
+      }
+    },
+    "/v1/example/logout": {
+      "post": {
+        "operationId": "LoginService_Logout",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.LogoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.grpc.gateway.examples.internal.proto.examplepb.LogoutReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/.google.rpc.Status"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "LoginService"
+        ]
+      }
+    }
+  }
+}

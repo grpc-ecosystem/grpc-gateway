@@ -1,0 +1,57 @@
+{
+  "components": {
+    "schemas": {
+      ".grpc.gateway.runtime.internal.examplepb.Proto2Message": {
+        "properties": {
+          "bool_value": {
+            "type": "boolean"
+          },
+          "bytes_value": {
+            "format": "byte",
+            "type": "string"
+          },
+          "double_value": {
+            "format": "double",
+            "type": "number"
+          },
+          "float_value": {
+            "format": "float",
+            "type": "number"
+          },
+          "int32_value": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "int64_value": {
+            "format": "int64",
+            "type": "string"
+          },
+          "repeated_value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "string_value": {
+            "type": "string"
+          },
+          "uint32_value": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "uint64_value": {
+            "format": "uint64",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "runtime/internal/examplepb/proto2.proto",
+    "version": "versoin is not set"
+  },
+  "openapi": "3.0.2",
+  "paths": {}
+}

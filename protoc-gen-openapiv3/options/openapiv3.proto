@@ -1,0 +1,785 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+option java_multiple_files = true;
+option java_outer_classname = "OpenAPIProto";
+option java_package = "org.grpc.gateway.protoc_gen_openapiv3.options";
+option objc_class_prefix = "OAS";
+
+message OpenAPI {
+  // REQUIRED. This string MUST be the version number of the OpenAPI
+  // Specification that the OpenAPI Document uses. The openapi field SHOULD be
+  // used by tooling to interpret the OpenAPI Document. This is not related to
+  // the API info.version string.
+  string openapi = 1;
+  // REQUIRED. Provides metadata about the API. The metadata MAY be used by
+  // tooling as required.
+  Info info = 2;
+  // The default value for the $schema keyword within Schema Objects contained
+  // within this OAS document. This MUST be in the form of a URI.
+  string json_schema_dialect = 3;
+  // An array of Server Objects, which provide connectivity information to a
+  // target server. If the servers field is not provided, or is an empty array,
+  // the default value would be a Server Object with a url value of /.
+  repeated Server servers = 4;
+  // Paths will be generated
+  reserved 5;
+  // Webhooks reserved to be implemented
+  reserved 6;
+  // An element to hold various schemas for the specification.
+  Components components = 7;
+  // A declaration of which security mechanisms can be used across the API.
+  repeated SecurityRequirement security = 8;
+  // A list of tags used by the specification with additional metadata.
+  repeated Tag tags = 9;
+  // Additional external documentation.
+  ExternalDocumentation external_docs = 10;
+}
+
+message Info {
+  // REQUIRED. The title of the API.
+  string title = 1;
+  // A short summary of the API.
+  string summary = 2;
+  // A description of the API. CommonMark syntax MAY be used for rich text
+  // representation.
+  string description = 3;
+  // A URI for the Terms of Service for the API. This MUST be in the form of a
+  // URI.
+  string terms_of_service = 4;
+  // The contact information for the exposed API.
+  Contact contact = 5;
+  // The license information for the exposed API.
+  License license = 6;
+  // REQUIRED. The version of the OpenAPI Document.
+  string version = 7;
+}
+
+// Contact information for the exposed API.
+message Contact {
+  // The identifying name of the contact person/organization.
+  string name = 1;
+  // The URI for the contact information. This MUST be in the form of a URI.
+  string url = 2;
+  // The email address of the contact person/organization. This MUST be in the
+  // form of an email address.
+  string email = 3;
+}
+
+// License information for the exposed API.
+message License {
+  // REQUIRED. The license name used for the API.
+  string name = 1;
+  // An SPDX-Licenses expression for the API. The identifier field is mutually
+  // exclusive of the url field.
+  string identifier = 2;
+  // A URI for the license used for the API. This MUST be in the form of a URI.
+  // The url field is mutually exclusive of the identifier field.
+  string url = 3;
+}
+
+// An object representing a Server.
+message Server {
+  // REQUIRED. A URL to the target host. This URL supports Server Variables and
+  // MAY be relative, to indicate that the host location is relative to the
+  // location where the document containing the Server Object is being served.
+  // Variable substitutions will be made when a variable is named in {braces}.
+  string url = 1;
+
+  // An optional string describing the host designated by the URL.
+  // CommonMark syntax MAY be used for rich text representation.
+  string description = 2;
+
+  // A map between a variable name and its value. The value is used for
+  // substitution in the server's URL template.
+  map<string, ServerVariable> variables = 3;
+}
+
+// An object representing a Server Variable for server URL template
+// substitution.
+message ServerVariable {
+  // An enumeration of string values to be used if the substitution options are
+  // from a limited set. The array MUST NOT be empty.
+  repeated string enum = 1;
+
+  // REQUIRED. The default value to use for substitution, which SHALL be sent if
+  // an alternate value is not supplied. If the enum is defined, the value MUST
+  // exist in the enum's values. Note that this behavior is different from the
+  // Schema Object's default keyword, which documents the receiver's behavior
+  // rather than inserting the value into the data.
+  string default = 2;
+
+  // An optional description for the server variable.
+  // CommonMark syntax MAY be used for rich text representation.
+  string description = 3;
+}
+
+// Holds a set of reusable objects for different aspects of the OAS.
+message Components {
+  // An object to hold reusable Schema Objects.
+  map<string, Schema> schemas = 1;
+
+  // An object to hold reusable Response Objects.
+  map<string, Response> responses = 2;
+
+  // An object to hold reusable Parameter Objects.
+  map<string, Parameter> parameters = 3;
+
+  // An object to hold reusable Example Objects.
+  map<string, Example> examples = 4;
+
+  // An object to hold reusable Request Body Objects.
+  map<string, RequestBody> request_bodies = 5;
+
+  // An object to hold reusable Header Objects.
+  map<string, Header> headers = 6;
+
+  // An object to hold reusable Security Scheme Objects.
+  map<string, SecurityScheme> security_schemes = 7;
+
+  // An object to hold reusable Link Objects.
+  map<string, Link> links = 8;
+
+  // An object to hold reusable Callback Objects.
+  map<string, Callback> callbacks = 9;
+}
+
+// AdditionalPropertiesValue represents the value of the additionalProperties
+// keyword which can be either a boolean or a JSON Schema
+message AdditionalPropertiesValue {
+  oneof value {
+    bool boolean = 1;
+    Schema schema = 2;
+  }
+}
+
+// Schema represents JSON Schema Draft 2020-12, which is used by OpenAPI 3.1
+// This implementation covers the core schema keywords from the specification
+message Schema {
+  // The schema's URI identifier (corresponds to $id in JSON Schema)
+  string id = 1;
+
+  // Schema dialect, typically "https://json-schema.org/draft/2020-12/schema"
+  // (corresponds to $schema in JSON Schema)
+  string schema = 2;
+
+  // Schema title
+  string title = 3;
+
+  // Schema description
+  string description = 4;
+
+  // If "true", the instance validates successfully
+  // If "false", the instance fails to validate
+  // (corresponds to $const in JSON Schema)
+  google.protobuf.Value const = 5;
+
+  // The value of this keyword MUST be a string. This string SHOULD be a valid
+  // URI-reference, and this URI-reference SHOULD be a URI Template according to
+  // RFC 6570. If this keyword is absent, it can be considered present with an
+  // empty string value.
+  string format = 6;
+
+  // The value of this keyword MUST be a non-negative integer.
+  int32 max_length = 7;
+
+  // The value of this keyword MUST be a non-negative integer.
+  int32 min_length = 8;
+
+  // The value of this keyword MUST be a string. This string SHOULD be a valid
+  // regular expression, according to the ECMA-262 regular expression dialect.
+  string pattern = 9;
+
+  // The value of this keyword MUST be a non-negative integer.
+  int32 max_items = 10;
+
+  // The value of this keyword MUST be a non-negative integer.
+  int32 min_items = 11;
+
+  // The value of this keyword MUST be a boolean.
+  bool unique_items = 12;
+
+  // The value of this keyword MUST be a non-negative integer.
+  int32 max_properties = 13;
+
+  // The value of this keyword MUST be a non-negative integer.
+  int32 min_properties = 14;
+
+  // The value of this keyword MUST be an array. Elements of this array, if any,
+  // MUST be strings, and MUST be unique.
+  repeated string required = 15;
+
+  // The value of this keyword MUST be a number, representing an inclusive upper
+  // limit for a numeric instance.
+  double maximum = 16;
+
+  // The value of this keyword MUST be a number, representing an exclusive upper
+  // limit for a numeric instance.
+  double exclusive_maximum = 17;
+
+  // The value of this keyword MUST be a number, representing an inclusive lower
+  // limit for a numeric instance.
+  double minimum = 18;
+
+  // The value of this keyword MUST be a number, representing an exclusive lower
+  // limit for a numeric instance.
+  double exclusive_minimum = 19;
+
+  // The value of this keyword MUST be a number. A numeric instance is valid
+  // only if division by this keyword's value results in an integer.
+  int32 multiple_of = 20;
+
+  // The value of this keyword MUST be an array. Each item of this array MUST be
+  // a valid JSON Schema.
+  repeated Schema all_of = 21;
+
+  // The value of this keyword MUST be an array. Each item of this array MUST be
+  // a valid JSON Schema.
+  repeated Schema any_of = 22;
+
+  // The value of this keyword MUST be an array. Each item of this array MUST be
+  // a valid JSON Schema.
+  repeated Schema one_of = 23;
+
+  // The value of this keyword MUST be a valid JSON Schema.
+  Schema not = 24;
+
+  // The value of this keyword MUST be a valid JSON Schema.
+  Schema items = 25;
+
+  // The value of this keyword MUST be an object. Each value of this object MUST
+  // be a valid JSON Schema.
+  map<string, Schema> properties = 26;
+
+  // The value of this keyword MUST be either a boolean or a valid JSON Schema.
+  // If it's a boolean: false means no additional properties are allowed,
+  // true means any additional properties are allowed.
+  // If it's a schema: additional properties must validate against this schema.
+  AdditionalPropertiesValue additional_properties = 27;
+
+  // The value of this keyword MUST be an array. Each item of the array MUST be
+  // a string, and MUST be unique.
+  repeated string enum = 28;
+
+  // The value of this keyword MAY be of any type, including null.
+  google.protobuf.Value default = 29;
+
+  // The value of this keyword MUST be an array. There are no restrictions
+  // placed on the values within the array.
+  repeated google.protobuf.Value examples = 30;
+
+  // The value of this keyword MUST be a string. String values MUST be one of
+  // the seven primitive types defined by the core specification.
+  string type = 31;
+
+  // DEPRECATED: Use $defs instead. This keyword's value MUST be a valid JSON
+  // Schema.
+  map<string, Schema> definitions = 32;
+
+  // Reference to another schema (corresponds to $ref in JSON Schema)
+  string ref = 33;
+
+  // The modern replacement for definitions (corresponds to $defs in JSON
+  // Schema)
+  map<string, Schema> defs = 34;
+
+  // For tuple validation - an array of schemas for validating positional items
+  repeated Schema prefix_items = 35;
+
+  // A schema which must validate against at least one array item
+  Schema contains = 36;
+
+  // Minimum number of items that must match the "contains" schema
+  int32 min_contains = 37;
+
+  // Maximum number of items that must match the "contains" schema
+  int32 max_contains = 38;
+
+  // Schema for validating all property names of an object
+  Schema property_names = 39;
+
+  // Map of regex patterns to schemas for validating matching properties
+  map<string, Schema> pattern_properties = 40;
+
+  // Schemas that must validate when a specified property is present
+  map<string, Schema> dependent_schemas = 42;
+
+  // Conditional validation - schema to test
+  Schema if_schema = 43;
+
+  // Schema to use when if_schema validates successfully
+  Schema then_schema = 44;
+
+  // Schema to use when if_schema fails to validate
+  Schema else_schema = 45;
+
+  // Controls validation of properties not explicitly evaluated by properties or
+  // patternProperties
+  AdditionalPropertiesValue unevaluated_properties = 46;
+
+  // Controls validation of items not explicitly evaluated by items or
+  // prefixItems
+  AdditionalPropertiesValue unevaluated_items = 47;
+
+  // Content encoding (e.g., "base64")
+  string content_encoding = 48;
+
+  // Content media type (e.g., "application/json")
+  string content_media_type = 49;
+
+  // Schema for validating the decoded, parsed content
+  Schema content_schema = 50;
+
+  // Indicates a property that can only be returned, not sent by the client
+  bool read_only = 51;
+
+  // Indicates a property that can only be sent, not returned by the server
+  bool write_only = 52;
+
+  // Indicates a property is deprecated and should be avoided
+  bool deprecated = 53;
+
+  // Annotation to provide additional information
+  string comment = 54;
+}
+
+// Describes a single response from an API Operation, including design-time,
+// static links to operations based on the response.
+message Response {
+  // REQUIRED. A description of the response.
+  // CommonMark syntax MAY be used for rich text representation.
+  string description = 1;
+
+  // Maps a header name to its definition.
+  // RFC7230 states header names are case insensitive.
+  map<string, Header> headers = 2;
+
+  // A map containing descriptions of potential response payloads.
+  // The key is a media type or media type range and the value describes it.
+  map<string, MediaType> content = 3;
+
+  // A map of operations links that can be followed from the response.
+  map<string, Link> links = 4;
+}
+
+// The Header Object follows the structure of the Parameter Object.
+message Header {
+  // A brief description of the header.
+  string description = 1;
+
+  // Determines whether this header is mandatory.
+  bool required = 2;
+
+  // Specifies that a header is deprecated and SHOULD be transitioned out of
+  // usage.
+  bool deprecated = 3;
+
+  // Schema defining the type used for the header.
+  Schema schema = 4;
+}
+
+// Each Media Type Object provides schema and examples for the media type
+// identified by its key.
+message MediaType {
+  // The schema defining the content of the request, response, or parameter.
+  Schema schema = 1;
+
+  // Example of the media type.
+  google.protobuf.Any example = 2;
+
+  // Examples of the media type.
+  map<string, Example> examples = 3;
+
+  // A map between a property name and its encoding information.
+  map<string, Encoding> encoding = 4;
+}
+
+// A single encoding definition applied to a single schema property.
+message Encoding {
+  // The Content-Type for encoding a specific property.
+  string content_type = 1;
+
+  // A map allowing additional information to be provided as headers.
+  map<string, Header> headers = 2;
+
+  // Describes how a specific property value will be serialized.
+  string style = 3;
+
+  // When this is true, property values of type array or object generate
+  // separate parameters for each value of the array, or key-value-pair of the
+  // map.
+  bool explode = 4;
+
+  // Determines whether the parameter value SHOULD allow reserved characters to
+  // be included without percent-encoding.
+  bool allow_reserved = 5;
+}
+
+// Example Object
+message Example {
+  // Short description for the example.
+  string summary = 1;
+
+  // Long description for the example.
+  string description = 2;
+
+  // Embedded literal example.
+  google.protobuf.Any value = 3;
+
+  // A URL that points to the literal example.
+  string external_value = 4;
+}
+
+// The Link object represents a possible design-time link for a response.
+message Link {
+  // A relative or absolute URI reference to an OAS operation.
+  string operation_ref = 1;
+
+  // The name of an existing, resolvable OAS operation, as defined with a unique
+  // operationId.
+  string operation_id = 2;
+
+  // A map representing parameters to pass to an operation as specified with
+  // operationId or identified via operationRef.
+  map<string, google.protobuf.Any> parameters = 3;
+
+  // A literal value or {expression} to use as a request body when calling the
+  // target operation.
+  google.protobuf.Any request_body = 4;
+
+  // A description of the link.
+  string description = 5;
+
+  // A server object to be used by the target operation.
+  Server server = 6;
+}
+
+// Describes a single API operation on a path.
+message Operation {
+  // A list of tags for API documentation control.
+  repeated string tags = 1;
+
+  // A short summary of what the operation does.
+  string summary = 2;
+
+  // A verbose explanation of the operation behavior.
+  string description = 3;
+
+  // Additional external documentation for this operation.
+  ExternalDocumentation external_docs = 4;
+
+  // Unique string used to identify the operation.
+  string operation_id = 5;
+
+  // A list of parameters that are applicable for this operation.
+  repeated Parameter parameters = 6;
+
+  // The request body applicable for this operation.
+  RequestBody request_body = 7;
+
+  // The list of possible responses as they are returned from executing this
+  // operation.
+  map<string, Response> responses = 8;
+
+  // A map of possible out-of band callbacks related to the parent operation.
+  map<string, Callback> callbacks = 9;
+
+  // Declares this operation to be deprecated.
+  bool deprecated = 10;
+
+  // A declaration of which security mechanisms can be used for this operation.
+  repeated SecurityRequirement security = 11;
+
+  // An alternative server array to service this operation.
+  repeated Server servers = 12;
+}
+
+// Allows referencing an external resource for extended documentation.
+message ExternalDocumentation {
+  // A description of the target documentation.
+  string description = 1;
+
+  // REQUIRED. The URL for the target documentation.
+  string url = 2;
+}
+
+// Describes a single operation parameter.
+message Parameter {
+  // REQUIRED. The name of the parameter.
+  string name = 1;
+
+  // REQUIRED. The location of the parameter.
+  string in = 2;
+
+  // A brief description of the parameter.
+  string description = 3;
+
+  // Determines whether this parameter is mandatory.
+  bool required = 4;
+
+  // Specifies that a parameter is deprecated.
+  bool deprecated = 5;
+
+  // Sets the ability to pass empty-valued parameters.
+  bool allow_empty_value = 6;
+
+  // Describes how the parameter value will be serialized.
+  string style = 7;
+
+  // When this is true, parameter values of type array or object generate
+  // separate parameters for each value of the array or key-value pair of the
+  // map.
+  bool explode = 8;
+
+  // Determines whether the parameter value SHOULD allow reserved characters to
+  // be included without percent-encoding.
+  bool allow_reserved = 9;
+
+  // The schema defining the type used for the parameter.
+  Schema schema = 10;
+
+  // Example of the parameter's potential value.
+  google.protobuf.Any example = 11;
+
+  // Examples of the parameter's potential value.
+  map<string, Example> examples = 12;
+
+  // A map containing the representations for the parameter.
+  map<string, MediaType> content = 13;
+}
+
+// Describes a single request body.
+message RequestBody {
+  // A brief description of the request body.
+  string description = 1;
+
+  // REQUIRED. The content of the request body.
+  map<string, MediaType> content = 2;
+
+  // Determines if the request body is required in the request.
+  bool required = 3;
+}
+
+// A map of possible out-of band callbacks related to the parent operation.
+message Callback {
+  // A Path Item Object used to define a callback operation.
+  map<string, PathItem> expression = 1;
+}
+
+// Lists the required security schemes to execute this operation.
+message SecurityRequirement {
+  // Each name must correspond to a security scheme which is declared in the
+  // Security Schemes under the Components Object.
+  map<string, SecurityScopes> additional_properties = 1;
+}
+
+// A list of scopes required for a security scheme in SecurityRequirement.
+message SecurityScopes {
+  // The list of scope names required for this security scheme.
+  repeated string scopes = 1;
+}
+
+// Describes the operations available on a single path.
+message PathItem {
+  // Allows for an external definition of this path item.
+  string ref = 1;
+
+  // An optional, string summary, intended to apply to all operations in this
+  // path.
+  string summary = 2;
+
+  // An optional, string description, intended to apply to all operations in
+  // this path.
+  string description = 3;
+
+  // A definition of a GET operation on this path.
+  Operation get = 4;
+
+  // A definition of a PUT operation on this path.
+  Operation put = 5;
+
+  // A definition of a POST operation on this path.
+  Operation post = 6;
+
+  // A definition of a DELETE operation on this path.
+  Operation delete = 7;
+
+  // A definition of a OPTIONS operation on this path.
+  Operation options = 8;
+
+  // A definition of a HEAD operation on this path.
+  Operation head = 9;
+
+  // A definition of a PATCH operation on this path.
+  Operation patch = 10;
+
+  // A definition of a TRACE operation on this path.
+  Operation trace = 11;
+
+  // An alternative server array to service all operations in this path.
+  repeated Server servers = 12;
+
+  // A list of parameters that are applicable for all the operations described
+  // under this path.
+  repeated Parameter parameters = 13;
+}
+
+// Holds the relative paths to the individual endpoints and their operations.
+message Paths {
+  // A relative path to an individual endpoint.
+  map<string, PathItem> path = 1;
+}
+
+// When request bodies or response payloads may be one of a number of different
+// schemas, a discriminator object can be used to aid in serialization,
+// deserialization, and validation.
+message Discriminator {
+  // REQUIRED. The name of the property in the payload that will hold the
+  // discriminator value.
+  string property_name = 1;
+
+  // An object to hold mappings between payload values and schema names or
+  // references.
+  map<string, string> mapping = 2;
+}
+
+// A metadata object that allows for more fine-tuned XML model definitions.
+message Xml {
+  // Replaces the name of the element/attribute used for the described schema
+  // property.
+  string name = 1;
+
+  // The URI of the namespace definition.
+  string namespace = 2;
+
+  // The prefix to be used for the name.
+  string prefix = 3;
+
+  // Declares whether the property definition translates to an attribute instead
+  // of an element.
+  bool attribute = 4;
+
+  // MAY be used only for an array definition. Signifies whether the array is
+  // wrapped.
+  bool wrapped = 5;
+}
+
+// Defines a security scheme that can be used by the operations.
+message SecurityScheme {
+  // REQUIRED. The type of the security scheme.
+  string type = 1;
+
+  // A description for security scheme.
+  string description = 2;
+
+  // REQUIRED (oauth2, openIdConnect). The name of the header, query or cookie
+  // parameter to be used.
+  string name = 3;
+
+  // REQUIRED (apiKey). The location of the API key.
+  string in = 4;
+
+  // REQUIRED (http). The name of the HTTP Authorization scheme to be used.
+  string scheme = 5;
+
+  // A hint to the client to identify how the bearer token is formatted.
+  string bearer_format = 6;
+
+  // REQUIRED (oauth2). An object containing configuration information for the
+  // flow types supported.
+  OAuthFlows flows = 7;
+
+  // REQUIRED (openIdConnect). OpenId Connect URL to discover OAuth2
+  // configuration values.
+  string open_id_connect_url = 8;
+}
+
+// Allows configuration of the supported OAuth Flows.
+message OAuthFlows {
+  // Configuration for the OAuth Implicit flow.
+  OAuthFlow implicit = 1;
+
+  // Configuration for the OAuth Resource Owner Password flow.
+  OAuthFlow password = 2;
+
+  // Configuration for the OAuth Client Credentials flow.
+  OAuthFlow client_credentials = 3;
+
+  // Configuration for the OAuth Authorization Code flow.
+  OAuthFlow authorization_code = 4;
+}
+
+// Configuration details for a supported OAuth Flow.
+message OAuthFlow {
+  // REQUIRED (implicit, authorization_code). The authorization URL to be used
+  // for this flow.
+  string authorization_url = 1;
+
+  // REQUIRED (password, client_credentials, authorization_code). The token URL
+  // to be used for this flow.
+  string token_url = 2;
+
+  // The URL to be used for obtaining refresh tokens.
+  string refresh_url = 3;
+
+  // REQUIRED. The available scopes for the OAuth2 security scheme.
+  map<string, string> scopes = 4;
+}
+
+// Adds metadata to a single tag that is used by the Operation Object.
+message Tag {
+  // REQUIRED. The name of the tag.
+  string name = 1;
+
+  // A description for the tag.
+  string description = 2;
+
+  // Additional external documentation for this tag.
+  ExternalDocumentation external_docs = 3;
+}
+
+// A simple object to allow referencing other components in the specification.
+message Reference {
+  // REQUIRED. The reference string.
+  string ref = 1;
+
+  // A short summary which by default SHOULD override that of the referenced
+  // component.
+  string summary = 2;
+
+  // A description which by default SHOULD override that of the referenced
+  // component.
+  string description = 3;
+}
+
+// Enum represents OpenAPI v3 configuration for enum types
+message Enum {
+  // A title for the enum schema.
+  string title = 1;
+
+  // A description for the enum schema. CommonMark syntax MAY be used for rich text representation.
+  string description = 2;
+
+  // External documentation for this enum schema.
+  ExternalDocumentation external_docs = 3;
+
+  // Default value for this enum if none is provided.
+  string default = 4;
+
+  // Example value to be used in the generated OpenAPI documentation.
+  string example = 5;
+
+  // Indicates whether this enum is deprecated and should be avoided.
+  bool deprecated = 6;
+
+  // Custom mapping of enum values to display names in documentation.
+  map<string, string> value_descriptions = 7;
+
+  // Additional metadata for the enum schema.
+  google.protobuf.Struct extensions = 8;
+}
