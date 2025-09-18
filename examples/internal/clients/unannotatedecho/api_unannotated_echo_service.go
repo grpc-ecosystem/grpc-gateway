@@ -1,3 +1,4 @@
+
 /*
  * Unannotated Echo
  *
@@ -27,13 +28,13 @@ var (
 
 type UnannotatedEchoServiceApiService service
 
-/* 
+/*
 UnannotatedEchoServiceApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num Int value field
- * @param optional nil or *UnannotatedEchoServiceEchoOpts - Optional Parameters:
+ * @param optional nil or *UnannotatedEchoServiceApiUnannotatedEchoServiceEchoOpts - Optional Parameters:
      * @param "Duration" (optional.String) - 
      * @param "LineNum" (optional.String) - 
      * @param "Lang" (optional.String) - 
@@ -49,7 +50,7 @@ Description Echo
 @return ExamplepbUnannotatedSimpleMessage
 */
 
-type UnannotatedEchoServiceEchoOpts struct { 
+type UnannotatedEchoServiceApiUnannotatedEchoServiceEchoOpts struct { 
 	Duration optional.String
 	LineNum optional.String
 	Lang optional.String
@@ -63,7 +64,7 @@ type UnannotatedEchoServiceEchoOpts struct {
 	NIdVal optional.String
 }
 
-func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEchoOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceApiUnannotatedEchoServiceEchoOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -163,9 +164,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx contex
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -235,13 +234,13 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx contex
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 UnannotatedEchoServiceApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num Int value field
- * @param optional nil or *UnannotatedEchoServiceEcho2Opts - Optional Parameters:
+ * @param optional nil or *UnannotatedEchoServiceApiUnannotatedEchoServiceEcho2Opts - Optional Parameters:
      * @param "Duration" (optional.String) - 
      * @param "LineNum" (optional.String) - 
      * @param "Lang" (optional.String) - 
@@ -257,7 +256,7 @@ Description Echo
 @return ExamplepbUnannotatedSimpleMessage
 */
 
-type UnannotatedEchoServiceEcho2Opts struct { 
+type UnannotatedEchoServiceApiUnannotatedEchoServiceEcho2Opts struct { 
 	Duration optional.String
 	LineNum optional.String
 	Lang optional.String
@@ -271,7 +270,7 @@ type UnannotatedEchoServiceEcho2Opts struct {
 	NIdVal optional.String
 }
 
-func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceApiUnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -371,9 +370,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -443,7 +440,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 UnannotatedEchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body A simple message with many types
@@ -517,9 +514,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -578,11 +573,11 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 UnannotatedEchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param num Int value field
- * @param optional nil or *UnannotatedEchoServiceEchoDeleteOpts - Optional Parameters:
+ * @param optional nil or *UnannotatedEchoServiceApiUnannotatedEchoServiceEchoDeleteOpts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
      * @param "Duration" (optional.String) - 
      * @param "LineNum" (optional.String) - 
@@ -599,7 +594,7 @@ UnannotatedEchoServiceApiService EchoDelete method receives a simple message and
 @return ExamplepbUnannotatedSimpleMessage
 */
 
-type UnannotatedEchoServiceEchoDeleteOpts struct { 
+type UnannotatedEchoServiceApiUnannotatedEchoServiceEchoDeleteOpts struct { 
 	Id optional.String
 	Duration optional.String
 	LineNum optional.String
@@ -614,7 +609,7 @@ type UnannotatedEchoServiceEchoDeleteOpts struct {
 	NIdVal optional.String
 }
 
-func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, num string, localVarOptionals *UnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, num string, localVarOptionals *UnannotatedEchoServiceApiUnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Delete")
 		localVarPostBody   interface{}
@@ -716,9 +711,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -777,7 +770,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 UnannotatedEchoServiceApiService EchoNested method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body A simple message with many types
@@ -851,9 +844,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoNested(ctx 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -911,3 +902,4 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoNested(ctx 
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+

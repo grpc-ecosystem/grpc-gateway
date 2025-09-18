@@ -1,3 +1,4 @@
+
 /*
  * examples/internal/proto/examplepb/generate_unbound_methods.proto
  *
@@ -24,7 +25,7 @@ var (
 
 type GenerateUnboundMethodsEchoServiceApiService service
 
-/* 
+/*
 GenerateUnboundMethodsEchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -86,9 +87,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -125,7 +124,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 GenerateUnboundMethodsEchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
@@ -186,9 +185,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -225,7 +222,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 GenerateUnboundMethodsEchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
@@ -286,9 +283,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -324,3 +319,4 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
