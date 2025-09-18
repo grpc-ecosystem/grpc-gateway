@@ -4161,6 +4161,7 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 		{"/test/{name=*}/", "/test/{name}/", getParameters([]string{"name"}), []string{"name"}, true},
 		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"name"}), []string{"testCase"}, true},
 		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"name"}), []string{"test_case"}, false},
+		{"/test/{name=test-cases/*}/", "/test/test-cases/{test-case}/", getParameters([]string{"name"}), []string{"test-case"}, false},
 		{"/test/{test_type.name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"test_type.name"}), []string{"testCase"}, true},
 		{"/test/{test_type.name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"test_type.name"}), []string{"test_case"}, false},
 	}
