@@ -21,6 +21,12 @@ func Parse(tmpl string) (Compiler, error) {
 	if !strings.HasPrefix(tmpl, "/") {
 		return template{}, InvalidTemplateError{tmpl: tmpl, msg: "no leading /"}
 	}
+
+	// Validate URL pattern will prevent invalid patterns issues
+	if err := ValidateTemplate(tmpl); err != nil {
+		return template{}, InvalidTemplateError{tmpl: tmpl, msg: err.Error()}
+	}
+
 	tokens, verb := tokenize(tmpl[1:])
 
 	p := parser{tokens: tokens}

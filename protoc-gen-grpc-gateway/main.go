@@ -18,6 +18,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/compiler/protogen"
@@ -37,6 +38,8 @@ var (
 	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
 	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate proxy methods even for RPC methods that have no HttpRule annotation")
 	useOpaqueAPI               = flag.Bool("use_opaque_api", false, "generate code compatible with the new Opaque API instead of the older Open Struct API")
+	validateURLPatterns        = flag.Bool("validate_url_patterns", true, "validate URL patterns to prevent routing issues (WARNING: only disable for exceptional legacy cases)")
+	maxStaticSegments          = flag.Int("max_static_segments", 4, "maximum static segments allowed at URL start (WARNING: only increase for exceptional cases)")
 
 	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
 )
@@ -134,6 +137,17 @@ func applyFlags(reg *descriptor.Registry) error {
 	if *warnOnUnboundMethods && *generateUnboundMethods {
 		grpclog.Warningf("Option warn_on_unbound_methods has no effect when generate_unbound_methods is used.")
 	}
+	
+	// Configure URL pattern validation
+	if !*validateURLPatterns {
+		grpclog.Warning("URL pattern validation is DISABLED - this should only be used for exceptional legacy cases")
+	}
+	if *maxStaticSegments > 4 {
+		grpclog.Warningf("Maximum static segments increased to %d - this may cause routing issues", *maxStaticSegments)
+	}
+	httprule.SetURLValidationEnabled(*validateURLPatterns)
+	httprule.SetMaxStaticSegments(*maxStaticSegments)
+	
 	reg.SetStandalone(*standalone)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 
