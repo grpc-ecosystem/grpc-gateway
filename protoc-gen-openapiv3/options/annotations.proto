@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+import "google/protobuf/descriptor.proto";
+import "protoc-gen-openapiv3/options/openapiv3.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+
+extend google.protobuf.FileOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  Swagger openapiv3_swagger = 1043;
+}
+extend google.protobuf.MethodOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  Operation openapiv3_operation = 1043;
+}
+extend google.protobuf.MessageOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  Schema openapiv3_schema = 1043;
+}
+extend google.protobuf.EnumOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  EnumSchema openapiv3_enum = 1043;
+}
+extend google.protobuf.ServiceOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  Tag openapiv3_tag = 1043;
+}
+extend google.protobuf.FieldOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  JSONSchema openapiv3_field = 1043;
+}

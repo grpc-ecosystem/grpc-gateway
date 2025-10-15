@@ -1,2 +1,4 @@
 build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
 build --test_output=errors
+build --deleted_packages=golden-file-tests
+test --deleted_packages=golden-file-tests

@@ -34,6 +34,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/pathenum/path_enum.proto
       - protoc-gen-openapiv2/options/openapiv2.proto
+      - protoc-gen-openapiv3/options/openapiv3.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/proto3.proto
     ENUM_ZERO_VALUE_SUFFIX:
@@ -41,6 +42,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/pathenum/path_enum.proto
       - protoc-gen-openapiv2/options/openapiv2.proto
+      - protoc-gen-openapiv3/options/openapiv3.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/proto3.proto
     FIELD_LOWER_SNAKE_CASE:
@@ -76,8 +78,11 @@ lint:
       - examples/internal/proto/sub2/message.proto
       - internal/descriptor/apiconfig/apiconfig.proto
       - internal/descriptor/openapiconfig/openapiconfig.proto
+      - internal/descriptor/openapiconfigv3/openapiconfig.proto
       - protoc-gen-openapiv2/options/annotations.proto
       - protoc-gen-openapiv2/options/openapiv2.proto
+      - protoc-gen-openapiv3/options/annotations.proto
+      - protoc-gen-openapiv3/options/openapiv3.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/non_standard_names.proto
       - runtime/internal/examplepb/proto2.proto
@@ -131,8 +136,11 @@ lint:
       - examples/internal/proto/sub2/message.proto
       - internal/descriptor/apiconfig/apiconfig.proto
       - internal/descriptor/openapiconfig/openapiconfig.proto
+      - internal/descriptor/openapiconfigv3/openapiconfig.proto
       - protoc-gen-openapiv2/options/annotations.proto
       - protoc-gen-openapiv2/options/openapiv2.proto
+      - protoc-gen-openapiv3/options/annotations.proto
+      - protoc-gen-openapiv3/options/openapiv3.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/non_standard_names.proto
       - runtime/internal/examplepb/proto2.proto
@@ -202,3 +210,4 @@ lint:
 build:
   excludes:
     - bazel-grpc-gateway
+    - golden-file-tests

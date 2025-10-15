@@ -1,0 +1,203 @@
+syntax = "proto3";
+
+package com.coralogixapis.thing.v1;
+
+import "com/coralogixapis/thing/v1/thing.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv3/options/annotations.proto";
+
+// ThingService is the service for managing things.
+service ThingService {
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_tag) = {
+    name: "Things Service"
+    description: "ThingService provides the API for managing things."
+  };
+
+  // RPC for creating a thing.
+  rpc CreateThing(CreateThingRequest) returns (CreateThingResponse) {
+    option (google.api.http) = {
+      post: "/v1/things/{thing.nested_field.numeric_field}"
+      body: "thing.name"
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+      responses: {
+        key: "400"
+        value: {description: "Bad Request"}
+      }
+      responses: {
+        key: "401"
+        value: {description: "Unauthorized request"}
+      }
+      responses: {
+        key: "500"
+        value: {description: "Internal server error"}
+      }
+      tags: ["Things Service"]
+      summary: "Create Thing"
+    };
+  }
+
+  // RPC for replacing a thing.
+  rpc ReplaceThing(ReplaceThingRequest) returns (ReplaceThingResponse) {
+    option (google.api.http) = {
+      put: "/v1/things/{thing.id}"
+      body: "*"
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+      responses: {
+        key: "400"
+        value: {description: "Bad Request"}
+      }
+      responses: {
+        key: "401"
+        value: {description: "Unauthorized request"}
+      }
+      responses: {
+        key: "500"
+        value: {description: "Internal server error"}
+      }
+      tags: ["Things Service"]
+      summary: "Replace Thing"
+    };
+  }
+
+  // RPC for getting a thing.
+  rpc GetThing(GetThingRequest) returns (GetThingResponse) {
+    option (google.api.http) = {get: "/v1/things/{id}"};
+
+    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+      responses: {
+        key: "400"
+        value: {description: "Bad Request"}
+      }
+      responses: {
+        key: "401"
+        value: {description: "Unauthorized request"}
+      }
+      responses: {
+        key: "500"
+        value: {description: "Internal server error"}
+      }
+      tags: ["Things Service"]
+      summary: "Get Thing"
+    };
+  }
+
+  // RPC for deleting a thing.
+  rpc DeleteThing(DeleteThingRequest) returns (DeleteThingResponse) {
+    option (google.api.http) = {delete: "/v1/things/{thing_id}"};
+
+    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+      responses: {
+        key: "400"
+        value: {description: "Bad Request"}
+      }
+      responses: {
+        key: "401"
+        value: {description: "Unauthorized request"}
+      }
+      responses: {
+        key: "500"
+        value: {description: "Internal server error"}
+      }
+      tags: ["Things Service"]
+      summary: "Delete Thing"
+    };
+  }
+
+  // RPC for listing things with pagination.
+  rpc ListThings(ListThingsRequest) returns (ListThingsResponse) {
+    option (google.api.http) = {get: "/v1/things"};
+
+    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+      responses: {
+        key: "400"
+        value: {description: "Bad Request"}
+      }
+      responses: {
+        key: "401"
+        value: {description: "Unauthorized request"}
+      }
+      responses: {
+        key: "500"
+        value: {description: "Internal server error"}
+      }
+      tags: ["Things Service"]
+      summary: "List Things"
+    };
+  }
+}
+
+// CreateThingRequest is the request for the CreateThing RPC.
+message CreateThingRequest {
+  //  The thing to create.
+  Thing thing = 1;
+  string a_query_parameter = 2;
+}
+
+// CreateThingResponse is the response for the CreateThing RPC.
+message CreateThingResponse {
+  // The created thing.
+  Thing thing = 1;
+}
+
+// ListThingsRequest is the request for the ListThings RPC.
+message ListThingsRequest {
+  // The filter.
+  optional string filter = 1; // use whatever type is actually required
+
+  // The page size.
+  optional int32 page_size = 2;
+
+  // The skip count.
+  optional int32 skip = 3;
+
+  // The page token.
+  optional string page_token = 4;
+}
+
+// ListThingsResponse is the response for the ListThings RPC.
+message ListThingsResponse {
+  // The list of things.
+  repeated Thing things = 1;
+
+  // The total number of things.
+  int32 total_count = 2;
+
+  // The next page token.
+  optional string next_page_token = 3;
+}
+
+// ReplaceThingRequest is the request for the ReplaceThing RPC.
+message ReplaceThingRequest {
+  //  The thing to replace.
+  Thing thing = 1;
+}
+
+// ReplaceThingResponse is the response for the ReplaceThing RPC.
+message ReplaceThingResponse {
+  // The replaced thing.
+  Thing thing = 1;
+}
+
+// DeleteThingRequest is the request for the DeleteThing RPC.
+message DeleteThingRequest {
+  string thing_id = 1;
+}
+
+// DeleteThingResponse is the response for the DeleteThing RPC.
+message DeleteThingResponse {}
+
+// GetThingRequest is the request for the GetThing RPC.
+message GetThingRequest {
+  // The id of the thing to get.
+  string id = 1;
+}
+
+// GetThingResponse is the response for the GetThing RPC.
+message GetThingResponse {
+  // The thing.
+  Thing thing = 1;
+}

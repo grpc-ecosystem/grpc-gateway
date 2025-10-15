@@ -152,8 +152,9 @@ proto:
 		--path ./protoc-gen-openapiv2/options/annotations.proto \
 		--path ./protoc-gen-openapiv2/options/openapiv2.proto
 	buf generate \
-		--template ./examples/internal/proto/examplepb/opaque.buf.gen.yaml \
-		--path examples/internal/proto/examplepb/opaque.proto
+		--template ./protoc-gen-openapiv3/options/buf.gen.yaml \
+		--path ./protoc-gen-openapiv3/options/annotations.proto \
+		--path ./protoc-gen-openapiv3/options/openapiv3.proto
 
 generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 
@@ -163,7 +164,7 @@ test: proto
 
 clean:
 	find . -type f -name '*.pb.go' -delete
-	find . -type f -name '*.swagger.json' -delete
+	find . -type f ! -path "./golden-file-tests/*" -name "*.swagger.json" -delete
 	find . -type f -name '*.pb.gw.go' -delete
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 

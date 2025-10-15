@@ -1,0 +1,587 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/things": {
+      "get": {
+        "externalDocs": {
+          "url": ""
+        },
+        "operationId": "ThingService_ListThings",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "required": false,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_token",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListThingsResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Unauthorized request"
+          },
+          "500": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Internal server error"
+          }
+        },
+        "summary": "List Things",
+        "tags": [
+          "Things Service"
+        ]
+      }
+    },
+    "/v1/things/{id}": {
+      "get": {
+        "externalDocs": {
+          "url": ""
+        },
+        "operationId": "ThingService_GetThing",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetThingResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Unauthorized request"
+          },
+          "500": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Get Thing",
+        "tags": [
+          "Things Service"
+        ]
+      }
+    },
+    "/v1/things/{thing.id}": {
+      "put": {
+        "externalDocs": {
+          "url": ""
+        },
+        "operationId": "ThingService_ReplaceThing",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thing.id",
+            "required": true,
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "thing": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "createdAt": {
+                        "example": "2021-01-01T00:00:00Z",
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "name": {
+                        "example": "A Thing's Name",
+                        "type": "string"
+                      },
+                      "nestedField": {
+                        "properties": {
+                          "numericField": {
+                            "format": "int32",
+                            "type": "integer"
+                          },
+                          "stringField": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceThingResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Unauthorized request"
+          },
+          "500": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Replace Thing",
+        "tags": [
+          "Things Service"
+        ]
+      }
+    },
+    "/v1/things/{thing.nested_field.numeric_field}": {
+      "post": {
+        "externalDocs": {
+          "url": ""
+        },
+        "operationId": "ThingService_CreateThing",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thing.nested_field.numeric_field",
+            "required": true,
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "thing",
+            "required": false,
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "createdAt": {
+                  "example": "2021-01-01T00:00:00Z",
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "id": {
+                  "example": "123e4567-e89b-12d3-a456-426614174000",
+                  "type": "string"
+                },
+                "nestedField": {}
+              },
+              "type": "object"
+            }
+          },
+          {
+            "in": "query",
+            "name": "a_query_parameter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "example": "A Thing's Name",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateThingResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Unauthorized request"
+          },
+          "500": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Create Thing",
+        "tags": [
+          "Things Service"
+        ]
+      }
+    },
+    "/v1/things/{thing_id}": {
+      "delete": {
+        "externalDocs": {
+          "url": ""
+        },
+        "operationId": "ThingService_DeleteThing",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "thing_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteThingResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Unauthorized request"
+          },
+          "500": {
+            "content": {
+              "application/json": {}
+            },
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Delete Thing",
+        "tags": [
+          "Things Service"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuditLogDescription": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Code": {
+        "enum": [
+          "OK",
+          "CANCELLED",
+          "UNKNOWN",
+          "INVALID_ARGUMENT",
+          "DEADLINE_EXCEEDED",
+          "NOT_FOUND",
+          "ALREADY_EXISTS",
+          "PERMISSION_DENIED",
+          "UNAUTHENTICATED",
+          "RESOURCE_EXHAUSTED",
+          "FAILED_PRECONDITION",
+          "ABORTED",
+          "OUT_OF_RANGE",
+          "UNIMPLEMENTED",
+          "INTERNAL",
+          "UNAVAILABLE",
+          "DATA_LOSS"
+        ],
+        "type": "string"
+      },
+      "CreateThingRequest": {
+        "type": "object",
+        "properties": {
+          "aQueryParameter": {
+            "type": "string"
+          },
+          "thing": {
+            "$ref": "#/components/schemas/Thing"
+          }
+        }
+      },
+      "CreateThingResponse": {
+        "type": "object",
+        "properties": {
+          "thing": {
+            "$ref": "#/components/schemas/Thing"
+          }
+        }
+      },
+      "DeleteThingRequest": {
+        "type": "object",
+        "properties": {
+          "thingId": {
+            "type": "string"
+          }
+        }
+      },
+      "DeleteThingResponse": {
+        "type": "object"
+      },
+      "GetThingRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "GetThingResponse": {
+        "type": "object",
+        "properties": {
+          "thing": {
+            "$ref": "#/components/schemas/Thing"
+          }
+        }
+      },
+      "ListThingsRequest": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "string"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageToken": {
+            "type": "string"
+          },
+          "skip": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ListThingsResponse": {
+        "type": "object",
+        "properties": {
+          "nextPageToken": {
+            "type": "string"
+          },
+          "things": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Thing"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NestedStruct": {
+        "type": "object",
+        "properties": {
+          "numericField": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stringField": {
+            "type": "string"
+          }
+        }
+      },
+      "ReplaceThingRequest": {
+        "type": "object",
+        "properties": {
+          "thing": {
+            "$ref": "#/components/schemas/Thing"
+          }
+        }
+      },
+      "ReplaceThingResponse": {
+        "type": "object",
+        "properties": {
+          "thing": {
+            "$ref": "#/components/schemas/Thing"
+          }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Thing": {
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-01-01T00:00:00Z"
+          },
+          "id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "example": "A Thing's Name"
+          },
+          "nestedField": {
+            "$ref": "#/components/schemas/NestedStruct"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThingType": {
+        "title": "ThingType",
+        "enum": [
+          "THING_TYPE_UNSPECIFIED",
+          "THING_TYPE_STANDARD",
+          "THING_TYPE_PREMIUM"
+        ],
+        "type": "string",
+        "description": "The type of the thing."
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Things Service",
+      "description": "ThingService provides the API for managing things.",
+      "externalDocs": {
+        "url": ""
+      }
+    }
+  ]
+}

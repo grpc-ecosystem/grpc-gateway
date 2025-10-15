@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package com.coralogixapis.thing.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "protoc-gen-openapiv3/options/annotations.proto";
+
+// Thing is a thing.
+message Thing {
+  // ID is the unique identifier of the thing.
+  string id = 1 [(grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field) = {example: "\"123e4567-e89b-12d3-a456-426614174000\""}];
+
+  // Name of the thing.
+  string name = 2 [(grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field) = {example: "\"A Thing's Name\""}];
+
+  // Creation timestamp of the thing.
+  optional google.protobuf.Timestamp created_at = 4 [(grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field) = {example: "\"2021-01-01T00:00:00Z\""}];
+  NestedStruct nested_field = 5;
+}
+
+message NestedStruct { 
+  int32 numeric_field = 1;
+  string string_field = 2;
+}
+
+
+
+enum ThingType {
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_enum) = {
+    title: "ThingType"
+    description: "The type of the thing."
+  };
+
+  THING_TYPE_UNSPECIFIED = 0;
+
+  THING_TYPE_STANDARD = 1;
+
+  THING_TYPE_PREMIUM = 2;
+}
