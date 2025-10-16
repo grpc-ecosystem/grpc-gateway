@@ -22,7 +22,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        200:
+        "200":
           description: ""
           schema:
             type: "array"
@@ -44,7 +44,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        200:
+        "200":
           description: ""
           schema:
             type: "string"
@@ -64,16 +64,10 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        200:
+        "200":
           description: "(streaming responses)"
           schema:
-            type: "object"
-            properties:
-              result:
-                $ref: "#/definitions/examplepbResponseBodyOutResponse"
-              error:
-                $ref: "#/definitions/rpcStatus"
-            title: "Stream result of examplepbResponseBodyOut"
+            $ref: "#/definitions/Stream result of examplepbResponseBodyOut"
         default:
           description: "An unexpected error response."
           schema:
@@ -90,7 +84,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        200:
+        "200":
           description: ""
           schema:
             $ref: "#/definitions/examplepbResponseBodyOutResponse"
@@ -110,7 +104,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        200:
+        "200":
           description: ""
           schema:
             type: "array"
@@ -259,6 +253,7 @@ definitions:
       - '@type': "@type"
       message: "message"
   Stream result of examplepbResponseBodyOut:
+    type: "object"
     properties:
       result:
         $ref: "#/definitions/examplepbResponseBodyOutResponse"

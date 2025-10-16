@@ -30,7 +30,7 @@ paths:
           $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
@@ -54,7 +54,7 @@ paths:
           $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
@@ -78,7 +78,7 @@ paths:
           $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"

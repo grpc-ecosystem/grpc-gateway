@@ -137,24 +137,27 @@ paths:
         type: "string"
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
+      externalDocs:
+        description: "Find out more Echo"
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
       responses:
-        200:
+        "200":
           description: "A successful response."
           examples:
             application/json:
               value: "the input value"
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "integer"
             format: "integer"
-        503:
+        "503":
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
           x-number: 100
@@ -162,9 +165,6 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-      externalDocs:
-        description: "Find out more Echo"
-        url: "https://github.com/grpc-ecosystem/grpc-gateway"
   /v1/example/echo/{id}/{num}:
     get:
       tags:
@@ -257,24 +257,27 @@ paths:
         type: "string"
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
+      externalDocs:
+        description: "Find out more Echo"
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
       responses:
-        200:
+        "200":
           description: "A successful response."
           examples:
             application/json:
               value: "the input value"
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "integer"
             format: "integer"
-        503:
+        "503":
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
           x-number: 100
@@ -282,9 +285,6 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-      externalDocs:
-        description: "Find out more Echo"
-        url: "https://github.com/grpc-ecosystem/grpc-gateway"
   /v1/example/echo_body:
     post:
       tags:
@@ -300,15 +300,15 @@ paths:
           $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
@@ -410,15 +410,15 @@ paths:
         x-exportParamName: "NIdVal"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
@@ -442,15 +442,15 @@ paths:
           $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: ""
           schema:
             $ref: "#/definitions/examplepbUnannotatedNestedMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
