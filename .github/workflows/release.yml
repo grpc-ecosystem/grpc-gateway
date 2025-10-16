@@ -60,3 +60,12 @@ jobs:
       compile-generator: true # Workaround for https://github.com/slsa-framework/slsa-github-generator/issues/1163
       base64-subjects: "${{ needs.goreleaser.outputs.hashes }}"
       upload-assets: ${{ github.event_name == 'push' }} # upload to a new release when pushing via tag
+  # Job to publish the release to the Bazel Central Registry.
+  publish:
+    needs: [goreleaser]
+    uses: .github/workflows/publish.yaml
+    with:
+      tag_name: ${{ github.ref_name }}
+    secrets:
+      # Necessary to push to the BCR fork, and to open a pull request against a registry
+      publish_token: ${{ secrets.publish_token || secrets.BCR_PUBLISH_TOKEN }}
