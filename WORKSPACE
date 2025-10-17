@@ -35,9 +35,9 @@ http_archive(
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "d2081ab9528292f7980ef2d88d2be472453eea4222141046ad4f660874d5f24e",
-    strip_prefix = "protobuf-32.1",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v32.1.tar.gz"],
+    sha256 = "b6b03fbaa3a90f3d4f2a3fa4ecc41d7cd0326f92fcc920a7843f12206c8d52cd",
+    strip_prefix = "protobuf-33.0",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v33.0.tar.gz"],
 )
 
 http_archive(
