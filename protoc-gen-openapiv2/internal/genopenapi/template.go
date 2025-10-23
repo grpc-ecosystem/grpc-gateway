@@ -451,6 +451,12 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 					continue
 				}
 
+				// Only process methods with HTTP bindings (exposed via HTTP annotations)
+				// This prevents unused message definitions from appearing in the OpenAPI document
+				if len(meth.Bindings) == 0 {
+					continue
+				}
+
 				swgReqName, ok := fullyQualifiedNameToOpenAPIName(meth.RequestType.FQMN(), reg)
 				if !ok {
 					grpclog.Errorf("couldn't resolve OpenAPI name for FQMN %q", meth.RequestType.FQMN())

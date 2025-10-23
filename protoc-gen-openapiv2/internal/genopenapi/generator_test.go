@@ -83,7 +83,11 @@ func TestGenerateExtension(t *testing.T) {
 				name: "Test"
 				input_type: ".example.v1.Foo"
 				output_type: ".example.v1.Foo"
-				options: {}
+				options: {
+					[google.api.http]: {
+						get: "/v1/test"
+					}
+				}
 			}
 		}
 		options: {
