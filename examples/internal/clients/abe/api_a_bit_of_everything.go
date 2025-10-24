@@ -1,3 +1,4 @@
+
 /*
  * A Bit of Everything
  *
@@ -27,7 +28,7 @@ var (
 
 type ABitOfEverythingApiService service
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param value
@@ -100,9 +101,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckExternalNestedP
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -183,7 +182,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckExternalNestedP
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param value
@@ -256,9 +255,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckExternalPathEnu
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -339,7 +336,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckExternalPathEnu
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
@@ -352,7 +349,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Uint64Value" (optional.String) - 
@@ -398,7 +395,7 @@ ABitOfEverythingApiService
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCheckGetQueryParamsOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCheckGetQueryParamsOpts struct { 
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
 	Uint64Value optional.String
@@ -442,7 +439,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -640,9 +637,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckGetQueryParams(
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -723,7 +718,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckGetQueryParams(
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedOk DeepEnum description.
@@ -736,7 +731,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "Uint64Value" (optional.String) - 
@@ -782,7 +777,7 @@ ABitOfEverythingApiService
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	Uint64Value optional.String
@@ -826,7 +821,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -1024,9 +1019,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckNestedEnumGetQu
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -1107,7 +1100,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckNestedEnumGetQu
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param stringValue
@@ -1121,7 +1114,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -1165,7 +1158,7 @@ ABitOfEverythingApiService
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCheckPostQueryParamsOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCheckPostQueryParamsOpts struct { 
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -1207,7 +1200,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1401,9 +1394,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckPostQueryParams
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -1484,7 +1475,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckPostQueryParams
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
@@ -1555,9 +1546,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckStatus(ctx cont
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -1638,7 +1627,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckStatus(ctx cont
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService Create a new ABitOfEverything
 This API creates a new ABitOfEverything
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1667,7 +1656,7 @@ This API creates a new ABitOfEverything
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -1699,7 +1688,7 @@ This API creates a new ABitOfEverything
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCreateOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCreateOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -1729,7 +1718,7 @@ type ABitOfEverythingServiceCreateOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1900,9 +1889,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreate(ctx context.C
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -1983,7 +1970,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreate(ctx context.C
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body Intentionally complicated message type to cover many features of Protobuf.
@@ -2057,9 +2044,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBody(ctx conte
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -2140,22 +2125,22 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBody(ctx conte
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
  * @param book The book to create.
- * @param optional nil or *ABitOfEverythingServiceCreateBookOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCreateBookOpts - Optional Parameters:
      * @param "BookId" (optional.String) -  The ID to use for the book.  This must start with an alphanumeric character.
 
 @return ExamplepbBook
 */
 
-type ABitOfEverythingServiceCreateBookOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCreateBookOpts struct { 
 	BookId optional.String
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book ExamplepbBook, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2226,9 +2211,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBook(ctx conte
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -2309,7 +2292,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBook(ctx conte
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -2321,7 +2304,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceCustomOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCustomOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -2369,7 +2352,7 @@ ABitOfEverythingApiService
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCustomOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCustomOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -2415,7 +2398,7 @@ type ABitOfEverythingServiceCustomOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2618,9 +2601,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustom(ctx context.C
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -2701,7 +2682,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustom(ctx context.C
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -2713,7 +2694,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -2761,7 +2742,7 @@ ABitOfEverythingApiService
 @return interface{}
 */
 
-type ABitOfEverythingServiceCustomOptionsRequestOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceCustomOptionsRequestOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -2807,7 +2788,7 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Options")
 		localVarPostBody   interface{}
@@ -3010,9 +2991,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustomOptionsRequest
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -3049,7 +3028,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustomOptionsRequest
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
@@ -3125,9 +3104,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDeepPathEcho(ctx con
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -3208,7 +3185,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDeepPathEcho(ctx con
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuid
@@ -3281,9 +3258,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDelete(ctx context.C
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -3364,7 +3339,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDelete(ctx context.C
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -3376,7 +3351,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceDoubleColonOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceDoubleColonOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -3424,7 +3399,7 @@ ABitOfEverythingApiService
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceDoubleColonOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceDoubleColonOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -3470,7 +3445,7 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -3673,9 +3648,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDoubleColon(ctx cont
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -3756,7 +3729,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDoubleColon(ctx cont
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
@@ -3827,9 +3800,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceErrorWithDetails(ctx
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -3910,7 +3881,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceErrorWithDetails(ctx
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -3922,7 +3893,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceExistsOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceExistsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -3970,7 +3941,7 @@ ABitOfEverythingApiService
 @return interface{}
 */
 
-type ABitOfEverythingServiceExistsOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceExistsOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -4016,7 +3987,7 @@ type ABitOfEverythingServiceExistsOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Head")
 		localVarPostBody   interface{}
@@ -4219,9 +4190,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceExists(ctx context.C
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -4258,7 +4227,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceExists(ctx context.C
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id
@@ -4334,9 +4303,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetMessageWithBody(c
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -4417,7 +4384,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetMessageWithBody(c
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -4429,7 +4396,7 @@ ABitOfEverythingApiService
  * @param requiredStringField2
  * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
  * @param requiredFieldSchemaJsonNameCustom
- * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -4477,7 +4444,7 @@ ABitOfEverythingApiService
 @return interface{}
 */
 
-type ABitOfEverythingServiceGetQueryOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceGetQueryOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -4523,7 +4490,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	Uuids optional.Interface
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -4713,9 +4680,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetQuery(ctx context
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -4796,7 +4761,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetQuery(ctx context
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param pathRepeatedFloatValue repeated values. they are comma-separated in path
@@ -4947,9 +4912,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetRepeatedQuery(ctx
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5030,7 +4993,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetRepeatedQuery(ctx
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuid
@@ -5103,9 +5066,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceLookup(ctx context.C
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5186,7 +5147,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceLookup(ctx context.C
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
@@ -5260,9 +5221,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceOverwriteRequestCont
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5343,7 +5302,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceOverwriteRequestCont
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
@@ -5414,9 +5373,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceOverwriteResponseCon
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5497,7 +5454,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceOverwriteResponseCon
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param exampleEnum
@@ -5571,9 +5528,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostOneofEnum(ctx co
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5654,7 +5609,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostOneofEnum(ctx co
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
@@ -5728,9 +5683,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostRequiredMessageT
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5811,7 +5764,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostRequiredMessageT
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param name
@@ -5887,9 +5840,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostWithEmptyBody(ct
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -5970,7 +5921,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostWithEmptyBody(ct
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
@@ -6041,9 +5992,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceTimeout(ctx context.
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -6124,7 +6073,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceTimeout(ctx context.
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -6200,9 +6149,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdate(ctx context.C
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -6283,22 +6230,22 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdate(ctx context.C
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
  * @param book The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
- * @param optional nil or *ABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
      * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created. In this situation, &#x60;update_mask&#x60; is ignored.
 
 @return ExamplepbBook
 */
 
-type ABitOfEverythingServiceUpdateBookOpts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceUpdateBookOpts struct { 
 	AllowMissing optional.Bool
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdate_, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book Book, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -6369,9 +6316,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateBook(ctx conte
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -6452,22 +6397,22 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateBook(ctx conte
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
- * @param optional nil or *ABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingApiABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
 
 @return interface{}
 */
 
-type ABitOfEverythingServiceUpdateV2Opts struct { 
+type ABitOfEverythingApiABitOfEverythingServiceUpdateV2Opts struct { 
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything, localVarOptionals *ABitOfEverythingApiABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -6538,9 +6483,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV2(ctx context
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -6621,7 +6564,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV2(ctx context
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -6697,9 +6640,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV22(ctx contex
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -6780,7 +6721,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV22(ctx contex
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -6856,9 +6797,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV23(ctx contex
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -6938,3 +6877,4 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV23(ctx contex
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
