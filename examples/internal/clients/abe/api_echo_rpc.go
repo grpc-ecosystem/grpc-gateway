@@ -1,3 +1,4 @@
+
 /*
  * A Bit of Everything
  *
@@ -27,7 +28,7 @@ var (
 
 type EchoRpcApiService service
 
-/* 
+/*
 EchoRpcApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -101,9 +102,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, val
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -195,7 +194,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, val
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 EchoRpcApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -270,9 +269,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, va
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -364,21 +361,21 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, va
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 EchoRpcApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param optional nil or *ABitOfEverythingServiceEcho3Opts - Optional Parameters:
+ * @param optional nil or *EchoRpcApiABitOfEverythingServiceEcho3Opts - Optional Parameters:
      * @param "Value" (optional.String) - 
 
 @return SubStringMessage
 */
 
-type ABitOfEverythingServiceEcho3Opts struct { 
+type EchoRpcApiABitOfEverythingServiceEcho3Opts struct { 
 	Value optional.String
 }
 
-func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, localVarOptionals *ABitOfEverythingServiceEcho3Opts) (SubStringMessage, *http.Response, error) {
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, localVarOptionals *EchoRpcApiABitOfEverythingServiceEcho3Opts) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -446,9 +443,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, lo
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
 		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
-			return localVarReturnValue, localVarHttpResponse, err
-		}
+		return localVarReturnValue, localVarHttpResponse, err
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
@@ -539,3 +534,4 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, lo
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
+
