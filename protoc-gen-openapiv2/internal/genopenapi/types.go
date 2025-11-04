@@ -149,6 +149,7 @@ type openapiParameterObject struct {
 	Description      string              `json:"description,omitempty" yaml:"description,omitempty"`
 	In               string              `json:"in,omitempty" yaml:"in,omitempty"`
 	Required         bool                `json:"required" yaml:"required"`
+	Deprecated       bool                `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 	Type             string              `json:"type,omitempty" yaml:"type,omitempty"`
 	Format           string              `json:"format,omitempty" yaml:"format,omitempty"`
 	UniqueItems      bool                `json:"uniqueItems,omitempty" yaml:"uniqueItems,omitempty"`
