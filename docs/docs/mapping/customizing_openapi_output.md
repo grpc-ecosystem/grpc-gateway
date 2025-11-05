@@ -1114,6 +1114,72 @@ definitions:
         type: string
 ```
 
+### Deprecating parameters
+
+To deprecate an OpenAPI parameter, the protobuf `deprecated` field option works out of the box.
+
+Input example:
+
+```protobuf
+message SearchRequest {
+  string legacy_filter = 1 [deprecated = true];
+  string query = 2;
+}
+```
+
+Output (excerpt):
+
+```yaml
+paths:
+  /v1/search:
+    get:
+      parameters:
+        - name: legacy_filter
+          in: query
+          required: false
+          type: string
+          deprecated: true
+        - name: query
+          in: query
+          required: false
+          type: string
+```
+
+If you prefer to leave the protobuf definition active, you can use the `field_configuration` block on the `openapiv2_field` option instead:
+
+```protobuf
+message SearchRequest {
+  string legacy_filter = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Legacy filter syntax. Prefer the new 'query' field."
+      field_configuration: { deprecated: true }
+    }
+  ];
+  string query = 2;
+}
+```
+
+This keeps the protobuf field untouched but still emits a deprecated parameter in the generated spec:
+
+```yaml
+paths:
+  /v1/search:
+    get:
+      parameters:
+        - name: legacy_filter
+          in: query
+          required: false
+          type: string
+          description: Legacy filter syntax. Prefer the new 'query' field.
+          deprecated: true
+        - name: query
+          in: query
+          required: false
+          type: string
+```
+
+If you set both the protobuf `deprecated = true` option and `field_configuration.deprecated`, the OpenAPI output is marked as deprecated regardless of which signal you use.
+
 
 {% endraw %}
 
