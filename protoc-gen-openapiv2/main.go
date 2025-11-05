@@ -50,6 +50,7 @@ var (
 	allowPatchFeature              = flag.Bool("allow_patch_feature", true, "whether to hide update_mask fields in PATCH requests from the generated swagger file.")
 	preserveRPCOrder               = flag.Bool("preserve_rpc_order", false, "if true, will ensure the order of paths emitted in openapi swagger files mirror the order of RPC methods found in proto files. If false, emitted paths will be ordered alphabetically.")
 	enableRpcDeprecation           = flag.Bool("enable_rpc_deprecation", false, "whether to process grpc method's deprecated option.")
+	enableFieldDeprecation         = flag.Bool("enable_field_deprecation", false, "whether to process proto field's deprecated option.")
 	expandSlashedPathPatterns      = flag.Bool("expand_slashed_path_patterns", false, "if set, expands path parameters with URI sub-paths into the URI. For example, \"/v1/{name=projects/*}/resource\" becomes \"/v1/projects/{project}/resource\".")
 	useProto3FieldSemantics        = flag.Bool("use_proto3_field_semantics", false, "if set, uses proto3 field semantics for the OpenAPI schema. This means that fields are required by default.")
 	generateXGoType                = flag.Bool("generate_x_go_type", false, "if set, generates x-go-type extension using the go_package option from proto files")
@@ -177,6 +178,7 @@ func main() {
 	reg.SetAllowPatchFeature(*allowPatchFeature)
 	reg.SetPreserveRPCOrder(*preserveRPCOrder)
 	reg.SetEnableRpcDeprecation(*enableRpcDeprecation)
+	reg.SetEnableFieldDeprecation(*enableFieldDeprecation)
 	reg.SetExpandSlashedPathPatterns(*expandSlashedPathPatterns)
 	reg.SetGenerateXGoType(*generateXGoType)
 

@@ -167,6 +167,9 @@ type Registry struct {
 	// enableRpcDeprecation whether to process grpc method's deprecated option
 	enableRpcDeprecation bool
 
+	// enableFieldDeprecation whether to process proto field's deprecated option
+	enableFieldDeprecation bool
+
 	// expandSlashedPathPatterns, if true, for a path parameter carrying a sub-path, described via parameter pattern (i.e.
 	// the pattern contains forward slashes), this will expand the _pattern_ into the URI and will _replace_ the parameter
 	// with new path parameters inferred from patterns wildcards.
@@ -913,6 +916,16 @@ func (r *Registry) SetEnableRpcDeprecation(enable bool) {
 // GetEnableRpcDeprecation returns enableRpcDeprecation
 func (r *Registry) GetEnableRpcDeprecation() bool {
 	return r.enableRpcDeprecation
+}
+
+// SetEnableFieldDeprecation sets enableFieldDeprecation
+func (r *Registry) SetEnableFieldDeprecation(enable bool) {
+	r.enableFieldDeprecation = enable
+}
+
+// GetEnableFieldDeprecation returns enableFieldDeprecation
+func (r *Registry) GetEnableFieldDeprecation() bool {
+	return r.enableFieldDeprecation
 }
 
 func (r *Registry) SetExpandSlashedPathPatterns(expandSlashedPathPatterns bool) {
