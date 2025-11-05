@@ -345,6 +345,12 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			}
 		}
 
+		// verify if the field is deprecated
+		deprecated := false
+		if field.GetOptions().GetDeprecated() || getFieldConfiguration(reg, field).GetDeprecated() {
+			deprecated = true
+		}
+
 		param := openapiParameterObject{
 			Description: desc,
 			In:          "query",
@@ -354,7 +360,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Format:      schema.Format,
 			Pattern:     schema.Pattern,
 			Required:    required,
-			Deprecated:  field.GetOptions().GetDeprecated(),
+			Deprecated:  deprecated,
 			UniqueItems: schema.UniqueItems,
 			extensions:  schema.extensions,
 			Enum:        schema.Enum,
@@ -1455,19 +1461,23 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					if regExp, ok := pathParamRegexpMap[parameterString]; ok {
 						pattern = regExp
 					}
-					if fc := getFieldConfiguration(reg, parameter.Target); fc != nil {
+					fc := getFieldConfiguration(reg, parameter.Target)
+					if fc != nil {
 						pathParamName := fc.GetPathParamName()
 						if pathParamName != "" && pathParamName != parameterString {
 							pathParamNames["{"+parameterString+"}"] = "{" + pathParamName + "}"
 							parameterString, _, _ = strings.Cut(pathParamName, "=")
 						}
 					}
+
+					paramDeprecated := parameter.Target.GetOptions().GetDeprecated() || fc.GetDeprecated()
+
 					parameters = append(parameters, openapiParameterObject{
 						Name:        parameterString,
 						Description: desc,
 						In:          "path",
 						Required:    true,
-						Deprecated:  parameter.Target.GetOptions().GetDeprecated(),
+						Deprecated:  paramDeprecated,
 						Default:     defaultValue,
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:             paramType,
