@@ -1116,7 +1116,24 @@ definitions:
 
 ### Deprecating parameters
 
-To deprecate an OpenAPI parameter, the protobuf `deprecated` field option works out of the box.
+With the `enable_field_deprecation` option, OpenAPI parameters will be marked as deprecated based on the protobuf `deprecated` field option. Allowed values are: `true`, `false`.
+
+For example, if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - enable_field_deprecation=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=enable_field_deprecation=true ./path/to/file.proto
+```
 
 Input example:
 
@@ -1145,7 +1162,7 @@ paths:
           type: string
 ```
 
-If you prefer to leave the protobuf definition active, you can use the `field_configuration` block on the `openapiv2_field` option instead:
+If you prefer to leave the protobuf definition active, you can use the `field_configuration.deprecated` annotation on the `openapiv2_field` option instead:
 
 ```protobuf
 message SearchRequest {
@@ -1178,8 +1195,7 @@ paths:
           type: string
 ```
 
-If you set both the protobuf `deprecated = true` option and `field_configuration.deprecated`, the OpenAPI output is marked as deprecated regardless of which signal you use.
+If you set both the protobuf `deprecated = true` option and `field_configuration.deprecated`, the OpenAPI parameter is marked as deprecated regardless of the `enable_field_deprecation` option.
 
 
 {% endraw %}
-
