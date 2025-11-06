@@ -1326,6 +1326,181 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 	}
 }
 
+func TestMessageToQueryParametersWithDeprecatedField(t *testing.T) {
+	annotationOptions := func() *descriptorpb.FieldOptions {
+		opts := &descriptorpb.FieldOptions{}
+		proto.SetExtension(opts, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+			FieldConfiguration: &openapi_options.JSONSchema_FieldConfiguration{
+				Deprecated: true,
+			},
+		})
+		return opts
+	}
+
+	type test struct {
+		MsgDescs               []*descriptorpb.DescriptorProto
+		Message                string
+		Params                 []openapiParameterObject
+		enableFieldDeprecation bool
+	}
+
+	tests := []test{
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("deprecated_via_proto"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+							Options: &descriptorpb.FieldOptions{
+								Deprecated: proto.Bool(true),
+							},
+						},
+						{
+							Name:    proto.String("deprecated_via_annotation"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: annotationOptions(),
+						},
+						{
+							Name:   proto.String("active_field"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(3),
+						},
+					},
+				},
+			},
+			Message:                "ExampleMessage",
+			enableFieldDeprecation: true,
+			Params: []openapiParameterObject{
+				{
+					Name:       "deprecated_via_proto",
+					In:         "query",
+					Required:   false,
+					Type:       "string",
+					Deprecated: true,
+				},
+				{
+					Name:       "deprecated_via_annotation",
+					In:         "query",
+					Required:   false,
+					Type:       "string",
+					Deprecated: true,
+				},
+				{
+					Name:     "active_field",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("deprecated_via_proto"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+							Options: &descriptorpb.FieldOptions{
+								Deprecated: proto.Bool(true),
+							},
+						},
+						{
+							Name:    proto.String("deprecated_via_annotation"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: annotationOptions(),
+						},
+						{
+							Name:   proto.String("active_field"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(3),
+						},
+					},
+				},
+			},
+			Message:                "ExampleMessage",
+			enableFieldDeprecation: false,
+			Params: []openapiParameterObject{
+				{
+					Name:       "deprecated_via_proto",
+					In:         "query",
+					Required:   false,
+					Type:       "string",
+					Deprecated: false,
+				},
+				{
+					Name:       "deprecated_via_annotation",
+					In:         "query",
+					Required:   false,
+					Type:       "string",
+					Deprecated: true,
+				},
+				{
+					Name:     "active_field",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+	}
+
+	// Enable or disable proto-field deprecation per test case before loading descriptors.
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		reg.SetEnableFieldDeprecation(test.enableFieldDeprecation)
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		for i := range params {
+			params[i].Items = nil
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
 func TestMessageToQueryParametersWithEnumFieldOption(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
@@ -11352,6 +11527,178 @@ func TestRenderServicesOptionDeprecated(t *testing.T) {
 			got := result.getPathItemObject("/v1/echo").Get.Deprecated
 			if got != tc.expectedDeprecated {
 				t.Fatalf("Wrong deprecated field, got %v want %v", got, tc.expectedDeprecated)
+			}
+		})
+	}
+}
+
+func TestRenderServicesMarksDeprecatedParameters(t *testing.T) {
+	cases := []struct {
+		name                   string
+		fieldDeprecated        bool
+		enableFieldDeprecation bool
+		fieldConfigDeprecated  bool
+		expectedDeprecated     bool
+	}{
+		{
+			name:                   "proto field deprecated but feature disabled",
+			fieldDeprecated:        true,
+			enableFieldDeprecation: false,
+			expectedDeprecated:     false,
+		},
+		{
+			name:                   "proto field deprecated with feature enabled",
+			fieldDeprecated:        true,
+			enableFieldDeprecation: true,
+			expectedDeprecated:     true,
+		},
+
+		{
+			name:                  "field config annotation deprecated",
+			fieldConfigDeprecated: true,
+			expectedDeprecated:    true,
+		},
+		{
+			name:               "non-deprecated field",
+			expectedDeprecated: false,
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			var fieldOptions *descriptorpb.FieldOptions
+			if tc.fieldDeprecated || tc.fieldConfigDeprecated {
+				fieldOptions = &descriptorpb.FieldOptions{}
+				if tc.fieldDeprecated {
+					fieldOptions.Deprecated = proto.Bool(true)
+				}
+				if tc.fieldConfigDeprecated {
+					proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+						FieldConfiguration: &openapi_options.JSONSchema_FieldConfiguration{
+							Deprecated: true,
+						},
+					})
+				}
+			}
+			fieldDesc := &descriptorpb.FieldDescriptorProto{
+				Name:     proto.String("name"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:   proto.Int32(1),
+				Options:  fieldOptions,
+				JsonName: proto.String("name"),
+			}
+			reqMsgDesc := &descriptorpb.DescriptorProto{
+				Name:  proto.String("ExampleRequest"),
+				Field: []*descriptorpb.FieldDescriptorProto{fieldDesc},
+			}
+			respMsgDesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("ExampleResponse"),
+			}
+
+			reqMsg := &descriptor.Message{
+				DescriptorProto: reqMsgDesc,
+			}
+			respMsg := &descriptor.Message{
+				DescriptorProto: respMsgDesc,
+			}
+			field := &descriptor.Field{
+				FieldDescriptorProto: fieldDesc,
+				Message:              reqMsg,
+			}
+			reqMsg.Fields = []*descriptor.Field{field}
+
+			method := &descriptorpb.MethodDescriptorProto{
+				Name:       proto.String("GetExample"),
+				InputType:  proto.String(".example.ExampleRequest"),
+				OutputType: proto.String(".example.ExampleResponse"),
+			}
+
+			compiler, err := httprule.Parse("/v1/{name}")
+			if err != nil {
+				t.Fatalf("failed to parse path template: %v", err)
+			}
+			pathTemplate := compiler.Compile()
+
+			binding := &descriptor.Binding{
+				HTTPMethod: "GET",
+				PathTmpl:   pathTemplate,
+				PathParams: []descriptor.Parameter{
+					{
+						Target: field,
+						FieldPath: descriptor.FieldPath{
+							{
+								Name:   "name",
+								Target: field,
+							},
+						},
+					},
+				},
+			}
+
+			methodDesc := &descriptor.Method{
+				MethodDescriptorProto: method,
+				RequestType:           reqMsg,
+				ResponseType:          respMsg,
+				Bindings:              []*descriptor.Binding{binding},
+			}
+
+			service := &descriptorpb.ServiceDescriptorProto{
+				Name:   proto.String("ExampleService"),
+				Method: []*descriptorpb.MethodDescriptorProto{method},
+			}
+
+			serviceDesc := &descriptor.Service{
+				ServiceDescriptorProto: service,
+				Methods:                []*descriptor.Method{methodDesc},
+			}
+
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					MessageType:    []*descriptorpb.DescriptorProto{reqMsgDesc, respMsgDesc},
+					Service:        []*descriptorpb.ServiceDescriptorProto{service},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: []*descriptor.Message{reqMsg, respMsg},
+				Services: []*descriptor.Service{serviceDesc},
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetEnableFieldDeprecation(tc.enableFieldDeprecation)
+			fileCL := crossLinkFixture(&file)
+			if err := reg.Load(reqFromFile(fileCL)); err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
+
+			result, err := applyTemplate(param{File: fileCL, reg: reg})
+			if err != nil {
+				t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+			}
+
+			operation := result.getPathItemObject("/v1/{name}").Get
+			if operation == nil {
+				t.Fatalf("expected GET operation to be generated for /v1/{name}")
+			}
+			found := false
+			for _, param := range operation.Parameters {
+				if param.In == "path" && param.Name == "name" {
+					found = true
+					if param.Deprecated != tc.expectedDeprecated {
+						t.Fatalf("expected deprecated flag to be %v, got %v", tc.expectedDeprecated, param.Deprecated)
+					}
+				}
+			}
+			if !found {
+				t.Fatalf("expected to find path parameter named 'name'")
 			}
 		})
 	}

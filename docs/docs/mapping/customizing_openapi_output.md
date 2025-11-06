@@ -1114,6 +1114,88 @@ definitions:
         type: string
 ```
 
+### Deprecating parameters
+
+With the `enable_field_deprecation` option, OpenAPI parameters will be marked as deprecated based on the protobuf `deprecated` field option. Allowed values are: `true`, `false`.
+
+For example, if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - enable_field_deprecation=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=enable_field_deprecation=true ./path/to/file.proto
+```
+
+Input example:
+
+```protobuf
+message SearchRequest {
+  string legacy_filter = 1 [deprecated = true];
+  string query = 2;
+}
+```
+
+Output (excerpt):
+
+```yaml
+paths:
+  /v1/search:
+    get:
+      parameters:
+        - name: legacy_filter
+          in: query
+          required: false
+          type: string
+          deprecated: true
+        - name: query
+          in: query
+          required: false
+          type: string
+```
+
+If you prefer to leave the protobuf definition active, you can use the `field_configuration.deprecated` annotation on the `openapiv2_field` option instead:
+
+```protobuf
+message SearchRequest {
+  string legacy_filter = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "Legacy filter syntax. Prefer the new 'query' field."
+      field_configuration: { deprecated: true }
+    }
+  ];
+  string query = 2;
+}
+```
+
+This keeps the protobuf field untouched but still emits a deprecated parameter in the generated spec:
+
+```yaml
+paths:
+  /v1/search:
+    get:
+      parameters:
+        - name: legacy_filter
+          in: query
+          required: false
+          type: string
+          description: Legacy filter syntax. Prefer the new 'query' field.
+          deprecated: true
+        - name: query
+          in: query
+          required: false
+          type: string
+```
+
+If you set both the protobuf `deprecated = true` option and `field_configuration.deprecated`, the OpenAPI parameter is marked as deprecated regardless of the `enable_field_deprecation` option.
+
 
 {% endraw %}
-
