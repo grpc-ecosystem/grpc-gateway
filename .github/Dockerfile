@@ -1,4 +1,4 @@
-FROM golang:1.25.3
+FROM golang:1.25.4
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
