@@ -1327,10 +1327,21 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 }
 
 func TestMessageToQueryParametersWithDeprecatedField(t *testing.T) {
+	annotationOptions := func() *descriptorpb.FieldOptions {
+		opts := &descriptorpb.FieldOptions{}
+		proto.SetExtension(opts, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+			FieldConfiguration: &openapi_options.JSONSchema_FieldConfiguration{
+				Deprecated: true,
+			},
+		})
+		return opts
+	}
+
 	type test struct {
-		MsgDescs []*descriptorpb.DescriptorProto
-		Message  string
-		Params   []openapiParameterObject
+		MsgDescs               []*descriptorpb.DescriptorProto
+		Message                string
+		Params                 []openapiParameterObject
+		enableFieldDeprecation bool
 	}
 
 	tests := []test{
@@ -1348,18 +1359,10 @@ func TestMessageToQueryParametersWithDeprecatedField(t *testing.T) {
 							},
 						},
 						{
-							Name:   proto.String("deprecated_via_annotation"),
-							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Number: proto.Int32(2),
-							Options: func() *descriptorpb.FieldOptions {
-								opts := &descriptorpb.FieldOptions{}
-								proto.SetExtension(opts, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
-									FieldConfiguration: &openapi_options.JSONSchema_FieldConfiguration{
-										Deprecated: true,
-									},
-								})
-								return opts
-							}(),
+							Name:    proto.String("deprecated_via_annotation"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: annotationOptions(),
 						},
 						{
 							Name:   proto.String("active_field"),
@@ -1369,7 +1372,8 @@ func TestMessageToQueryParametersWithDeprecatedField(t *testing.T) {
 					},
 				},
 			},
-			Message: "ExampleMessage",
+			Message:                "ExampleMessage",
+			enableFieldDeprecation: true,
 			Params: []openapiParameterObject{
 				{
 					Name:       "deprecated_via_proto",
@@ -1393,10 +1397,64 @@ func TestMessageToQueryParametersWithDeprecatedField(t *testing.T) {
 				},
 			},
 		},
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("deprecated_via_proto"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+							Options: &descriptorpb.FieldOptions{
+								Deprecated: proto.Bool(true),
+							},
+						},
+						{
+							Name:    proto.String("deprecated_via_annotation"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: annotationOptions(),
+						},
+						{
+							Name:   proto.String("active_field"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(3),
+						},
+					},
+				},
+			},
+			Message:                "ExampleMessage",
+			enableFieldDeprecation: false,
+			Params: []openapiParameterObject{
+				{
+					Name:       "deprecated_via_proto",
+					In:         "query",
+					Required:   false,
+					Type:       "string",
+					Deprecated: false,
+				},
+				{
+					Name:       "deprecated_via_annotation",
+					In:         "query",
+					Required:   false,
+					Type:       "string",
+					Deprecated: true,
+				},
+				{
+					Name:     "active_field",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
 	}
 
+	// Enable or disable proto-field deprecation per test case before loading descriptors.
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
+		reg.SetEnableFieldDeprecation(test.enableFieldDeprecation)
 		msgs := []*descriptor.Message{}
 		for _, msgdesc := range test.MsgDescs {
 			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
@@ -11476,26 +11534,33 @@ func TestRenderServicesOptionDeprecated(t *testing.T) {
 
 func TestRenderServicesMarksDeprecatedParameters(t *testing.T) {
 	cases := []struct {
-		name                  string
-		fieldDeprecated       bool
-		fieldConfigDeprecated bool
-		expectedDeprecated    bool
+		name                   string
+		fieldDeprecated        bool
+		enableFieldDeprecation bool
+		fieldConfigDeprecated  bool
+		expectedDeprecated     bool
 	}{
 		{
-			name:               "deprecated field propagates to parameter",
-			fieldDeprecated:    true,
-			expectedDeprecated: true,
+			name:                   "proto field deprecated but feature disabled",
+			fieldDeprecated:        true,
+			enableFieldDeprecation: false,
+			expectedDeprecated:     false,
 		},
 		{
-			name:                  "annotation deprecates field",
+			name:                   "proto field deprecated with feature enabled",
+			fieldDeprecated:        true,
+			enableFieldDeprecation: true,
+			expectedDeprecated:     true,
+		},
+
+		{
+			name:                  "field config annotation deprecated",
 			fieldConfigDeprecated: true,
 			expectedDeprecated:    true,
 		},
 		{
-			name:                  "non-deprecated field leaves parameter untouched",
-			fieldDeprecated:       false,
-			fieldConfigDeprecated: false,
-			expectedDeprecated:    false,
+			name:               "non-deprecated field",
+			expectedDeprecated: false,
 		},
 	}
 
@@ -11608,6 +11673,7 @@ func TestRenderServicesMarksDeprecatedParameters(t *testing.T) {
 			}
 
 			reg := descriptor.NewRegistry()
+			reg.SetEnableFieldDeprecation(tc.enableFieldDeprecation)
 			fileCL := crossLinkFixture(&file)
 			if err := reg.Load(reqFromFile(fileCL)); err != nil {
 				t.Fatalf("failed to load code generator request: %v", err)

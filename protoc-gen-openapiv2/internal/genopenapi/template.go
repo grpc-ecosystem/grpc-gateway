@@ -345,11 +345,10 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			}
 		}
 
-		// verify if the field is deprecated
-		deprecated := false
-		if field.GetOptions().GetDeprecated() || getFieldConfiguration(reg, field).GetDeprecated() {
-			deprecated = true
-		}
+		// verify if the field is deprecated, either via proto or annotation
+		protoDeprecated := field.GetOptions().GetDeprecated() && reg.GetEnableFieldDeprecation()
+		annotationDeprecated := getFieldConfiguration(reg, field).GetDeprecated()
+		deprecated := protoDeprecated || annotationDeprecated
 
 		param := openapiParameterObject{
 			Description: desc,
@@ -1470,14 +1469,17 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						}
 					}
 
-					paramDeprecated := parameter.Target.GetOptions().GetDeprecated() || fc.GetDeprecated()
+					// verify if the parameter is deprecated, either via proto or annotation
+					protoDeprecated := parameter.Target.GetOptions().GetDeprecated() && reg.GetEnableFieldDeprecation()
+					annotationDeprecated := fc.GetDeprecated()
+					deprecated := protoDeprecated || annotationDeprecated
 
 					parameters = append(parameters, openapiParameterObject{
 						Name:        parameterString,
 						Description: desc,
 						In:          "path",
 						Required:    true,
-						Deprecated:  paramDeprecated,
+						Deprecated:  deprecated,
 						Default:     defaultValue,
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:             paramType,
