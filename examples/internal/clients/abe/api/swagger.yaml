@@ -6500,6 +6500,15 @@ definitions:
     description: "Nested is nested type."
     example: "{\"ok\":\"TRUE\"}"
   A bit of everything_2:
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     properties:
       singleNested:
         $ref: "#/definitions/ABitOfEverythingNested"

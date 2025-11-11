@@ -7046,6 +7046,16 @@
             "description": "Find out more about ABitOfEverything",
             "url": "https://github.com/grpc-ecosystem/grpc-gateway"
           },
+          "required": [
+            "int64Value",
+            "doubleValue",
+            "required_field_schema_json_name_custom",
+            "floatValue",
+            "requiredStringViaFieldBehaviorAnnotation",
+            "requiredStringField1",
+            "requiredStringField2",
+            "required_field_behavior_json_name_custom"
+          ],
           "x-a-bit-of-everything-foo": "bar"
         },
         "updateMask": {
@@ -7053,17 +7063,7 @@
           "description": "The paths to update."
         }
       },
-      "title": "UpdateV2Request request for update includes the message and the update mask",
-      "required": [
-        "int64Value",
-        "doubleValue",
-        "required_field_schema_json_name_custom",
-        "floatValue",
-        "requiredStringViaFieldBehaviorAnnotation",
-        "requiredStringField1",
-        "requiredStringField2",
-        "required_field_behavior_json_name_custom"
-      ]
+      "title": "UpdateV2Request request for update includes the message and the update mask"
     },
     "MessagePathEnumNestedPathEnum": {
       "type": "string",
