@@ -613,11 +613,38 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 
 		if fieldSchema.Required != nil {
-			schema.Required = getUniqueFields(schema.Required, fieldSchema.Required)
-			schema.Required = append(schema.Required, fieldSchema.Required...)
-			// To avoid populating both the field schema require and message schema require, unset the field schema require.
-			// See issue #2635.
-			fieldSchema.Required = nil
+			// Only hoist required fields to parent if there are no path params inside this field.
+			if len(subPathParams) == 0 {
+				schema.Required = getUniqueFields(schema.Required, fieldSchema.Required)
+				schema.Required = append(schema.Required, fieldSchema.Required...)
+				// To avoid populating both the field schema require and message schema require, unset the field schema require.
+				// See issue #2635.
+				fieldSchema.Required = nil
+			} else {
+				// When there are path params, we need to separate field-level required from nested required.
+				// The field name itself (if required) should be in parent's required, but nested field names
+				// should stay in the nested schema's required.
+				fieldName := f.GetName()
+				if reg.GetUseJSONNamesForFields() {
+					fieldName = f.GetJsonName()
+				}
+				// Check if the field name is in the fieldSchema.Required (it would be if the field is marked REQUIRED)
+				var nestedRequired []string
+				fieldIsRequired := false
+				for _, req := range fieldSchema.Required {
+					if req == fieldName {
+						fieldIsRequired = true
+					} else {
+						nestedRequired = append(nestedRequired, req)
+					}
+				}
+				// Add the field name to parent's required if the field itself is required
+				if fieldIsRequired && find(schema.Required, fieldName) == -1 {
+					schema.Required = append(schema.Required, fieldName)
+				}
+				// Keep only the nested required fields in the field schema
+				fieldSchema.Required = nestedRequired
+			}
 		}
 
 		if reg.GetUseAllOfForRefs() {
