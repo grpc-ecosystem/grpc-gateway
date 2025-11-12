@@ -1565,6 +1565,39 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							if err != nil {
 								return err
 							}
+							// renderFieldAsDefinition may add the body field name to the schema's required array
+							// via updateSwaggerObjectFromFieldBehavior. However, for body parameters, the schema
+							// represents the field's type, not the containing message. The body field name should
+							// only be in the schema's required array if it's actually a property of the schema.
+							// Remove the body field name from required if it's not a property to avoid invalid entries.
+							if schema.Required != nil && schema.Properties != nil {
+								// Build a set of property names
+								propertyNames := make(map[string]bool)
+								for _, prop := range *schema.Properties {
+									propertyNames[prop.Key] = true
+								}
+								// Filter required array: keep field names that are either:
+								// 1. Not the body field name, OR
+								// 2. The body field name AND it's actually a property
+								filteredRequired := make([]string, 0, len(schema.Required))
+								seenBodyFieldName := false
+								for _, req := range schema.Required {
+									if req == bodyFieldName {
+										if propertyNames[req] {
+											// It's a property, keep it (but only once)
+											if !seenBodyFieldName {
+												filteredRequired = append(filteredRequired, req)
+												seenBodyFieldName = true
+											}
+										}
+										// else: It's not a property, skip it
+									} else {
+										// Not the body field name, keep it
+										filteredRequired = append(filteredRequired, req)
+									}
+								}
+								schema.Required = filteredRequired
+							}
 						}
 						if schema.Title != "" {
 							desc = mergeDescription(schema)

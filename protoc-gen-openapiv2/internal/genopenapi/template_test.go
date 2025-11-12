@@ -11784,3 +11784,479 @@ func Test_updateSwaggerObjectFromFieldBehavior(t *testing.T) {
 		})
 	}
 }
+// TestBodyParameterRequiredFieldBug tests the bug where the body parameter name
+// is incorrectly added to the schema's required array when using body: "field_name"
+func TestBodyParameterRequiredFieldBug(t *testing.T) {
+	fieldBehaviorRequired := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
+
+	// Define the Comment message with REQUIRED fields including one named "comment"
+	commentDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Comment"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:    proto.String("comment"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(2),
+				Options: requiredFieldOptions, // comment field is REQUIRED
+			},
+			{
+				Name:    proto.String("resource"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(3),
+				Options: requiredFieldOptions, // resource is REQUIRED
+			},
+			{
+				Name:    proto.String("author"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(4),
+				Options: requiredFieldOptions, // author is REQUIRED
+			},
+		},
+	}
+
+	// Define the UpdateCommentRequest message
+	updateCommentReqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("UpdateCommentRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("comment"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".test.Comment"),
+				Number:   proto.Int32(1),
+				Options:  requiredFieldOptions, // comment field is REQUIRED
+			},
+		},
+	}
+
+	commentMsg := &descriptor.Message{
+		DescriptorProto: commentDesc,
+	}
+
+	updateCommentReqMsg := &descriptor.Message{
+		DescriptorProto: updateCommentReqDesc,
+	}
+
+	nameField := &descriptor.Field{
+		Message:              commentMsg,
+		FieldDescriptorProto: commentMsg.GetField()[0],
+	}
+	commentField := &descriptor.Field{
+		Message:              commentMsg,
+		FieldDescriptorProto: commentMsg.GetField()[1],
+	}
+	resourceField := &descriptor.Field{
+		Message:              commentMsg,
+		FieldDescriptorProto: commentMsg.GetField()[2],
+	}
+	authorField := &descriptor.Field{
+		Message:              commentMsg,
+		FieldDescriptorProto: commentMsg.GetField()[3],
+	}
+	commentMsg.Fields = []*descriptor.Field{nameField, commentField, resourceField, authorField}
+
+	commentReqField := &descriptor.Field{
+		Message:              updateCommentReqMsg,
+		FieldMessage:         commentMsg,
+		FieldDescriptorProto: updateCommentReqMsg.GetField()[0],
+	}
+	updateCommentReqMsg.Fields = []*descriptor.Field{commentReqField}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("UpdateComment"),
+		InputType:  proto.String("UpdateCommentRequest"),
+		OutputType: proto.String("Comment"),
+	}
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("CommentService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("comment.proto"),
+			Package:        proto.String("test"),
+			MessageType:    []*descriptorpb.DescriptorProto{commentDesc, updateCommentReqDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/example/test;test"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/test/test.pb",
+			Name: "test_pb",
+		},
+		Messages: []*descriptor.Message{commentMsg, updateCommentReqMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           updateCommentReqMsg,
+						ResponseType:          commentMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "PATCH",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/api/v1/{comment.name}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name: "comment",
+											},
+											{
+												Name: "name",
+											},
+										}),
+										Target: nameField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "comment",
+											Target: commentReqField,
+										},
+									}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := GetPaths(result)
+	if got, want := len(paths), 1; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+	if got, want := paths[0], "/api/v1/{comment.name}"; got != want {
+		t.Fatalf("Wrong results path, got %s want %s", got, want)
+	}
+
+	operation := *result.getPathItemObject("/api/v1/{comment.name}").Patch
+	if len(operation.Parameters) < 2 {
+		t.Fatalf("Expected at least 2 parameters, got %d", len(operation.Parameters))
+	}
+
+	// Find the body parameter
+	var bodyParam *openapiParameterObject
+	for i := range operation.Parameters {
+		if operation.Parameters[i].In == "body" {
+			bodyParam = &operation.Parameters[i]
+			break
+		}
+	}
+
+	if bodyParam == nil {
+		t.Fatal("Body parameter not found")
+	}
+
+	if bodyParam.Name != "comment" {
+		t.Fatalf("Wrong body parameter name, got %s want comment", bodyParam.Name)
+	}
+
+	if bodyParam.Schema == nil {
+		t.Fatal("Body parameter schema is nil")
+	}
+
+	// Check the required array
+	// Expected: ["comment", "resource", "author"] (each appears once)
+	// Bug: ["comment", "resource", "author", "comment"] (comment appears twice)
+
+	expectedRequired := []string{"comment", "resource", "author"}
+
+	// Check for duplicates
+	seen := make(map[string]int)
+	for _, req := range bodyParam.Schema.Required {
+		seen[req]++
+	}
+
+	var duplicates []string
+	for field, count := range seen {
+		if count > 1 {
+			duplicates = append(duplicates, field)
+		}
+	}
+
+	if len(duplicates) > 0 {
+		t.Errorf("BUG REPRODUCED: Duplicate entries in required array: %v", duplicates)
+		t.Errorf("Full required array: %v", bodyParam.Schema.Required)
+	}
+
+	// Also check that we don't have extra fields that aren't properties
+	if bodyParam.Schema.Properties != nil {
+		propertyNames := make(map[string]bool)
+		for _, prop := range *bodyParam.Schema.Properties {
+			propertyNames[prop.Key] = true
+		}
+
+		var invalidRequired []string
+		for _, req := range bodyParam.Schema.Required {
+			if !propertyNames[req] {
+				invalidRequired = append(invalidRequired, req)
+			}
+		}
+
+		if len(invalidRequired) > 0 {
+			t.Errorf("BUG: Required array contains fields that are not properties: %v", invalidRequired)
+		}
+	}
+
+	// Verify the required array matches expectations (no duplicates, all valid)
+	requiredUnique := make([]string, 0, len(bodyParam.Schema.Required))
+	seenMap := make(map[string]bool)
+	for _, req := range bodyParam.Schema.Required {
+		if !seenMap[req] {
+			seenMap[req] = true
+			requiredUnique = append(requiredUnique, req)
+		}
+	}
+
+	if !reflect.DeepEqual(requiredUnique, expectedRequired) {
+		t.Errorf("Required array (after deduplication) doesn't match expected:\n"+
+			"  got  = %v\n"+
+			"  want = %v\n"+
+			"  diff = %s",
+			requiredUnique, expectedRequired, cmp.Diff(expectedRequired, requiredUnique))
+	}
+}
+
+// TestBodyParameterSelfReferentialBug tests the bug where the body parameter name
+// is added to the required array even though it's not a property of the schema
+func TestBodyParameterSelfReferentialBug(t *testing.T) {
+	fieldBehaviorRequired := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	requiredFieldOptions := new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
+
+	// Define the Direction message with REQUIRED fields (but NO field named "direction")
+	directionDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Direction"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:    proto.String("title"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(2),
+				Options: requiredFieldOptions,
+			},
+		},
+	}
+
+	// Define the UpdateDirectionRequest message
+	updateDirectionReqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("UpdateDirectionRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("direction"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".test.Direction"),
+				Number:   proto.Int32(1),
+				Options:  requiredFieldOptions, // direction field is REQUIRED
+			},
+		},
+	}
+
+	directionMsg := &descriptor.Message{
+		DescriptorProto: directionDesc,
+	}
+
+	updateDirectionReqMsg := &descriptor.Message{
+		DescriptorProto: updateDirectionReqDesc,
+	}
+
+	nameField := &descriptor.Field{
+		Message:              directionMsg,
+		FieldDescriptorProto: directionMsg.GetField()[0],
+	}
+	titleField := &descriptor.Field{
+		Message:              directionMsg,
+		FieldDescriptorProto: directionMsg.GetField()[1],
+	}
+	directionMsg.Fields = []*descriptor.Field{nameField, titleField}
+
+	directionReqField := &descriptor.Field{
+		Message:              updateDirectionReqMsg,
+		FieldMessage:         directionMsg,
+		FieldDescriptorProto: updateDirectionReqMsg.GetField()[0],
+	}
+	updateDirectionReqMsg.Fields = []*descriptor.Field{directionReqField}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("UpdateDirection"),
+		InputType:  proto.String("UpdateDirectionRequest"),
+		OutputType: proto.String("Direction"),
+	}
+
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("DirectionService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("direction.proto"),
+			Package:        proto.String("test"),
+			MessageType:    []*descriptorpb.DescriptorProto{directionDesc, updateDirectionReqDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/example/test;test"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/test/test.pb",
+			Name: "test_pb",
+		},
+		Messages: []*descriptor.Message{directionMsg, updateDirectionReqMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           updateDirectionReqMsg,
+						ResponseType:          directionMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "PATCH",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/api/v1/{direction.name}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name: "direction",
+											},
+											{
+												Name: "name",
+											},
+										}),
+										Target: nameField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "direction",
+											Target: directionReqField,
+										},
+									}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := GetPaths(result)
+	if got, want := len(paths), 1; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+
+	operation := *result.getPathItemObject("/api/v1/{direction.name}").Patch
+
+	// Find the body parameter
+	var bodyParam *openapiParameterObject
+	for i := range operation.Parameters {
+		if operation.Parameters[i].In == "body" {
+			bodyParam = &operation.Parameters[i]
+			break
+		}
+	}
+
+	if bodyParam == nil {
+		t.Fatal("Body parameter not found")
+	}
+
+	if bodyParam.Schema == nil {
+		t.Fatal("Body parameter schema is nil")
+	}
+
+	// Check that we don't have the parameter name in the required array
+	// when it's not actually a property of the schema
+	expectedRequired := []string{"title"}
+
+	if bodyParam.Schema.Properties != nil {
+		propertyNames := make(map[string]bool)
+		for _, prop := range *bodyParam.Schema.Properties {
+			propertyNames[prop.Key] = true
+		}
+
+		var invalidRequired []string
+		for _, req := range bodyParam.Schema.Required {
+			if !propertyNames[req] {
+				invalidRequired = append(invalidRequired, req)
+			}
+		}
+
+		if len(invalidRequired) > 0 {
+			t.Errorf("BUG REPRODUCED: Required array contains fields that are not properties: %v", invalidRequired)
+			t.Errorf("Full required array: %v", bodyParam.Schema.Required)
+			t.Errorf("Available properties: %v", func() []string {
+				keys := make([]string, 0, len(*bodyParam.Schema.Properties))
+				for _, prop := range *bodyParam.Schema.Properties {
+					keys = append(keys, prop.Key)
+				}
+				return keys
+			}())
+		}
+	}
+
+	if !reflect.DeepEqual(bodyParam.Schema.Required, expectedRequired) {
+		t.Errorf("Required array doesn't match expected:\n"+
+			"  got  = %v\n"+
+			"  want = %v\n"+
+			"  diff = %s",
+			bodyParam.Schema.Required, expectedRequired, cmp.Diff(expectedRequired, bodyParam.Schema.Required))
+	}
+}
