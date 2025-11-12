@@ -157,6 +157,10 @@ type Registry struct {
 	// properties
 	useAllOfForRefs bool
 
+	// omitArrayItemTypeWhenRefSibling, if set, will omit 'type: object' in array items when $ref is present
+	// to avoid no-$ref-siblings violations in OpenAPI v2
+	omitArrayItemTypeWhenRefSibling bool
+
 	// allowPatchFeature determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).
 	allowPatchFeature bool
 
@@ -886,6 +890,16 @@ func (r *Registry) SetUseAllOfForRefs(use bool) {
 // GetUseAllOfForRefs returns useAllOfForRefs
 func (r *Registry) GetUseAllOfForRefs() bool {
 	return r.useAllOfForRefs
+}
+
+// SetOmitArrayItemTypeWhenRefSibling sets omitArrayItemTypeWhenRefSibling
+func (r *Registry) SetOmitArrayItemTypeWhenRefSibling(omit bool) {
+	r.omitArrayItemTypeWhenRefSibling = omit
+}
+
+// GetOmitArrayItemTypeWhenRefSibling returns omitArrayItemTypeWhenRefSibling
+func (r *Registry) GetOmitArrayItemTypeWhenRefSibling() bool {
+	return r.omitArrayItemTypeWhenRefSibling
 }
 
 // SetAllowPatchFeature sets allowPatchFeature
