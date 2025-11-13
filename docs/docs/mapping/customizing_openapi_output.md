@@ -861,6 +861,99 @@ definitions:
         type: string
 ```
 
+### Omit array item type when $ref is a sibling
+
+By default, when generating OpenAPI schemas for array items that reference other definitions, both `type: object` and `$ref` properties are included. However, some strict OpenAPI validators enforce the `no-$ref-siblings` rule, which prohibits having `$ref` alongside other properties at the same level. To comply with this strict validation, you can use the `omit_array_item_type_when_ref_sibling` option. When enabled, this option omits the `type: object` property from array items when a `$ref` is present, since `$ref` already implies the type. Allowed values are: `true`, `false`.
+
+**Note**: This option only affects the generated OpenAPI specification and does not alter the behavior of the gateway itself.
+
+For example, if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - omit_array_item_type_when_ref_sibling=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=omit_array_item_type_when_ref_sibling=true ./path/to/file.proto
+```
+
+Input example:
+
+```protobuf
+syntax = "proto3";
+
+package example.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "example/v1;example";
+
+service ExampleService {
+  rpc GetItems(GetItemsRequest) returns (GetItemsResponse) {
+    option (google.api.http) = {get: "/api/items"};
+  }
+}
+
+message GetItemsRequest {}
+
+message GetItemsResponse {
+  repeated Item items = 1;
+}
+
+message Item {
+  string id = 1;
+  string name = 2;
+}
+```
+
+Output without the option (default behavior):
+
+```yaml
+definitions:
+  v1GetItemsResponse:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object  # This can violate strict no-$ref-siblings rule
+          $ref: "#/definitions/v1Item"
+  v1Item:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+```
+
+Output with `omit_array_item_type_when_ref_sibling=true`:
+
+```yaml
+definitions:
+  v1GetItemsResponse:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/v1Item"  # type: object is omitted
+  v1Item:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+```
+
 ### Custom HTTP Header Request Parameters
 
 By default the parameters for each operation are generated from the protocol buffer definition however you can extend the parameters to include extra HTTP headers if required.
