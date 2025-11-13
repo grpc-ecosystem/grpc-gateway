@@ -2114,6 +2114,61 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// Find all the service's messages and enumerations that are defined (recursively)
 	// and write request, response and other custom (but referenced) types out as definition objects.
 	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
+
+	// Build a set of messages/enums that are actually referenced in this file
+	// we should only consider naming collisions for types that are actually used
+	referencedNames := make(map[string]bool)
+
+	// Add all messages that are referenced (iterate over values to get FQMN, not keys)
+	for _, msg := range messages {
+		referencedNames[msg.FQMN()] = true
+	}
+
+	// Add all enums that are referenced
+	for _, enum := range enums {
+		referencedNames[enum.FQEN()] = true
+	}
+
+	// Add all method names
+	for _, svc := range p.Services {
+		for _, meth := range svc.Methods {
+			referencedNames[meth.FQMN()] = true
+		}
+	}
+
+	// Get all names from the registry
+	allFQMNs := p.reg.GetAllFQMNs()
+	allFQENs := p.reg.GetAllFQENs()
+	allFQMethNs := p.reg.GetAllFQMethNs()
+	allNames := append(append(allFQMNs, allFQENs...), allFQMethNs...)
+
+	// Filter: EXCLUDE names that are from a DIFFERENT package AND are NOT referenced
+	// This way we keep all names from the current package, and all referenced names from other packages
+	// We also keep google.* packages since they are standard dependencies
+	currentPackage := p.File.GetPackage()
+	filteredNames := make([]string, 0, len(allNames))
+	for _, name := range allNames {
+		// Determine the package of this name
+		// Names are like ".package.Type" or ".package.subpackage.Type"
+		// We want to extract the top-level package
+		parts := strings.Split(strings.TrimPrefix(name, "."), ".")
+		if len(parts) == 0 {
+			continue
+		}
+		namePackage := parts[0]
+
+		// Include if: (1) from current package, OR (2) actually referenced, OR (3) from google.* packages
+		if namePackage == currentPackage || referencedNames[name] || namePackage == "google" {
+			filteredNames = append(filteredNames, name)
+		}
+	}
+
+	// Clear and recompute the naming cache based only on names that are actually in scope
+	registriesSeenMutex.Lock()
+	resolvedNames := resolveFullyQualifiedNameToOpenAPINames(filteredNames, p.reg.GetOpenAPINamingStrategy())
+	registriesSeen[p.reg] = resolvedNames
+	registriesSeenMutex.Unlock()
+
 	if err := renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs, nil); err != nil {
 		return nil, err
 	}
