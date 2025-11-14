@@ -150,7 +150,7 @@ def _run_proto_gen_openapi(
 
     if use_allof_for_refs:
         args.add("--openapiv2_opt", "use_allof_for_refs=true")
-        
+
     if omit_array_item_type_when_ref_sibling:
         args.add("--openapiv2_opt", "omit_array_item_type_when_ref_sibling=true")
 
