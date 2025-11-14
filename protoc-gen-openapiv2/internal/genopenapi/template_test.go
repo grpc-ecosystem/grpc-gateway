@@ -10498,6 +10498,247 @@ func TestArrayMessageItemsType(t *testing.T) {
 	}
 }
 
+func TestArrayMessageItemsTypeOmitWhenRefSibling(t *testing.T) {
+	msgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("children"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.ExampleMessage"),
+				Number:   proto.Int32(1),
+				JsonName: proto.String("children"),
+			},
+		},
+	}
+
+	nestDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("NestDescMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("children"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.ExampleMessage"),
+				Number:   proto.Int32(1),
+				JsonName: proto.String("children"),
+			},
+		},
+	}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("NestDescMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgDesc,
+	}
+	nsg := &descriptor.Message{
+		DescriptorProto: nestDesc,
+	}
+	msg.Fields = []*descriptor.Field{
+		{
+			Message:              msg,
+			FieldDescriptorProto: msg.GetField()[0],
+		},
+	}
+	nsg.Fields = []*descriptor.Field{
+		{
+			Message:              nsg,
+			FieldDescriptorProto: nsg.GetField()[0],
+		},
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nestDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg, nsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          nsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	// Enable the flag to omit type when $ref is present
+	reg.SetOmitArrayItemTypeWhenRefSibling(true)
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
+			{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("acme/example.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nestDesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("acme/example"),
+				},
+			},
+		},
+	}); err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	expect := openapiDefinitionsObject{
+		"rpcStatus": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "code",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type:   "integer",
+							Format: "int32",
+						},
+					},
+				},
+				keyVal{
+					Key: "message",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "string",
+						},
+					},
+				},
+				keyVal{
+					Key: "details",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "array",
+							Items: &openapiItemsObject{
+								schemaCore: schemaCore{
+									// Type should be omitted when flag is enabled
+									Ref: "#/definitions/protobufAny",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"exampleExampleMessage": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "children",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "array",
+							Items: &openapiItemsObject{
+								schemaCore: schemaCore{
+									// Type should be omitted when flag is enabled
+									Ref: "#/definitions/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"exampleNestDescMessage": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "children",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "array",
+							Items: &openapiItemsObject{
+								schemaCore: schemaCore{
+									// Type should be omitted when flag is enabled
+									Ref: "#/definitions/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"protobufAny": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "@type",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "string",
+						},
+					},
+				},
+			},
+			AdditionalProperties: &openapiSchemaObject{},
+		},
+	}
+
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := expect, result.Definitions, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
+	}
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
 func TestQueryParameterType(t *testing.T) {
 	ntDesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("AddressEntry"),

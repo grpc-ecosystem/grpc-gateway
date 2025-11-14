@@ -865,8 +865,13 @@ func schemaOfFieldBase(f *descriptor.Field, reg *descriptor.Registry, refs refMa
 
 	switch aggregate {
 	case array:
-		if _, ok := wktSchemas[fd.GetTypeName()]; !ok && fd.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
-			core.Type = "object"
+		// Only set core.Type = "object" for MESSAGE types with $ref if the flag is not set.
+		// When omitArrayItemTypeWhenRefSibling is true, we omit "type: object" to avoid
+		// no-$ref-siblings violations in OpenAPI v2, since $ref already implies the type is object.
+		if !reg.GetOmitArrayItemTypeWhenRefSibling() {
+			if _, ok := wktSchemas[fd.GetTypeName()]; !ok && fd.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+				core.Type = "object"
+			}
 		}
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
