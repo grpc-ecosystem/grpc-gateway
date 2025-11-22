@@ -2119,6 +2119,11 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// we should only consider naming collisions for types that are actually used
 	referencedNames := make(map[string]bool)
 
+	// Add all messages from the current file being processed
+	for _, msg := range p.Messages {
+		referencedNames[msg.FQMN()] = true
+	}
+
 	// Add all messages that are referenced (iterate over values to get FQMN, not keys)
 	for _, msg := range messages {
 		referencedNames[msg.FQMN()] = true
@@ -2144,7 +2149,6 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 
 	// Filter: EXCLUDE names that are from a DIFFERENT package AND are NOT referenced
 	// This way we keep all names from the current package, and all referenced names from other packages
-	// We also keep google.* packages since they are standard dependencies
 	currentPackage := p.File.GetPackage()
 	filteredNames := make([]string, 0, len(allNames))
 	for _, name := range allNames {
@@ -2157,8 +2161,8 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		}
 		namePackage := parts[0]
 
-		// Include if: (1) from current package, OR (2) actually referenced, OR (3) from google.* packages
-		if namePackage == currentPackage || referencedNames[name] || namePackage == "google" {
+		// Include if: (1) from current package, OR (2) actually referenced, OR (3) from google.*/grpc.* packages
+		if namePackage == currentPackage || referencedNames[name] || namePackage == "google" || namePackage == "grpc" {
 			filteredNames = append(filteredNames, name)
 		}
 	}
