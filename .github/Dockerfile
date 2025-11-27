@@ -4,7 +4,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
         wget \
         unzip \
-        openjdk-17-jre \
+        openjdk-25-jre \
         bzip2 \
         patch && \
     apt-get clean -y && \
