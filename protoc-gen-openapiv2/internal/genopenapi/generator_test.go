@@ -1942,3 +1942,136 @@ func TestGenerateXGoType(t *testing.T) {
 		})
 	}
 }
+
+// TestIssue5684_UnusedMethodsNotInOpenAPI tests that methods without HTTP bindings
+// do not appear in the OpenAPI definitions.
+// See https://github.com/grpc-ecosystem/grpc-gateway/issues/5684
+func TestIssue5684_UnusedMethodsNotInOpenAPI(t *testing.T) {
+	t.Parallel()
+
+	// Create a proto definition similar to the issue report:
+	// - Service with two methods: Add (no HTTP binding) and Show (with HTTP binding)
+	// - Only Show should appear in the OpenAPI output
+	// - AddRequest and AddResponse should NOT appear in definitions
+	const in = `
+	file_to_generate: "account/account.proto"
+	proto_file: {
+		name: "account/account.proto"
+		package: "account"
+
+		message_type: {
+			name: "Money"
+			field: {
+				name: "amount"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_INT64
+				json_name: "amount"
+			}
+		}
+
+		message_type: {
+			name: "AddRequest"
+			field: {
+				name: "money"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_MESSAGE
+				type_name: ".account.Money"
+				json_name: "money"
+			}
+		}
+
+		message_type: {
+			name: "AddResponse"
+		}
+
+		message_type: {
+			name: "ShowRequest"
+		}
+
+		message_type: {
+			name: "ShowResponse"
+			field: {
+				name: "money"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_MESSAGE
+				type_name: ".account.Money"
+				json_name: "money"
+			}
+		}
+
+		service: {
+			name: "AccountService"
+			method: {
+				name: "Add"
+				input_type: ".account.AddRequest"
+				output_type: ".account.AddResponse"
+			}
+			method: {
+				name: "Show"
+				input_type: ".account.ShowRequest"
+				output_type: ".account.ShowResponse"
+				options: {
+					[google.api.http]: {
+						get: "/v1/account"
+					}
+				}
+			}
+		}
+
+		options: {
+			go_package: "accounts/pkg/account;account"
+		}
+	}`
+
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+		t.Fatalf("failed to unmarshal proto: %v", err)
+	}
+
+	resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, false)
+	if len(resp) != 1 {
+		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+	}
+
+	var openAPIDoc map[string]interface{}
+	if err := yaml.Unmarshal([]byte(resp[0].GetContent()), &openAPIDoc); err != nil {
+		t.Fatalf("failed to parse OpenAPI YAML: %v", err)
+	}
+
+	definitions, ok := openAPIDoc["definitions"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("no definitions found in OpenAPI document")
+	}
+
+	if _, exists := definitions["accountAddRequest"]; exists {
+		t.Error("accountAddRequest found in definitions, but should be excluded (Add method has no HTTP binding)")
+	}
+
+	if _, exists := definitions["accountAddResponse"]; exists {
+		t.Error("accountAddResponse found in definitions, but should be excluded (Add method has no HTTP binding)")
+	}
+
+	if _, exists := definitions["accountShowResponse"]; !exists {
+		t.Error("accountShowResponse not found in definitions, but should be included (Show method has HTTP binding)")
+	}
+
+	if _, exists := definitions["accountMoney"]; !exists {
+		t.Error("accountMoney not found in definitions, but should be included (referenced by ShowResponse)")
+	}
+
+	paths, ok := openAPIDoc["paths"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("no paths found in OpenAPI document")
+	}
+
+	if _, exists := paths["/v1/account"]; !exists {
+		t.Error("/v1/account path not found, but should be included (Show method)")
+	}
+
+	if len(paths) != 1 {
+		t.Errorf("expected exactly 1 path, got %d paths", len(paths))
+	}
+}
