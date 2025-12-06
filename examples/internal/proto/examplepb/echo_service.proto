@@ -6,11 +6,11 @@ syntax = "proto3";
 // a message.
 package grpc.gateway.examples.internal.proto.examplepb;
 
+import "examples/internal/proto/sub/message.proto";
+import "examples/internal/proto/sub2/message.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
-import "examples/internal/proto/sub/message.proto";
-import "examples/internal/proto/sub2/message.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 
