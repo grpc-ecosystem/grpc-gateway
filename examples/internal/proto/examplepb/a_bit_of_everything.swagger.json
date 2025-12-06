@@ -117,7 +117,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "$ref": "#/definitions/protosubStringMessage"
             },
             "examples": {
               "application/json": {
@@ -5813,7 +5813,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "$ref": "#/definitions/protosubStringMessage"
             },
             "examples": {
               "application/json": {
@@ -5880,7 +5880,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "$ref": "#/definitions/protosubStringMessage"
             },
             "examples": {
               "application/json": {
@@ -7920,6 +7920,14 @@
         "bar"
       ]
     },
+    "protosubStringMessage": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "rpcStatus": {
       "type": "object",
       "properties": {
@@ -7942,14 +7950,6 @@
         }
       },
       "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https://cloud.google.com/apis/design/errors)."
-    },
-    "subStringMessage": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
     }
   },
   "securityDefinitions": {
