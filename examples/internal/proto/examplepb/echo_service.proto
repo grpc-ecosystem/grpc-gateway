@@ -9,6 +9,8 @@ package grpc.gateway.examples.internal.proto.examplepb;
 import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
+import "examples/internal/proto/sub/message.proto";
+import "examples/internal/proto/sub2/message.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 
@@ -55,6 +57,23 @@ message DynamicMessageUpdate {
   google.protobuf.FieldMask update_mask = 2;
 }
 
+// StatusCheckRequest demonstrates name collision handling.
+// It uses Status message from both sub and sub2 packages.
+message StatusCheckRequest {
+  string id = 1;
+  // Status from sub package
+  grpc.gateway.examples.internal.proto.sub.Status sub_status = 2;
+  // Status from sub2 package (different type with same name)
+  grpc.gateway.examples.internal.proto.sub2.Status sub2_status = 3;
+}
+
+message StatusCheckResponse {
+  string result = 1;
+  // Both Status types used in response
+  grpc.gateway.examples.internal.proto.sub.Status sub_status = 2;
+  grpc.gateway.examples.internal.proto.sub2.Status sub2_status = 3;
+}
+
 // Echo service responds to incoming echo requests.
 service EchoService {
   // Echo method receives a simple message and returns it.
@@ -99,5 +118,14 @@ service EchoService {
   // of 401.
   rpc EchoUnauthorized(SimpleMessage) returns (SimpleMessage) {
     option (google.api.http) = {get: "/v1/example/echo_unauthorized"};
+  }
+  // EchoStatus demonstrates handling of name collisions.
+  // It uses Status types from both sub and sub2 packages which have the same name
+  // but different structures, demonstrating how the OpenAPI generator handles this scenario.
+  rpc EchoStatus(StatusCheckRequest) returns (StatusCheckResponse) {
+    option (google.api.http) = {
+      post: "/v1/example/echo_status"
+      body: "*"
+    };
   }
 }
