@@ -994,70 +994,6 @@
         ]
       }
     },
-    "/v1/example/echo_sub": {
-      "post": {
-        "operationId": "EchoService_EchoSub",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/protosubStringMessage"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/protosubStringMessage"
-            }
-          }
-        ],
-        "tags": [
-          "EchoService"
-        ]
-      }
-    },
-    "/v1/example/echo_sub2": {
-      "post": {
-        "operationId": "EchoService_EchoSub2",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/protosub2StringMessage"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/protosub2StringMessage"
-            }
-          }
-        ],
-        "tags": [
-          "EchoService"
-        ]
-      }
-    },
     "/v1/example/echo_unauthorized": {
       "get": {
         "summary": "EchoUnauthorized method receives a simple message and returns it. It must\nalways return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code\nof 401.",
@@ -1263,22 +1199,6 @@
       ],
       "default": "NULL_VALUE",
       "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\nThe JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
-    },
-    "protosub2StringMessage": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
-    },
-    "protosubStringMessage": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
     },
     "rpcStatus": {
       "type": "object",
