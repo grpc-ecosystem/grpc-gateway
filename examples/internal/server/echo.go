@@ -51,3 +51,13 @@ func (s *echoServer) EchoUnauthorized(ctx context.Context, msg *examples.SimpleM
 	grpclog.Info(msg)
 	return nil, status.Error(codes.Unauthenticated, "unauthorized err")
 }
+
+// EchoStatus demonstrates handling of two Status messages with the same name from different packages.
+func (s *echoServer) EchoStatus(ctx context.Context, req *examples.StatusCheckRequest) (*examples.StatusCheckResponse, error) {
+	grpclog.Info(req)
+	return &examples.StatusCheckResponse{
+		Result:     "ok",
+		SubStatus:  req.GetSubStatus(),
+		Sub2Status: req.GetSub2Status(),
+	}, nil
+}
