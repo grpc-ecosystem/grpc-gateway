@@ -13,6 +13,8 @@ package examplepb
 
 import (
 	context "context"
+	sub "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
+	sub2 "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -29,6 +31,8 @@ const (
 	EchoService_EchoDelete_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete"
 	EchoService_EchoPatch_FullMethodName        = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch"
 	EchoService_EchoUnauthorized_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized"
+	EchoService_EchoSub_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoSub"
+	EchoService_EchoSub2_FullMethodName         = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoSub2"
 )
 
 // EchoServiceClient is the client API for EchoService service.
@@ -52,6 +56,8 @@ type EchoServiceClient interface {
 	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
 	// of 401.
 	EchoUnauthorized(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
+	EchoSub(ctx context.Context, in *sub.StringMessage, opts ...grpc.CallOption) (*sub.StringMessage, error)
+	EchoSub2(ctx context.Context, in *sub2.StringMessage, opts ...grpc.CallOption) (*sub2.StringMessage, error)
 }
 
 type echoServiceClient struct {
@@ -112,6 +118,26 @@ func (c *echoServiceClient) EchoUnauthorized(ctx context.Context, in *SimpleMess
 	return out, nil
 }
 
+func (c *echoServiceClient) EchoSub(ctx context.Context, in *sub.StringMessage, opts ...grpc.CallOption) (*sub.StringMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(sub.StringMessage)
+	err := c.cc.Invoke(ctx, EchoService_EchoSub_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *echoServiceClient) EchoSub2(ctx context.Context, in *sub2.StringMessage, opts ...grpc.CallOption) (*sub2.StringMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(sub2.StringMessage)
+	err := c.cc.Invoke(ctx, EchoService_EchoSub2_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EchoServiceServer is the server API for EchoService service.
 // All implementations should embed UnimplementedEchoServiceServer
 // for forward compatibility.
@@ -133,6 +159,8 @@ type EchoServiceServer interface {
 	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
 	// of 401.
 	EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	EchoSub(context.Context, *sub.StringMessage) (*sub.StringMessage, error)
+	EchoSub2(context.Context, *sub2.StringMessage) (*sub2.StringMessage, error)
 }
 
 // UnimplementedEchoServiceServer should be embedded to have
@@ -156,6 +184,12 @@ func (UnimplementedEchoServiceServer) EchoPatch(context.Context, *DynamicMessage
 }
 func (UnimplementedEchoServiceServer) EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoUnauthorized not implemented")
+}
+func (UnimplementedEchoServiceServer) EchoSub(context.Context, *sub.StringMessage) (*sub.StringMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EchoSub not implemented")
+}
+func (UnimplementedEchoServiceServer) EchoSub2(context.Context, *sub2.StringMessage) (*sub2.StringMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EchoSub2 not implemented")
 }
 func (UnimplementedEchoServiceServer) testEmbeddedByValue() {}
 
@@ -267,6 +301,42 @@ func _EchoService_EchoUnauthorized_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EchoService_EchoSub_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(sub.StringMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).EchoSub(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EchoService_EchoSub_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).EchoSub(ctx, req.(*sub.StringMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EchoService_EchoSub2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(sub2.StringMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).EchoSub2(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EchoService_EchoSub2_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).EchoSub2(ctx, req.(*sub2.StringMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EchoService_ServiceDesc is the grpc.ServiceDesc for EchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -293,6 +363,14 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EchoUnauthorized",
 			Handler:    _EchoService_EchoUnauthorized_Handler,
+		},
+		{
+			MethodName: "EchoSub",
+			Handler:    _EchoService_EchoSub_Handler,
+		},
+		{
+			MethodName: "EchoSub2",
+			Handler:    _EchoService_EchoSub2_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
