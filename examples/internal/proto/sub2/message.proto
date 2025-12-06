@@ -7,7 +7,3 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 message IdMessage {
   string uuid = 1;
 }
-
-message StringMessage {
-  string value = 1;
-}
