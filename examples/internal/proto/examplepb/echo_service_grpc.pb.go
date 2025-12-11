@@ -29,6 +29,7 @@ const (
 	EchoService_EchoDelete_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete"
 	EchoService_EchoPatch_FullMethodName        = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch"
 	EchoService_EchoUnauthorized_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized"
+	EchoService_EchoStatus_FullMethodName       = "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoStatus"
 )
 
 // EchoServiceClient is the client API for EchoService service.
@@ -52,6 +53,10 @@ type EchoServiceClient interface {
 	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
 	// of 401.
 	EchoUnauthorized(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
+	// EchoStatus demonstrates handling of name collisions.
+	// It uses Status types from both sub and sub2 packages which have the same name
+	// but different structures, demonstrating how the OpenAPI generator handles this scenario.
+	EchoStatus(ctx context.Context, in *StatusCheckRequest, opts ...grpc.CallOption) (*StatusCheckResponse, error)
 }
 
 type echoServiceClient struct {
@@ -112,6 +117,16 @@ func (c *echoServiceClient) EchoUnauthorized(ctx context.Context, in *SimpleMess
 	return out, nil
 }
 
+func (c *echoServiceClient) EchoStatus(ctx context.Context, in *StatusCheckRequest, opts ...grpc.CallOption) (*StatusCheckResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StatusCheckResponse)
+	err := c.cc.Invoke(ctx, EchoService_EchoStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EchoServiceServer is the server API for EchoService service.
 // All implementations should embed UnimplementedEchoServiceServer
 // for forward compatibility.
@@ -133,6 +148,10 @@ type EchoServiceServer interface {
 	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
 	// of 401.
 	EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	// EchoStatus demonstrates handling of name collisions.
+	// It uses Status types from both sub and sub2 packages which have the same name
+	// but different structures, demonstrating how the OpenAPI generator handles this scenario.
+	EchoStatus(context.Context, *StatusCheckRequest) (*StatusCheckResponse, error)
 }
 
 // UnimplementedEchoServiceServer should be embedded to have
@@ -156,6 +175,9 @@ func (UnimplementedEchoServiceServer) EchoPatch(context.Context, *DynamicMessage
 }
 func (UnimplementedEchoServiceServer) EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoUnauthorized not implemented")
+}
+func (UnimplementedEchoServiceServer) EchoStatus(context.Context, *StatusCheckRequest) (*StatusCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EchoStatus not implemented")
 }
 func (UnimplementedEchoServiceServer) testEmbeddedByValue() {}
 
@@ -267,6 +289,24 @@ func _EchoService_EchoUnauthorized_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EchoService_EchoStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatusCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).EchoStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EchoService_EchoStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).EchoStatus(ctx, req.(*StatusCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EchoService_ServiceDesc is the grpc.ServiceDesc for EchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -293,6 +333,10 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EchoUnauthorized",
 			Handler:    _EchoService_EchoUnauthorized_Handler,
+		},
+		{
+			MethodName: "EchoStatus",
+			Handler:    _EchoService_EchoStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
