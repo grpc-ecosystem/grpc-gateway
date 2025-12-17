@@ -102,7 +102,7 @@ mux := runtime.NewServeMux(
 )
 ```
 
-Note: The incoming `Authorization` HTTP header can not be overwritten and will always be forwarded in the gRPC metadata under the `authorization` key.
+Note: The incoming `Authorization` HTTP header can not be removed or overwritten. It will always be forwarded in the gRPC metadata under the `authorization` key.
 
 ## Mapping from HTTP request headers to gRPC client metadata
 
