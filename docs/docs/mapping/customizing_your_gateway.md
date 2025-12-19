@@ -102,6 +102,8 @@ mux := runtime.NewServeMux(
 )
 ```
 
+Note: The incoming `Authorization` HTTP header can not be removed or overwritten. It will always be forwarded in the gRPC metadata under the `authorization` key. However, values can be appended.
+
 ## Mapping from HTTP request headers to gRPC client metadata
 
 You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example:
