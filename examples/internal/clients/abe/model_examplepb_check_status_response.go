@@ -11,5 +11,5 @@
 package abe
 
 type ExamplepbCheckStatusResponse struct {
-	Status *RpcStatus `json:"status,omitempty"`
+	Status *GooglerpcStatus `json:"status,omitempty"`
 }

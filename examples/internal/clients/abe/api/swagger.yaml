@@ -81,7 +81,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/echo/{value}:
     get:
       tags:
@@ -127,7 +127,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -542,7 +542,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/params/get/{singleNested.name}:
     get:
       tags:
@@ -961,7 +961,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/params/post/{stringValue}:
     post:
       tags:
@@ -1367,7 +1367,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/query/{uuidName}:
     get:
       tags:
@@ -1793,7 +1793,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
       security: []
       externalDocs:
         description: "Find out more about GetQuery"
@@ -2206,7 +2206,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/{uuidName}:
     head:
       tags:
@@ -2615,7 +2615,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
     put:
       tags:
       - "ABitOfEverything"
@@ -2659,7 +2659,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
     options:
       tags:
       - "ABitOfEverything"
@@ -3067,7 +3067,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/{uuidName}:custom:
     post:
       tags:
@@ -3493,7 +3493,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/{uuidName}:custom:custom:
     post:
       tags:
@@ -3919,7 +3919,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/a_bit_of_everything/{uuid}:
     get:
       tags:
@@ -3956,7 +3956,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
     delete:
       tags:
       - "ABitOfEverything"
@@ -3992,7 +3992,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
       security:
       - ApiKeyAuth: []
         OAuth2:
@@ -4192,7 +4192,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/checkStatus:
     get:
       tags:
@@ -4224,7 +4224,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/deep_path/{singleNested.name}:
     post:
       tags:
@@ -4268,7 +4268,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/oneofenum:
     post:
       tags:
@@ -4306,7 +4306,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/requiredmessagetype:
     post:
       tags:
@@ -4344,7 +4344,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/snake/{who}/{what}/{where}:
     get:
       tags:
@@ -4400,7 +4400,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/{book.name}:
     patch:
       tags:
@@ -4456,7 +4456,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/{parent}/books:
     post:
       tags:
@@ -4512,7 +4512,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/a_bit_of_everything/{uuidName}:
     put:
       tags:
@@ -4566,7 +4566,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
     patch:
       tags:
       - "ABitOfEverything"
@@ -4612,7 +4612,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/echo:
     get:
       tags:
@@ -4659,7 +4659,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4708,7 +4708,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4743,7 +4743,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/errorwithdetails:
     get:
       tags:
@@ -4775,7 +4775,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/overwriterequestcontenttype:
     post:
       tags:
@@ -4815,7 +4815,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/overwriteresponsecontenttype:
     get:
       tags:
@@ -4849,7 +4849,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/postwithemptybody/{name}:
     post:
       tags:
@@ -4892,7 +4892,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/timeout:
     get:
       tags:
@@ -4924,7 +4924,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/example/withbody/{id}:
     post:
       tags:
@@ -4967,7 +4967,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2/{value}:check:
     get:
       tags:
@@ -5007,7 +5007,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v2a/example/a_bit_of_everything/{uuidName}:
     patch:
       tags:
@@ -5052,7 +5052,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v3/{value}:check:
     get:
       tags:
@@ -5092,7 +5092,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
 securityDefinitions:
   ApiKeyAuth:
     type: "apiKey"
@@ -5885,7 +5885,7 @@ definitions:
     type: "object"
     properties:
       status:
-        $ref: "#/definitions/rpcStatus"
+        $ref: "#/definitions/googlerpcStatus"
     example:
       status:
         code: 0
@@ -5964,6 +5964,36 @@ definitions:
     - "value_c"
     - "value_d"
     default: "value_c"
+  googlerpcStatus:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+      message:
+        type: "string"
+        description: "A developer-facing error message, which should be in English.\
+          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
+          \ field, or localized by the client."
+      details:
+        type: "array"
+        description: "A list of messages that carry the error details.  There is a\
+          \ common set of\nmessage types for APIs to use."
+        items:
+          $ref: "#/definitions/protobufAny"
+    description: "The `Status` type defines a logical error model that is suitable\
+      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
+      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
+      three pieces of data: error code, error message, and error details.\n\nYou can\
+      \ find out more about this error model and how to work with it in the\n[API\
+      \ Design Guide](https://cloud.google.com/apis/design/errors)."
+    example:
+      code: 0
+      details:
+      - '@type': "@type"
+      - '@type': "@type"
+      message: "message"
   oneofenumExampleEnum:
     type: "string"
     enum:
@@ -6051,36 +6081,6 @@ definitions:
     properties:
       bar:
         $ref: "#/definitions/examplepbBar"
-  rpcStatus:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
-      message:
-        type: "string"
-        description: "A developer-facing error message, which should be in English.\
-          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
-          \ field, or localized by the client."
-      details:
-        type: "array"
-        description: "A list of messages that carry the error details.  There is a\
-          \ common set of\nmessage types for APIs to use."
-        items:
-          $ref: "#/definitions/protobufAny"
-    description: "The `Status` type defines a logical error model that is suitable\
-      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
-      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
-      three pieces of data: error code, error message, and error details.\n\nYou can\
-      \ find out more about this error model and how to work with it in the\n[API\
-      \ Design Guide](https://cloud.google.com/apis/design/errors)."
-    example:
-      code: 0
-      details:
-      - '@type': "@type"
-      - '@type': "@type"
-      message: "message"
   subStringMessage:
     type: "object"
     properties:
