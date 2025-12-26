@@ -12,6 +12,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 type param struct {
@@ -45,6 +46,29 @@ func (b binding) GetBodyFieldStructName() (string, error) {
 		return casing.Camel(b.Body.FieldPath.String()), nil
 	}
 	return "", errors.New("no body field found")
+}
+
+// GetBodyFieldType returns the Go type of the body field.
+func (b binding) GetBodyFieldType() (string, error) {
+	if b.Body == nil || len(b.Body.FieldPath) == 0 {
+		return "", errors.New("no body field found")
+	}
+
+	lastComponent := b.Body.FieldPath[len(b.Body.FieldPath)-1]
+	fieldType := lastComponent.Target.GetType()
+
+	// Handle message types
+	if fieldType == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+		// Get the parent message to provide proper lookup context
+		parentMsg := lastComponent.Target.Message
+		msg, err := b.Registry.LookupMsg(parentMsg.FQMN(), lastComponent.Target.GetTypeName())
+		if err != nil {
+			return "", fmt.Errorf("failed to lookup message type %s: %w", lastComponent.Target.GetTypeName(), err)
+		}
+		return msg.GoType(b.Method.Service.File.GoPkg.Path), nil
+	}
+
+	return "", errors.New("unsupported body field type")
 }
 
 // HasQueryParam determines if the binding needs parameters in query string.
@@ -373,14 +397,18 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- end }}
 	{{- if not $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
+	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if eq "*" .GetBodyFieldPath }}
 	protoReq = bodyData
 	{{- else }}
-	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	bodyData := &{{ .GetBodyFieldType }}{}
+	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF) {
@@ -393,14 +421,18 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- end }}
 	{{- if $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
+	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if eq "*" .GetBodyFieldPath }}
 	protoReq = bodyData
 	{{- else }}
-	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	var bodyData {{ .GetBodyFieldType }}
+	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF) {
@@ -610,14 +642,18 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- end }}
 	{{- if not $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
+	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if eq "*" .GetBodyFieldPath }}
 	protoReq = bodyData
 	{{- else }}
-	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	bodyData := &{{ .GetBodyFieldType }}{}
+	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
@@ -627,14 +663,18 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- end }}
 	{{- if $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
+	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if eq "*" .GetBodyFieldPath }}
 	protoReq = bodyData
 	{{- else }}
-	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData.Get{{ .GetBodyFieldStructName }}())
+	var bodyData {{ .GetBodyFieldType }}
+	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {

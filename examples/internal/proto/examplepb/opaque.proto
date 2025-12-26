@@ -24,6 +24,23 @@ service OpaqueEcommerceService {
     option (google.api.http) = {get: "/v1/products/search"};
   }
 
+  // OpaqueCreateProduct - Unary request with body field, unary response
+  // Creates a new product with the product details in the body
+  rpc OpaqueCreateProduct(OpaqueCreateProductRequest) returns (OpaqueCreateProductResponse) {
+    option (google.api.http) = {
+      post: "/v1/products"
+      body: "*"
+    };
+  }
+
+  // OpaqueCreateProductField - same as above, but with body field mapping.
+  rpc OpaqueCreateProductField(OpaqueCreateProductFieldRequest) returns (OpaqueCreateProductFieldResponse) {
+    option (google.api.http) = {
+      post: "/v1/productsField"
+      body: "product"
+    };
+  }
+
   // OpaqueProcessOrders - Stream request, unary response
   // Processes multiple orders in a batch and returns a summary
   rpc OpaqueProcessOrders(stream OpaqueProcessOrdersRequest) returns (OpaqueProcessOrdersResponse) {
@@ -87,6 +104,28 @@ message OpaqueSearchProductsRequest {
 
 // OpaqueSearchProductsResponse represents a single product in search results
 message OpaqueSearchProductsResponse {
+  OpaqueProduct product = 1;
+}
+
+// OpaqueCreateProductRequest represents a request to create a product
+message OpaqueCreateProductRequest {
+  string product_id = 1;
+  OpaqueProduct product = 2;
+}
+
+// OpaqueCreateProductResponse represents the created product
+message OpaqueCreateProductResponse {
+  OpaqueProduct product = 1;
+}
+
+// OpaqueCreateProductFieldRequest represents a request to create a product
+message OpaqueCreateProductFieldRequest {
+  string product_id = 1;
+  OpaqueProduct product = 2;
+}
+
+// OpaqueCreateProductFieldResponse represents the created product
+message OpaqueCreateProductFieldResponse {
   OpaqueProduct product = 1;
 }
 

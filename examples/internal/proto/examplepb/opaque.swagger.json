@@ -93,6 +93,39 @@
         ]
       }
     },
+    "/v1/products": {
+      "post": {
+        "summary": "OpaqueCreateProduct - Unary request with body field, unary response\nCreates a new product with the product details in the body",
+        "operationId": "OpaqueEcommerceService_OpaqueCreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueCreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueCreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
     "/v1/products/search": {
       "get": {
         "summary": "OpaqueSearchProducts - Unary request, stream response\nSearches for products based on criteria and streams results back",
@@ -328,6 +361,45 @@
           },
           {
             "name": "currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
+    "/v1/productsField": {
+      "post": {
+        "summary": "OpaqueCreateProductField - same as above, but with body field mapping.",
+        "operationId": "OpaqueEcommerceService_OpaqueCreateProductField",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueCreateProductFieldResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueProduct"
+            }
+          },
+          {
+            "name": "productId",
             "in": "query",
             "required": false,
             "type": "string"
@@ -579,6 +651,36 @@
         }
       },
       "title": "OpaqueAddress represents a physical address"
+    },
+    "examplepbOpaqueCreateProductFieldResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueCreateProductFieldResponse represents the created product"
+    },
+    "examplepbOpaqueCreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueCreateProductRequest represents a request to create a product"
+    },
+    "examplepbOpaqueCreateProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueCreateProductResponse represents the created product"
     },
     "examplepbOpaqueCustomerEvent": {
       "type": "object",
