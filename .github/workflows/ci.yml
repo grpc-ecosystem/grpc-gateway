@@ -96,7 +96,7 @@ jobs:
         with:
           go-version: 1.25
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.27.3
+      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.27.4
   proto_lint:
     runs-on: ubuntu-latest
     steps:
