@@ -21,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	OpaqueEcommerceService_OpaqueGetProduct_FullMethodName             = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueGetProduct"
 	OpaqueEcommerceService_OpaqueSearchProducts_FullMethodName         = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueSearchProducts"
+	OpaqueEcommerceService_OpaqueCreateProduct_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueCreateProduct"
+	OpaqueEcommerceService_OpaqueCreateProductField_FullMethodName     = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueCreateProductField"
 	OpaqueEcommerceService_OpaqueProcessOrders_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueProcessOrders"
 	OpaqueEcommerceService_OpaqueStreamCustomerActivity_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueStreamCustomerActivity"
 )
@@ -37,6 +39,11 @@ type OpaqueEcommerceServiceClient interface {
 	// OpaqueSearchProducts - Unary request, stream response
 	// Searches for products based on criteria and streams results back
 	OpaqueSearchProducts(ctx context.Context, in *OpaqueSearchProductsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[OpaqueSearchProductsResponse], error)
+	// OpaqueCreateProduct - Unary request with body field, unary response
+	// Creates a new product with the product details in the body
+	OpaqueCreateProduct(ctx context.Context, in *OpaqueCreateProductRequest, opts ...grpc.CallOption) (*OpaqueCreateProductResponse, error)
+	// OpaqueCreateProductField - same as above, but with body field mapping.
+	OpaqueCreateProductField(ctx context.Context, in *OpaqueCreateProductFieldRequest, opts ...grpc.CallOption) (*OpaqueCreateProductFieldResponse, error)
 	// OpaqueProcessOrders - Stream request, unary response
 	// Processes multiple orders in a batch and returns a summary
 	OpaqueProcessOrders(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[OpaqueProcessOrdersRequest, OpaqueProcessOrdersResponse], error)
@@ -82,6 +89,26 @@ func (c *opaqueEcommerceServiceClient) OpaqueSearchProducts(ctx context.Context,
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OpaqueEcommerceService_OpaqueSearchProductsClient = grpc.ServerStreamingClient[OpaqueSearchProductsResponse]
 
+func (c *opaqueEcommerceServiceClient) OpaqueCreateProduct(ctx context.Context, in *OpaqueCreateProductRequest, opts ...grpc.CallOption) (*OpaqueCreateProductResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OpaqueCreateProductResponse)
+	err := c.cc.Invoke(ctx, OpaqueEcommerceService_OpaqueCreateProduct_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *opaqueEcommerceServiceClient) OpaqueCreateProductField(ctx context.Context, in *OpaqueCreateProductFieldRequest, opts ...grpc.CallOption) (*OpaqueCreateProductFieldResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OpaqueCreateProductFieldResponse)
+	err := c.cc.Invoke(ctx, OpaqueEcommerceService_OpaqueCreateProductField_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *opaqueEcommerceServiceClient) OpaqueProcessOrders(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[OpaqueProcessOrdersRequest, OpaqueProcessOrdersResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &OpaqueEcommerceService_ServiceDesc.Streams[1], OpaqueEcommerceService_OpaqueProcessOrders_FullMethodName, cOpts...)
@@ -120,6 +147,11 @@ type OpaqueEcommerceServiceServer interface {
 	// OpaqueSearchProducts - Unary request, stream response
 	// Searches for products based on criteria and streams results back
 	OpaqueSearchProducts(*OpaqueSearchProductsRequest, grpc.ServerStreamingServer[OpaqueSearchProductsResponse]) error
+	// OpaqueCreateProduct - Unary request with body field, unary response
+	// Creates a new product with the product details in the body
+	OpaqueCreateProduct(context.Context, *OpaqueCreateProductRequest) (*OpaqueCreateProductResponse, error)
+	// OpaqueCreateProductField - same as above, but with body field mapping.
+	OpaqueCreateProductField(context.Context, *OpaqueCreateProductFieldRequest) (*OpaqueCreateProductFieldResponse, error)
 	// OpaqueProcessOrders - Stream request, unary response
 	// Processes multiple orders in a batch and returns a summary
 	OpaqueProcessOrders(grpc.ClientStreamingServer[OpaqueProcessOrdersRequest, OpaqueProcessOrdersResponse]) error
@@ -140,6 +172,12 @@ func (UnimplementedOpaqueEcommerceServiceServer) OpaqueGetProduct(context.Contex
 }
 func (UnimplementedOpaqueEcommerceServiceServer) OpaqueSearchProducts(*OpaqueSearchProductsRequest, grpc.ServerStreamingServer[OpaqueSearchProductsResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method OpaqueSearchProducts not implemented")
+}
+func (UnimplementedOpaqueEcommerceServiceServer) OpaqueCreateProduct(context.Context, *OpaqueCreateProductRequest) (*OpaqueCreateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpaqueCreateProduct not implemented")
+}
+func (UnimplementedOpaqueEcommerceServiceServer) OpaqueCreateProductField(context.Context, *OpaqueCreateProductFieldRequest) (*OpaqueCreateProductFieldResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpaqueCreateProductField not implemented")
 }
 func (UnimplementedOpaqueEcommerceServiceServer) OpaqueProcessOrders(grpc.ClientStreamingServer[OpaqueProcessOrdersRequest, OpaqueProcessOrdersResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method OpaqueProcessOrders not implemented")
@@ -196,6 +234,42 @@ func _OpaqueEcommerceService_OpaqueSearchProducts_Handler(srv interface{}, strea
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OpaqueEcommerceService_OpaqueSearchProductsServer = grpc.ServerStreamingServer[OpaqueSearchProductsResponse]
 
+func _OpaqueEcommerceService_OpaqueCreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpaqueCreateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueCreateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpaqueEcommerceService_OpaqueCreateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueCreateProduct(ctx, req.(*OpaqueCreateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OpaqueEcommerceService_OpaqueCreateProductField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpaqueCreateProductFieldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueCreateProductField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpaqueEcommerceService_OpaqueCreateProductField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueCreateProductField(ctx, req.(*OpaqueCreateProductFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _OpaqueEcommerceService_OpaqueProcessOrders_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(OpaqueEcommerceServiceServer).OpaqueProcessOrders(&grpc.GenericServerStream[OpaqueProcessOrdersRequest, OpaqueProcessOrdersResponse]{ServerStream: stream})
 }
@@ -220,6 +294,14 @@ var OpaqueEcommerceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OpaqueGetProduct",
 			Handler:    _OpaqueEcommerceService_OpaqueGetProduct_Handler,
+		},
+		{
+			MethodName: "OpaqueCreateProduct",
+			Handler:    _OpaqueEcommerceService_OpaqueCreateProduct_Handler,
+		},
+		{
+			MethodName: "OpaqueCreateProductField",
+			Handler:    _OpaqueEcommerceService_OpaqueCreateProductField_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
