@@ -163,7 +163,7 @@ func (a *CamelCaseServiceNameApiService) CamelCaseServiceNameEmpty(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RpcStatus
+			var v GooglerpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
