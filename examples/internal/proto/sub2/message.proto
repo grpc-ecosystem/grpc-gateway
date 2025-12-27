@@ -7,3 +7,10 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 message IdMessage {
   string uuid = 1;
 }
+
+// Status message in sub2 package (different structure from sub.Status)
+message Status {
+  string error_code = 1;
+  string error_message = 2;
+  int32 severity = 3;
+}

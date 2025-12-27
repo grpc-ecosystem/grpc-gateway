@@ -104,7 +104,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo/resource/{resourceId}:
     get:
       tags:
@@ -198,7 +198,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo/{id}:
     post:
       tags:
@@ -292,7 +292,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo/{id}/{num}:
     get:
       tags:
@@ -385,7 +385,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo/{id}/{num}/{lang}:
     get:
       tags:
@@ -477,7 +477,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo1/{id}/{lineNum}/{status.note}:
     get:
       tags:
@@ -563,7 +563,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo2/{no.note}:
     get:
       tags:
@@ -651,7 +651,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo_body:
     post:
       tags:
@@ -674,7 +674,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo_body/{id}:
     put:
       tags:
@@ -753,7 +753,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo_delete:
     delete:
       tags:
@@ -847,7 +847,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo_patch:
     patch:
       tags:
@@ -869,7 +869,33 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
+  /v1/example/echo_status:
+    post:
+      tags:
+      - "EchoService"
+      summary: "EchoStatus demonstrates handling of name collisions.\nIt uses Status\
+        \ types from both sub and sub2 packages which have the same name\nbut different\
+        \ structures, demonstrating how the OpenAPI generator handles this scenario."
+      operationId: "EchoService_EchoStatus"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "StatusCheckRequest demonstrates name collision handling.\nIt\
+          \ uses Status message from both sub and sub2 packages."
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbStatusCheckRequest"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbStatusCheckResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/googlerpcStatus"
   /v1/example/echo_unauthorized:
     get:
       tags:
@@ -965,7 +991,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googlerpcStatus"
 definitions:
   examplepbDynamicMessage:
     type: "object"
@@ -1055,6 +1081,62 @@ definitions:
       status:
         note: "note"
         progress: "progress"
+  examplepbStatusCheckRequest:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      subStatus:
+        title: "Status from sub package"
+        $ref: "#/definitions/protosubStatus"
+      sub2Status:
+        title: "Status from sub2 package (different type with same name)"
+        $ref: "#/definitions/protosub2Status"
+    description: "StatusCheckRequest demonstrates name collision handling.\nIt uses\
+      \ Status message from both sub and sub2 packages."
+  examplepbStatusCheckResponse:
+    type: "object"
+    properties:
+      result:
+        type: "string"
+      subStatus:
+        title: "Both Status types used in response"
+        $ref: "#/definitions/protosubStatus"
+      sub2Status:
+        $ref: "#/definitions/protosub2Status"
+    example:
+      result: "result"
+      sub2Status:
+        severity: 6
+        errorMessage: "errorMessage"
+        errorCode: "errorCode"
+      subStatus:
+        code: 0
+        message: "message"
+  googlerpcStatus:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+      message:
+        type: "string"
+        description: "A developer-facing error message, which should be in English.\
+          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
+          \ field, or localized by the client."
+      details:
+        type: "array"
+        description: "A list of messages that carry the error details.  There is a\
+          \ common set of\nmessage types for APIs to use."
+        items:
+          $ref: "#/definitions/protobufAny"
+    description: "The `Status` type defines a logical error model that is suitable\
+      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
+      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
+      three pieces of data: error code, error message, and error details.\n\nYou can\
+      \ find out more about this error model and how to work with it in the\n[API\
+      \ Design Guide](https://cloud.google.com/apis/design/errors)."
   protobufAny:
     type: "object"
     properties:
@@ -1119,27 +1201,30 @@ definitions:
     enum:
     - "NULL_VALUE"
     default: "NULL_VALUE"
-  rpcStatus:
+  protosub2Status:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      severity:
+        type: "integer"
+        format: "int32"
+    title: "Status message in sub2 package (different structure from sub.Status)"
+    example:
+      severity: 6
+      errorMessage: "errorMessage"
+      errorCode: "errorCode"
+  protosubStatus:
     type: "object"
     properties:
       code:
         type: "integer"
         format: "int32"
-        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
       message:
         type: "string"
-        description: "A developer-facing error message, which should be in English.\
-          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
-          \ field, or localized by the client."
-      details:
-        type: "array"
-        description: "A list of messages that carry the error details.  There is a\
-          \ common set of\nmessage types for APIs to use."
-        items:
-          $ref: "#/definitions/protobufAny"
-    description: "The `Status` type defines a logical error model that is suitable\
-      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
-      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
-      three pieces of data: error code, error message, and error details.\n\nYou can\
-      \ find out more about this error model and how to work with it in the\n[API\
-      \ Design Guide](https://cloud.google.com/apis/design/errors)."
+    title: "Status message in sub package"
+    example:
+      code: 0
+      message: "message"
