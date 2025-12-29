@@ -10,6 +10,6 @@
 
 package abe
 
-type ExamplepbCheckStatusResponse struct {
-	Status *GoogleRpcStatus `json:"status,omitempty"`
+type ProtoExamplepbFoo struct {
+	Bar *ExamplepbBar `json:"bar"`
 }

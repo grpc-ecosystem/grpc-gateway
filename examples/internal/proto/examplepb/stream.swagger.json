@@ -29,7 +29,7 @@
                   "$ref": "#/definitions/examplepbABitOfEverything"
                 },
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
               "title": "Stream result of examplepbABitOfEverything"
@@ -38,7 +38,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -69,7 +69,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -102,7 +102,7 @@
                   "$ref": "#/definitions/subStringMessage"
                 },
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
               "title": "Stream result of subStringMessage"
@@ -111,7 +111,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -142,7 +142,7 @@
               "properties": {
                 "result": {},
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
               "title": "Stream result of protobufDuration"
@@ -151,7 +151,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -187,7 +187,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -549,7 +549,7 @@
       },
       "x-a-bit-of-everything-foo": "bar"
     },
-    "googlerpcStatus": {
+    "googleRpcStatus": {
       "type": "object",
       "properties": {
         "code": {

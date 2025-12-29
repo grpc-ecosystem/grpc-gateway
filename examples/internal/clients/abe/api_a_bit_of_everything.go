@@ -167,7 +167,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckExternalNestedP
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -323,7 +323,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckExternalPathEnu
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -707,7 +707,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckGetQueryParams(
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1091,7 +1091,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckNestedEnumGetQu
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1468,7 +1468,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckPostQueryParams
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1622,7 +1622,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCheckStatus(ctx cont
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1967,7 +1967,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreate(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -2124,7 +2124,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBody(ctx conte
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -2293,7 +2293,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCreateBook(ctx conte
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -2685,7 +2685,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustom(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3033,7 +3033,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceCustomOptionsRequest
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3192,7 +3192,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDeepPathEcho(ctx con
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3348,7 +3348,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDelete(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3740,7 +3740,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceDoubleColon(ctx cont
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3894,7 +3894,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceErrorWithDetails(ctx
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -4242,7 +4242,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceExists(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -4401,7 +4401,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetMessageWithBody(c
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -4780,7 +4780,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetQuery(ctx context
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5014,7 +5014,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceGetRepeatedQuery(ctx
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5170,7 +5170,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceLookup(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5327,7 +5327,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceOverwriteRequestCont
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5481,7 +5481,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceOverwriteResponseCon
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5638,7 +5638,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostOneofEnum(ctx co
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5795,7 +5795,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostRequiredMessageT
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -5954,7 +5954,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServicePostWithEmptyBody(ct
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -6108,7 +6108,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceTimeout(ctx context.
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -6267,7 +6267,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdate(ctx context.C
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -6436,7 +6436,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateBook(ctx conte
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -6605,7 +6605,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV2(ctx context
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -6764,7 +6764,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV22(ctx contex
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -6923,7 +6923,7 @@ func (a *ABitOfEverythingApiService) ABitOfEverythingServiceUpdateV23(ctx contex
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

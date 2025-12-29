@@ -32,7 +32,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -136,7 +136,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -240,7 +240,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -344,7 +344,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -448,7 +448,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -552,7 +552,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -650,7 +650,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -747,7 +747,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -781,7 +781,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -872,7 +872,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -975,7 +975,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -1008,7 +1008,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -1042,7 +1042,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -1222,11 +1222,11 @@
           "type": "string"
         },
         "subStatus": {
-          "$ref": "#/definitions/protosubStatus",
+          "$ref": "#/definitions/protoSubStatus",
           "title": "Status from sub package"
         },
         "sub2Status": {
-          "$ref": "#/definitions/protosub2Status",
+          "$ref": "#/definitions/protoSub2Status",
           "title": "Status from sub2 package (different type with same name)"
         }
       },
@@ -1239,15 +1239,15 @@
           "type": "string"
         },
         "subStatus": {
-          "$ref": "#/definitions/protosubStatus",
+          "$ref": "#/definitions/protoSubStatus",
           "title": "Both Status types used in response"
         },
         "sub2Status": {
-          "$ref": "#/definitions/protosub2Status"
+          "$ref": "#/definitions/protoSub2Status"
         }
       }
     },
-    "googlerpcStatus": {
+    "googleRpcStatus": {
       "type": "object",
       "properties": {
         "code": {
@@ -1270,6 +1270,35 @@
       },
       "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https://cloud.google.com/apis/design/errors)."
     },
+    "protoSub2Status": {
+      "type": "object",
+      "properties": {
+        "errorCode": {
+          "type": "string"
+        },
+        "errorMessage": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "Status message in sub2 package (different structure from sub.Status)"
+    },
+    "protoSubStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "Status message in sub package"
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -1288,35 +1317,6 @@
       ],
       "default": "NULL_VALUE",
       "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\nThe JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
-    },
-    "protosub2Status": {
-      "type": "object",
-      "properties": {
-        "errorCode": {
-          "type": "string"
-        },
-        "errorMessage": {
-          "type": "string"
-        },
-        "severity": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "Status message in sub2 package (different structure from sub.Status)"
-    },
-    "protosubStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        }
-      },
-      "title": "Status message in sub package"
     }
   }
 }

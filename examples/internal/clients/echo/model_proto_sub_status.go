@@ -9,8 +9,7 @@
 
 package echo
 
-type ExamplepbStatusCheckResponse struct {
-	Result string `json:"result,omitempty"`
-	SubStatus *ProtoSubStatus `json:"subStatus,omitempty"`
-	Sub2Status *ProtoSub2Status `json:"sub2Status,omitempty"`
+type ProtoSubStatus struct {
+	Code int32 `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
 }

@@ -30,7 +30,7 @@
                   "$ref": "#/definitions/examplepbOpaqueStreamCustomerActivityResponse"
                 },
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
               "title": "Stream result of examplepbOpaqueStreamCustomerActivityResponse"
@@ -39,7 +39,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -73,7 +73,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -140,7 +140,7 @@
                   "$ref": "#/definitions/examplepbOpaqueSearchProductsResponse"
                 },
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
               "title": "Stream result of examplepbOpaqueSearchProductsResponse"
@@ -149,7 +149,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -330,7 +330,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -1133,7 +1133,7 @@
       },
       "title": "OpaqueStreamCustomerActivityRequest represents a report of server activity"
     },
-    "googlerpcStatus": {
+    "googleRpcStatus": {
       "type": "object",
       "properties": {
         "code": {

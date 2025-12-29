@@ -12,7 +12,7 @@
   ],
   "paths": {},
   "definitions": {
-    "googlerpcStatus": {
+    "googleRpcStatus": {
       "type": "object",
       "properties": {
         "code": {

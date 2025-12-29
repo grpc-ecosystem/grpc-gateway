@@ -81,7 +81,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/echo/{value}:
     get:
       tags:
@@ -127,7 +127,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -542,7 +542,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/params/get/{singleNested.name}:
     get:
       tags:
@@ -961,7 +961,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/params/post/{stringValue}:
     post:
       tags:
@@ -1367,7 +1367,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/query/{uuidName}:
     get:
       tags:
@@ -1793,7 +1793,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
       security: []
       externalDocs:
         description: "Find out more about GetQuery"
@@ -2206,7 +2206,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/{uuidName}:
     head:
       tags:
@@ -2615,7 +2615,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
     put:
       tags:
       - "ABitOfEverything"
@@ -2659,7 +2659,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
     options:
       tags:
       - "ABitOfEverything"
@@ -3067,7 +3067,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/{uuidName}:custom:
     post:
       tags:
@@ -3493,7 +3493,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/{uuidName}:custom:custom:
     post:
       tags:
@@ -3919,7 +3919,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/a_bit_of_everything/{uuid}:
     get:
       tags:
@@ -3956,7 +3956,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
     delete:
       tags:
       - "ABitOfEverything"
@@ -3992,7 +3992,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
       security:
       - ApiKeyAuth: []
         OAuth2:
@@ -4192,7 +4192,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/checkStatus:
     get:
       tags:
@@ -4224,7 +4224,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/deep_path/{singleNested.name}:
     post:
       tags:
@@ -4268,7 +4268,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/oneofenum:
     post:
       tags:
@@ -4306,7 +4306,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/requiredmessagetype:
     post:
       tags:
@@ -4344,7 +4344,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/snake/{who}/{what}/{where}:
     get:
       tags:
@@ -4400,7 +4400,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/{book.name}:
     patch:
       tags:
@@ -4456,7 +4456,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/{parent}/books:
     post:
       tags:
@@ -4512,7 +4512,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/a_bit_of_everything/{uuidName}:
     put:
       tags:
@@ -4566,7 +4566,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
     patch:
       tags:
       - "ABitOfEverything"
@@ -4612,7 +4612,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/echo:
     get:
       tags:
@@ -4659,7 +4659,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4708,7 +4708,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4743,7 +4743,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/errorwithdetails:
     get:
       tags:
@@ -4775,7 +4775,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/overwriterequestcontenttype:
     post:
       tags:
@@ -4815,7 +4815,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/overwriteresponsecontenttype:
     get:
       tags:
@@ -4849,7 +4849,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/postwithemptybody/{name}:
     post:
       tags:
@@ -4892,7 +4892,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/timeout:
     get:
       tags:
@@ -4924,7 +4924,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/example/withbody/{id}:
     post:
       tags:
@@ -4967,7 +4967,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2/{value}:check:
     get:
       tags:
@@ -5007,7 +5007,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v2a/example/a_bit_of_everything/{uuidName}:
     patch:
       tags:
@@ -5052,7 +5052,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v3/{value}:check:
     get:
       tags:
@@ -5092,7 +5092,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
 securityDefinitions:
   ApiKeyAuth:
     type: "apiKey"
@@ -5885,7 +5885,7 @@ definitions:
     type: "object"
     properties:
       status:
-        $ref: "#/definitions/googlerpcStatus"
+        $ref: "#/definitions/googleRpcStatus"
     example:
       status:
         code: 0
@@ -5940,11 +5940,11 @@ definitions:
       id:
         type: "string"
       foo:
-        $ref: "#/definitions/protoexamplepbFoo"
+        $ref: "#/definitions/protoExamplepbFoo"
     title: "Required message type -> OpenAPI\nhttps://github.com/grpc-ecosystem/grpc-gateway/issues/2837"
   examplepbSnakeEnumResponse:
     type: "object"
-  examplepbsnake_case_0_enum:
+  examplepbSnake_case_0_enum:
     type: "string"
     title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
       for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
@@ -5954,7 +5954,7 @@ definitions:
     - "value_e"
     - "value_f"
     default: "value_e"
-  examplepbsnake_case_enum:
+  examplepbSnake_case_enum:
     type: "string"
     title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
       for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
@@ -5964,7 +5964,7 @@ definitions:
     - "value_c"
     - "value_d"
     default: "value_c"
-  googlerpcStatus:
+  googleRpcStatus:
     type: "object"
     properties:
       code:
@@ -6006,7 +6006,7 @@ definitions:
     - "ABC"
     - "DEF"
     default: "ABC"
-  pathenumsnake_case_for_import:
+  pathenumSnake_case_for_import:
     type: "string"
     title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
       for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
@@ -6016,6 +6016,13 @@ definitions:
     - "value_x"
     - "value_y"
     default: "value_x"
+  protoExamplepbFoo:
+    type: "object"
+    required:
+    - "bar"
+    properties:
+      bar:
+        $ref: "#/definitions/examplepbBar"
   protobufAny:
     type: "object"
     properties:
@@ -6074,13 +6081,6 @@ definitions:
     example:
       '@type': "@type"
     additionalProperties: {}
-  protoexamplepbFoo:
-    type: "object"
-    required:
-    - "bar"
-    properties:
-      bar:
-        $ref: "#/definitions/examplepbBar"
   subStringMessage:
     type: "object"
     properties:

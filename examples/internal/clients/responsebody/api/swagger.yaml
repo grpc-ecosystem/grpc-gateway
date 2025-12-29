@@ -31,7 +31,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsebody/samename/{data}:
     get:
       tags:
@@ -51,7 +51,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsebody/stream/{data}:
     get:
       tags:
@@ -72,12 +72,12 @@ paths:
               result:
                 $ref: "#/definitions/examplepbResponseBodyOutResponse"
               error:
-                $ref: "#/definitions/googlerpcStatus"
+                $ref: "#/definitions/googleRpcStatus"
             title: "Stream result of examplepbResponseBodyOut"
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsebody/{data}:
     get:
       tags:
@@ -97,7 +97,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsestrings/{data}:
     get:
       tags:
@@ -119,7 +119,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
 definitions:
   ResponseResponseType:
     type: "string"
@@ -170,7 +170,7 @@ definitions:
     properties:
       responseBodyValue:
         type: "string"
-  googlerpcStatus:
+  googleRpcStatus:
     type: "object"
     properties:
       code:
@@ -263,7 +263,7 @@ definitions:
       result:
         $ref: "#/definitions/examplepbResponseBodyOutResponse"
       error:
-        $ref: "#/definitions/googlerpcStatus"
+        $ref: "#/definitions/googleRpcStatus"
     example:
       result:
         data: "data"

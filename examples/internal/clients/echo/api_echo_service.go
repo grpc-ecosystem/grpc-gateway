@@ -170,7 +170,7 @@ func (a *EchoServiceApiService) EchoServiceEcho(ctx context.Context, id string, 
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -327,7 +327,7 @@ func (a *EchoServiceApiService) EchoServiceEcho2(ctx context.Context, id string,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -481,7 +481,7 @@ func (a *EchoServiceApiService) EchoServiceEcho3(ctx context.Context, id string,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -630,7 +630,7 @@ func (a *EchoServiceApiService) EchoServiceEcho4(ctx context.Context, id string,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -785,7 +785,7 @@ func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote str
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -945,7 +945,7 @@ func (a *EchoServiceApiService) EchoServiceEcho6(ctx context.Context, resourceId
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1105,7 +1105,7 @@ func (a *EchoServiceApiService) EchoServiceEcho7(ctx context.Context, nIdNId str
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1205,7 +1205,7 @@ func (a *EchoServiceApiService) EchoServiceEchoBody(ctx context.Context, body Ex
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1352,7 +1352,7 @@ func (a *EchoServiceApiService) EchoServiceEchoBody2(ctx context.Context, id str
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1514,7 +1514,7 @@ func (a *EchoServiceApiService) EchoServiceEchoDelete(ctx context.Context, local
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1614,7 +1614,7 @@ func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body E
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1714,7 +1714,7 @@ func (a *EchoServiceApiService) EchoServiceEchoStatus(ctx context.Context, body 
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1876,7 +1876,7 @@ func (a *EchoServiceApiService) EchoServiceEchoUnauthorized(ctx context.Context,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v GooglerpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

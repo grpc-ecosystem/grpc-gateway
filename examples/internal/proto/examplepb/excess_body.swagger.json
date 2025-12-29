@@ -31,7 +31,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -54,7 +54,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -85,16 +85,16 @@
               "properties": {
                 "result": {},
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
-              "title": "Stream result of googleprotobufEmpty"
+              "title": "Stream result of googleProtobufEmpty"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -114,16 +114,16 @@
               "properties": {
                 "result": {},
                 "error": {
-                  "$ref": "#/definitions/googlerpcStatus"
+                  "$ref": "#/definitions/googleRpcStatus"
                 }
               },
-              "title": "Stream result of googleprotobufEmpty"
+              "title": "Stream result of googleProtobufEmpty"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/googleRpcStatus"
             }
           }
         },
@@ -145,7 +145,7 @@
     }
   },
   "definitions": {
-    "googlerpcStatus": {
+    "googleRpcStatus": {
       "type": "object",
       "properties": {
         "code": {

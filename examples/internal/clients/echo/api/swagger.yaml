@@ -104,7 +104,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo/resource/{resourceId}:
     get:
       tags:
@@ -198,7 +198,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo/{id}:
     post:
       tags:
@@ -292,7 +292,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo/{id}/{num}:
     get:
       tags:
@@ -385,7 +385,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo/{id}/{num}/{lang}:
     get:
       tags:
@@ -477,7 +477,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo1/{id}/{lineNum}/{status.note}:
     get:
       tags:
@@ -563,7 +563,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo2/{no.note}:
     get:
       tags:
@@ -651,7 +651,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo_body:
     post:
       tags:
@@ -674,7 +674,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo_body/{id}:
     put:
       tags:
@@ -753,7 +753,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo_delete:
     delete:
       tags:
@@ -847,7 +847,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo_patch:
     patch:
       tags:
@@ -869,7 +869,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo_status:
     post:
       tags:
@@ -895,7 +895,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /v1/example/echo_unauthorized:
     get:
       tags:
@@ -991,7 +991,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/googlerpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
 definitions:
   examplepbDynamicMessage:
     type: "object"
@@ -1088,10 +1088,10 @@ definitions:
         type: "string"
       subStatus:
         title: "Status from sub package"
-        $ref: "#/definitions/protosubStatus"
+        $ref: "#/definitions/protoSubStatus"
       sub2Status:
         title: "Status from sub2 package (different type with same name)"
-        $ref: "#/definitions/protosub2Status"
+        $ref: "#/definitions/protoSub2Status"
     description: "StatusCheckRequest demonstrates name collision handling.\nIt uses\
       \ Status message from both sub and sub2 packages."
   examplepbStatusCheckResponse:
@@ -1101,9 +1101,9 @@ definitions:
         type: "string"
       subStatus:
         title: "Both Status types used in response"
-        $ref: "#/definitions/protosubStatus"
+        $ref: "#/definitions/protoSubStatus"
       sub2Status:
-        $ref: "#/definitions/protosub2Status"
+        $ref: "#/definitions/protoSub2Status"
     example:
       result: "result"
       sub2Status:
@@ -1113,7 +1113,7 @@ definitions:
       subStatus:
         code: 0
         message: "message"
-  googlerpcStatus:
+  googleRpcStatus:
     type: "object"
     properties:
       code:
@@ -1137,6 +1137,33 @@ definitions:
       three pieces of data: error code, error message, and error details.\n\nYou can\
       \ find out more about this error model and how to work with it in the\n[API\
       \ Design Guide](https://cloud.google.com/apis/design/errors)."
+  protoSub2Status:
+    type: "object"
+    properties:
+      errorCode:
+        type: "string"
+      errorMessage:
+        type: "string"
+      severity:
+        type: "integer"
+        format: "int32"
+    title: "Status message in sub2 package (different structure from sub.Status)"
+    example:
+      severity: 6
+      errorMessage: "errorMessage"
+      errorCode: "errorCode"
+  protoSubStatus:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+    title: "Status message in sub package"
+    example:
+      code: 0
+      message: "message"
   protobufAny:
     type: "object"
     properties:
@@ -1201,30 +1228,3 @@ definitions:
     enum:
     - "NULL_VALUE"
     default: "NULL_VALUE"
-  protosub2Status:
-    type: "object"
-    properties:
-      errorCode:
-        type: "string"
-      errorMessage:
-        type: "string"
-      severity:
-        type: "integer"
-        format: "int32"
-    title: "Status message in sub2 package (different structure from sub.Status)"
-    example:
-      severity: 6
-      errorMessage: "errorMessage"
-      errorCode: "errorCode"
-  protosubStatus:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-      message:
-        type: "string"
-    title: "Status message in sub package"
-    example:
-      code: 0
-      message: "message"

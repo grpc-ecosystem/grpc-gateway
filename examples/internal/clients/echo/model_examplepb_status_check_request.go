@@ -12,6 +12,6 @@ package echo
 // StatusCheckRequest demonstrates name collision handling. It uses Status message from both sub and sub2 packages.
 type ExamplepbStatusCheckRequest struct {
 	Id string `json:"id,omitempty"`
-	SubStatus *ProtosubStatus `json:"subStatus,omitempty"`
-	Sub2Status *Protosub2Status `json:"sub2Status,omitempty"`
+	SubStatus *ProtoSubStatus `json:"subStatus,omitempty"`
+	Sub2Status *ProtoSub2Status `json:"sub2Status,omitempty"`
 }
