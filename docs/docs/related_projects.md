@@ -31,3 +31,7 @@ nav_order: 8
 - [grpc-starter transcoding](https://danielliu1123.github.io/grpc-starter/docs/extensions/grpc-http-transcoding/)
 
    A Java implementation of grpc-gateway based on Spring Boot.
+
+- [grpc-rest-api-example](https://github.com/bullet-tooth/grpc-rest-api-example)
+
+   An example repo showcasing how to use gRPC-Gateway with a Java Maven multi-module project.
