@@ -10,6 +10,6 @@
 
 package abe
 
-type ExamplepbFoo struct {
+type ProtoExamplepbFoo struct {
 	Bar *ExamplepbBar `json:"bar"`
 }

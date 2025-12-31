@@ -31,7 +31,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsebody/samename/{data}:
     get:
       tags:
@@ -51,7 +51,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsebody/stream/{data}:
     get:
       tags:
@@ -72,12 +72,12 @@ paths:
               result:
                 $ref: "#/definitions/examplepbResponseBodyOutResponse"
               error:
-                $ref: "#/definitions/rpcStatus"
+                $ref: "#/definitions/googleRpcStatus"
             title: "Stream result of examplepbResponseBodyOut"
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsebody/{data}:
     get:
       tags:
@@ -97,7 +97,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
   /responsestrings/{data}:
     get:
       tags:
@@ -119,7 +119,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/rpcStatus"
+            $ref: "#/definitions/googleRpcStatus"
 definitions:
   ResponseResponseType:
     type: "string"
@@ -170,6 +170,36 @@ definitions:
     properties:
       responseBodyValue:
         type: "string"
+  googleRpcStatus:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
+      message:
+        type: "string"
+        description: "A developer-facing error message, which should be in English.\
+          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
+          \ field, or localized by the client."
+      details:
+        type: "array"
+        description: "A list of messages that carry the error details.  There is a\
+          \ common set of\nmessage types for APIs to use."
+        items:
+          $ref: "#/definitions/protobufAny"
+    description: "The `Status` type defines a logical error model that is suitable\
+      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
+      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
+      three pieces of data: error code, error message, and error details.\n\nYou can\
+      \ find out more about this error model and how to work with it in the\n[API\
+      \ Design Guide](https://cloud.google.com/apis/design/errors)."
+    example:
+      code: 0
+      details:
+      - '@type': "@type"
+      - '@type': "@type"
+      message: "message"
   protobufAny:
     type: "object"
     properties:
@@ -228,42 +258,12 @@ definitions:
     example:
       '@type': "@type"
     additionalProperties: {}
-  rpcStatus:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
-      message:
-        type: "string"
-        description: "A developer-facing error message, which should be in English.\
-          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
-          \ field, or localized by the client."
-      details:
-        type: "array"
-        description: "A list of messages that carry the error details.  There is a\
-          \ common set of\nmessage types for APIs to use."
-        items:
-          $ref: "#/definitions/protobufAny"
-    description: "The `Status` type defines a logical error model that is suitable\
-      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
-      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
-      three pieces of data: error code, error message, and error details.\n\nYou can\
-      \ find out more about this error model and how to work with it in the\n[API\
-      \ Design Guide](https://cloud.google.com/apis/design/errors)."
-    example:
-      code: 0
-      details:
-      - '@type': "@type"
-      - '@type': "@type"
-      message: "message"
   Stream result of examplepbResponseBodyOut:
     properties:
       result:
         $ref: "#/definitions/examplepbResponseBodyOutResponse"
       error:
-        $ref: "#/definitions/rpcStatus"
+        $ref: "#/definitions/googleRpcStatus"
     example:
       result:
         data: "data"

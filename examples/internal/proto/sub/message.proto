@@ -7,3 +7,9 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 message StringMessage {
   required string value = 1;
 }
+
+// Status message in sub package
+message Status {
+  required int32 code = 1;
+  optional string message = 2;
+}

@@ -179,7 +179,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, val
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -348,7 +348,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, va
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -524,7 +524,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, lo
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RpcStatus
+			var v GoogleRpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

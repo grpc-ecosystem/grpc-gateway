@@ -4430,7 +4430,7 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 		},
 		{
 			".a.b.C",
-			"abC",
+			"aBC",
 			[]string{
 				".a.C",
 				".a.b.C",
@@ -4448,7 +4448,7 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 		},
 		{
 			".a.b.C",
-			"abC",
+			"aBC",
 			[]string{
 				".C",
 				".a.C",

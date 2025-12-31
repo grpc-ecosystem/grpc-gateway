@@ -135,7 +135,27 @@ func resolveNamesUniqueWithContext(messages []string, extraContext int, componen
 		if start < 0 {
 			start = 0
 		}
-		uniqueNames[p] = strings.Join(h[start:], componentSeparator)
+		components := h[start:]
+		// When using empty separator (legacy mode), apply camelCase by title-casing
+		// intermediate lowercase package components. E.g., "google.rpc.Status" -> "googleRpcStatus"
+		// We only title-case components that are entirely lowercase (package names),
+		// not message names which are already PascalCase.
+		// Skip the first non-empty component (keep it lowercase for camelCase).
+		if componentSeparator == "" && len(components) > 1 {
+			firstNonEmpty := -1
+			for i := 0; i < len(components); i++ {
+				if components[i] != "" {
+					firstNonEmpty = i
+					break
+				}
+			}
+			for i := firstNonEmpty + 1; i < len(components); i++ {
+				if len(components[i]) > 0 && components[i] == strings.ToLower(components[i]) {
+					components[i] = strings.ToUpper(components[i][:1]) + components[i][1:]
+				}
+			}
+		}
+		uniqueNames[p] = strings.Join(components, componentSeparator)
 	}
 	return uniqueNames
 }
