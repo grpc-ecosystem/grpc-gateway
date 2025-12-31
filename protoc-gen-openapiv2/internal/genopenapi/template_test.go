@@ -12025,6 +12025,7 @@ func Test_updateSwaggerObjectFromFieldBehavior(t *testing.T) {
 		})
 	}
 }
+
 // TestBodyParameterRequiredFieldBug tests the bug where the body parameter name
 // is incorrectly added to the schema's required array when using body: "field_name"
 func TestBodyParameterRequiredFieldBug(t *testing.T) {
@@ -12722,5 +12723,196 @@ func TestBodyParameterSelfReferentialBug(t *testing.T) {
 			"  want = %v\n"+
 			"  diff = %s",
 			bodyParam.Schema.Required, expectedRequired, cmp.Diff(expectedRequired, bodyParam.Schema.Required))
+	}
+}
+
+func TestRenderServiceTagsWithProtoComments(t *testing.T) {
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name: proto.String("ExampleService"),
+	}
+
+	serviceComment := "This is a service-level comment.\n\nIt has multiple paragraphs."
+	// The service path in proto source code info is [6, service_index]
+	// where 6 is the field number for 'service' in FileDescriptorProto
+	servicePath := []int32{6, 0}
+
+	file := &descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+				Location: []*descriptorpb.SourceCodeInfo_Location{
+					{
+						Path:            servicePath,
+						LeadingComments: &serviceComment,
+					},
+				},
+			},
+			Name:    proto.String("example.proto"),
+			Package: proto.String("example"),
+			Service: []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+	}
+
+	services := []*descriptor.Service{
+		{
+			ServiceDescriptorProto: svc,
+			File:                   file,
+		},
+	}
+	file.Services = services
+
+	reg := descriptor.NewRegistry()
+
+	tags := renderServiceTags(services, reg)
+
+	if len(tags) != 1 {
+		t.Fatalf("expected 1 tag, got %d", len(tags))
+	}
+
+	// The description should be populated from the proto comment
+	// Since openapiTagObject doesn't have a Summary field, the entire comment
+	// goes into the Description field
+	expectedDesc := "This is a service-level comment.\n\nIt has multiple paragraphs."
+	if tags[0].Description != expectedDesc {
+		t.Errorf("renderServiceTags().Tags[0].Description = %q, want %q", tags[0].Description, expectedDesc)
+	}
+
+	if tags[0].Name != "ExampleService" {
+		t.Errorf("renderServiceTags().Tags[0].Name = %q, want %q", tags[0].Name, "ExampleService")
+	}
+}
+
+func TestRenderServiceTagsWithSingleParagraphComment(t *testing.T) {
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name: proto.String("ExampleService"),
+	}
+
+	serviceComment := "This is a single paragraph service comment."
+	servicePath := []int32{6, 0}
+
+	file := &descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+				Location: []*descriptorpb.SourceCodeInfo_Location{
+					{
+						Path:            servicePath,
+						LeadingComments: &serviceComment,
+					},
+				},
+			},
+			Name:    proto.String("example.proto"),
+			Package: proto.String("example"),
+			Service: []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+	}
+
+	services := []*descriptor.Service{
+		{
+			ServiceDescriptorProto: svc,
+			File:                   file,
+		},
+	}
+	file.Services = services
+
+	reg := descriptor.NewRegistry()
+
+	tags := renderServiceTags(services, reg)
+
+	if len(tags) != 1 {
+		t.Fatalf("expected 1 tag, got %d", len(tags))
+	}
+
+	// For a single paragraph without explicit title, the whole comment becomes the description
+	expectedDesc := "This is a single paragraph service comment."
+	if tags[0].Description != expectedDesc {
+		t.Errorf("renderServiceTags().Tags[0].Description = %q, want %q", tags[0].Description, expectedDesc)
+	}
+}
+
+func TestRenderServiceTagsExplicitOptionTakesPrecedence(t *testing.T) {
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:    proto.String("ExampleService"),
+		Options: &descriptorpb.ServiceOptions{},
+	}
+
+	// Set explicit OpenAPI option on the service descriptor using proto extension
+	proto.SetExtension(svc.Options, openapi_options.E_Openapiv2Tag, &openapi_options.Tag{
+		Description: "Explicit option description",
+	})
+
+	serviceComment := "This is a service-level comment from proto."
+	servicePath := []int32{6, 0}
+
+	file := &descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+				Location: []*descriptorpb.SourceCodeInfo_Location{
+					{
+						Path:            servicePath,
+						LeadingComments: &serviceComment,
+					},
+				},
+			},
+			Name:    proto.String("example.proto"),
+			Package: proto.String("example"),
+			Service: []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+	}
+
+	services := []*descriptor.Service{
+		{
+			ServiceDescriptorProto: svc,
+			File:                   file,
+		},
+	}
+	file.Services = services
+
+	reg := descriptor.NewRegistry()
+
+	tags := renderServiceTags(services, reg)
+
+	if len(tags) != 1 {
+		t.Fatalf("expected 1 tag, got %d", len(tags))
+	}
+
+	// The explicit option should take precedence over proto comment
+	expectedDesc := "Explicit option description"
+	if tags[0].Description != expectedDesc {
+		t.Errorf("renderServiceTags().Tags[0].Description = %q, want %q", tags[0].Description, expectedDesc)
+	}
+}
+
+func TestRenderServiceTagsNoComment(t *testing.T) {
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name: proto.String("ExampleService"),
+	}
+
+	file := &descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+	}
+
+	services := []*descriptor.Service{
+		{
+			ServiceDescriptorProto: svc,
+			File:                   file,
+		},
+	}
+	file.Services = services
+
+	reg := descriptor.NewRegistry()
+
+	tags := renderServiceTags(services, reg)
+
+	if len(tags) != 1 {
+		t.Fatalf("expected 1 tag, got %d", len(tags))
+	}
+
+	// No comment should result in empty description
+	if tags[0].Description != "" {
+		t.Errorf("renderServiceTags().Tags[0].Description = %q, want empty string", tags[0].Description)
 	}
 }
