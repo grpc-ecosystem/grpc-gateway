@@ -205,6 +205,39 @@ func TestFieldPath(t *testing.T) {
 	}
 }
 
+func TestFieldPathOpaqueSetterExpr(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		fieldPath FieldPath
+		msgExpr   string
+		want      string
+	}{
+		"top-level field": {
+			fieldPath: FieldPath{{Name: "data"}},
+			msgExpr:   "req",
+			want:      "req.SetData",
+		},
+		"nested field": {
+			fieldPath: FieldPath{{Name: "key"}, {Name: "date_type"}},
+			msgExpr:   "req",
+			want:      "req.GetKey().SetDateType",
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tc.fieldPath.OpaqueSetterExpr(tc.msgExpr)
+			if got != tc.want {
+				t.Fatalf("OpaqueSetterExpr(%q) = %q; want %q", tc.msgExpr, got, tc.want)
+			}
+		})
+	}
+}
+
 func TestGoType(t *testing.T) {
 	src := `
 		name: 'example.proto'
