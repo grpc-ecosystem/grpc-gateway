@@ -8,6 +8,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -269,6 +270,157 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `mux.Handle(http.MethodPost,`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
+	}
+}
+
+func TestApplyTemplateOpaqueNestedEnumPathParam(t *testing.T) {
+	t.Parallel()
+
+	enumdesc := &descriptorpb.EnumDescriptorProto{
+		Name: proto.String("Color"),
+		Value: []*descriptorpb.EnumValueDescriptorProto{
+			{
+				Name:   proto.String("COLOR_UNSPECIFIED"),
+				Number: proto.Int32(0),
+			},
+			{
+				Name:   proto.String("COLOR_RED"),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+	nesteddesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("NestedMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("kind"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+				TypeName: proto.String(".example.NestedMessage.Color"),
+				Number:   proto.Int32(1),
+			},
+		},
+		EnumType: []*descriptorpb.EnumDescriptorProto{enumdesc},
+	}
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("nested"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.NestedMessage"),
+				Number:   proto.Int32(1),
+			},
+		},
+	}
+	fileDesc := &descriptorpb.FileDescriptorProto{
+		Name:        proto.String("example.proto"),
+		Package:     proto.String("example"),
+		Syntax:      proto.String("proto3"),
+		MessageType: []*descriptorpb.DescriptorProto{msgdesc, nesteddesc},
+		Options: &descriptorpb.FileOptions{
+			GoPackage: proto.String("example.com/path/to/example/example.pb;example_pb"),
+		},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("PatchThing"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	file := descriptor.File{
+		FileDescriptorProto: fileDesc,
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{
+			{
+				DescriptorProto: msgdesc,
+			},
+			{
+				DescriptorProto: nesteddesc,
+			},
+		},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType: &descriptor.Message{
+							DescriptorProto: msgdesc,
+						},
+						ResponseType: &descriptor.Message{
+							DescriptorProto: msgdesc,
+						},
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "PATCH",
+								PathTmpl:   compilePath(t, "/v1/{nested.kind}"),
+								PathParams: []descriptor.Parameter{{}},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	msg := file.Messages[0]
+	nested := file.Messages[1]
+	nestedField := &descriptor.Field{
+		Message:              msg,
+		FieldDescriptorProto: msgdesc.Field[0],
+	}
+	enumField := &descriptor.Field{
+		Message:              nested,
+		FieldDescriptorProto: nesteddesc.Field[0],
+	}
+	file.Messages[0] = msg
+	file.Messages[1] = nested
+	file.Services[0].Methods[0].RequestType = msg
+	file.Services[0].Methods[0].ResponseType = msg
+	file.Services[0].Methods[0].Bindings[0].PathParams[0] = descriptor.Parameter{
+		FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+			{
+				Name:   "nested",
+				Target: nestedField,
+			},
+			{
+				Name:   "kind",
+				Target: enumField,
+			},
+		}),
+		Target: enumField,
+	}
+	file.Services[0].Methods[0].Bindings[0].PathParams[0].Method = file.Services[0].Methods[0]
+
+	reg := descriptor.NewRegistry()
+	req := &pluginpb.CodeGeneratorRequest{
+		FileToGenerate: []string{"example.proto"},
+		ProtoFile:      []*descriptorpb.FileDescriptorProto{fileDesc},
+	}
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load failed: %v", err)
+	}
+
+	got, err := applyTemplate(param{
+		File:               crossLinkFixture(&file),
+		RegisterFuncSuffix: "Handler",
+		AllowPatchFeature:  true,
+		UseOpaqueAPI:       true,
+	}, reg)
+	if err != nil {
+		t.Fatalf("applyTemplate failed: %v", err)
+	}
+
+	if want := `protoReq.GetNested().SetKind(NestedMessage_Color(e))`; !strings.Contains(got, want) {
+		t.Fatalf("generated code missing setter: %s", got)
 	}
 }
 
