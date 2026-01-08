@@ -86,7 +86,9 @@ func TestApplyTemplateHeader(t *testing.T) {
 			},
 		},
 	}
-	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	got, err := applyTemplate(param{
+		File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+	}, descriptor.NewRegistry())
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -238,7 +240,9 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+		got, err := applyTemplate(param{
+			File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+		}, descriptor.NewRegistry())
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -255,13 +259,16 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `protoReq.GetNested().Int32, err = runtime.Int32P(val)`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
+		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got,
+			want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
+		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got,
+			want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got, want) {
+		if want := `annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got,
+			want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
@@ -274,9 +281,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 }
 
 func TestApplyTemplateOpaquePathParams(t *testing.T) {
-	t.Parallel()
-
-	enumdesc := &descriptorpb.EnumDescriptorProto{
+	enumDesc := &descriptorpb.EnumDescriptorProto{
 		Name: proto.String("Color"),
 		Value: []*descriptorpb.EnumValueDescriptorProto{
 			{
@@ -300,33 +305,27 @@ func TestApplyTemplateOpaquePathParams(t *testing.T) {
 	enumField.Type = descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum()
 	enumField.TypeName = proto.String(".example.Color")
 
-	cases := []struct {
-		name       string
+	tcs := map[string]struct {
 		field      *descriptorpb.FieldDescriptorProto
 		enumDesc   *descriptorpb.EnumDescriptorProto
 		httpMethod string
 		expect     string
 	}{
-		{
-			name:       "scalar GET",
+		"scalar GET": {
 			field:      baseField,
 			httpMethod: "GET",
 			expect:     "protoReq.SetKind(convertedKind)",
 		},
-		{
-			name:       "enum PATCH",
+		"enum PATCH": {
 			field:      enumField,
-			enumDesc:   enumdesc,
+			enumDesc:   enumDesc,
 			httpMethod: "PATCH",
 			expect:     "protoReq.SetKind(Color(e))",
 		},
 	}
 
-	for _, tc := range cases {
-		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-
+	for name, tc := range tcs {
+		t.Run(name, func(t *testing.T) {
 			msgdesc := &descriptorpb.DescriptorProto{
 				Name: proto.String("ExampleMessage"),
 				Field: []*descriptorpb.FieldDescriptorProto{
@@ -571,7 +570,9 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+		got, err := applyTemplate(param{
+			File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+		}, descriptor.NewRegistry())
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -579,10 +580,12 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
+		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got,
+			want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
+		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got,
+			want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
@@ -752,7 +755,9 @@ func TestApplyTemplateInProcess(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+		got, err := applyTemplate(param{
+			File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+		}, descriptor.NewRegistry())
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -764,7 +769,8 @@ func TestApplyTemplateInProcess(t *testing.T) {
 			}
 		}
 
-		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceServer) error {`; !strings.Contains(got, want) {
+		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceServer) error {`; !strings.Contains(got,
+			want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `grpclog.Errorf("Failed`; !strings.Contains(got, want) {
@@ -828,10 +834,14 @@ func TestAllowPatchFeature(t *testing.T) {
 						Bindings: []*descriptor.Binding{
 							{
 								HTTPMethod: "PATCH",
-								Body: &descriptor.Body{FieldPath: descriptor.FieldPath{descriptor.FieldPathComponent{
-									Name:   "abe",
-									Target: msg.Fields[0],
-								}}},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath{
+										descriptor.FieldPathComponent{
+											Name:   "abe",
+											Target: msg.Fields[0],
+										},
+									},
+								},
 							},
 						},
 					},
@@ -841,7 +851,9 @@ func TestAllowPatchFeature(t *testing.T) {
 	}
 	want := "if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {\n"
 	for _, allowPatchFeature := range []bool{true, false} {
-		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: allowPatchFeature}, descriptor.NewRegistry())
+		got, err := applyTemplate(param{
+			File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: allowPatchFeature,
+		}, descriptor.NewRegistry())
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -943,15 +955,19 @@ func TestIdentifierCapitalization(t *testing.T) {
 		},
 	}
 
-	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	got, err := applyTemplate(param{
+		File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+	}, descriptor.NewRegistry())
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	if want := `msg, err := client.ExampleGe2T(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
+	if want := `msg, err := client.ExampleGe2T(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got,
+		want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
-	if want := `msg, err := client.ExamplEPost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
+	if want := `msg, err := client.ExamplEPost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got,
+		want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 	if want := `var (
@@ -1042,7 +1058,9 @@ func TestDuplicatePathsInSameService(t *testing.T) {
 			},
 		},
 	}
-	_, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	_, err := applyTemplate(param{
+		File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+	}, descriptor.NewRegistry())
 	if err == nil {
 		t.Errorf("applyTemplate(%#v) succeeded; want an error", file)
 		return
@@ -1127,7 +1145,9 @@ func TestDuplicatePathsInDifferentService(t *testing.T) {
 			},
 		},
 	}
-	_, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	_, err := applyTemplate(param{
+		File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true,
+	}, descriptor.NewRegistry())
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed; want success - %s", file, err)
 		return
