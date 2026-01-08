@@ -461,16 +461,19 @@ func (p FieldPath) OpaqueSetterExpr(msgExpr string) string {
 // opaqueOwnerExpr builds the Go expression for the message that owns the final
 // component in the path by chaining the generated getters.
 func (p FieldPath) opaqueOwnerExpr(msgExpr string) string {
-	owner := msgExpr
 	if len(p) <= 1 {
-		return owner
+		return msgExpr
 	}
 
-	for _, component := range p[:len(p)-1] {
-		owner = fmt.Sprintf("%s.Get%s()", owner, casing.Camel(component.Name))
+	var sb strings.Builder
+	sb.WriteString(msgExpr)
+	for i := range len(p) - 1 {
+		sb.WriteString(".Get")
+		sb.WriteString(casing.Camel(p[i].Name))
+		sb.WriteString("()")
 	}
 
-	return owner
+	return sb.String()
 }
 
 // FieldPathComponent is a path component in FieldPath
