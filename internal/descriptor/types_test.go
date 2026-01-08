@@ -185,7 +185,8 @@ func TestFieldPath(t *testing.T) {
 			Target: nest1.Fields[1],
 		},
 	}
-	if got, want := fp.AssignableExpr("resp", "example"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
+	if got, want := fp.AssignableExpr("resp",
+		"example"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
 		t.Errorf("fp.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 
@@ -195,7 +196,8 @@ func TestFieldPath(t *testing.T) {
 			Target: nest2.Fields[1],
 		},
 	}
-	if got, want := fp2.AssignableExpr("resp", "example"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
+	if got, want := fp2.AssignableExpr("resp",
+		"example"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
 		t.Errorf("fp2.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 
@@ -206,9 +208,7 @@ func TestFieldPath(t *testing.T) {
 }
 
 func TestFieldPathOpaqueSetterExpr(t *testing.T) {
-	t.Parallel()
-
-	testCases := map[string]struct {
+	tcs := map[string]struct {
 		fieldPath FieldPath
 		msgExpr   string
 		want      string
@@ -225,13 +225,9 @@ func TestFieldPathOpaqueSetterExpr(t *testing.T) {
 		},
 	}
 
-	for name, tc := range testCases {
-		tc := tc
+	for name, tc := range tcs {
 		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
-			got := tc.fieldPath.OpaqueSetterExpr(tc.msgExpr)
-			if got != tc.want {
+			if got := tc.fieldPath.OpaqueSetterExpr(tc.msgExpr); got != tc.want {
 				t.Fatalf("OpaqueSetterExpr(%q) = %q; want %q", tc.msgExpr, got, tc.want)
 			}
 		})
