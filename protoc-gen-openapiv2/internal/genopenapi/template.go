@@ -1294,9 +1294,31 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 				tag.Name = opts.GetName()
 			}
 		}
+
+		// If no description is set from options, use proto comments
+		if tag.Description == "" {
+			svcIdx := findServiceIndex(svc)
+			if svcIdx >= 0 {
+				svcComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx))
+				if err := updateOpenAPIDataFromComments(reg, &tag, svc, svcComments, false); err != nil {
+					grpclog.Error(err)
+				}
+			}
+		}
+
 		tags = append(tags, tag)
 	}
 	return tags
+}
+
+// findServiceIndex finds the index of a service within its file's service list.
+func findServiceIndex(svc *descriptor.Service) int {
+	for i, s := range svc.File.Services {
+		if s == svc {
+			return i
+		}
+	}
+	return -1
 }
 
 // expandPathPatterns searches the URI parts for path parameters with pattern and when the pattern contains a sub-path,
