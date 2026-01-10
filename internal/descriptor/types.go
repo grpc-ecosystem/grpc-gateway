@@ -293,7 +293,8 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 		conv, ok = wellKnownTypeConv[p.Target.GetTypeName()]
 	}
 	if !ok {
-		return "", fmt.Errorf("unsupported field type %s of parameter %s in %s.%s", typ, p.FieldPath, p.Method.Service.GetName(), p.Method.GetName())
+		return "", fmt.Errorf("unsupported field type %s of parameter %s in %s.%s", typ, p.FieldPath,
+			p.Method.Service.GetName(), p.Method.GetName())
 	}
 	return conv, nil
 }
@@ -430,7 +431,9 @@ func (p FieldPath) AssignableExprPrep(msgExpr string, currentPackage string) str
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
 			}`
 
-			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
+			preparations = append(preparations,
+				fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName,
+					components))
 			components = components + ".(*" + oneofFieldName + ")"
 		}
 
@@ -442,6 +445,35 @@ func (p FieldPath) AssignableExprPrep(msgExpr string, currentPackage string) str
 	}
 
 	return strings.Join(preparations, "\n")
+}
+
+// OpaqueSetterExpr returns the Go expression to invoke the generated setter for
+// the final component in the path while respecting nested getters required by
+// the opaque API.
+func (p FieldPath) OpaqueSetterExpr(msgExpr string) string {
+	if len(p) == 0 {
+		return msgExpr
+	}
+
+	return fmt.Sprintf("%s.Set%s", p.opaqueOwnerExpr(msgExpr), casing.Camel(p[len(p)-1].Name))
+}
+
+// opaqueOwnerExpr builds the Go expression for the message that owns the final
+// component in the path by chaining the generated getters.
+func (p FieldPath) opaqueOwnerExpr(msgExpr string) string {
+	if len(p) <= 1 {
+		return msgExpr
+	}
+
+	var sb strings.Builder
+	sb.WriteString(msgExpr)
+	for i := range len(p) - 1 {
+		sb.WriteString(".Get")
+		sb.WriteString(casing.Camel(p[i].Name))
+		sb.WriteString("()")
+	}
+
+	return sb.String()
 }
 
 // FieldPathComponent is a path component in FieldPath

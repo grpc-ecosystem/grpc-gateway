@@ -358,6 +358,9 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 
 	funcMap template.FuncMap = map[string]interface{}{
 		"camelIdentifier": casing.CamelIdentifier,
+		"opaqueSetter": func(p descriptor.FieldPath, msgExpr string) string {
+			return p.OpaqueSetterExpr(msgExpr)
+		},
 		"toHTTPMethod": func(method string) string {
 			return httpMethods[method]
 		},
@@ -499,7 +502,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
 	}
-	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(converted{{ $param.FieldPath.String | camelIdentifier }})
+	{{ opaqueSetter $param.FieldPath "protoReq" }}(converted{{ $param.FieldPath.String | camelIdentifier }})
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
 	if err != nil {
@@ -513,13 +516,13 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		s[i] = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path}}(v)
 	}
 	{{- if $UseOpaqueAPI }}
-	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(s)
+	{{ opaqueSetter $param.FieldPath "protoReq" }}(s)
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = s
 	{{- end }}
 {{- else if $enum}}
 	{{- if $UseOpaqueAPI }}
-	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
+	{{ opaqueSetter $param.FieldPath "protoReq" }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
 	{{- end }}
@@ -734,7 +737,7 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
 	}
-	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(converted{{ $param.FieldPath.String | camelIdentifier }})
+	{{ opaqueSetter $param.FieldPath "protoReq" }}(converted{{ $param.FieldPath.String | camelIdentifier }})
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
 	if err != nil {
@@ -748,13 +751,13 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 		s[i] = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path }}(v)
 	}
 	{{- if $UseOpaqueAPI }}
-	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}(s)
+	{{ opaqueSetter $param.FieldPath "protoReq" }}(s)
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = s
 	{{- end }}
 {{- else if $enum }}
 	{{- if $UseOpaqueAPI }}
-	protoReq.Set{{ $param.FieldPath.String | camelIdentifier }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
+	{{ opaqueSetter $param.FieldPath "protoReq" }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
 	{{- end }}
