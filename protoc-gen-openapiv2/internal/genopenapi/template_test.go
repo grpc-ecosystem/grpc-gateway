@@ -12025,6 +12025,7 @@ func Test_updateSwaggerObjectFromFieldBehavior(t *testing.T) {
 		})
 	}
 }
+
 // TestBodyParameterRequiredFieldBug tests the bug where the body parameter name
 // is incorrectly added to the schema's required array when using body: "field_name"
 func TestBodyParameterRequiredFieldBug(t *testing.T) {
@@ -12722,5 +12723,63 @@ func TestBodyParameterSelfReferentialBug(t *testing.T) {
 			"  want = %v\n"+
 			"  diff = %s",
 			bodyParam.Schema.Required, expectedRequired, cmp.Diff(expectedRequired, bodyParam.Schema.Required))
+	}
+}
+
+func TestFieldCommentsWithNewlines(t *testing.T) {
+	tests := []struct {
+		name          string
+		comments      string
+		expectedTitle string
+		expectedDesc  string
+	}{
+		{
+			name:          "single line comment goes to title",
+			comments:      "Short comment without newlines",
+			expectedTitle: "Short comment without newlines",
+			expectedDesc:  "",
+		},
+		{
+			name:          "two paragraphs - first goes to title",
+			comments:      "Short title\n\nLonger description here",
+			expectedTitle: "Short title",
+			expectedDesc:  "Longer description here",
+		},
+		{
+			name:          "multi-line first paragraph goes to description only",
+			comments:      "a comment about my body parameter that is quite long\nand may have multiple lines\nthat should become the description",
+			expectedTitle: "",
+			expectedDesc:  "a comment about my body parameter that is quite long\nand may have multiple lines\nthat should become the description",
+		},
+		{
+			name:          "multi-line first paragraph with second paragraph",
+			comments:      "first line\nstill first paragraph\n\nsecond paragraph",
+			expectedTitle: "",
+			expectedDesc:  "first line\nstill first paragraph\n\nsecond paragraph",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var title, desc string
+			comments := tt.comments
+			if len(comments) > 0 {
+				paragraphs := strings.Split(comments, paragraphDeliminator)
+				firstParagraph := strings.TrimSpace(paragraphs[0])
+				if !strings.Contains(firstParagraph, "\n") {
+					title = firstParagraph
+					desc = strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
+				} else {
+					desc = strings.TrimSpace(comments)
+				}
+			}
+
+			if title != tt.expectedTitle {
+				t.Errorf("Title mismatch: got %q, want %q", title, tt.expectedTitle)
+			}
+			if desc != tt.expectedDesc {
+				t.Errorf("Description mismatch: got %q, want %q", desc, tt.expectedDesc)
+			}
+		})
 	}
 }

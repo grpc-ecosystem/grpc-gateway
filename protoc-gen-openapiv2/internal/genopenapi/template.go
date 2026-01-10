@@ -709,8 +709,13 @@ func renderFieldAsDefinition(f *descriptor.Field, reg *descriptor.Registry, refs
 	if len(comments) > 0 {
 		// Use title and description from field instead of nested message if present.
 		paragraphs := strings.Split(comments, paragraphDeliminator)
-		schema.Title = strings.TrimSpace(paragraphs[0])
-		schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
+		firstParagraph := strings.TrimSpace(paragraphs[0])
+		if !strings.Contains(firstParagraph, "\n") {
+			schema.Title = firstParagraph
+			schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
+		} else {
+			schema.Description = strings.TrimSpace(comments)
+		}
 	}
 
 	// to handle case where path param is present inside the field of descriptorpb.FieldDescriptorProto_TYPE_MESSAGE type
