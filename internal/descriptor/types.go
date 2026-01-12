@@ -293,8 +293,7 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 		conv, ok = wellKnownTypeConv[p.Target.GetTypeName()]
 	}
 	if !ok {
-		return "", fmt.Errorf("unsupported field type %s of parameter %s in %s.%s", typ, p.FieldPath,
-			p.Method.Service.GetName(), p.Method.GetName())
+		return "", fmt.Errorf("unsupported field type %s of parameter %s in %s.%s", typ, p.FieldPath, p.Method.Service.GetName(), p.Method.GetName())
 	}
 	return conv, nil
 }
@@ -431,9 +430,7 @@ func (p FieldPath) AssignableExprPrep(msgExpr string, currentPackage string) str
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
 			}`
 
-			preparations = append(preparations,
-				fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName,
-					components))
+			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
 			components = components + ".(*" + oneofFieldName + ")"
 		}
 

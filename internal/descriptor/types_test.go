@@ -185,8 +185,7 @@ func TestFieldPath(t *testing.T) {
 			Target: nest1.Fields[1],
 		},
 	}
-	if got, want := fp.AssignableExpr("resp",
-		"example"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
+	if got, want := fp.AssignableExpr("resp", "example"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
 		t.Errorf("fp.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 
@@ -196,8 +195,7 @@ func TestFieldPath(t *testing.T) {
 			Target: nest2.Fields[1],
 		},
 	}
-	if got, want := fp2.AssignableExpr("resp",
-		"example"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
+	if got, want := fp2.AssignableExpr("resp", "example"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
 		t.Errorf("fp2.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 
