@@ -39,6 +39,11 @@ describe('ABitOfEverythingService', function () {
       nestedPathEnumValue: "JKL",
       enumValueAnnotation: "ONE",
       requiredStringViaFieldBehaviorAnnotation: "foo",
+      required_field_schema_json_name_custom: "bar",
+      required_field_behavior_json_name_custom: "baz",
+      requiredStringField1: "field1",
+      requiredStringField2: "field2",
+      uuid: "",
       singleNested: null,
       nested: [],
       bytesValue: "",
@@ -57,7 +62,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_Create(expected).then(function (resp) {
+      client.ABitOfEverything.ABitOfEverythingService_Create(expected).then(function (resp) {
         created = resp.obj;
       }).catch(function (err) {
         done.fail(err);
@@ -109,6 +114,18 @@ describe('ABitOfEverythingService', function () {
       },
       enumValueAnnotation: "ONE",
       requiredStringViaFieldBehaviorAnnotation: "foo",
+      productId: [],
+      optionalStringField: "",
+      requiredStringField1: "",
+      requiredStringField2: "",
+      required_field_behavior_json_name_custom: "",
+      required_field_schema_json_name_custom: "",
+      trailingOnly: "",
+      trailingOnlyDot: "",
+      trailingBoth: "",
+      trailingMultiline: "",
+      uuids: [],
+      uuid: "",
       singleNested: null,
       nested: [],
       bytesValue: "",
@@ -127,7 +144,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_CreateBody({
+      client.ABitOfEverything.ABitOfEverythingService_CreateBody({
         body: expected,
       }).then(function (resp) {
         created = resp.obj;
@@ -154,7 +171,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_CreateBody({
+      client.ABitOfEverything.ABitOfEverythingService_CreateBody({
         body: expected,
       }).then(function (resp) {
         created = resp.obj;
@@ -164,7 +181,7 @@ describe('ABitOfEverythingService', function () {
     });
 
     it('should look up an object by uuid', function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_Lookup({
+      client.ABitOfEverything.ABitOfEverythingService_Lookup({
         uuid: created.uuid
       }).then(function (resp) {
         expect(resp.obj).toEqual(created);
@@ -174,7 +191,7 @@ describe('ABitOfEverythingService', function () {
     });
 
     it('should fail if no such object', function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_Lookup({
+      client.ABitOfEverything.ABitOfEverythingService_Lookup({
         uuid: 'not_exist',
       }).then(function (resp) {
         fail('expected failure but succeeded');
@@ -192,7 +209,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_CreateBody({
+      client.ABitOfEverything.ABitOfEverythingService_CreateBody({
         body: expected,
       }).then(function (resp) {
         created = resp.obj;
@@ -202,14 +219,14 @@ describe('ABitOfEverythingService', function () {
     });
 
     it('should delete an object by id', function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_Delete({
+      client.ABitOfEverything.ABitOfEverythingService_Delete({
         uuid: created.uuid
       }).then(function (resp) {
         expect(resp.obj).toEqual({});
       }).catch(function (err) {
         fail(err.errObj);
       }).then(function () {
-        return client.ABitOfEverythingService.ABitOfEverythingService_Lookup({
+        return client.ABitOfEverything.ABitOfEverythingService_Lookup({
           uuid: created.uuid
         });
       }).then(function (resp) {
@@ -242,7 +259,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverythingService.ABitOfEverythingService_GetRepeatedQuery(expected).then(function (resp) {
+      client.ABitOfEverything.ABitOfEverythingService_GetRepeatedQuery(expected).then(function (resp) {
         repeated = resp.obj;
       }).catch(function (err) {
         done.fail(err);
