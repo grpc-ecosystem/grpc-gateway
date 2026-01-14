@@ -237,7 +237,7 @@ async function runTests() {
           var jasmineInterface = jasmineRequire.interface(jasmine, env);
           Object.assign(window, jasmineInterface);
         </script>
-        <script>${specBundle}</script>
+        <script src="/spec.js"></script>
         <script>
           env.execute();
         </script>
@@ -245,10 +245,15 @@ async function runTests() {
       </html>
     `;
 
-    // Create HTTP server
+    // Create HTTP server that serves both HTML and spec.js
     server = http.createServer((req, res) => {
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(htmlContent);
+      if (req.url === '/spec.js') {
+        res.writeHead(200, { 'Content-Type': 'application/javascript' });
+        res.end(specBundle);
+      } else {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(htmlContent);
+      }
     });
 
     // Start server on port 8000
@@ -337,9 +342,15 @@ async function serve() {
     const jasmineHtmlPath = require.resolve('jasmine-core/lib/jasmine-core/jasmine-html.js');
     
     const server = http.createServer((req, res) => {
+      if (req.url === '/spec.js') {
+        const specBundle = fs.readFileSync(path.join(__dirname, 'bin', 'spec.js'), 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/javascript' });
+        res.end(specBundle);
+        return;
+      }
+      
       const jasmineCore = fs.readFileSync(jasmineCorePath, 'utf8');
       const jasmineHtml = fs.readFileSync(jasmineHtmlPath, 'utf8');
-      const specBundle = fs.readFileSync(path.join(__dirname, 'bin', 'spec.js'), 'utf8');
       
       const htmlContent = `
         <!DOCTYPE html>
@@ -394,7 +405,7 @@ async function serve() {
             var jasmineInterface = jasmineRequire.interface(jasmine, env);
             Object.assign(window, jasmineInterface);
           </script>
-          <script>${specBundle}</script>
+          <script src="/spec.js"></script>
           <script>
             env.execute();
           </script>
