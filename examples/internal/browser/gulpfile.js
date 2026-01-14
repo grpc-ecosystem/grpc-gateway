@@ -79,11 +79,31 @@ async function build() {
 
 async function startServer() {
   await buildServer();
-  return new Promise((resolve) => {
-    serverProcess = spawn('bin/example-server', [], { 
-      stdio: 'inherit',
+  return new Promise((resolve, reject) => {
+    const serverPath = path.join(__dirname, 'bin', 'example-server');
+    console.log(`Starting server: ${serverPath}`);
+    serverProcess = spawn(serverPath, [], { 
+      stdio: ['ignore', 'pipe', 'pipe'],
       cwd: __dirname
     });
+    
+    serverProcess.stdout.on('data', (data) => {
+      console.log(`[Server]: ${data.toString().trim()}`);
+    });
+    
+    serverProcess.stderr.on('data', (data) => {
+      console.error(`[Server Error]: ${data.toString().trim()}`);
+    });
+    
+    serverProcess.on('error', (error) => {
+      console.error(`Failed to start server: ${error.message}`);
+      reject(error);
+    });
+    
+    serverProcess.on('exit', (code, signal) => {
+      console.log(`Server exited with code ${code} and signal ${signal}`);
+    });
+    
     // Give server time to start
     setTimeout(resolve, 2000);
   });
@@ -91,13 +111,34 @@ async function startServer() {
 
 async function startGateway() {
   await buildGateway();
-  return new Promise((resolve) => {
-    gatewayProcess = spawn('bin/example-gw', [
-      '--openapi_dir', path.join(__dirname, '../proto/examplepb')
+  return new Promise((resolve, reject) => {
+    const gatewayPath = path.join(__dirname, 'bin', 'example-gw');
+    const openApiDir = path.join(__dirname, '..', 'proto', 'examplepb');
+    console.log(`Starting gateway: ${gatewayPath} with openapi_dir: ${openApiDir}`);
+    gatewayProcess = spawn(gatewayPath, [
+      '--openapi_dir', openApiDir
     ], { 
-      stdio: 'inherit',
+      stdio: ['ignore', 'pipe', 'pipe'],
       cwd: __dirname
     });
+    
+    gatewayProcess.stdout.on('data', (data) => {
+      console.log(`[Gateway]: ${data.toString().trim()}`);
+    });
+    
+    gatewayProcess.stderr.on('data', (data) => {
+      console.error(`[Gateway Error]: ${data.toString().trim()}`);
+    });
+    
+    gatewayProcess.on('error', (error) => {
+      console.error(`Failed to start gateway: ${error.message}`);
+      reject(error);
+    });
+    
+    gatewayProcess.on('exit', (code, signal) => {
+      console.log(`Gateway exited with code ${code} and signal ${signal}`);
+    });
+    
     // Give gateway time to start
     setTimeout(resolve, 2000);
   });
@@ -125,6 +166,13 @@ async function bundleSpecs() {
 }
 
 async function runTests() {
+  const http = require('http');
+  const fs = require('fs');
+  const { chromium } = require('playwright');
+  
+  let server = null;
+  let browser = null;
+  
   try {
     // Start the backends
     console.log('Starting server and gateway...');
@@ -134,17 +182,241 @@ async function runTests() {
     // Bundle the specs
     await bundleSpecs();
     
-    // Run jasmine tests in browser using Playwright
-    console.log('Running tests with Playwright...');
-    const { stdout, stderr } = await execPromise(
-      'node test-runner.js',
-      { cwd: __dirname }
-    );
-    if (stdout) console.log(stdout);
-    if (stderr) console.error(stderr);
+    // Set up test server
+    console.log('Setting up test server...');
+    
+    // Load Jasmine and the bundled specs
+    const jasmineCorePath = require.resolve('jasmine-core/lib/jasmine-core/jasmine.js');
+    const jasmineHtmlPath = require.resolve('jasmine-core/lib/jasmine-core/jasmine-html.js');
+    
+    const jasmineCore = fs.readFileSync(jasmineCorePath, 'utf8');
+    const jasmineHtml = fs.readFileSync(jasmineHtmlPath, 'utf8');
+    const specBundle = fs.readFileSync(path.join(__dirname, 'bin', 'spec.js'), 'utf8');
+
+    // Create HTML page content
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Jasmine Spec Runner</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .jasmine_html-reporter { margin: 0; padding: 0; }
+        </style>
+      </head>
+      <body>
+        <script>${jasmineCore}</script>
+        <script>${jasmineHtml}</script>
+        <script>
+          window.jasmine = jasmineRequire.core(jasmineRequire);
+          var env = jasmine.getEnv();
+          
+          // Console reporter for logging
+          var consoleReporter = {
+            jasmineStarted: function() { console.log('Jasmine started'); },
+            suiteStarted: function(result) { console.log('Suite: ' + result.description); },
+            specStarted: function(result) { console.log('  Spec: ' + result.description); },
+            specDone: function(result) {
+              console.log('  Spec done: ' + result.description + ' - ' + result.status);
+              if (result.status === 'failed') {
+                result.failedExpectations.forEach(function(expectation) {
+                  console.log('    FAILED: ' + expectation.message);
+                });
+              }
+            },
+            suiteDone: function(result) {},
+            jasmineDone: function(result) {
+              console.log('Jasmine done: ' + result.overallStatus);
+              window.jasmineResults = result;
+            }
+          };
+          env.addReporter(consoleReporter);
+          
+          // Make jasmine interface available globally
+          var jasmineInterface = jasmineRequire.interface(jasmine, env);
+          Object.assign(window, jasmineInterface);
+        </script>
+        <script>${specBundle}</script>
+        <script>
+          env.execute();
+        </script>
+      </body>
+      </html>
+    `;
+
+    // Create HTTP server
+    server = http.createServer((req, res) => {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(htmlContent);
+    });
+
+    // Start server on port 8000
+    await new Promise((resolve) => {
+      server.listen(8000, () => {
+        console.log('Test server listening on http://localhost:8000');
+        resolve();
+      });
+    });
+
+    // Run tests in Playwright
+    console.log('Launching browser...');
+    browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    console.log('Setting page timeout...');
+    page.setDefaultTimeout(120000);  // Set default timeout to 120 seconds
+
+    // Capture console output
+    page.on('console', msg => {
+      const text = msg.text();
+      console.log('[Browser]:', text);
+    });
+
+    // Capture page errors
+    page.on('pageerror', error => {
+      console.error('[Page Error]:', error.message);
+    });
+
+    console.log('Navigating to test page...');
+    // Navigate to the test server
+    await page.goto('http://localhost:8000');
+
+    console.log('Waiting for tests to complete...');
+    // Wait for tests to complete
+    await page.waitForFunction(() => window.jasmineResults !== undefined, { timeout: 120000 });
+
+    // Get results
+    const results = await page.evaluate(() => window.jasmineResults);
+    
+    await browser.close();
+    browser = null;
+
+    console.log(`\nTest Results: ${results.overallStatus}`);
+    console.log(`Total specs: ${results.totalCount || 'N/A'}`);
+    console.log(`Failed specs: ${results.failedExpectations?.length || 0}`);
+
+    if (results.overallStatus !== 'passed') {
+      throw new Error('Tests failed');
+    }
+    
     console.log('Tests completed successfully');
   } catch (error) {
     console.error('Tests failed:', error.message);
+    throw error;
+  } finally {
+    // Cleanup
+    if (browser) {
+      await browser.close();
+    }
+    if (server) {
+      server.close();
+    }
+    cleanupProcesses();
+  }
+}
+
+async function serve() {
+  try {
+    // Start the backends
+    console.log('Starting server and gateway...');
+    await startServer();
+    await startGateway();
+    
+    // Bundle the specs
+    await bundleSpecs();
+    
+    // Start a development server
+    console.log('Starting development server on http://localhost:8000...');
+    const http = require('http');
+    const fs = require('fs');
+    
+    // Load Jasmine and the bundled specs
+    const jasmineCorePath = require.resolve('jasmine-core/lib/jasmine-core/jasmine.js');
+    const jasmineHtmlPath = require.resolve('jasmine-core/lib/jasmine-core/jasmine-html.js');
+    
+    const server = http.createServer((req, res) => {
+      const jasmineCore = fs.readFileSync(jasmineCorePath, 'utf8');
+      const jasmineHtml = fs.readFileSync(jasmineHtmlPath, 'utf8');
+      const specBundle = fs.readFileSync(path.join(__dirname, 'bin', 'spec.js'), 'utf8');
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Jasmine Spec Runner</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .jasmine_html-reporter { margin: 0; padding: 0; }
+          </style>
+        </head>
+        <body>
+          <script>${jasmineCore}</script>
+          <script>${jasmineHtml}</script>
+          <script>
+            window.jasmine = jasmineRequire.core(jasmineRequire);
+            var env = jasmine.getEnv();
+            
+            // Console reporter
+            var consoleReporter = {
+              jasmineStarted: function() { console.log('Jasmine started'); },
+              suiteStarted: function(result) { console.log('Suite: ' + result.description); },
+              specStarted: function(result) { console.log('  Spec: ' + result.description); },
+              specDone: function(result) {
+                console.log('  Spec done: ' + result.description + ' - ' + result.status);
+                if (result.status === 'failed') {
+                  result.failedExpectations.forEach(function(expectation) {
+                    console.log('    FAILED: ' + expectation.message);
+                  });
+                }
+              },
+              suiteDone: function(result) {},
+              jasmineDone: function(result) {
+                console.log('Jasmine done: ' + result.overallStatus);
+              }
+            };
+            env.addReporter(consoleReporter);
+            
+            // HTML reporter for browser
+            var htmlReporter = {
+              jasmineStarted: function() {},
+              suiteStarted: function(result) {},
+              specStarted: function(result) {},
+              specDone: function(result) {},
+              suiteDone: function(result) {},
+              jasmineDone: function(result) {}
+            };
+            env.addReporter(htmlReporter);
+            
+            // Make jasmine interface available globally
+            var jasmineInterface = jasmineRequire.interface(jasmine, env);
+            Object.assign(window, jasmineInterface);
+          </script>
+          <script>${specBundle}</script>
+          <script>
+            env.execute();
+          </script>
+        </body>
+        </html>
+      `;
+      
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(htmlContent);
+    });
+    
+    server.listen(8000, () => {
+      console.log('Development server running at http://localhost:8000');
+      console.log('Backend server running at http://localhost:9090');
+      console.log('Gateway running at http://localhost:8080');
+      console.log('Press Ctrl+C to stop');
+    });
+    
+    // Keep the process running
+    await new Promise(() => {});
+  } catch (error) {
+    console.error('Serve task failed:', error.message);
     throw error;
   } finally {
     cleanupProcesses();
@@ -155,4 +427,5 @@ exports.build = build;
 exports.buildServer = buildServer;
 exports.buildGateway = buildGateway;
 exports.test = runTests;
+exports.serve = serve;
 exports.default = runTests;

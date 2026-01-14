@@ -1,44 +1,21 @@
 const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 
 async function runTests() {
-  console.log('Launching browser...');
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  console.log('Setting page timeout...');
-  page.setDefaultTimeout(120000);  // Set default timeout to 120 seconds
-
-  // Capture console output (set before loading page)
-  page.on('console', msg => {
-    const text = msg.text();
-    console.log('[Browser]:', text);
-  });
-
-  // Capture page errors
-  page.on('pageerror', error => {
-    console.error('[Page Error]:', error.message);
-  });
-
-  console.log('Loading test page...');
-
+  console.log('Setting up test server...');
+  
   // Load Jasmine and the bundled specs
   const jasmineCorePath = require.resolve('jasmine-core/lib/jasmine-core/jasmine.js');
-  const jasmineCssPath = require.resolve('jasmine-core/lib/jasmine-core/jasmine.css');
   const jasmineHtmlPath = require.resolve('jasmine-core/lib/jasmine-core/jasmine-html.js');
-  const jasmineBootPath = require.resolve('jasmine-core/lib/jasmine-core/boot1.js');
   
-  console.log('Reading jasmine files...');
   const jasmineCore = fs.readFileSync(jasmineCorePath, 'utf8');
   const jasmineHtml = fs.readFileSync(jasmineHtmlPath, 'utf8');
-  const jasmineBoot = fs.readFileSync(jasmineBootPath, 'utf8');
   const specBundle = fs.readFileSync(path.join(__dirname, 'bin', 'spec.js'), 'utf8');
 
-  console.log('Creating test page...');
-  // Create a test page
-  await page.setContent(`
+  // Create HTML page content
+  const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -87,23 +64,65 @@ async function runTests() {
       </script>
     </body>
     </html>
-  `);
+  `;
 
-  console.log('Waiting for tests to complete...');
-  // Wait for tests to complete (increased timeout for potentially slow tests)
-  await page.waitForFunction(() => window.jasmineResults !== undefined, { timeout: 120000 });
+  // Create HTTP server
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(htmlContent);
+  });
 
-  // Get results
-  const results = await page.evaluate(() => window.jasmineResults);
-  
-  await browser.close();
+  // Start server on port 8000
+  await new Promise((resolve) => {
+    server.listen(8000, () => {
+      console.log('Test server listening on http://localhost:8000');
+      resolve();
+    });
+  });
 
-  console.log(`\nTest Results: ${results.overallStatus}`);
-  console.log(`Total specs: ${results.totalCount}`);
-  console.log(`Failed specs: ${results.failedCount || results.overallStatus === 'failed' ? 'some' : 0}`);
+  try {
+    console.log('Launching browser...');
+    const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
-  if (results.overallStatus !== 'passed') {
-    process.exit(1);
+    console.log('Setting page timeout...');
+    page.setDefaultTimeout(120000);  // Set default timeout to 120 seconds
+
+    // Capture console output
+    page.on('console', msg => {
+      const text = msg.text();
+      console.log('[Browser]:', text);
+    });
+
+    // Capture page errors
+    page.on('pageerror', error => {
+      console.error('[Page Error]:', error.message);
+    });
+
+    console.log('Navigating to test page...');
+    // Navigate to the test server instead of using setContent
+    await page.goto('http://localhost:8000');
+
+    console.log('Waiting for tests to complete...');
+    // Wait for tests to complete
+    await page.waitForFunction(() => window.jasmineResults !== undefined, { timeout: 120000 });
+
+    // Get results
+    const results = await page.evaluate(() => window.jasmineResults);
+    
+    await browser.close();
+
+    console.log(`\nTest Results: ${results.overallStatus}`);
+    console.log(`Total specs: ${results.totalCount || 'N/A'}`);
+    console.log(`Failed specs: ${results.failedExpectations?.length || 0}`);
+
+    if (results.overallStatus !== 'passed') {
+      process.exit(1);
+    }
+  } finally {
+    // Close the server
+    server.close();
   }
 }
 
