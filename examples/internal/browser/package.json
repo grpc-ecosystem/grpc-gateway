@@ -11,6 +11,6 @@
     "gulp": "^5.0.0"
   },
   "dependencies": {
-    "gulp-cli": "^3.0.0"
+    "gulp-cli": "^3.1.0"
   }
 }
