@@ -8,7 +8,12 @@
   "author": "",
   "license": "SEE LICENSE",
   "devDependencies": {
-    "gulp": "^5.0.0"
+    "gulp": "^5.0.0",
+    "jasmine-core": "^5.5.0",
+    "playwright": "^1.49.1",
+    "swagger-client": "^3.28.3",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "gulp-cli": "^3.1.0"
