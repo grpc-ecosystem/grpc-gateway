@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Example use of gRPC-Gateway from browser",
   "scripts": {
-    "test": "gulp"
+    "test": "gulp",
+    "postinstall": "playwright install chromium"
   },
   "author": "",
   "license": "SEE LICENSE",
