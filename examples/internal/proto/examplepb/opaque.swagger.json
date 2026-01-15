@@ -324,7 +324,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/examplepbOpaqueProduct"
+              "$ref": "#/definitions/examplepbOpaqueUpdateProductResponse"
             }
           },
           "default": {
@@ -1250,6 +1250,15 @@
         }
       },
       "title": "OpaqueStreamCustomerActivityRequest represents a report of server activity"
+    },
+    "examplepbOpaqueUpdateProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueUpdateProductResponse represents the response for OpaqueUpdateProduct"
     },
     "googleRpcStatus": {
       "type": "object",

@@ -62,7 +62,7 @@ service OpaqueEcommerceService {
 
   // OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
   // to reproduce the compilation issue with bodyData as a value type.
-  rpc OpaqueUpdateProduct(OpaqueUpdateProductRequest) returns (OpaqueProduct) {
+  rpc OpaqueUpdateProduct(OpaqueUpdateProductRequest) returns (OpaqueUpdateProductResponse) {
     option (google.api.http) = {
       patch: "/v1/products/{product.product_id}"
       body: "product"
@@ -75,6 +75,11 @@ service OpaqueEcommerceService {
 message OpaqueUpdateProductRequest {
   OpaqueProduct product = 1;
   google.protobuf.FieldMask update_mask = 2;
+}
+
+// OpaqueUpdateProductResponse represents the response for OpaqueUpdateProduct
+message OpaqueUpdateProductResponse {
+  OpaqueProduct product = 1;
 }
 
 // OpaqueGetProductRequest represents a request for product information

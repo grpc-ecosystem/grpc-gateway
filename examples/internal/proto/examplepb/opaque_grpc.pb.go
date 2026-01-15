@@ -53,7 +53,7 @@ type OpaqueEcommerceServiceClient interface {
 	OpaqueStreamCustomerActivity(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse], error)
 	// OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
 	// to reproduce the compilation issue with bodyData as a value type.
-	OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueProduct, error)
+	OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueUpdateProductResponse, error)
 }
 
 type opaqueEcommerceServiceClient struct {
@@ -139,9 +139,9 @@ func (c *opaqueEcommerceServiceClient) OpaqueStreamCustomerActivity(ctx context.
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OpaqueEcommerceService_OpaqueStreamCustomerActivityClient = grpc.BidiStreamingClient[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]
 
-func (c *opaqueEcommerceServiceClient) OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueProduct, error) {
+func (c *opaqueEcommerceServiceClient) OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueUpdateProductResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(OpaqueProduct)
+	out := new(OpaqueUpdateProductResponse)
 	err := c.cc.Invoke(ctx, OpaqueEcommerceService_OpaqueUpdateProduct_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -174,7 +174,7 @@ type OpaqueEcommerceServiceServer interface {
 	OpaqueStreamCustomerActivity(grpc.BidiStreamingServer[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]) error
 	// OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
 	// to reproduce the compilation issue with bodyData as a value type.
-	OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueProduct, error)
+	OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueUpdateProductResponse, error)
 }
 
 // UnimplementedOpaqueEcommerceServiceServer should be embedded to have
@@ -202,7 +202,7 @@ func (UnimplementedOpaqueEcommerceServiceServer) OpaqueProcessOrders(grpc.Client
 func (UnimplementedOpaqueEcommerceServiceServer) OpaqueStreamCustomerActivity(grpc.BidiStreamingServer[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method OpaqueStreamCustomerActivity not implemented")
 }
-func (UnimplementedOpaqueEcommerceServiceServer) OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueProduct, error) {
+func (UnimplementedOpaqueEcommerceServiceServer) OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueUpdateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OpaqueUpdateProduct not implemented")
 }
 func (UnimplementedOpaqueEcommerceServiceServer) testEmbeddedByValue() {}
