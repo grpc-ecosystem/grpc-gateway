@@ -3,6 +3,8 @@
 const { exec, spawn } = require('child_process');
 const util = require('util');
 const path = require('path');
+const fs = require('fs');
+const http = require('http');
 const execPromise = util.promisify(exec);
 
 // Module paths for the example builds
@@ -225,7 +227,6 @@ function generateJasmineHTML(jasmineCore, jasmineHtml, includeResultsCapture = f
 
 // Load Jasmine library files
 function loadJasmineFiles() {
-  const fs = require('fs');
   const jasmineCorePath = require.resolve('jasmine-core/lib/jasmine-core/jasmine.js');
   const jasmineHtmlPath = require.resolve('jasmine-core/lib/jasmine-core/jasmine-html.js');
   
@@ -237,8 +238,6 @@ function loadJasmineFiles() {
 
 // Create HTTP server that serves test page and spec bundle
 function createTestServer(htmlContent, specBundle) {
-  const http = require('http');
-  
   return http.createServer((req, res) => {
     if (req.url === '/spec.js') {
       res.writeHead(200, { 'Content-Type': 'application/javascript' });
@@ -251,7 +250,6 @@ function createTestServer(htmlContent, specBundle) {
 }
 
 async function runTests() {
-  const fs = require('fs');
   const { chromium } = require('playwright');
   
   let server = null;
@@ -346,9 +344,6 @@ async function runTests() {
 }
 
 async function serve() {
-  const fs = require('fs');
-  const http = require('http');
-  
   try {
     // Start the backends
     console.log('Starting server and gateway...');
