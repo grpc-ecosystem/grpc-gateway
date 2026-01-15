@@ -169,9 +169,7 @@ async function bundleSpecs() {
 
 // Generate HTML content for Jasmine test runner
 function generateJasmineHTML(jasmineCore, jasmineHtml, includeResultsCapture = false) {
-  const resultsScript = includeResultsCapture 
-    ? 'window.jasmineResults = result;' 
-    : '';
+  const resultsScript = includeResultsCapture ? 'window.jasmineResults = result;' : '';
   
   return `
     <!DOCTYPE html>
@@ -381,7 +379,7 @@ async function serve() {
       console.log('Press Ctrl+C to stop');
     });
     
-    // Keep the process running
+    // Keep the process running indefinitely until terminated by user
     await new Promise(() => {});
   } catch (error) {
     console.error('Serve task failed:', error.message);
