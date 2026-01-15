@@ -18,7 +18,10 @@ describe('ABitOfEverythingService', function () {
 
   describe('Create', function () {
     var created;
-    var expected = {
+    // The Create endpoint uses query parameters for all fields.
+    // swagger-client v2 cannot serialize JavaScript objects (like maps) to query parameters,
+    // so we omit map fields. The server will use empty defaults for omitted optional fields.
+    var requestParams = {
       floatValue: 1.5,
       doubleValue: 2.5,
       int64Value: "4294967296",
@@ -44,6 +47,34 @@ describe('ABitOfEverythingService', function () {
       requiredStringField1: "field1",
       requiredStringField2: "field2",
       uuid: "",
+      timestampValue: "2006-01-02T15:04:05Z",
+    };
+    // Expected response includes default values for all fields
+    var expected = {
+      floatValue: 1.5,
+      doubleValue: 2.5,
+      int64Value: "4294967296",
+      uint64Value: "9223372036854775807",
+      int32Value: -2147483648,
+      fixed64Value: "9223372036854775807",
+      fixed32Value: 4294967295,
+      boolValue: true,
+      stringValue: "strprefix/foo",
+      uint32Value: 4294967295,
+      sfixed32Value: 2147483647,
+      sfixed64Value: "-4611686018427387904",
+      sint32Value: 2147483647,
+      sint64Value: "4611686018427387903",
+      nonConventionalNameValue: "camelCase",
+      enumValue: "ONE",
+      pathEnumValue: "DEF",
+      nestedPathEnumValue: "JKL",
+      enumValueAnnotation: "ONE",
+      requiredStringViaFieldBehaviorAnnotation: "foo",
+      required_field_schema_json_name_custom: "bar",
+      required_field_behavior_json_name_custom: "baz",
+      requiredStringField1: "field1",
+      requiredStringField2: "field2",
       singleNested: null,
       nested: [],
       bytesValue: "",
@@ -59,20 +90,28 @@ describe('ABitOfEverythingService', function () {
       nestedAnnotation: null,
       int64OverrideType: "0",
       outputOnlyStringViaFieldBehaviorAnnotation: "",
+      productId: [],
+      optionalStringField: "",
+      trailingOnly: "",
+      trailingOnlyDot: "",
+      trailingBoth: "",
+      trailingMultiline: "",
+      uuids: [],
     };
 
     beforeEach(function (done) {
-      // Skipping Create endpoint - it has issues with map serialization in URL parameters
-      done();
+      client.ABitOfEverything.ABitOfEverythingService_Create(requestParams).then(function (resp) {
+        created = resp.obj;
+      }).catch(function (err) {
+        done.fail(err);
+      }).then(done);
     });
 
-    // Skipping - GET-style Create endpoint renders map objects as [object Object] instead of proper nested format
-    xit('should assign id', function () {
+    it('should assign id', function () {
       expect(created.uuid).not.toBe("");
     });
 
-    // Skipping - GET-style Create endpoint renders map objects as [object Object] instead of proper nested format
-    xit('should echo the request back', function () {
+    it('should echo the request back', function () {
       delete created.uuid;
       expect(created).toEqual(expected);
     });
