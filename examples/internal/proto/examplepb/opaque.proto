@@ -3,6 +3,7 @@ edition = "2023";
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
+import "google/api/client.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
@@ -58,6 +59,22 @@ service OpaqueEcommerceService {
       body: "*"
     };
   }
+
+  // OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
+  // to reproduce the compilation issue with bodyData as a value type.
+  rpc OpaqueUpdateProduct(OpaqueUpdateProductRequest) returns (OpaqueProduct) {
+    option (google.api.http) = {
+      patch: "/v1/products/{product.product_id}"
+      body: "product"
+    };
+    option (google.api.method_signature) = "product,update_mask";
+  }
+}
+
+// OpaqueUpdateProductRequest represents a request to update a product
+message OpaqueUpdateProductRequest {
+  OpaqueProduct product = 1;
+  google.protobuf.FieldMask update_mask = 2;
 }
 
 // OpaqueGetProductRequest represents a request for product information
