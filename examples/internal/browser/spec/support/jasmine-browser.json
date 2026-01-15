@@ -1,0 +1,17 @@
+{
+  "srcDir": ".",
+  "srcFiles": [],
+  "specDir": "bin",
+  "specFiles": [
+    "spec.js"
+  ],
+  "helpers": [],
+  "env": {
+    "stopSpecOnExpectationFailure": false,
+    "stopOnSpecFailure": false,
+    "random": false
+  },
+  "browser": {
+    "name": "headlessChrome"
+  }
+}
