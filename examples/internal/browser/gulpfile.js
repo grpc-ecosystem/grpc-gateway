@@ -347,6 +347,7 @@ async function runTests() {
 
 async function serve() {
   const fs = require('fs');
+  const http = require('http');
   
   try {
     // Start the backends
@@ -364,7 +365,6 @@ async function serve() {
     const { jasmineCore, jasmineHtml } = loadJasmineFiles();
     
     // Create server that dynamically loads spec bundle on each request (for development)
-    const http = require('http');
     const server = http.createServer((req, res) => {
       if (req.url === '/spec.js') {
         const specBundle = fs.readFileSync(path.join(__dirname, 'bin', 'spec.js'), 'utf8');
