@@ -20,7 +20,9 @@ describe('EchoService', function () {
       var expected = {
         id: "foo",
         num: "0",
-        status: null
+        status: null,
+        resourceId: '',
+        nId: null
       };
       client.EchoService.EchoService_Echo(
         expected,
@@ -38,7 +40,9 @@ describe('EchoService', function () {
       var expected = {
         id: "foo",
         num: "0",
-        status: null
+        status: null,
+        resourceId: '',
+        nId: null
       };
       client.EchoService.EchoService_EchoBody(
         { body: expected },
