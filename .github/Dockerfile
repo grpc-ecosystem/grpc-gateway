@@ -1,4 +1,4 @@
-FROM golang:1.25.5
+FROM golang:1.25.6
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
