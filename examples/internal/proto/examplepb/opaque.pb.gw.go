@@ -278,6 +278,91 @@ func request_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0(ctx context.C
 	return stream, metadata, nil
 }
 
+var filter_OpaqueEcommerceService_OpaqueUpdateProduct_0 = &utilities.DoubleArray{Encoding: map[string]int{"product": 0, "product_id": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+
+func request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Context, marshaler runtime.Marshaler, client OpaqueEcommerceServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq OpaqueUpdateProductRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	bodyData := &OpaqueProduct{}
+	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	protoReq.SetProduct(bodyData)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	if !protoReq.HasUpdateMask() || len(protoReq.GetUpdateMask().GetPaths()) == 0 {
+		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.GetProduct()); err != nil {
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		} else {
+			protoReq.SetUpdateMask(fieldMask)
+		}
+	}
+	val, ok := pathParams["product.product_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "product.product_id")
+	}
+	err = runtime.PopulateFieldFromPath(&protoReq, "product.product_id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "product.product_id", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OpaqueEcommerceService_OpaqueUpdateProduct_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.OpaqueUpdateProduct(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Context, marshaler runtime.Marshaler, server OpaqueEcommerceServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq OpaqueUpdateProductRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	bodyData := &OpaqueProduct{}
+	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	protoReq.SetProduct(bodyData)
+	if !protoReq.HasUpdateMask() || len(protoReq.GetUpdateMask().GetPaths()) == 0 {
+		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.GetProduct()); err != nil {
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		} else {
+			protoReq.SetUpdateMask(fieldMask)
+		}
+	}
+	val, ok := pathParams["product.product_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "product.product_id")
+	}
+	err = runtime.PopulateFieldFromPath(&protoReq, "product.product_id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "product.product_id", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OpaqueEcommerceService_OpaqueUpdateProduct_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.OpaqueUpdateProduct(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterOpaqueEcommerceServiceHandlerServer registers the http handlers for service OpaqueEcommerceService to "mux".
 // UnaryRPC     :call OpaqueEcommerceServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -364,6 +449,26 @@ func RegisterOpaqueEcommerceServiceHandlerServer(ctx context.Context, mux *runti
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
+	})
+	mux.Handle(http.MethodPatch, pattern_OpaqueEcommerceService_OpaqueUpdateProduct_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueUpdateProduct", runtime.WithHTTPPathPattern("/v1/products/{product.product_id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_OpaqueEcommerceService_OpaqueUpdateProduct_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_OpaqueEcommerceService_OpaqueUpdateProduct_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -507,6 +612,23 @@ func RegisterOpaqueEcommerceServiceHandlerClient(ctx context.Context, mux *runti
 		}
 		forward_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPatch, pattern_OpaqueEcommerceService_OpaqueUpdateProduct_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueUpdateProduct", runtime.WithHTTPPathPattern("/v1/products/{product.product_id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_OpaqueEcommerceService_OpaqueUpdateProduct_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_OpaqueEcommerceService_OpaqueUpdateProduct_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
@@ -517,6 +639,7 @@ var (
 	pattern_OpaqueEcommerceService_OpaqueCreateProductField_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "productsField"}, ""))
 	pattern_OpaqueEcommerceService_OpaqueProcessOrders_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "orders", "process"}, ""))
 	pattern_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "customer", "activity"}, ""))
+	pattern_OpaqueEcommerceService_OpaqueUpdateProduct_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "products", "product.product_id"}, ""))
 )
 
 var (
@@ -526,4 +649,5 @@ var (
 	forward_OpaqueEcommerceService_OpaqueCreateProductField_0     = runtime.ForwardResponseMessage
 	forward_OpaqueEcommerceService_OpaqueProcessOrders_0          = runtime.ForwardResponseMessage
 	forward_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0 = runtime.ForwardResponseStream
+	forward_OpaqueEcommerceService_OpaqueUpdateProduct_0          = runtime.ForwardResponseMessage
 )

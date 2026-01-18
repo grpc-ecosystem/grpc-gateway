@@ -104,6 +104,7 @@ proto_library(
         "@com_google_protobuf//:timestamp_proto",
         "@com_google_protobuf//:wrappers_proto",
         "@googleapis//google/api:annotations_proto",
+        "@googleapis//google/api:client_proto",
     ],
 )
 

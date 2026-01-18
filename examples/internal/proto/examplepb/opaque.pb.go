@@ -449,6 +449,169 @@ func (x OpaqueActivityUpdate_OpaqueUpdateType) Number() protoreflect.EnumNumber 
 	return protoreflect.EnumNumber(x)
 }
 
+// OpaqueUpdateProductRequest represents a request to update a product
+type OpaqueUpdateProductRequest struct {
+	state                 protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Product    *OpaqueProduct         `protobuf:"bytes,1,opt,name=product"`
+	xxx_hidden_UpdateMask *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *OpaqueUpdateProductRequest) Reset() {
+	*x = OpaqueUpdateProductRequest{}
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OpaqueUpdateProductRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OpaqueUpdateProductRequest) ProtoMessage() {}
+
+func (x *OpaqueUpdateProductRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *OpaqueUpdateProductRequest) GetProduct() *OpaqueProduct {
+	if x != nil {
+		return x.xxx_hidden_Product
+	}
+	return nil
+}
+
+func (x *OpaqueUpdateProductRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.xxx_hidden_UpdateMask
+	}
+	return nil
+}
+
+func (x *OpaqueUpdateProductRequest) SetProduct(v *OpaqueProduct) {
+	x.xxx_hidden_Product = v
+}
+
+func (x *OpaqueUpdateProductRequest) SetUpdateMask(v *fieldmaskpb.FieldMask) {
+	x.xxx_hidden_UpdateMask = v
+}
+
+func (x *OpaqueUpdateProductRequest) HasProduct() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Product != nil
+}
+
+func (x *OpaqueUpdateProductRequest) HasUpdateMask() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_UpdateMask != nil
+}
+
+func (x *OpaqueUpdateProductRequest) ClearProduct() {
+	x.xxx_hidden_Product = nil
+}
+
+func (x *OpaqueUpdateProductRequest) ClearUpdateMask() {
+	x.xxx_hidden_UpdateMask = nil
+}
+
+type OpaqueUpdateProductRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Product    *OpaqueProduct
+	UpdateMask *fieldmaskpb.FieldMask
+}
+
+func (b0 OpaqueUpdateProductRequest_builder) Build() *OpaqueUpdateProductRequest {
+	m0 := &OpaqueUpdateProductRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Product = b.Product
+	x.xxx_hidden_UpdateMask = b.UpdateMask
+	return m0
+}
+
+// OpaqueUpdateProductResponse represents the response for OpaqueUpdateProduct
+type OpaqueUpdateProductResponse struct {
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Product *OpaqueProduct         `protobuf:"bytes,1,opt,name=product"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *OpaqueUpdateProductResponse) Reset() {
+	*x = OpaqueUpdateProductResponse{}
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OpaqueUpdateProductResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OpaqueUpdateProductResponse) ProtoMessage() {}
+
+func (x *OpaqueUpdateProductResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *OpaqueUpdateProductResponse) GetProduct() *OpaqueProduct {
+	if x != nil {
+		return x.xxx_hidden_Product
+	}
+	return nil
+}
+
+func (x *OpaqueUpdateProductResponse) SetProduct(v *OpaqueProduct) {
+	x.xxx_hidden_Product = v
+}
+
+func (x *OpaqueUpdateProductResponse) HasProduct() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Product != nil
+}
+
+func (x *OpaqueUpdateProductResponse) ClearProduct() {
+	x.xxx_hidden_Product = nil
+}
+
+type OpaqueUpdateProductResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Product *OpaqueProduct
+}
+
+func (b0 OpaqueUpdateProductResponse_builder) Build() *OpaqueUpdateProductResponse {
+	m0 := &OpaqueUpdateProductResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Product = b.Product
+	return m0
+}
+
 // OpaqueGetProductRequest represents a request for product information
 type OpaqueGetProductRequest struct {
 	state                             protoimpl.MessageState `protogen:"opaque.v1"`
@@ -465,7 +628,7 @@ type OpaqueGetProductRequest struct {
 
 func (x *OpaqueGetProductRequest) Reset() {
 	*x = OpaqueGetProductRequest{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[0]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -477,7 +640,7 @@ func (x *OpaqueGetProductRequest) String() string {
 func (*OpaqueGetProductRequest) ProtoMessage() {}
 
 func (x *OpaqueGetProductRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[0]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -664,7 +827,7 @@ type OpaqueGetProductResponse struct {
 
 func (x *OpaqueGetProductResponse) Reset() {
 	*x = OpaqueGetProductResponse{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[1]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -676,7 +839,7 @@ func (x *OpaqueGetProductResponse) String() string {
 func (*OpaqueGetProductResponse) ProtoMessage() {}
 
 func (x *OpaqueGetProductResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[1]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -747,7 +910,7 @@ type OpaqueSearchProductsRequest struct {
 
 func (x *OpaqueSearchProductsRequest) Reset() {
 	*x = OpaqueSearchProductsRequest{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[2]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -759,7 +922,7 @@ func (x *OpaqueSearchProductsRequest) String() string {
 func (*OpaqueSearchProductsRequest) ProtoMessage() {}
 
 func (x *OpaqueSearchProductsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[2]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1101,7 +1264,7 @@ type OpaqueSearchProductsResponse struct {
 
 func (x *OpaqueSearchProductsResponse) Reset() {
 	*x = OpaqueSearchProductsResponse{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[3]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1113,7 +1276,7 @@ func (x *OpaqueSearchProductsResponse) String() string {
 func (*OpaqueSearchProductsResponse) ProtoMessage() {}
 
 func (x *OpaqueSearchProductsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[3]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1173,7 +1336,7 @@ type OpaqueCreateProductRequest struct {
 
 func (x *OpaqueCreateProductRequest) Reset() {
 	*x = OpaqueCreateProductRequest{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[4]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1185,7 +1348,7 @@ func (x *OpaqueCreateProductRequest) String() string {
 func (*OpaqueCreateProductRequest) ProtoMessage() {}
 
 func (x *OpaqueCreateProductRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[4]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1274,7 +1437,7 @@ type OpaqueCreateProductResponse struct {
 
 func (x *OpaqueCreateProductResponse) Reset() {
 	*x = OpaqueCreateProductResponse{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[5]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1286,7 +1449,7 @@ func (x *OpaqueCreateProductResponse) String() string {
 func (*OpaqueCreateProductResponse) ProtoMessage() {}
 
 func (x *OpaqueCreateProductResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[5]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1346,7 +1509,7 @@ type OpaqueCreateProductFieldRequest struct {
 
 func (x *OpaqueCreateProductFieldRequest) Reset() {
 	*x = OpaqueCreateProductFieldRequest{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[6]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1358,7 +1521,7 @@ func (x *OpaqueCreateProductFieldRequest) String() string {
 func (*OpaqueCreateProductFieldRequest) ProtoMessage() {}
 
 func (x *OpaqueCreateProductFieldRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[6]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1447,7 +1610,7 @@ type OpaqueCreateProductFieldResponse struct {
 
 func (x *OpaqueCreateProductFieldResponse) Reset() {
 	*x = OpaqueCreateProductFieldResponse{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[7]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1459,7 +1622,7 @@ func (x *OpaqueCreateProductFieldResponse) String() string {
 func (*OpaqueCreateProductFieldResponse) ProtoMessage() {}
 
 func (x *OpaqueCreateProductFieldResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[7]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1516,7 +1679,7 @@ type OpaqueProcessOrdersRequest struct {
 
 func (x *OpaqueProcessOrdersRequest) Reset() {
 	*x = OpaqueProcessOrdersRequest{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[8]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1528,7 +1691,7 @@ func (x *OpaqueProcessOrdersRequest) String() string {
 func (*OpaqueProcessOrdersRequest) ProtoMessage() {}
 
 func (x *OpaqueProcessOrdersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[8]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1585,7 +1748,7 @@ type OpaqueProcessOrdersResponse struct {
 
 func (x *OpaqueProcessOrdersResponse) Reset() {
 	*x = OpaqueProcessOrdersResponse{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[9]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1597,7 +1760,7 @@ func (x *OpaqueProcessOrdersResponse) String() string {
 func (*OpaqueProcessOrdersResponse) ProtoMessage() {}
 
 func (x *OpaqueProcessOrdersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[9]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1654,7 +1817,7 @@ type OpaqueStreamCustomerActivityRequest struct {
 
 func (x *OpaqueStreamCustomerActivityRequest) Reset() {
 	*x = OpaqueStreamCustomerActivityRequest{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[10]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1666,7 +1829,7 @@ func (x *OpaqueStreamCustomerActivityRequest) String() string {
 func (*OpaqueStreamCustomerActivityRequest) ProtoMessage() {}
 
 func (x *OpaqueStreamCustomerActivityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[10]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1723,7 +1886,7 @@ type OpaqueStreamCustomerActivityResponse struct {
 
 func (x *OpaqueStreamCustomerActivityResponse) Reset() {
 	*x = OpaqueStreamCustomerActivityResponse{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[11]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1735,7 +1898,7 @@ func (x *OpaqueStreamCustomerActivityResponse) String() string {
 func (*OpaqueStreamCustomerActivityResponse) ProtoMessage() {}
 
 func (x *OpaqueStreamCustomerActivityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[11]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1802,7 +1965,7 @@ type OpaqueAddress struct {
 
 func (x *OpaqueAddress) Reset() {
 	*x = OpaqueAddress{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[12]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1814,7 +1977,7 @@ func (x *OpaqueAddress) String() string {
 func (*OpaqueAddress) ProtoMessage() {}
 
 func (x *OpaqueAddress) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[12]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2113,7 +2276,7 @@ type OpaquePrice struct {
 
 func (x *OpaquePrice) Reset() {
 	*x = OpaquePrice{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[13]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2125,7 +2288,7 @@ func (x *OpaquePrice) String() string {
 func (*OpaquePrice) ProtoMessage() {}
 
 func (x *OpaquePrice) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[13]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2304,7 +2467,7 @@ type OpaqueProductCategory struct {
 
 func (x *OpaqueProductCategory) Reset() {
 	*x = OpaqueProductCategory{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[14]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2316,7 +2479,7 @@ func (x *OpaqueProductCategory) String() string {
 func (*OpaqueProductCategory) ProtoMessage() {}
 
 func (x *OpaqueProductCategory) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[14]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2541,7 +2704,7 @@ type OpaqueProductVariant struct {
 
 func (x *OpaqueProductVariant) Reset() {
 	*x = OpaqueProductVariant{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[15]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2553,7 +2716,7 @@ func (x *OpaqueProductVariant) String() string {
 func (*OpaqueProductVariant) ProtoMessage() {}
 
 func (x *OpaqueProductVariant) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[15]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2903,7 +3066,7 @@ func (b0 OpaqueProductVariant_builder) Build() *OpaqueProductVariant {
 type case_OpaqueProductVariant_DiscountInfo protoreflect.FieldNumber
 
 func (x case_OpaqueProductVariant_DiscountInfo) String() string {
-	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[15].Descriptor()
+	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[17].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -2956,7 +3119,7 @@ type OpaqueProduct struct {
 
 func (x *OpaqueProduct) Reset() {
 	*x = OpaqueProduct{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[16]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2968,7 +3131,7 @@ func (x *OpaqueProduct) String() string {
 func (*OpaqueProduct) ProtoMessage() {}
 
 func (x *OpaqueProduct) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[16]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3526,7 +3689,7 @@ func (b0 OpaqueProduct_builder) Build() *OpaqueProduct {
 type case_OpaqueProduct_TaxInfo protoreflect.FieldNumber
 
 func (x case_OpaqueProduct_TaxInfo) String() string {
-	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[16].Descriptor()
+	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[18].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -3572,7 +3735,7 @@ type OpaqueCustomer struct {
 
 func (x *OpaqueCustomer) Reset() {
 	*x = OpaqueCustomer{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[17]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3584,7 +3747,7 @@ func (x *OpaqueCustomer) String() string {
 func (*OpaqueCustomer) ProtoMessage() {}
 
 func (x *OpaqueCustomer) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[17]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3933,7 +4096,7 @@ type OpaqueOrderItem struct {
 
 func (x *OpaqueOrderItem) Reset() {
 	*x = OpaqueOrderItem{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[18]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3945,7 +4108,7 @@ func (x *OpaqueOrderItem) String() string {
 func (*OpaqueOrderItem) ProtoMessage() {}
 
 func (x *OpaqueOrderItem) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[18]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4240,7 +4403,7 @@ type OpaqueOrder struct {
 
 func (x *OpaqueOrder) Reset() {
 	*x = OpaqueOrder{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[19]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4252,7 +4415,7 @@ func (x *OpaqueOrder) String() string {
 func (*OpaqueOrder) ProtoMessage() {}
 
 func (x *OpaqueOrder) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[19]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4822,7 +4985,7 @@ func (b0 OpaqueOrder_builder) Build() *OpaqueOrder {
 type case_OpaqueOrder_DiscountApplied protoreflect.FieldNumber
 
 func (x case_OpaqueOrder_DiscountApplied) String() string {
-	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[19].Descriptor()
+	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[21].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -4864,7 +5027,7 @@ type OpaqueOrderSummary struct {
 
 func (x *OpaqueOrderSummary) Reset() {
 	*x = OpaqueOrderSummary{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[20]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4876,7 +5039,7 @@ func (x *OpaqueOrderSummary) String() string {
 func (*OpaqueOrderSummary) ProtoMessage() {}
 
 func (x *OpaqueOrderSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[20]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5099,7 +5262,7 @@ type OpaqueCustomerEvent struct {
 
 func (x *OpaqueCustomerEvent) Reset() {
 	*x = OpaqueCustomerEvent{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[21]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5111,7 +5274,7 @@ func (x *OpaqueCustomerEvent) String() string {
 func (*OpaqueCustomerEvent) ProtoMessage() {}
 
 func (x *OpaqueCustomerEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[21]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5544,7 +5707,7 @@ type OpaqueActivityUpdate struct {
 
 func (x *OpaqueActivityUpdate) Reset() {
 	*x = OpaqueActivityUpdate{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[22]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5556,7 +5719,7 @@ func (x *OpaqueActivityUpdate) String() string {
 func (*OpaqueActivityUpdate) ProtoMessage() {}
 
 func (x *OpaqueActivityUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[22]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6019,7 +6182,7 @@ func (b0 OpaqueActivityUpdate_builder) Build() *OpaqueActivityUpdate {
 type case_OpaqueActivityUpdate_ActionData protoreflect.FieldNumber
 
 func (x case_OpaqueActivityUpdate_ActionData) String() string {
-	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[22].Descriptor()
+	md := file_examples_internal_proto_examplepb_opaque_proto_msgTypes[24].Descriptor()
 	if x == 0 {
 		return "not set"
 	}
@@ -6057,7 +6220,7 @@ type OpaqueProduct_OpaqueProductDimensions struct {
 
 func (x *OpaqueProduct_OpaqueProductDimensions) Reset() {
 	*x = OpaqueProduct_OpaqueProductDimensions{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[28]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6069,7 +6232,7 @@ func (x *OpaqueProduct_OpaqueProductDimensions) String() string {
 func (*OpaqueProduct_OpaqueProductDimensions) ProtoMessage() {}
 
 func (x *OpaqueProduct_OpaqueProductDimensions) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[28]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6253,7 +6416,7 @@ type OpaqueCustomer_OpaqueLoyaltyInfo struct {
 
 func (x *OpaqueCustomer_OpaqueLoyaltyInfo) Reset() {
 	*x = OpaqueCustomer_OpaqueLoyaltyInfo{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[29]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6265,7 +6428,7 @@ func (x *OpaqueCustomer_OpaqueLoyaltyInfo) String() string {
 func (*OpaqueCustomer_OpaqueLoyaltyInfo) ProtoMessage() {}
 
 func (x *OpaqueCustomer_OpaqueLoyaltyInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[29]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6402,7 +6565,7 @@ type OpaqueCustomer_OpaquePaymentMethod struct {
 
 func (x *OpaqueCustomer_OpaquePaymentMethod) Reset() {
 	*x = OpaqueCustomer_OpaquePaymentMethod{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[31]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6414,7 +6577,7 @@ func (x *OpaqueCustomer_OpaquePaymentMethod) String() string {
 func (*OpaqueCustomer_OpaquePaymentMethod) ProtoMessage() {}
 
 func (x *OpaqueCustomer_OpaquePaymentMethod) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[31]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6632,7 +6795,7 @@ type OpaqueOrder_OpaqueShippingInfo struct {
 
 func (x *OpaqueOrder_OpaqueShippingInfo) Reset() {
 	*x = OpaqueOrder_OpaqueShippingInfo{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[33]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6644,7 +6807,7 @@ func (x *OpaqueOrder_OpaqueShippingInfo) String() string {
 func (*OpaqueOrder_OpaqueShippingInfo) ProtoMessage() {}
 
 func (x *OpaqueOrder_OpaqueShippingInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[33]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6781,7 +6944,7 @@ type OpaqueOrderSummary_OpaqueOrderError struct {
 
 func (x *OpaqueOrderSummary_OpaqueOrderError) Reset() {
 	*x = OpaqueOrderSummary_OpaqueOrderError{}
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[36]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6793,7 +6956,7 @@ func (x *OpaqueOrderSummary_OpaqueOrderError) String() string {
 func (*OpaqueOrderSummary_OpaqueOrderError) ProtoMessage() {}
 
 func (x *OpaqueOrderSummary_OpaqueOrderError) ProtoReflect() protoreflect.Message {
-	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[36]
+	mi := &file_examples_internal_proto_examplepb_opaque_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6916,7 +7079,13 @@ var File_examples_internal_proto_examplepb_opaque_proto protoreflect.FileDescrip
 
 const file_examples_internal_proto_examplepb_opaque_proto_rawDesc = "" +
 	"\n" +
-	".examples/internal/proto/examplepb/opaque.proto\x12.grpc.gateway.examples.internal.proto.examplepb\x1a\x1cgoogle/api/annotations.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xe7\x01\n" +
+	".examples/internal/proto/examplepb/opaque.proto\x12.grpc.gateway.examples.internal.proto.examplepb\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1egoogle/protobuf/duration.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xb2\x01\n" +
+	"\x1aOpaqueUpdateProductRequest\x12W\n" +
+	"\aproduct\x18\x01 \x01(\v2=.grpc.gateway.examples.internal.proto.examplepb.OpaqueProductR\aproduct\x12;\n" +
+	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"updateMask\"v\n" +
+	"\x1bOpaqueUpdateProductResponse\x12W\n" +
+	"\aproduct\x18\x01 \x01(\v2=.grpc.gateway.examples.internal.proto.examplepb.OpaqueProductR\aproduct\"\xe7\x01\n" +
 	"\x17OpaqueGetProductRequest\x12\x1d\n" +
 	"\n" +
 	"product_id\x18\x01 \x01(\tR\tproductId\x12)\n" +
@@ -7283,18 +7452,18 @@ const file_examples_internal_proto_examplepb_opaque_proto_rawDesc = "" +
 	"#OPAQUE_UPDATE_TYPE_INVENTORY_UPDATE\x10\x04\x12#\n" +
 	"\x1fOPAQUE_UPDATE_TYPE_PRICE_CHANGE\x10\x05\x12$\n" +
 	" OPAQUE_UPDATE_TYPE_CART_REMINDER\x10\x06B\r\n" +
-	"\vaction_data2\xa8\n" +
-	"\n" +
+	"\vaction_data2\xa3\f\n" +
 	"\x16OpaqueEcommerceService\x12\xc8\x01\n" +
 	"\x10OpaqueGetProduct\x12G.grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductRequest\x1aH.grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/products/{product_id}\x12\xd0\x01\n" +
 	"\x14OpaqueSearchProducts\x12K.grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest\x1aL.grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/products/search0\x01\x12\xc7\x01\n" +
 	"\x13OpaqueCreateProduct\x12J.grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest\x1aK.grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/products\x12\xe1\x01\n" +
 	"\x18OpaqueCreateProductField\x12O.grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest\x1aP.grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse\"\"\x82\xd3\xe4\x93\x02\x1c:\aproduct\"\x11/v1/productsField\x12\xcf\x01\n" +
 	"\x13OpaqueProcessOrders\x12J.grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest\x1aK.grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1/orders/process(\x01\x12\xef\x01\n" +
-	"\x1cOpaqueStreamCustomerActivity\x12S.grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest\x1aT.grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/customer/activity(\x010\x01BMZKgithub.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepbb\beditionsp\xe8\a"
+	"\x1cOpaqueStreamCustomerActivity\x12S.grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest\x1aT.grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/customer/activity(\x010\x01\x12\xf8\x01\n" +
+	"\x13OpaqueUpdateProduct\x12J.grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductRequest\x1aK.grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductResponse\"H\xdaA\x13product,update_mask\x82\xd3\xe4\x93\x02,:\aproduct2!/v1/products/{product.product_id}BMZKgithub.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepbb\beditionsp\xe8\a"
 
 var file_examples_internal_proto_examplepb_opaque_proto_enumTypes = make([]protoimpl.EnumInfo, 8)
-var file_examples_internal_proto_examplepb_opaque_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
+var file_examples_internal_proto_examplepb_opaque_proto_msgTypes = make([]protoimpl.MessageInfo, 41)
 var file_examples_internal_proto_examplepb_opaque_proto_goTypes = []any{
 	(OpaqueSearchProductsRequest_OpaqueSortOrder)(0),      // 0: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.OpaqueSortOrder
 	(OpaqueAddress_OpaqueAddressType)(0),                  // 1: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.OpaqueAddressType
@@ -7304,148 +7473,155 @@ var file_examples_internal_proto_examplepb_opaque_proto_goTypes = []any{
 	(OpaqueOrder_OpaqueOrderStatus)(0),                    // 5: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueOrderStatus
 	(OpaqueCustomerEvent_OpaqueEventType)(0),              // 6: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.OpaqueEventType
 	(OpaqueActivityUpdate_OpaqueUpdateType)(0),            // 7: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.OpaqueUpdateType
-	(*OpaqueGetProductRequest)(nil),                       // 8: grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductRequest
-	(*OpaqueGetProductResponse)(nil),                      // 9: grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse
-	(*OpaqueSearchProductsRequest)(nil),                   // 10: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest
-	(*OpaqueSearchProductsResponse)(nil),                  // 11: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse
-	(*OpaqueCreateProductRequest)(nil),                    // 12: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest
-	(*OpaqueCreateProductResponse)(nil),                   // 13: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse
-	(*OpaqueCreateProductFieldRequest)(nil),               // 14: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest
-	(*OpaqueCreateProductFieldResponse)(nil),              // 15: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse
-	(*OpaqueProcessOrdersRequest)(nil),                    // 16: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest
-	(*OpaqueProcessOrdersResponse)(nil),                   // 17: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse
-	(*OpaqueStreamCustomerActivityRequest)(nil),           // 18: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest
-	(*OpaqueStreamCustomerActivityResponse)(nil),          // 19: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse
-	(*OpaqueAddress)(nil),                                 // 20: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
-	(*OpaquePrice)(nil),                                   // 21: grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	(*OpaqueProductCategory)(nil),                         // 22: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory
-	(*OpaqueProductVariant)(nil),                          // 23: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant
-	(*OpaqueProduct)(nil),                                 // 24: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	(*OpaqueCustomer)(nil),                                // 25: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer
-	(*OpaqueOrderItem)(nil),                               // 26: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem
-	(*OpaqueOrder)(nil),                                   // 27: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder
-	(*OpaqueOrderSummary)(nil),                            // 28: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary
-	(*OpaqueCustomerEvent)(nil),                           // 29: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent
-	(*OpaqueActivityUpdate)(nil),                          // 30: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate
-	nil,                                                   // 31: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.FiltersEntry
-	nil,                                                   // 32: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.MetadataEntry
-	nil,                                                   // 33: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.AttributesEntry
-	nil,                                                   // 34: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.MetadataEntry
-	nil,                                                   // 35: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry
-	(*OpaqueProduct_OpaqueProductDimensions)(nil),         // 36: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions
-	(*OpaqueCustomer_OpaqueLoyaltyInfo)(nil),              // 37: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueLoyaltyInfo
-	nil,                                                   // 38: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.PreferencesEntry
-	(*OpaqueCustomer_OpaquePaymentMethod)(nil),            // 39: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaquePaymentMethod
-	nil,                                    // 40: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.SelectedAttributesEntry
-	(*OpaqueOrder_OpaqueShippingInfo)(nil), // 41: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo
-	nil,                                    // 42: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.MetadataEntry
-	nil,                                    // 43: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.ErrorDetailsEntry
-	(*OpaqueOrderSummary_OpaqueOrderError)(nil), // 44: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.OpaqueOrderError
-	nil,                            // 45: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.EventDataEntry
-	nil,                            // 46: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.UpdateDataEntry
-	(*fieldmaskpb.FieldMask)(nil),  // 47: google.protobuf.FieldMask
-	(*wrapperspb.BoolValue)(nil),   // 48: google.protobuf.BoolValue
-	(*wrapperspb.DoubleValue)(nil), // 49: google.protobuf.DoubleValue
-	(*timestamppb.Timestamp)(nil),  // 50: google.protobuf.Timestamp
-	(*durationpb.Duration)(nil),    // 51: google.protobuf.Duration
+	(*OpaqueUpdateProductRequest)(nil),                    // 8: grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductRequest
+	(*OpaqueUpdateProductResponse)(nil),                   // 9: grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductResponse
+	(*OpaqueGetProductRequest)(nil),                       // 10: grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductRequest
+	(*OpaqueGetProductResponse)(nil),                      // 11: grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse
+	(*OpaqueSearchProductsRequest)(nil),                   // 12: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest
+	(*OpaqueSearchProductsResponse)(nil),                  // 13: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse
+	(*OpaqueCreateProductRequest)(nil),                    // 14: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest
+	(*OpaqueCreateProductResponse)(nil),                   // 15: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse
+	(*OpaqueCreateProductFieldRequest)(nil),               // 16: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest
+	(*OpaqueCreateProductFieldResponse)(nil),              // 17: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse
+	(*OpaqueProcessOrdersRequest)(nil),                    // 18: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest
+	(*OpaqueProcessOrdersResponse)(nil),                   // 19: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse
+	(*OpaqueStreamCustomerActivityRequest)(nil),           // 20: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest
+	(*OpaqueStreamCustomerActivityResponse)(nil),          // 21: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse
+	(*OpaqueAddress)(nil),                                 // 22: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
+	(*OpaquePrice)(nil),                                   // 23: grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	(*OpaqueProductCategory)(nil),                         // 24: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory
+	(*OpaqueProductVariant)(nil),                          // 25: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant
+	(*OpaqueProduct)(nil),                                 // 26: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	(*OpaqueCustomer)(nil),                                // 27: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer
+	(*OpaqueOrderItem)(nil),                               // 28: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem
+	(*OpaqueOrder)(nil),                                   // 29: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder
+	(*OpaqueOrderSummary)(nil),                            // 30: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary
+	(*OpaqueCustomerEvent)(nil),                           // 31: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent
+	(*OpaqueActivityUpdate)(nil),                          // 32: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate
+	nil,                                                   // 33: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.FiltersEntry
+	nil,                                                   // 34: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.MetadataEntry
+	nil,                                                   // 35: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.AttributesEntry
+	nil,                                                   // 36: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.MetadataEntry
+	nil,                                                   // 37: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry
+	(*OpaqueProduct_OpaqueProductDimensions)(nil),         // 38: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions
+	(*OpaqueCustomer_OpaqueLoyaltyInfo)(nil),              // 39: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueLoyaltyInfo
+	nil,                                                   // 40: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.PreferencesEntry
+	(*OpaqueCustomer_OpaquePaymentMethod)(nil),            // 41: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaquePaymentMethod
+	nil,                                    // 42: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.SelectedAttributesEntry
+	(*OpaqueOrder_OpaqueShippingInfo)(nil), // 43: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo
+	nil,                                    // 44: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.MetadataEntry
+	nil,                                    // 45: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.ErrorDetailsEntry
+	(*OpaqueOrderSummary_OpaqueOrderError)(nil), // 46: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.OpaqueOrderError
+	nil,                            // 47: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.EventDataEntry
+	nil,                            // 48: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.UpdateDataEntry
+	(*fieldmaskpb.FieldMask)(nil),  // 49: google.protobuf.FieldMask
+	(*wrapperspb.BoolValue)(nil),   // 50: google.protobuf.BoolValue
+	(*wrapperspb.DoubleValue)(nil), // 51: google.protobuf.DoubleValue
+	(*timestamppb.Timestamp)(nil),  // 52: google.protobuf.Timestamp
+	(*durationpb.Duration)(nil),    // 53: google.protobuf.Duration
 }
 var file_examples_internal_proto_examplepb_opaque_proto_depIdxs = []int32{
-	24, // 0: grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	21, // 1: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.min_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	21, // 2: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.max_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	0,  // 3: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.sort_by:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.OpaqueSortOrder
-	47, // 4: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.field_mask:type_name -> google.protobuf.FieldMask
-	31, // 5: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.filters:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.FiltersEntry
-	24, // 6: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	24, // 7: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	24, // 8: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	24, // 9: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	24, // 10: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
-	27, // 11: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest.order:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder
-	28, // 12: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse.summary:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary
-	29, // 13: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest.event:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent
-	30, // 14: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse.event:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate
-	1,  // 15: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.address_type:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.OpaqueAddressType
-	48, // 16: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.is_default:type_name -> google.protobuf.BoolValue
-	32, // 17: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.metadata:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.MetadataEntry
-	49, // 18: grpc.gateway.examples.internal.proto.examplepb.OpaquePrice.original_amount:type_name -> google.protobuf.DoubleValue
-	50, // 19: grpc.gateway.examples.internal.proto.examplepb.OpaquePrice.price_valid_until:type_name -> google.protobuf.Timestamp
-	22, // 20: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory.parent_category:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory
-	50, // 21: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory.created_at:type_name -> google.protobuf.Timestamp
-	50, // 22: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory.updated_at:type_name -> google.protobuf.Timestamp
-	21, // 23: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	33, // 24: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.attributes:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.AttributesEntry
-	48, // 25: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.is_available:type_name -> google.protobuf.BoolValue
-	21, // 26: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.base_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	22, // 27: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.category:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory
-	23, // 28: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.variants:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant
-	48, // 29: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.is_featured:type_name -> google.protobuf.BoolValue
-	50, // 30: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.created_at:type_name -> google.protobuf.Timestamp
-	50, // 31: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.updated_at:type_name -> google.protobuf.Timestamp
-	51, // 32: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.average_shipping_time:type_name -> google.protobuf.Duration
-	2,  // 33: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.status:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductStatus
-	34, // 34: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.metadata:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.MetadataEntry
-	35, // 35: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.regional_prices:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry
-	36, // 36: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.dimensions:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions
-	20, // 37: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.addresses:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
-	50, // 38: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.created_at:type_name -> google.protobuf.Timestamp
-	50, // 39: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.last_login:type_name -> google.protobuf.Timestamp
-	4,  // 40: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.status:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueCustomerStatus
-	37, // 41: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.loyalty_info:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueLoyaltyInfo
-	38, // 42: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.preferences:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.PreferencesEntry
-	39, // 43: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.payment_methods:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaquePaymentMethod
-	21, // 44: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.unit_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	21, // 45: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.total_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	40, // 46: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.selected_attributes:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.SelectedAttributesEntry
-	48, // 47: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.gift_wrapped:type_name -> google.protobuf.BoolValue
-	26, // 48: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.items:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem
-	21, // 49: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.subtotal:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	21, // 50: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.tax:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	21, // 51: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipping:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	21, // 52: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.total:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	20, // 53: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipping_address:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
-	20, // 54: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.billing_address:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
-	5,  // 55: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.status:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueOrderStatus
-	50, // 56: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.created_at:type_name -> google.protobuf.Timestamp
-	50, // 57: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.updated_at:type_name -> google.protobuf.Timestamp
-	50, // 58: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipped_at:type_name -> google.protobuf.Timestamp
-	50, // 59: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.delivered_at:type_name -> google.protobuf.Timestamp
-	41, // 60: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipping_info:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo
-	42, // 61: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.metadata:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.MetadataEntry
-	21, // 62: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.total_value:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	43, // 63: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.error_details:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.ErrorDetailsEntry
-	50, // 64: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.processing_time:type_name -> google.protobuf.Timestamp
-	44, // 65: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.errors:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.OpaqueOrderError
-	6,  // 66: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.event_type:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.OpaqueEventType
-	50, // 67: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.timestamp:type_name -> google.protobuf.Timestamp
-	45, // 68: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.event_data:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.EventDataEntry
-	7,  // 69: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.update_type:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.OpaqueUpdateType
-	50, // 70: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.timestamp:type_name -> google.protobuf.Timestamp
-	21, // 71: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.price_update:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	51, // 72: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.offer_expiry:type_name -> google.protobuf.Duration
-	46, // 73: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.update_data:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.UpdateDataEntry
-	21, // 74: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry.value:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
-	3,  // 75: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions.unit:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions.OpaqueUnit
-	50, // 76: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueLoyaltyInfo.tier_expiry:type_name -> google.protobuf.Timestamp
-	50, // 77: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaquePaymentMethod.expires_at:type_name -> google.protobuf.Timestamp
-	51, // 78: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo.estimated_delivery_time:type_name -> google.protobuf.Duration
-	8,  // 79: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueGetProduct:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductRequest
-	10, // 80: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueSearchProducts:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest
-	12, // 81: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProduct:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest
-	14, // 82: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProductField:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest
-	16, // 83: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueProcessOrders:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest
-	18, // 84: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueStreamCustomerActivity:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest
-	9,  // 85: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueGetProduct:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse
-	11, // 86: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueSearchProducts:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse
-	13, // 87: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProduct:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse
-	15, // 88: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProductField:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse
-	17, // 89: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueProcessOrders:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse
-	19, // 90: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueStreamCustomerActivity:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse
-	85, // [85:91] is the sub-list for method output_type
-	79, // [79:85] is the sub-list for method input_type
-	79, // [79:79] is the sub-list for extension type_name
-	79, // [79:79] is the sub-list for extension extendee
-	0,  // [0:79] is the sub-list for field type_name
+	26, // 0: grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductRequest.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	49, // 1: grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductRequest.update_mask:type_name -> google.protobuf.FieldMask
+	26, // 2: grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	26, // 3: grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	23, // 4: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.min_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	23, // 5: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.max_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	0,  // 6: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.sort_by:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.OpaqueSortOrder
+	49, // 7: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.field_mask:type_name -> google.protobuf.FieldMask
+	33, // 8: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.filters:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.FiltersEntry
+	26, // 9: grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	26, // 10: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	26, // 11: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	26, // 12: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	26, // 13: grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse.product:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct
+	29, // 14: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest.order:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder
+	30, // 15: grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse.summary:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary
+	31, // 16: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest.event:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent
+	32, // 17: grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse.event:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate
+	1,  // 18: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.address_type:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.OpaqueAddressType
+	50, // 19: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.is_default:type_name -> google.protobuf.BoolValue
+	34, // 20: grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.metadata:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.MetadataEntry
+	51, // 21: grpc.gateway.examples.internal.proto.examplepb.OpaquePrice.original_amount:type_name -> google.protobuf.DoubleValue
+	52, // 22: grpc.gateway.examples.internal.proto.examplepb.OpaquePrice.price_valid_until:type_name -> google.protobuf.Timestamp
+	24, // 23: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory.parent_category:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory
+	52, // 24: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory.created_at:type_name -> google.protobuf.Timestamp
+	52, // 25: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory.updated_at:type_name -> google.protobuf.Timestamp
+	23, // 26: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	35, // 27: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.attributes:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.AttributesEntry
+	50, // 28: grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.is_available:type_name -> google.protobuf.BoolValue
+	23, // 29: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.base_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	24, // 30: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.category:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory
+	25, // 31: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.variants:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant
+	50, // 32: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.is_featured:type_name -> google.protobuf.BoolValue
+	52, // 33: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.created_at:type_name -> google.protobuf.Timestamp
+	52, // 34: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.updated_at:type_name -> google.protobuf.Timestamp
+	53, // 35: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.average_shipping_time:type_name -> google.protobuf.Duration
+	2,  // 36: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.status:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductStatus
+	36, // 37: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.metadata:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.MetadataEntry
+	37, // 38: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.regional_prices:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry
+	38, // 39: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.dimensions:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions
+	22, // 40: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.addresses:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
+	52, // 41: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.created_at:type_name -> google.protobuf.Timestamp
+	52, // 42: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.last_login:type_name -> google.protobuf.Timestamp
+	4,  // 43: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.status:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueCustomerStatus
+	39, // 44: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.loyalty_info:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueLoyaltyInfo
+	40, // 45: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.preferences:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.PreferencesEntry
+	41, // 46: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.payment_methods:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaquePaymentMethod
+	23, // 47: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.unit_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	23, // 48: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.total_price:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	42, // 49: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.selected_attributes:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.SelectedAttributesEntry
+	50, // 50: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.gift_wrapped:type_name -> google.protobuf.BoolValue
+	28, // 51: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.items:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem
+	23, // 52: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.subtotal:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	23, // 53: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.tax:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	23, // 54: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipping:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	23, // 55: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.total:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	22, // 56: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipping_address:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
+	22, // 57: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.billing_address:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress
+	5,  // 58: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.status:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueOrderStatus
+	52, // 59: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.created_at:type_name -> google.protobuf.Timestamp
+	52, // 60: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.updated_at:type_name -> google.protobuf.Timestamp
+	52, // 61: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipped_at:type_name -> google.protobuf.Timestamp
+	52, // 62: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.delivered_at:type_name -> google.protobuf.Timestamp
+	43, // 63: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.shipping_info:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo
+	44, // 64: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.metadata:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.MetadataEntry
+	23, // 65: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.total_value:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	45, // 66: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.error_details:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.ErrorDetailsEntry
+	52, // 67: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.processing_time:type_name -> google.protobuf.Timestamp
+	46, // 68: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.errors:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.OpaqueOrderError
+	6,  // 69: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.event_type:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.OpaqueEventType
+	52, // 70: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.timestamp:type_name -> google.protobuf.Timestamp
+	47, // 71: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.event_data:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.EventDataEntry
+	7,  // 72: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.update_type:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.OpaqueUpdateType
+	52, // 73: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.timestamp:type_name -> google.protobuf.Timestamp
+	23, // 74: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.price_update:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	53, // 75: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.offer_expiry:type_name -> google.protobuf.Duration
+	48, // 76: grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.update_data:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.UpdateDataEntry
+	23, // 77: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry.value:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaquePrice
+	3,  // 78: grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions.unit:type_name -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions.OpaqueUnit
+	52, // 79: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaqueLoyaltyInfo.tier_expiry:type_name -> google.protobuf.Timestamp
+	52, // 80: grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomer.OpaquePaymentMethod.expires_at:type_name -> google.protobuf.Timestamp
+	53, // 81: grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo.estimated_delivery_time:type_name -> google.protobuf.Duration
+	10, // 82: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueGetProduct:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductRequest
+	12, // 83: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueSearchProducts:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest
+	14, // 84: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProduct:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest
+	16, // 85: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProductField:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldRequest
+	18, // 86: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueProcessOrders:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest
+	20, // 87: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueStreamCustomerActivity:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest
+	8,  // 88: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueUpdateProduct:input_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductRequest
+	11, // 89: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueGetProduct:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse
+	13, // 90: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueSearchProducts:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse
+	15, // 91: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProduct:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse
+	17, // 92: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueCreateProductField:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse
+	19, // 93: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueProcessOrders:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse
+	21, // 94: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueStreamCustomerActivity:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse
+	9,  // 95: grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService.OpaqueUpdateProduct:output_type -> grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductResponse
+	89, // [89:96] is the sub-list for method output_type
+	82, // [82:89] is the sub-list for method input_type
+	82, // [82:82] is the sub-list for extension type_name
+	82, // [82:82] is the sub-list for extension extendee
+	0,  // [0:82] is the sub-list for field type_name
 }
 
 func init() { file_examples_internal_proto_examplepb_opaque_proto_init() }
@@ -7453,19 +7629,19 @@ func file_examples_internal_proto_examplepb_opaque_proto_init() {
 	if File_examples_internal_proto_examplepb_opaque_proto != nil {
 		return
 	}
-	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[15].OneofWrappers = []any{
+	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[17].OneofWrappers = []any{
 		(*opaqueProductVariant_PercentageOff)(nil),
 		(*opaqueProductVariant_FixedAmountOff)(nil),
 	}
-	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[16].OneofWrappers = []any{
+	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[18].OneofWrappers = []any{
 		(*opaqueProduct_TaxPercentage)(nil),
 		(*opaqueProduct_TaxExempt)(nil),
 	}
-	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[19].OneofWrappers = []any{
+	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[21].OneofWrappers = []any{
 		(*opaqueOrder_CouponCode)(nil),
 		(*opaqueOrder_PromotionId)(nil),
 	}
-	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[22].OneofWrappers = []any{
+	file_examples_internal_proto_examplepb_opaque_proto_msgTypes[24].OneofWrappers = []any{
 		(*opaqueActivityUpdate_RedirectUrl)(nil),
 		(*opaqueActivityUpdate_NotificationId)(nil),
 	}
@@ -7475,7 +7651,7 @@ func file_examples_internal_proto_examplepb_opaque_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_examples_internal_proto_examplepb_opaque_proto_rawDesc), len(file_examples_internal_proto_examplepb_opaque_proto_rawDesc)),
 			NumEnums:      8,
-			NumMessages:   39,
+			NumMessages:   41,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

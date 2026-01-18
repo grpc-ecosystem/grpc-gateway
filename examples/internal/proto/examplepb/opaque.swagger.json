@@ -316,6 +316,124 @@
         ]
       }
     },
+    "/v1/products/{product.productId}": {
+      "patch": {
+        "summary": "OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping\nto reproduce the compilation issue with bodyData as a value type.",
+        "operationId": "OpaqueEcommerceService_OpaqueUpdateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueUpdateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googleRpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product.productId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "product",
+            "description": "OpaqueProduct represents a product in the e-commerce system",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "basePrice": {
+                  "$ref": "#/definitions/examplepbOpaquePrice"
+                },
+                "category": {
+                  "$ref": "#/definitions/examplepbOpaqueProductCategory"
+                },
+                "variants": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "$ref": "#/definitions/examplepbOpaqueProductVariant"
+                  }
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "averageRating": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "reviewCount": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "isFeatured": {
+                  "type": "boolean"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "averageShippingTime": {
+                  "type": "string"
+                },
+                "status": {
+                  "$ref": "#/definitions/OpaqueProductOpaqueProductStatus"
+                },
+                "metadata": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "regionalPrices": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/definitions/examplepbOpaquePrice"
+                  }
+                },
+                "dimensions": {
+                  "$ref": "#/definitions/OpaqueProductOpaqueProductDimensions"
+                },
+                "taxPercentage": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "taxExempt": {
+                  "type": "boolean"
+                }
+              },
+              "title": "OpaqueProduct represents a product in the e-commerce system"
+            }
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
     "/v1/products/{productId}": {
       "get": {
         "summary": "OpaqueGetProduct - Unary request, unary response\nRetrieves detailed information about a specific product",
@@ -1132,6 +1250,15 @@
         }
       },
       "title": "OpaqueStreamCustomerActivityRequest represents a report of server activity"
+    },
+    "examplepbOpaqueUpdateProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/examplepbOpaqueProduct"
+        }
+      },
+      "title": "OpaqueUpdateProductResponse represents the response for OpaqueUpdateProduct"
     },
     "googleRpcStatus": {
       "type": "object",

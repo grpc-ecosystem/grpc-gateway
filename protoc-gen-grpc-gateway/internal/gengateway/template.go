@@ -428,8 +428,8 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	}
 	protoReq = bodyData
 	{{- else }}
-	var bodyData {{ .GetBodyFieldType }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	bodyData := &{{ .GetBodyFieldType }}{}
+	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
@@ -670,8 +670,8 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	}
 	protoReq = bodyData
 	{{- else }}
-	var bodyData {{ .GetBodyFieldType }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	bodyData := &{{ .GetBodyFieldType }}{}
+	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)

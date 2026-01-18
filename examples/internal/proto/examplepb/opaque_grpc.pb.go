@@ -25,6 +25,7 @@ const (
 	OpaqueEcommerceService_OpaqueCreateProductField_FullMethodName     = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueCreateProductField"
 	OpaqueEcommerceService_OpaqueProcessOrders_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueProcessOrders"
 	OpaqueEcommerceService_OpaqueStreamCustomerActivity_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueStreamCustomerActivity"
+	OpaqueEcommerceService_OpaqueUpdateProduct_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueUpdateProduct"
 )
 
 // OpaqueEcommerceServiceClient is the client API for OpaqueEcommerceService service.
@@ -50,6 +51,9 @@ type OpaqueEcommerceServiceClient interface {
 	// OpaqueStreamCustomerActivity - Stream request, stream response
 	// Bidirectional streaming for real-time customer activity monitoring
 	OpaqueStreamCustomerActivity(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse], error)
+	// OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
+	// to reproduce the compilation issue with bodyData as a value type.
+	OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueUpdateProductResponse, error)
 }
 
 type opaqueEcommerceServiceClient struct {
@@ -135,6 +139,16 @@ func (c *opaqueEcommerceServiceClient) OpaqueStreamCustomerActivity(ctx context.
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OpaqueEcommerceService_OpaqueStreamCustomerActivityClient = grpc.BidiStreamingClient[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]
 
+func (c *opaqueEcommerceServiceClient) OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueUpdateProductResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OpaqueUpdateProductResponse)
+	err := c.cc.Invoke(ctx, OpaqueEcommerceService_OpaqueUpdateProduct_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OpaqueEcommerceServiceServer is the server API for OpaqueEcommerceService service.
 // All implementations should embed UnimplementedOpaqueEcommerceServiceServer
 // for forward compatibility.
@@ -158,6 +172,9 @@ type OpaqueEcommerceServiceServer interface {
 	// OpaqueStreamCustomerActivity - Stream request, stream response
 	// Bidirectional streaming for real-time customer activity monitoring
 	OpaqueStreamCustomerActivity(grpc.BidiStreamingServer[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]) error
+	// OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
+	// to reproduce the compilation issue with bodyData as a value type.
+	OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueUpdateProductResponse, error)
 }
 
 // UnimplementedOpaqueEcommerceServiceServer should be embedded to have
@@ -184,6 +201,9 @@ func (UnimplementedOpaqueEcommerceServiceServer) OpaqueProcessOrders(grpc.Client
 }
 func (UnimplementedOpaqueEcommerceServiceServer) OpaqueStreamCustomerActivity(grpc.BidiStreamingServer[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method OpaqueStreamCustomerActivity not implemented")
+}
+func (UnimplementedOpaqueEcommerceServiceServer) OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueUpdateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpaqueUpdateProduct not implemented")
 }
 func (UnimplementedOpaqueEcommerceServiceServer) testEmbeddedByValue() {}
 
@@ -284,6 +304,24 @@ func _OpaqueEcommerceService_OpaqueStreamCustomerActivity_Handler(srv interface{
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type OpaqueEcommerceService_OpaqueStreamCustomerActivityServer = grpc.BidiStreamingServer[OpaqueStreamCustomerActivityRequest, OpaqueStreamCustomerActivityResponse]
 
+func _OpaqueEcommerceService_OpaqueUpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpaqueUpdateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueUpdateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpaqueEcommerceService_OpaqueUpdateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueUpdateProduct(ctx, req.(*OpaqueUpdateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OpaqueEcommerceService_ServiceDesc is the grpc.ServiceDesc for OpaqueEcommerceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -302,6 +340,10 @@ var OpaqueEcommerceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OpaqueCreateProductField",
 			Handler:    _OpaqueEcommerceService_OpaqueCreateProductField_Handler,
+		},
+		{
+			MethodName: "OpaqueUpdateProduct",
+			Handler:    _OpaqueEcommerceService_OpaqueUpdateProduct_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
