@@ -365,7 +365,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Enum:        schema.Enum,
 		}
 		if param.Type == "array" {
-			param.CollectionFormat = "multi"
+			param.CollectionFormat = reg.GetRepeatedPathParamSeparatorName()
 		}
 
 		param.Name = prefix + reg.FieldName(field)
