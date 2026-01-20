@@ -26,6 +26,7 @@ const (
 	OpaqueEcommerceService_OpaqueProcessOrders_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueProcessOrders"
 	OpaqueEcommerceService_OpaqueStreamCustomerActivity_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueStreamCustomerActivity"
 	OpaqueEcommerceService_OpaqueUpdateProduct_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueUpdateProduct"
+	OpaqueEcommerceService_OpaqueSearchOrders_FullMethodName           = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueSearchOrders"
 )
 
 // OpaqueEcommerceServiceClient is the client API for OpaqueEcommerceService service.
@@ -54,6 +55,9 @@ type OpaqueEcommerceServiceClient interface {
 	// OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
 	// to reproduce the compilation issue with bodyData as a value type.
 	OpaqueUpdateProduct(ctx context.Context, in *OpaqueUpdateProductRequest, opts ...grpc.CallOption) (*OpaqueUpdateProductResponse, error)
+	// OpaqueSearchOrders - Unary request, unary response
+	// Uses enum params (both top level and nested) to populate fields to test opaque get chain
+	OpaqueSearchOrders(ctx context.Context, in *OpaqueSearchOrdersRequest, opts ...grpc.CallOption) (*OpaqueSearchOrdersResponse, error)
 }
 
 type opaqueEcommerceServiceClient struct {
@@ -149,6 +153,16 @@ func (c *opaqueEcommerceServiceClient) OpaqueUpdateProduct(ctx context.Context, 
 	return out, nil
 }
 
+func (c *opaqueEcommerceServiceClient) OpaqueSearchOrders(ctx context.Context, in *OpaqueSearchOrdersRequest, opts ...grpc.CallOption) (*OpaqueSearchOrdersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OpaqueSearchOrdersResponse)
+	err := c.cc.Invoke(ctx, OpaqueEcommerceService_OpaqueSearchOrders_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OpaqueEcommerceServiceServer is the server API for OpaqueEcommerceService service.
 // All implementations should embed UnimplementedOpaqueEcommerceServiceServer
 // for forward compatibility.
@@ -175,6 +189,9 @@ type OpaqueEcommerceServiceServer interface {
 	// OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping
 	// to reproduce the compilation issue with bodyData as a value type.
 	OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueUpdateProductResponse, error)
+	// OpaqueSearchOrders - Unary request, unary response
+	// Uses enum params (both top level and nested) to populate fields to test opaque get chain
+	OpaqueSearchOrders(context.Context, *OpaqueSearchOrdersRequest) (*OpaqueSearchOrdersResponse, error)
 }
 
 // UnimplementedOpaqueEcommerceServiceServer should be embedded to have
@@ -204,6 +221,9 @@ func (UnimplementedOpaqueEcommerceServiceServer) OpaqueStreamCustomerActivity(gr
 }
 func (UnimplementedOpaqueEcommerceServiceServer) OpaqueUpdateProduct(context.Context, *OpaqueUpdateProductRequest) (*OpaqueUpdateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OpaqueUpdateProduct not implemented")
+}
+func (UnimplementedOpaqueEcommerceServiceServer) OpaqueSearchOrders(context.Context, *OpaqueSearchOrdersRequest) (*OpaqueSearchOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpaqueSearchOrders not implemented")
 }
 func (UnimplementedOpaqueEcommerceServiceServer) testEmbeddedByValue() {}
 
@@ -322,6 +342,24 @@ func _OpaqueEcommerceService_OpaqueUpdateProduct_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OpaqueEcommerceService_OpaqueSearchOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpaqueSearchOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueSearchOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpaqueEcommerceService_OpaqueSearchOrders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueSearchOrders(ctx, req.(*OpaqueSearchOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OpaqueEcommerceService_ServiceDesc is the grpc.ServiceDesc for OpaqueEcommerceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -344,6 +382,10 @@ var OpaqueEcommerceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OpaqueUpdateProduct",
 			Handler:    _OpaqueEcommerceService_OpaqueUpdateProduct_Handler,
+		},
+		{
+			MethodName: "OpaqueSearchOrders",
+			Handler:    _OpaqueEcommerceService_OpaqueSearchOrders_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
