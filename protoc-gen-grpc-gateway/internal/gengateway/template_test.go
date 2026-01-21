@@ -8,6 +8,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -269,6 +270,161 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `mux.Handle(http.MethodPost,`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
+	}
+}
+
+func TestApplyTemplateOpaquePathParams(t *testing.T) {
+	enumDesc := &descriptorpb.EnumDescriptorProto{
+		Name: proto.String("Color"),
+		Value: []*descriptorpb.EnumValueDescriptorProto{
+			{
+				Name:   proto.String("COLOR_UNSPECIFIED"),
+				Number: proto.Int32(0),
+			},
+			{
+				Name:   proto.String("COLOR_RED"),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+
+	baseField := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("kind"),
+		Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+		Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		Number: proto.Int32(1),
+	}
+	enumField := proto.Clone(baseField).(*descriptorpb.FieldDescriptorProto)
+	enumField.Type = descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum()
+	enumField.TypeName = proto.String(".example.Color")
+
+	tcs := map[string]struct {
+		field      *descriptorpb.FieldDescriptorProto
+		enumDesc   *descriptorpb.EnumDescriptorProto
+		httpMethod string
+		expect     string
+	}{
+		"scalar GET": {
+			field:      baseField,
+			httpMethod: "GET",
+			expect:     "protoReq.SetKind(convertedKind)",
+		},
+		"enum PATCH": {
+			field:      enumField,
+			enumDesc:   enumDesc,
+			httpMethod: "PATCH",
+			expect:     "protoReq.SetKind(Color(e))",
+		},
+	}
+
+	for name, tc := range tcs {
+		t.Run(name, func(t *testing.T) {
+			msgdesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("ExampleMessage"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					proto.Clone(tc.field).(*descriptorpb.FieldDescriptorProto),
+				},
+			}
+			if tc.enumDesc != nil {
+				msgdesc.EnumType = []*descriptorpb.EnumDescriptorProto{proto.Clone(tc.enumDesc).(*descriptorpb.EnumDescriptorProto)}
+			}
+
+			fileDesc := &descriptorpb.FileDescriptorProto{
+				Name:        proto.String("example.proto"),
+				Package:     proto.String("example"),
+				Syntax:      proto.String("proto3"),
+				MessageType: []*descriptorpb.DescriptorProto{msgdesc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("example.com/path/to/example/example.pb;example_pb"),
+				},
+			}
+			if tc.enumDesc != nil {
+				fileDesc.EnumType = []*descriptorpb.EnumDescriptorProto{proto.Clone(tc.enumDesc).(*descriptorpb.EnumDescriptorProto)}
+			}
+
+			meth := &descriptorpb.MethodDescriptorProto{
+				Name:       proto.String("DoThing"),
+				InputType:  proto.String("ExampleMessage"),
+				OutputType: proto.String("ExampleMessage"),
+			}
+			svc := &descriptorpb.ServiceDescriptorProto{
+				Name:   proto.String("ExampleService"),
+				Method: []*descriptorpb.MethodDescriptorProto{meth},
+			}
+
+			msg := &descriptor.Message{
+				DescriptorProto: msgdesc,
+			}
+			field := &descriptor.Field{
+				Message:              msg,
+				FieldDescriptorProto: msgdesc.Field[0],
+			}
+			msg.Fields = []*descriptor.Field{field}
+
+			file := descriptor.File{
+				FileDescriptorProto: fileDesc,
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: []*descriptor.Message{msg},
+				Services: []*descriptor.Service{
+					{
+						ServiceDescriptorProto: svc,
+						Methods: []*descriptor.Method{
+							{
+								MethodDescriptorProto: meth,
+								RequestType:           msg,
+								ResponseType:          msg,
+								Bindings: []*descriptor.Binding{
+									{
+										HTTPMethod: tc.httpMethod,
+										PathTmpl:   compilePath(t, "/v1/{kind}"),
+										PathParams: []descriptor.Parameter{
+											{
+												FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+													{
+														Name:   "kind",
+														Target: field,
+													},
+												}),
+												Target: field,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+
+			reg := descriptor.NewRegistry()
+			req := &pluginpb.CodeGeneratorRequest{
+				FileToGenerate: []string{"example.proto"},
+				ProtoFile:      []*descriptorpb.FileDescriptorProto{fileDesc},
+			}
+			if err := reg.Load(req); err != nil {
+				t.Fatalf("registry load failed: %v", err)
+			}
+
+			cloned := crossLinkFixture(&file)
+			cloned.Services[0].Methods[0].Bindings[0].PathParams[0].Method = cloned.Services[0].Methods[0]
+
+			got, err := applyTemplate(param{
+				File:               cloned,
+				RegisterFuncSuffix: "Handler",
+				AllowPatchFeature:  true,
+				UseOpaqueAPI:       true,
+			}, reg)
+			if err != nil {
+				t.Fatalf("applyTemplate failed: %v", err)
+			}
+
+			if !strings.Contains(got, tc.expect) {
+				t.Fatalf("generated code missing %q: %s", tc.expect, got)
+			}
+		})
 	}
 }
 

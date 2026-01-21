@@ -69,6 +69,12 @@ service OpaqueEcommerceService {
     };
     option (google.api.method_signature) = "product,update_mask";
   }
+
+  // OpaqueSearchOrders - Unary request, unary response
+  // Uses enum params (both top level and nested) to populate fields to test opaque get chain
+  rpc OpaqueSearchOrders(OpaqueSearchOrdersRequest) returns (OpaqueSearchOrdersResponse) {
+    option (google.api.http) = {get: "/v1/orders/search/{order.status}/shipAddressType/{order.shipping_address.address_type}"};
+  }
 }
 
 // OpaqueUpdateProductRequest represents a request to update a product
@@ -169,6 +175,16 @@ message OpaqueStreamCustomerActivityRequest {
 // OpaqueStreamCustomerActivityRequest represents a report of server activity
 message OpaqueStreamCustomerActivityResponse {
   OpaqueActivityUpdate event = 2;
+}
+
+// OpaqueSearchOrdersRequest represents queryable information to find orders
+message OpaqueSearchOrdersRequest {
+  OpaqueOrder order = 1;
+}
+
+// OpaqueSearchOrdersResponse represents a list of orders found
+message OpaqueSearchOrdersResponse {
+  repeated OpaqueOrder orders = 1;
 }
 
 // OpaqueAddress represents a physical address

@@ -93,6 +93,385 @@
         ]
       }
     },
+    "/v1/orders/search/{order.status}/shipAddressType/{order.shippingAddress.addressType}": {
+      "get": {
+        "summary": "OpaqueSearchOrders - Unary request, unary response\nUses enum params (both top level and nested) to populate fields to test opaque get chain",
+        "operationId": "OpaqueEcommerceService_OpaqueSearchOrders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbOpaqueSearchOrdersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googleRpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "order.status",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "OPAQUE_ORDER_STATUS_UNSPECIFIED",
+              "OPAQUE_ORDER_STATUS_PENDING",
+              "OPAQUE_ORDER_STATUS_PROCESSING",
+              "OPAQUE_ORDER_STATUS_SHIPPED",
+              "OPAQUE_ORDER_STATUS_DELIVERED",
+              "OPAQUE_ORDER_STATUS_CANCELLED",
+              "OPAQUE_ORDER_STATUS_RETURNED"
+            ]
+          },
+          {
+            "name": "order.shippingAddress.addressType",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "OPAQUE_ADDRESS_TYPE_UNSPECIFIED",
+              "OPAQUE_ADDRESS_TYPE_RESIDENTIAL",
+              "OPAQUE_ADDRESS_TYPE_BUSINESS",
+              "OPAQUE_ADDRESS_TYPE_SHIPPING",
+              "OPAQUE_ADDRESS_TYPE_BILLING"
+            ]
+          },
+          {
+            "name": "order.orderId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.customerId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.subtotal.amount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.subtotal.currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.subtotal.isDiscounted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "order.subtotal.originalAmount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.subtotal.priceValidUntil",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.tax.amount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.tax.currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.tax.isDiscounted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "order.tax.originalAmount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.tax.priceValidUntil",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.shipping.amount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.shipping.currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shipping.isDiscounted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "order.shipping.originalAmount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.shipping.priceValidUntil",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.total.amount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.total.currencyCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.total.isDiscounted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "order.total.originalAmount",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "order.total.priceValidUntil",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.shippingAddress.streetLine1",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingAddress.streetLine2",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingAddress.city",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingAddress.state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingAddress.country",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingAddress.postalCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingAddress.isDefault",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "order.shippingAddress.metadata",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.streetLine1",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.streetLine2",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.city",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.country",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.postalCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.billingAddress.isDefault",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "order.billingAddress.metadata",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.paymentMethodId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.trackingNumber",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.createdAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.updatedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.shippedAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.deliveredAt",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "order.shippingInfo.carrier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingInfo.method",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingInfo.estimatedDeliveryTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.shippingInfo.trackingUrls",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "order.metadata",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.couponCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order.promotionId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "OpaqueEcommerceService"
+        ]
+      }
+    },
     "/v1/products": {
       "post": {
         "summary": "OpaqueCreateProduct - Unary request with body field, unary response\nCreates a new product with the product details in the body",
@@ -1223,6 +1602,19 @@
         }
       },
       "title": "OpaqueProductVariant represents a specific variant of a product"
+    },
+    "examplepbOpaqueSearchOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/examplepbOpaqueOrder"
+          }
+        }
+      },
+      "title": "OpaqueSearchOrdersResponse represents a list of orders found"
     },
     "examplepbOpaqueSearchProductsResponse": {
       "type": "object",

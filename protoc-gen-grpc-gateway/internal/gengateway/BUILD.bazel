@@ -35,6 +35,7 @@ go_test(
         "//internal/httprule",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/descriptorpb",
+        "@org_golang_google_protobuf//types/pluginpb",
     ],
 )
 

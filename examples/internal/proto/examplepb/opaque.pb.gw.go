@@ -363,6 +363,97 @@ func local_request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Cont
 	return msg, metadata, err
 }
 
+var filter_OpaqueEcommerceService_OpaqueSearchOrders_0 = &utilities.DoubleArray{Encoding: map[string]int{"order": 0, "status": 1, "shipping_address": 2, "address_type": 3}, Base: []int{1, 1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 2, 4, 3, 5}}
+
+func request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Context, marshaler runtime.Marshaler, client OpaqueEcommerceServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq OpaqueSearchOrdersRequest
+		metadata runtime.ServerMetadata
+		e        int32
+		err      error
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	val, ok := pathParams["order.status"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "order.status")
+	}
+	err = runtime.PopulateFieldFromPath(&protoReq, "order.status", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.status", err)
+	}
+	e, err = runtime.Enum(val, OpaqueOrder_OpaqueOrderStatus_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.status", err)
+	}
+	protoReq.GetOrder().SetStatus(OpaqueOrder_OpaqueOrderStatus(e))
+	val, ok = pathParams["order.shipping_address.address_type"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "order.shipping_address.address_type")
+	}
+	err = runtime.PopulateFieldFromPath(&protoReq, "order.shipping_address.address_type", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.shipping_address.address_type", err)
+	}
+	e, err = runtime.Enum(val, OpaqueAddress_OpaqueAddressType_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.shipping_address.address_type", err)
+	}
+	protoReq.GetOrder().GetShippingAddress().SetAddressType(OpaqueAddress_OpaqueAddressType(e))
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OpaqueEcommerceService_OpaqueSearchOrders_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.OpaqueSearchOrders(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Context, marshaler runtime.Marshaler, server OpaqueEcommerceServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq OpaqueSearchOrdersRequest
+		metadata runtime.ServerMetadata
+		e        int32
+		err      error
+	)
+	val, ok := pathParams["order.status"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "order.status")
+	}
+	err = runtime.PopulateFieldFromPath(&protoReq, "order.status", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.status", err)
+	}
+	e, err = runtime.Enum(val, OpaqueOrder_OpaqueOrderStatus_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.status", err)
+	}
+	protoReq.GetOrder().SetStatus(OpaqueOrder_OpaqueOrderStatus(e))
+	val, ok = pathParams["order.shipping_address.address_type"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "order.shipping_address.address_type")
+	}
+	err = runtime.PopulateFieldFromPath(&protoReq, "order.shipping_address.address_type", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.shipping_address.address_type", err)
+	}
+	e, err = runtime.Enum(val, OpaqueAddress_OpaqueAddressType_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.shipping_address.address_type", err)
+	}
+	protoReq.GetOrder().GetShippingAddress().SetAddressType(OpaqueAddress_OpaqueAddressType(e))
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_OpaqueEcommerceService_OpaqueSearchOrders_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.OpaqueSearchOrders(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterOpaqueEcommerceServiceHandlerServer registers the http handlers for service OpaqueEcommerceService to "mux".
 // UnaryRPC     :call OpaqueEcommerceServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -469,6 +560,26 @@ func RegisterOpaqueEcommerceServiceHandlerServer(ctx context.Context, mux *runti
 			return
 		}
 		forward_OpaqueEcommerceService_OpaqueUpdateProduct_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_OpaqueEcommerceService_OpaqueSearchOrders_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueSearchOrders", runtime.WithHTTPPathPattern("/v1/orders/search/{order.status}/shipAddressType/{order.shipping_address.address_type}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_OpaqueEcommerceService_OpaqueSearchOrders_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_OpaqueEcommerceService_OpaqueSearchOrders_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -629,6 +740,23 @@ func RegisterOpaqueEcommerceServiceHandlerClient(ctx context.Context, mux *runti
 		}
 		forward_OpaqueEcommerceService_OpaqueUpdateProduct_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_OpaqueEcommerceService_OpaqueSearchOrders_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueSearchOrders", runtime.WithHTTPPathPattern("/v1/orders/search/{order.status}/shipAddressType/{order.shipping_address.address_type}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_OpaqueEcommerceService_OpaqueSearchOrders_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_OpaqueEcommerceService_OpaqueSearchOrders_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
@@ -640,6 +768,7 @@ var (
 	pattern_OpaqueEcommerceService_OpaqueProcessOrders_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "orders", "process"}, ""))
 	pattern_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "customer", "activity"}, ""))
 	pattern_OpaqueEcommerceService_OpaqueUpdateProduct_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "products", "product.product_id"}, ""))
+	pattern_OpaqueEcommerceService_OpaqueSearchOrders_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "orders", "search", "order.status", "shipAddressType", "order.shipping_address.address_type"}, ""))
 )
 
 var (
@@ -650,4 +779,5 @@ var (
 	forward_OpaqueEcommerceService_OpaqueProcessOrders_0          = runtime.ForwardResponseMessage
 	forward_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0 = runtime.ForwardResponseStream
 	forward_OpaqueEcommerceService_OpaqueUpdateProduct_0          = runtime.ForwardResponseMessage
+	forward_OpaqueEcommerceService_OpaqueSearchOrders_0           = runtime.ForwardResponseMessage
 )

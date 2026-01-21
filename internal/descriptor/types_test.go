@@ -205,6 +205,33 @@ func TestFieldPath(t *testing.T) {
 	}
 }
 
+func TestFieldPathOpaqueSetterExpr(t *testing.T) {
+	tcs := map[string]struct {
+		fieldPath FieldPath
+		msgExpr   string
+		want      string
+	}{
+		"top-level field": {
+			fieldPath: FieldPath{{Name: "data"}},
+			msgExpr:   "req",
+			want:      "req.SetData",
+		},
+		"nested field": {
+			fieldPath: FieldPath{{Name: "key"}, {Name: "date_type"}},
+			msgExpr:   "req",
+			want:      "req.GetKey().SetDateType",
+		},
+	}
+
+	for name, tc := range tcs {
+		t.Run(name, func(t *testing.T) {
+			if got := tc.fieldPath.OpaqueSetterExpr(tc.msgExpr); got != tc.want {
+				t.Fatalf("OpaqueSetterExpr(%q) = %q; want %q", tc.msgExpr, got, tc.want)
+			}
+		})
+	}
+}
+
 func TestGoType(t *testing.T) {
 	src := `
 		name: 'example.proto'
