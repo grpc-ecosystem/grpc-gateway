@@ -2075,3 +2075,234 @@ func TestIssue5684_UnusedMethodsNotInOpenAPI(t *testing.T) {
 		t.Errorf("expected exactly 1 path, got %d paths", len(paths))
 	}
 }
+
+// TestGenerateMergeFilesWithBodyAndPathParams tests that OpenAPI generation
+// doesn't panic when merging files where a service uses body:"*" with path parameters.
+// This reproduces the bug from https://github.com/grpc-ecosystem/grpc-gateway/issues/6274
+func TestGenerateMergeFilesWithBodyAndPathParams(t *testing.T) {
+	t.Parallel()
+
+	// First proto file: contains only message definitions, with swagger option
+	// This file will be the merge target since it has the swagger option
+	const messagesProto = `
+	proto_file: {
+		name: "example/v1/messages.proto"
+		package: "example.v1"
+		message_type: {
+			name: "Item"
+			field: {
+				name: "id"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "id"
+			}
+			field: {
+				name: "name"
+				number: 2
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "name"
+			}
+		}
+		message_type: {
+			name: "UpdateItemRequest"
+			field: {
+				name: "id"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "id"
+			}
+			field: {
+				name: "name"
+				number: 2
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "name"
+			}
+		}
+		options: {
+			go_package: "example/v1;examplev1"
+			[grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger]: {
+				info: {
+					title: "Test API"
+					version: "1.0"
+				}
+			}
+		}
+		syntax: "proto3"
+	}`
+
+	// Second proto file: contains the service that references messages from first file
+	// This file does NOT have the swagger option, so it won't be the merge target
+	const serviceProto = `
+	proto_file: {
+		name: "example/v1/service.proto"
+		package: "example.v1"
+		dependency: "example/v1/messages.proto"
+		service: {
+			name: "ItemService"
+			method: {
+				name: "UpdateItem"
+				input_type: ".example.v1.UpdateItemRequest"
+				output_type: ".example.v1.Item"
+				options: {
+					[google.api.http]: {
+						put: "/v1/items/{id}"
+						body: "*"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "example/v1;examplev1"
+		}
+		syntax: "proto3"
+	}`
+
+	var msgReq, svcReq pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(messagesProto), &msgReq); err != nil {
+		t.Fatalf("failed to unmarshal messages proto: %s", err)
+	}
+	if err := prototext.Unmarshal([]byte(serviceProto), &svcReq); err != nil {
+		t.Fatalf("failed to unmarshal service proto: %s", err)
+	}
+
+	// Combine into a single request with both files to generate
+	req := &pluginpb.CodeGeneratorRequest{
+		ProtoFile:      append(msgReq.ProtoFile, svcReq.ProtoFile...),
+		FileToGenerate: []string{"example/v1/messages.proto", "example/v1/service.proto"},
+	}
+
+	formats := [...]genopenapi.Format{
+		genopenapi.FormatJSON,
+		genopenapi.FormatYAML,
+	}
+
+	for _, format := range formats {
+		format := format
+		t.Run(string(format), func(t *testing.T) {
+			t.Parallel()
+
+			// This should not panic - the bug causes panic with
+			// "failed to resolve method FQN: '.example.v1.ItemService.UpdateItem'"
+			resp := requireGenerate(t, req, format, false, true)
+			if len(resp) != 1 {
+				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+			}
+
+			content := resp[0].GetContent()
+			t.Log(content)
+
+			// Verify the path exists in output
+			if !strings.Contains(content, "/v1/items/{id}") {
+				t.Error("expected /v1/items/{id} path in output")
+			}
+
+			// Verify the body definition was created (this is what triggers the bug)
+			if !strings.Contains(content, "ItemServiceUpdateItemBody") {
+				t.Error("expected ItemServiceUpdateItemBody definition in output")
+			}
+		})
+	}
+}
+
+// TestGenerateMergeWithServiceNotInTargets tests the scenario where a service
+// file is available in the proto file set but not marked for generation.
+// This can happen with Edition 2023 files where dependencies are structured differently.
+func TestGenerateMergeWithServiceNotInTargets(t *testing.T) {
+	t.Parallel()
+
+	// This tests a potential bug where services from non-target files
+	// might not have their methods registered in the registry.
+	// The test ensures that when generating OpenAPI, only services from
+	// target files are processed.
+
+	const messagesProto = `
+	proto_file: {
+		name: "example/v1/messages.proto"
+		package: "example.v1"
+		message_type: {
+			name: "Item"
+			field: {
+				name: "id"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "id"
+			}
+		}
+		message_type: {
+			name: "UpdateItemRequest"
+			field: {
+				name: "id"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "id"
+			}
+		}
+		options: {
+			go_package: "example/v1;examplev1"
+		}
+		syntax: "proto3"
+	}`
+
+	const serviceProto = `
+	proto_file: {
+		name: "example/v1/service.proto"
+		package: "example.v1"
+		dependency: "example/v1/messages.proto"
+		service: {
+			name: "ItemService"
+			method: {
+				name: "UpdateItem"
+				input_type: ".example.v1.UpdateItemRequest"
+				output_type: ".example.v1.Item"
+				options: {
+					[google.api.http]: {
+						put: "/v1/items/{id}"
+						body: "*"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "example/v1;examplev1"
+		}
+		syntax: "proto3"
+	}`
+
+	var msgReq, svcReq pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(messagesProto), &msgReq); err != nil {
+		t.Fatalf("failed to unmarshal messages proto: %s", err)
+	}
+	if err := prototext.Unmarshal([]byte(serviceProto), &svcReq); err != nil {
+		t.Fatalf("failed to unmarshal service proto: %s", err)
+	}
+
+	// Include both files in ProtoFile but only service.proto in FileToGenerate
+	req := &pluginpb.CodeGeneratorRequest{
+		ProtoFile:      append(msgReq.ProtoFile, svcReq.ProtoFile...),
+		FileToGenerate: []string{"example/v1/service.proto"},
+	}
+
+	resp := requireGenerate(t, req, genopenapi.FormatJSON, false, false)
+	if len(resp) != 1 {
+		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+	}
+
+	content := resp[0].GetContent()
+	t.Log(content)
+
+	// Verify the path exists in output
+	if !strings.Contains(content, "/v1/items/{id}") {
+		t.Error("expected /v1/items/{id} path in output")
+	}
+
+	// Verify the body definition was created
+	if !strings.Contains(content, "ItemServiceUpdateItemBody") {
+		t.Error("expected ItemServiceUpdateItemBody definition in output")
+	}
+}
