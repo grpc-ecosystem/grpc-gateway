@@ -102,6 +102,7 @@ proto_library(
         "opaque.proto",
     ],
     deps = [
+        "//examples/internal/proto/sub:sub_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:field_mask_proto",
         "@com_google_protobuf//:timestamp_proto",
@@ -161,6 +162,7 @@ go_proto_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_opaque_proto",
     deps = [
+        "//examples/internal/proto/sub",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@org_golang_google_genproto_googleapis_api//annotations",
     ],
