@@ -56,7 +56,6 @@ proto_library(
     name = "examplepb_proto",
     srcs = [
         "a_bit_of_everything.proto",
-        "camel_case_message.proto",
         "camel_case_service.proto",
         "echo_service.proto",
         "enum_with_single_value.proto",
@@ -169,6 +168,8 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
+        "camel_case_service.pb.gw.go",
+        "opaque_body_import.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
@@ -182,6 +183,7 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     deps = [
+        "//examples/internal/proto/sub",
         "//runtime",
         "//utilities",
         "@org_golang_google_genproto_googleapis_api//annotations",
