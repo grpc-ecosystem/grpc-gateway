@@ -191,8 +191,8 @@
     "https://bcr.bazel.build/modules/rules_python/1.4.1/MODULE.bazel": "8991ad45bdc25018301d6b7e1d3626afc3c8af8aaf4bc04f23d0b99c938b73a6",
     "https://bcr.bazel.build/modules/rules_python/1.6.0/MODULE.bazel": "7e04ad8f8d5bea40451cf80b1bd8262552aa73f841415d20db96b7241bd027d8",
     "https://bcr.bazel.build/modules/rules_python/1.7.0/MODULE.bazel": "d01f995ecd137abf30238ad9ce97f8fc3ac57289c8b24bd0bf53324d937a14f8",
-    "https://bcr.bazel.build/modules/rules_python/1.8.1/MODULE.bazel": "7e487b202981471b71b8d602d23f74e576faad9de1daa5710f49d3280d399efe",
-    "https://bcr.bazel.build/modules/rules_python/1.8.1/source.json": "df6038c5a66ed13aa3e3490c8afd3270c6a673fea4b2662c191b6cf31d166eb2",
+    "https://bcr.bazel.build/modules/rules_python/1.8.2/MODULE.bazel": "70e8c0b8731e29ad7c6c1f7239075bf1bad4823492687806f21170868b95e85a",
+    "https://bcr.bazel.build/modules/rules_python/1.8.2/source.json": "68ff828161da838f839b3d6d8accdebdb993a8f0c5f958b4455097561b95f050",
     "https://bcr.bazel.build/modules/rules_rust/0.68.1/MODULE.bazel": "8d3332ef4079673385eb81f8bd68b012decc04ac00c9d5a01a40eff90301732c",
     "https://bcr.bazel.build/modules/rules_rust/0.68.1/source.json": "3378e746f81b62457fdfd37391244fa8ff075ba85c05931ee4f3a20ac1efe963",
     "https://bcr.bazel.build/modules/rules_shell/0.2.0/MODULE.bazel": "fda8a652ab3c7d8fee214de05e7a9916d8b28082234e8d2c0094505c5268ed3c",
@@ -302,7 +302,7 @@
     "@@rules_python+//python/extensions:config.bzl%config": {
       "general": {
         "bzlTransitiveDigest": "wUM/eFwo5Zy7rn36nZ9ZxN9tXhmcWMVGXIExerGg6gM=",
-        "usagesDigest": "JoEJaFGCJXAu2aMckzsVrS0Gz9dIhMnc0PEav88G7ew=",
+        "usagesDigest": "qd0jlWr+rE/2SEHO1YveaPdRuB6u0oH+DOKE1b87Tv8=",
         "recordedInputs": [
           "REPO_MAPPING:rules_python+,bazel_tools bazel_tools",
           "REPO_MAPPING:rules_python+,pypi__build rules_python++config+pypi__build",
@@ -470,7 +470,7 @@
     "@@rules_python+//python/uv:uv.bzl%uv": {
       "general": {
         "bzlTransitiveDigest": "ijW9KS7qsIY+yBVvJ+Nr1mzwQox09j13DnE3iIwaeTM=",
-        "usagesDigest": "B/mAxYlrftJu4GYJNA3xazmr/pQLkAoZ3GdTzNQIzyo=",
+        "usagesDigest": "HGagQt14J46Cp1wCUrY4xt8aCQh15ZnItLdY6WyM/O0=",
         "recordedInputs": [
           "REPO_MAPPING:rules_python+,bazel_tools bazel_tools",
           "REPO_MAPPING:rules_python+,platforms platforms"
