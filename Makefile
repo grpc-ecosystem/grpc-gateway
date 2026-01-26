@@ -154,6 +154,9 @@ proto:
 	buf generate \
 		--template ./examples/internal/proto/examplepb/opaque.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/opaque.proto
+	buf generate \
+		--template ./examples/internal/proto/examplepb/opaque_body_import.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/opaque_body_import.proto
 
 generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 

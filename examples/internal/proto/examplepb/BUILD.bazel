@@ -56,6 +56,8 @@ proto_library(
     name = "examplepb_proto",
     srcs = [
         "a_bit_of_everything.proto",
+        "camel_case_message.proto",
+        "camel_case_service.proto",
         "echo_service.proto",
         "enum_with_single_value.proto",
         "excess_body.proto",
@@ -64,6 +66,7 @@ proto_library(
         "generated_output.proto",
         "ignore_comment.proto",
         "non_standard_names.proto",
+        "opaque_body_import.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",
         "stream.proto",
