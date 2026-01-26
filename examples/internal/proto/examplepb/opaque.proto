@@ -2,6 +2,7 @@ edition = "2023";
 
 package grpc.gateway.examples.internal.proto.examplepb;
 
+import "examples/internal/proto/sub/message.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/protobuf/duration.proto";
@@ -74,6 +75,13 @@ service OpaqueEcommerceService {
   // Uses enum params (both top level and nested) to populate fields to test opaque get chain
   rpc OpaqueSearchOrders(OpaqueSearchOrdersRequest) returns (OpaqueSearchOrdersResponse) {
     option (google.api.http) = {get: "/v1/orders/search/{order.status}/shipAddressType/{order.shipping_address.address_type}"};
+  }
+
+  rpc OpaquePatchProductName(OpaquePatchProductNameRequest) returns (OpaquePatchProductNameResponse) {
+    option (google.api.http) = {
+      patch: "/v1/product_name"
+      body: "new_name"
+    };
   }
 }
 
@@ -186,6 +194,12 @@ message OpaqueSearchOrdersRequest {
 message OpaqueSearchOrdersResponse {
   repeated OpaqueOrder orders = 1;
 }
+
+message OpaquePatchProductNameRequest {
+  grpc.gateway.examples.internal.proto.sub.StringMessage new_name = 1;
+}
+
+message OpaquePatchProductNameResponse {}
 
 // OpaqueAddress represents a physical address
 message OpaqueAddress {

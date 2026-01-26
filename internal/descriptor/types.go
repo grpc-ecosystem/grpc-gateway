@@ -109,11 +109,7 @@ func (m *Message) FQMN() string {
 // It prefixes the type name with the package alias if
 // its belonging package is not "currentPackage".
 func (m *Message) GoType(currentPackage string) string {
-	var components []string
-	components = append(components, m.Outers...)
-	components = append(components, m.GetName())
-
-	name := strings.Join(components, "_")
+	name := goTypeName(m.Outers, m.GetName())
 	if !m.ForcePrefixedName && m.File.GoPkg.Path == currentPackage {
 		return name
 	}
@@ -148,15 +144,21 @@ func (e *Enum) FQEN() string {
 // It prefixes the type name with the package alias if
 // its belonging package is not "currentPackage".
 func (e *Enum) GoType(currentPackage string) string {
-	var components []string
-	components = append(components, e.Outers...)
-	components = append(components, e.GetName())
-
-	name := strings.Join(components, "_")
+	name := goTypeName(e.Outers, e.GetName())
 	if !e.ForcePrefixedName && e.File.GoPkg.Path == currentPackage {
 		return name
 	}
 	return fmt.Sprintf("%s.%s", e.File.Pkg(), name)
+}
+
+func goTypeName(outers []string, name string) string {
+	components := make([]string, 0, len(outers)+1)
+	for _, outer := range outers {
+		components = append(components, casing.Camel(outer))
+	}
+
+	components = append(components, casing.Camel(name))
+	return strings.Join(components, "_")
 }
 
 // Service wraps descriptorpb.ServiceDescriptorProto for richer features.
