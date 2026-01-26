@@ -168,8 +168,6 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
-        "camel_case_service.pb.gw.go",
-        "opaque_body_import.pb.gw.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
