@@ -162,7 +162,7 @@ var File_examples_internal_proto_examplepb_opaque_body_import_proto protoreflect
 
 const file_examples_internal_proto_examplepb_opaque_body_import_proto_rawDesc = "" +
 	"\n" +
-	":examples/internal/proto/examplepb/opaque_body_import.proto\x12.grpc.gateway.examples.internal.proto.examplepb\x1a\x1cgoogle/api/annotations.proto\x1a4examples/internal/proto/sub/camel_case_message.proto\"d\n" +
+	":examples/internal/proto/examplepb/opaque_body_import.proto\x12.grpc.gateway.examples.internal.proto.examplepb\x1a4examples/internal/proto/sub/camel_case_message.proto\x1a\x1cgoogle/api/annotations.proto\"d\n" +
 	"\x17OpaqueCreateBookRequest\x12I\n" +
 	"\x04book\x18\x01 \x01(\v25.grpc.gateway.examples.internal.proto.sub.Create_bookR\x04book\"e\n" +
 	"\x18OpaqueCreateBookResponse\x12I\n" +
