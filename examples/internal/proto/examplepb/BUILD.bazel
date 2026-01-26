@@ -9,6 +9,8 @@ package(default_visibility = ["//visibility:public"])
 
 # gazelle:exclude a_bit_of_everything.pb.gw.go
 # gazelle:exclude a_bit_of_everything_grpc.pb.go
+# gazelle:exclude camel_case_service.pb.gw.go
+# gazelle:exclude camel_case_service_grpc.pb.go
 # gazelle:exclude echo_service.pb.gw.go
 # gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude enum_with_single_value.pb.gw.go
@@ -65,7 +67,6 @@ proto_library(
         "generated_output.proto",
         "ignore_comment.proto",
         "non_standard_names.proto",
-        "opaque_body_import.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",
         "stream.proto",
@@ -181,7 +182,6 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     deps = [
-        "//examples/internal/proto/sub",
         "//runtime",
         "//utilities",
         "@org_golang_google_genproto_googleapis_api//annotations",
