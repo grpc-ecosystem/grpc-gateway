@@ -141,9 +141,9 @@ rules_shell_toolchains()
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "53119397bbce1cd7e4c590e117dcda343c2086199de62932106c80733526c261",
-    strip_prefix = "buildtools-8.2.1",
-    urls = ["https://github.com/bazelbuild/buildtools/archive/v8.2.1.tar.gz"],
+    sha256 = "e6de6eb19a368efe1f56549c6afe9f25dbcee818161865ee703081307581ef4b",
+    strip_prefix = "buildtools-8.5.1",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/v8.5.1.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
