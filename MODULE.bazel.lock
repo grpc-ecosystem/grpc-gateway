@@ -223,7 +223,7 @@
   "moduleExtensions": {
     "//:non_module_deps.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "dyez0Ugj0ifJ6ngsjLMCZ646k5hWacU87Fk77p8/Nt0=",
+        "bzlTransitiveDigest": "1RHSYBI0oS88JlFdDDsKlnOaUVMk2QZuMPNQAtRrM7Y=",
         "usagesDigest": "iXvfBtzAbLvbLe9kllQpE1XGaenkPW3Qmggx56ZxOoQ=",
         "recordedInputs": [
           "REPO_MAPPING:,bazel_tools bazel_tools"
@@ -232,10 +232,10 @@
           "com_github_bazelbuild_buildtools": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
-              "sha256": "53119397bbce1cd7e4c590e117dcda343c2086199de62932106c80733526c261",
-              "strip_prefix": "buildtools-8.2.1",
+              "sha256": "e6de6eb19a368efe1f56549c6afe9f25dbcee818161865ee703081307581ef4b",
+              "strip_prefix": "buildtools-8.5.1",
               "urls": [
-                "https://github.com/bazelbuild/buildtools/archive/v8.2.1.tar.gz"
+                "https://github.com/bazelbuild/buildtools/archive/v8.5.1.tar.gz"
               ]
             }
           }
