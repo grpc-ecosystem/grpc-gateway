@@ -1569,7 +1569,14 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								if meth.Name != nil {
 									methFQN, ok := fullyQualifiedNameToOpenAPIName(meth.FQMN(), reg)
 									if !ok {
-										panic(fmt.Errorf("failed to resolve method FQN: '%s'", meth.FQMN()))
+										// Fallback: use FQN naming (strip leading dot) if method FQN not found in mapping.
+										// This can happen when files are merged and method FQNs are not properly registered.
+										fqmn := meth.FQMN()
+										if len(fqmn) > 0 && fqmn[0] == '.' {
+											methFQN = fqmn[1:]
+										} else {
+											methFQN = fqmn
+										}
 									}
 									defName := methFQN + "Body"
 									schema.Ref = fmt.Sprintf("#/definitions/%s", defName)
@@ -2078,6 +2085,15 @@ func operationForMethod(httpMethod string) func(*openapiPathItemObject) *openapi
 
 // This function is called with a param which contains the entire definition of a method.
 func applyTemplate(p param) (*openapiSwaggerObject, error) {
+	// Clear the naming cache for this registry at the start of each file processing.
+	// This is necessary because when multiple files are processed, the cache may contain
+	// a filtered mapping from a previous file that doesn't include all names needed
+	// for the current file (e.g., method FQNs from the current file's services).
+	// The cache will be rebuilt with the appropriate filtered names later in this function.
+	registriesSeenMutex.Lock()
+	delete(registriesSeen, p.reg)
+	registriesSeenMutex.Unlock()
+
 	// Create the basic template object. This is the object that everything is
 	// defined off of.
 	s := openapiSwaggerObject{
