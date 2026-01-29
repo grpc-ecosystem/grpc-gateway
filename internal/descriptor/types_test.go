@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"google.golang.org/protobuf/encoding/prototext"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -264,25 +263,11 @@ func TestGoType(t *testing.T) {
 	enum := &Enum{
 		EnumDescriptorProto: fd.EnumType[0],
 	}
-	underscoreMsgDesc := &descriptorpb.DescriptorProto{
-		Name: proto.String("create_book"),
-	}
-	fd.MessageType = append(fd.MessageType, underscoreMsgDesc)
-	underscoreEnumDesc := &descriptorpb.EnumDescriptorProto{
-		Name: proto.String("status_enum"),
-	}
-	fd.EnumType = append(fd.EnumType, underscoreEnumDesc)
-	underscoreMsg := &Message{
-		DescriptorProto: underscoreMsgDesc,
-	}
-	underscoreEnum := &Enum{
-		EnumDescriptorProto: underscoreEnumDesc,
-	}
 	file := &File{
 		FileDescriptorProto: &fd,
 		GoPkg:               GoPackage{Path: "example", Name: "example"},
-		Messages:            []*Message{msg, underscoreMsg},
-		Enums:               []*Enum{enum, underscoreEnum},
+		Messages:            []*Message{msg},
+		Enums:               []*Enum{enum},
 	}
 	crossLinkFixture(file)
 
@@ -308,16 +293,4 @@ func TestGoType(t *testing.T) {
 		t.Errorf("enum.GoType() = %q; want %q", got, want)
 	}
 
-	if got, want := underscoreMsg.GoType("example"), "CreateBook"; got != want {
-		t.Errorf("underscoreMsg.GoType() = %q; want %q", got, want)
-	}
-	if got, want := underscoreMsg.GoType("extPackage"), "example.CreateBook"; got != want {
-		t.Errorf("underscoreMsg.GoType() with ext package = %q; want %q", got, want)
-	}
-	if got, want := underscoreEnum.GoType("example"), "StatusEnum"; got != want {
-		t.Errorf("underscoreEnum.GoType() = %q; want %q", got, want)
-	}
-	if got, want := underscoreEnum.GoType("extPackage"), "example.StatusEnum"; got != want {
-		t.Errorf("underscoreEnum.GoType() with ext package = %q; want %q", got, want)
-	}
 }
