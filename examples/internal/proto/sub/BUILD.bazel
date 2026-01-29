@@ -6,10 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 proto_library(
     name = "sub_proto",
-    srcs = [
-        "camel_case_message.proto",
-        "message.proto",
-    ],
+    srcs = ["message.proto"],
 )
 
 go_proto_library(
