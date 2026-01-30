@@ -72,8 +72,9 @@
             "required": true,
             "type": "string",
             "enum": [
-              "STATUS_ENUM_UNSPECIFIED",
-              "STATUS_ENUM_AVAILABLE"
+              "CAMEL_STATUS_UNSPECIFIED",
+              "CAMEL_STATUS_AVAILABLE",
+              "CAMEL_STATUS_PENDING"
             ]
           }
         ],
@@ -84,11 +85,20 @@
     }
   },
   "definitions": {
+    "examplepbCamelStatus": {
+      "type": "string",
+      "enum": [
+        "CAMEL_STATUS_UNSPECIFIED",
+        "CAMEL_STATUS_AVAILABLE",
+        "CAMEL_STATUS_PENDING"
+      ],
+      "default": "CAMEL_STATUS_UNSPECIFIED"
+    },
     "examplepbGetStatusResponse": {
       "type": "object",
       "properties": {
         "state": {
-          "$ref": "#/definitions/subStatus_enum"
+          "$ref": "#/definitions/examplepbCamelStatus"
         }
       }
     },
@@ -145,14 +155,6 @@
         }
       },
       "description": "Create_book and Status_enum demonstrate snake_case identifiers that need to\nbe resolved to Go camel case when referenced by other packages."
-    },
-    "subStatus_enum": {
-      "type": "string",
-      "enum": [
-        "STATUS_ENUM_UNSPECIFIED",
-        "STATUS_ENUM_AVAILABLE"
-      ],
-      "default": "STATUS_ENUM_UNSPECIFIED"
     }
   }
 }

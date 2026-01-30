@@ -169,7 +169,7 @@ func (g *generator) addBodyFieldImports(
 	m *descriptor.Method,
 	pkgSeen map[string]bool,
 ) []descriptor.GoPackage {
-	if g.reg == nil {
+	if g.reg == nil || !g.useOpaqueAPI {
 		return nil
 	}
 

@@ -14,7 +14,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc"
@@ -50,11 +49,11 @@ func request_Camel_CaseService_GetStatus_0(ctx context.Context, marshaler runtim
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "state")
 	}
-	e, err = runtime.Enum(val, sub.StatusEnum_value)
+	e, err = runtime.Enum(val, CamelStatus_value)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "state", err)
 	}
-	protoReq.State = sub.StatusEnum(e)
+	protoReq.State = CamelStatus(e)
 	msg, err := client.GetStatus(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 }
@@ -70,11 +69,11 @@ func local_request_Camel_CaseService_GetStatus_0(ctx context.Context, marshaler 
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "state")
 	}
-	e, err = runtime.Enum(val, sub.StatusEnum_value)
+	e, err = runtime.Enum(val, CamelStatus_value)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "state", err)
 	}
-	protoReq.State = sub.StatusEnum(e)
+	protoReq.State = CamelStatus(e)
 	msg, err := server.GetStatus(ctx, &protoReq)
 	return msg, metadata, err
 }

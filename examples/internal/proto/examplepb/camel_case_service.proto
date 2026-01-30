@@ -24,11 +24,11 @@ service Camel_Case_service {
 }
 
 message GetStatusRequest {
-  grpc.gateway.examples.internal.proto.sub.Status_enum state = 1;
+  CamelStatus state = 1;
 }
 
 message GetStatusResponse {
-  grpc.gateway.examples.internal.proto.sub.Status_enum state = 1;
+  CamelStatus state = 1;
 }
 
 message PostBookRequest {
@@ -37,4 +37,10 @@ message PostBookRequest {
 
 message PostBookResponse {
   grpc.gateway.examples.internal.proto.sub.Create_book book = 1;
+}
+
+enum CamelStatus {
+  CAMEL_STATUS_UNSPECIFIED = 0;
+  CAMEL_STATUS_AVAILABLE = 1;
+  CAMEL_STATUS_PENDING = 2;
 }
