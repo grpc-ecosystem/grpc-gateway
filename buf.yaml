@@ -11,6 +11,7 @@ lint:
   ignore_only:
     DIRECTORY_SAME_PACKAGE:
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
+      - examples/internal/proto/examplepb/camel_case_service.proto
       - examples/internal/proto/examplepb/echo_service.proto
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
@@ -29,6 +30,8 @@ lint:
       - examples/internal/proto/examplepb/ignore_comment.proto
       - examples/internal/proto/examplepb/remove_internal_comment.proto
       - examples/internal/proto/examplepb/wrappers.proto
+    ENUM_PASCAL_CASE:
+      - examples/internal/proto/sub/camel_case_message.proto
     ENUM_VALUE_PREFIX:
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
       - examples/internal/proto/examplepb/response_body_service.proto
@@ -49,9 +52,12 @@ lint:
       - examples/internal/proto/examplepb/non_standard_names.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/non_standard_names.proto
+    MESSAGE_PASCAL_CASE:
+      - examples/internal/proto/sub/camel_case_message.proto
     PACKAGE_DIRECTORY_MATCH:
       - examples/internal/helloworld/helloworld.proto
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
+      - examples/internal/proto/examplepb/camel_case_service.proto
       - examples/internal/proto/examplepb/echo_service.proto
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
@@ -72,6 +78,7 @@ lint:
       - examples/internal/proto/examplepb/wrappers.proto
       - examples/internal/proto/oneofenum/oneof_enum.proto
       - examples/internal/proto/pathenum/path_enum.proto
+      - examples/internal/proto/sub/camel_case_message.proto
       - examples/internal/proto/sub/message.proto
       - examples/internal/proto/sub2/message.proto
       - internal/descriptor/apiconfig/apiconfig.proto
@@ -84,6 +91,7 @@ lint:
       - runtime/internal/examplepb/proto3.proto
     PACKAGE_SAME_GO_PACKAGE:
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
+      - examples/internal/proto/examplepb/camel_case_service.proto
       - examples/internal/proto/examplepb/echo_service.proto
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
@@ -107,6 +115,7 @@ lint:
     PACKAGE_VERSION_SUFFIX:
       - examples/internal/helloworld/helloworld.proto
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
+      - examples/internal/proto/examplepb/camel_case_service.proto
       - examples/internal/proto/examplepb/echo_service.proto
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
@@ -127,6 +136,7 @@ lint:
       - examples/internal/proto/examplepb/wrappers.proto
       - examples/internal/proto/oneofenum/oneof_enum.proto
       - examples/internal/proto/pathenum/path_enum.proto
+      - examples/internal/proto/sub/camel_case_message.proto
       - examples/internal/proto/sub/message.proto
       - examples/internal/proto/sub2/message.proto
       - internal/descriptor/apiconfig/apiconfig.proto
@@ -137,6 +147,8 @@ lint:
       - runtime/internal/examplepb/non_standard_names.proto
       - runtime/internal/examplepb/proto2.proto
       - runtime/internal/examplepb/proto3.proto
+    RPC_PASCAL_CASE:
+      - examples/internal/proto/examplepb/camel_case_service.proto
     RPC_REQUEST_RESPONSE_UNIQUE:
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
       - examples/internal/proto/examplepb/echo_service.proto
@@ -190,9 +202,11 @@ lint:
       - runtime/internal/examplepb/non_standard_names.proto
     SERVICE_PASCAL_CASE:
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
+      - examples/internal/proto/examplepb/camel_case_service.proto
     SERVICE_SUFFIX:
       - examples/internal/helloworld/helloworld.proto
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
+      - examples/internal/proto/examplepb/camel_case_service.proto
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto

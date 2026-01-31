@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "examples/internal/proto/sub/camel_case_message.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+// Camel_Case_service consumes snake_case identifiers declared in the sub
+// package to ensure generated code camel-cases enum/message references, even
+// when service and RPC names are snake_case.
+service Camel_Case_service {
+  rpc Get_status(GetStatusRequest) returns (GetStatusResponse) {
+    option (google.api.http) = {get: "/v1/camel_case/{state}"};
+  }
+
+  rpc Post_Book(PostBookRequest) returns (PostBookResponse) {
+    option (google.api.http) = {
+      post: "/v1/camel_case/books"
+      body: "book"
+    };
+  }
+}
+
+message GetStatusRequest {
+  CamelStatus state = 1;
+}
+
+message GetStatusResponse {
+  CamelStatus state = 1;
+}
+
+message PostBookRequest {
+  grpc.gateway.examples.internal.proto.sub.Create_book book = 1;
+}
+
+message PostBookResponse {
+  grpc.gateway.examples.internal.proto.sub.Create_book book = 1;
+}
+
+enum CamelStatus {
+  CAMEL_STATUS_UNSPECIFIED = 0;
+  CAMEL_STATUS_AVAILABLE = 1;
+  CAMEL_STATUS_PENDING = 2;
+}

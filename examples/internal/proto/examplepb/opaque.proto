@@ -2,6 +2,7 @@ edition = "2023";
 
 package grpc.gateway.examples.internal.proto.examplepb;
 
+import "examples/internal/proto/sub/message.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/protobuf/duration.proto";
@@ -74,6 +75,15 @@ service OpaqueEcommerceService {
   // Uses enum params (both top level and nested) to populate fields to test opaque get chain
   rpc OpaqueSearchOrders(OpaqueSearchOrdersRequest) returns (OpaqueSearchOrdersResponse) {
     option (google.api.http) = {get: "/v1/orders/search/{order.status}/shipAddressType/{order.shipping_address.address_type}"};
+  }
+
+  // OpaqueEchoNote - Unary request with nested body field from another package.
+  // Exercises the opaque body import path by referencing grpc.gateway.examples.internal.proto.sub.StringMessage.
+  rpc OpaqueEchoNote(OpaqueEchoNoteRequest) returns (OpaqueEchoNoteResponse) {
+    option (google.api.http) = {
+      post: "/v1/notes:echo"
+      body: "note"
+    };
   }
 }
 
@@ -185,6 +195,16 @@ message OpaqueSearchOrdersRequest {
 // OpaqueSearchOrdersResponse represents a list of orders found
 message OpaqueSearchOrdersResponse {
   repeated OpaqueOrder orders = 1;
+}
+
+// OpaqueEchoNoteRequest demonstrates an opaque body that maps to a foreign message.
+message OpaqueEchoNoteRequest {
+  grpc.gateway.examples.internal.proto.sub.StringMessage note = 1;
+}
+
+// OpaqueEchoNoteResponse mirrors the request payload for simplicity.
+message OpaqueEchoNoteResponse {
+  grpc.gateway.examples.internal.proto.sub.StringMessage note = 1;
 }
 
 // OpaqueAddress represents a physical address
