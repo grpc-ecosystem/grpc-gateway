@@ -27,6 +27,7 @@ const (
 	OpaqueEcommerceService_OpaqueStreamCustomerActivity_FullMethodName = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueStreamCustomerActivity"
 	OpaqueEcommerceService_OpaqueUpdateProduct_FullMethodName          = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueUpdateProduct"
 	OpaqueEcommerceService_OpaqueSearchOrders_FullMethodName           = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueSearchOrders"
+	OpaqueEcommerceService_OpaqueEchoNote_FullMethodName               = "/grpc.gateway.examples.internal.proto.examplepb.OpaqueEcommerceService/OpaqueEchoNote"
 )
 
 // OpaqueEcommerceServiceClient is the client API for OpaqueEcommerceService service.
@@ -58,6 +59,9 @@ type OpaqueEcommerceServiceClient interface {
 	// OpaqueSearchOrders - Unary request, unary response
 	// Uses enum params (both top level and nested) to populate fields to test opaque get chain
 	OpaqueSearchOrders(ctx context.Context, in *OpaqueSearchOrdersRequest, opts ...grpc.CallOption) (*OpaqueSearchOrdersResponse, error)
+	// OpaqueEchoNote - Unary request with nested body field from another package.
+	// Exercises the opaque body import path by referencing grpc.gateway.examples.internal.proto.sub.StringMessage.
+	OpaqueEchoNote(ctx context.Context, in *OpaqueEchoNoteRequest, opts ...grpc.CallOption) (*OpaqueEchoNoteResponse, error)
 }
 
 type opaqueEcommerceServiceClient struct {
@@ -163,6 +167,16 @@ func (c *opaqueEcommerceServiceClient) OpaqueSearchOrders(ctx context.Context, i
 	return out, nil
 }
 
+func (c *opaqueEcommerceServiceClient) OpaqueEchoNote(ctx context.Context, in *OpaqueEchoNoteRequest, opts ...grpc.CallOption) (*OpaqueEchoNoteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(OpaqueEchoNoteResponse)
+	err := c.cc.Invoke(ctx, OpaqueEcommerceService_OpaqueEchoNote_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OpaqueEcommerceServiceServer is the server API for OpaqueEcommerceService service.
 // All implementations should embed UnimplementedOpaqueEcommerceServiceServer
 // for forward compatibility.
@@ -192,6 +206,9 @@ type OpaqueEcommerceServiceServer interface {
 	// OpaqueSearchOrders - Unary request, unary response
 	// Uses enum params (both top level and nested) to populate fields to test opaque get chain
 	OpaqueSearchOrders(context.Context, *OpaqueSearchOrdersRequest) (*OpaqueSearchOrdersResponse, error)
+	// OpaqueEchoNote - Unary request with nested body field from another package.
+	// Exercises the opaque body import path by referencing grpc.gateway.examples.internal.proto.sub.StringMessage.
+	OpaqueEchoNote(context.Context, *OpaqueEchoNoteRequest) (*OpaqueEchoNoteResponse, error)
 }
 
 // UnimplementedOpaqueEcommerceServiceServer should be embedded to have
@@ -224,6 +241,9 @@ func (UnimplementedOpaqueEcommerceServiceServer) OpaqueUpdateProduct(context.Con
 }
 func (UnimplementedOpaqueEcommerceServiceServer) OpaqueSearchOrders(context.Context, *OpaqueSearchOrdersRequest) (*OpaqueSearchOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OpaqueSearchOrders not implemented")
+}
+func (UnimplementedOpaqueEcommerceServiceServer) OpaqueEchoNote(context.Context, *OpaqueEchoNoteRequest) (*OpaqueEchoNoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OpaqueEchoNote not implemented")
 }
 func (UnimplementedOpaqueEcommerceServiceServer) testEmbeddedByValue() {}
 
@@ -360,6 +380,24 @@ func _OpaqueEcommerceService_OpaqueSearchOrders_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OpaqueEcommerceService_OpaqueEchoNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OpaqueEchoNoteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueEchoNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpaqueEcommerceService_OpaqueEchoNote_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpaqueEcommerceServiceServer).OpaqueEchoNote(ctx, req.(*OpaqueEchoNoteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OpaqueEcommerceService_ServiceDesc is the grpc.ServiceDesc for OpaqueEcommerceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +424,10 @@ var OpaqueEcommerceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OpaqueSearchOrders",
 			Handler:    _OpaqueEcommerceService_OpaqueSearchOrders_Handler,
+		},
+		{
+			MethodName: "OpaqueEchoNote",
+			Handler:    _OpaqueEcommerceService_OpaqueEchoNote_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

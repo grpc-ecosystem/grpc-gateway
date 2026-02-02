@@ -119,6 +119,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 	for _, svc := range file.Services {
 		for _, m := range svc.Methods {
 			imports = append(imports, g.addEnumPathParamImports(file, m, pkgSeen)...)
+			imports = append(imports, g.addBodyFieldImports(file, m, pkgSeen)...)
 			pkg := m.RequestType.File.GoPkg
 			if len(m.Bindings) == 0 ||
 				pkg == file.GoPkg || pkgSeen[pkg.Path] {
@@ -159,5 +160,43 @@ func (g *generator) addEnumPathParamImports(file *descriptor.File, m *descriptor
 			imports = append(imports, pkg)
 		}
 	}
+	return imports
+}
+
+// addBodyFieldImports ensures nested body message types pull in their Go packages.
+func (g *generator) addBodyFieldImports(
+	file *descriptor.File,
+	m *descriptor.Method,
+	pkgSeen map[string]bool,
+) []descriptor.GoPackage {
+	if g.reg == nil || !g.useOpaqueAPI {
+		return nil
+	}
+
+	imports := make([]descriptor.GoPackage, 0, len(m.Bindings))
+	for _, b := range m.Bindings {
+		if b.Body == nil || len(b.Body.FieldPath) == 0 {
+			continue
+		}
+
+		target := b.Body.FieldPath[len(b.Body.FieldPath)-1].Target
+		if target == nil || target.GetTypeName() == "" || target.Message == nil {
+			continue
+		}
+
+		msg, err := g.reg.LookupMsg(target.Message.FQMN(), target.GetTypeName())
+		if err != nil {
+			continue
+		}
+
+		pkg := msg.File.GoPkg
+		if pkg == file.GoPkg || pkgSeen[pkg.Path] {
+			continue
+		}
+
+		pkgSeen[pkg.Path] = true
+		imports = append(imports, pkg)
+	}
+
 	return imports
 }

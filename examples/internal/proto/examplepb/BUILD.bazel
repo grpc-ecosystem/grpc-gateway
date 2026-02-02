@@ -9,6 +9,8 @@ package(default_visibility = ["//visibility:public"])
 
 # gazelle:exclude a_bit_of_everything.pb.gw.go
 # gazelle:exclude a_bit_of_everything_grpc.pb.go
+# gazelle:exclude camel_case_service.pb.gw.go
+# gazelle:exclude camel_case_service_grpc.pb.go
 # gazelle:exclude echo_service.pb.gw.go
 # gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude enum_with_single_value.pb.gw.go
@@ -56,6 +58,7 @@ proto_library(
     name = "examplepb_proto",
     srcs = [
         "a_bit_of_everything.proto",
+        "camel_case_service.proto",
         "echo_service.proto",
         "enum_with_single_value.proto",
         "excess_body.proto",
@@ -99,6 +102,7 @@ proto_library(
         "opaque.proto",
     ],
     deps = [
+        "//examples/internal/proto/sub:sub_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:field_mask_proto",
         "@com_google_protobuf//:timestamp_proto",
@@ -158,6 +162,7 @@ go_proto_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_opaque_proto",
     deps = [
+        "//examples/internal/proto/sub",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@org_golang_google_genproto_googleapis_api//annotations",
     ],

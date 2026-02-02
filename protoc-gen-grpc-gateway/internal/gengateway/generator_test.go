@@ -6,6 +6,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage, filenamePrefix string) *descriptor.File {
@@ -109,4 +110,127 @@ func testGeneratorGenerate(t *testing.T, useOpaqueAPI bool) {
 	if gotName != expectedName {
 		t.Fatalf("invalid name %q, expected %q", gotName, expectedName)
 	}
+}
+
+func TestAddBodyFieldImportsOpaqueOnly(t *testing.T) {
+	reg, file := buildBodyImportTestFile(t)
+	svc := file.Services[0]
+	m := svc.Methods[0]
+
+	bookField := m.RequestType.Fields[0]
+	bookMessage, err := reg.LookupMsg("", ".example.sub.CreateBook")
+	if err != nil {
+		t.Fatalf("lookup book message: %v", err)
+	}
+	bookField.FieldMessage = bookMessage
+
+	bodyPath := descriptor.FieldPath{
+		{
+			Name:   bookField.GetName(),
+			Target: bookField,
+		},
+	}
+	m.Bindings = []*descriptor.Binding{
+		{
+			HTTPMethod: "POST",
+			Body: &descriptor.Body{
+				FieldPath: bodyPath,
+			},
+		},
+	}
+
+	g := &generator{
+		reg:          reg,
+		useOpaqueAPI: false,
+	}
+
+	if got := g.addBodyFieldImports(file, m, map[string]bool{}); len(got) != 0 {
+		t.Fatalf("expected no imports when opaque API disabled, got %v", got)
+	}
+
+	g.useOpaqueAPI = true
+	imports := g.addBodyFieldImports(file, m, map[string]bool{})
+	if len(imports) != 1 {
+		t.Fatalf("expected 1 import when opaque API enabled, got %d", len(imports))
+	}
+	if imports[0].Path != bookMessage.File.GoPkg.Path {
+		t.Fatalf("import path mismatch: got %q want %q", imports[0].Path, bookMessage.File.GoPkg.Path)
+	}
+}
+
+func buildBodyImportTestFile(t *testing.T) (*descriptor.Registry, *descriptor.File) {
+	t.Helper()
+
+	subFile := &descriptorpb.FileDescriptorProto{
+		Name:    proto.String("sub.proto"),
+		Package: proto.String("example.sub"),
+		Syntax:  proto.String("proto3"),
+		Options: &descriptorpb.FileOptions{
+			GoPackage: proto.String("example.com/sub;subpb"),
+		},
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: proto.String("CreateBook"),
+			},
+		},
+	}
+
+	mainFile := &descriptorpb.FileDescriptorProto{
+		Name:       proto.String("svc.proto"),
+		Package:    proto.String("example.svc"),
+		Syntax:     proto.String("proto3"),
+		Dependency: []string{"sub.proto"},
+		Options: &descriptorpb.FileOptions{
+			GoPackage: proto.String("example.com/svc;svcpb"),
+		},
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: proto.String("CreateBookRequest"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:     proto.String("book"),
+						Number:   proto.Int32(1),
+						Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+						Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+						TypeName: proto.String(".example.sub.CreateBook"),
+					},
+				},
+			},
+			{
+				Name: proto.String("CreateBookResponse"),
+			},
+		},
+		Service: []*descriptorpb.ServiceDescriptorProto{
+			{
+				Name: proto.String("LibraryService"),
+				Method: []*descriptorpb.MethodDescriptorProto{
+					{
+						Name:       proto.String("CreateBook"),
+						InputType:  proto.String(".example.svc.CreateBookRequest"),
+						OutputType: proto.String(".example.svc.CreateBookResponse"),
+					},
+				},
+			},
+		},
+	}
+
+	req := &pluginpb.CodeGeneratorRequest{
+		ProtoFile:      []*descriptorpb.FileDescriptorProto{subFile, mainFile},
+		FileToGenerate: []string{"svc.proto"},
+		CompilerVersion: &pluginpb.Version{
+			Major: proto.Int32(3),
+			Minor: proto.Int32(21),
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load failed: %v", err)
+	}
+
+	file, err := reg.LookupFile("svc.proto")
+	if err != nil {
+		t.Fatalf("lookup svc file: %v", err)
+	}
+	return reg, crossLinkFixture(file)
 }

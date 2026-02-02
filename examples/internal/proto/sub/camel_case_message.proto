@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.sub;
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub";
+
+// Create_book and Status_enum demonstrate snake_case identifiers that need to
+// be resolved to Go camel case when referenced by other packages.
+message Create_book {
+  string title = 1;
+  string author = 2;
+}
+
+enum Status_enum {
+  STATUS_ENUM_UNSPECIFIED = 0;
+  STATUS_ENUM_AVAILABLE = 1;
+}
