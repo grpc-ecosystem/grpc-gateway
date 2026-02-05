@@ -998,9 +998,6 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		enumNames := listEnumNames(reg, enum)
 		defaultValue := getEnumDefault(reg, enum)
 		valueComments := enumValueProtoComments(reg, enum)
-		if valueComments != "" {
-			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
-		}
 		enumSchemaObject := openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type:    "string",
@@ -1039,8 +1036,21 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 				enumSchemaObject.Example = protoSchema.Example
 			}
 		}
+		// First, update title/description from the enum-level comment only.
+		// Value comments should never appear in the title field.
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
+		}
+		// Append enum value comments to the description, never to the title.
+		// This ensures value comments are always in the description field,
+		// addressing the issue where they incorrectly appeared in title
+		// when the enum had no top-level comment.
+		if valueComments != "" {
+			if enumSchemaObject.Description != "" {
+				enumSchemaObject.Description = enumSchemaObject.Description + "\n\n " + valueComments
+			} else {
+				enumSchemaObject.Description = valueComments
+			}
 		}
 
 		d[swgName] = enumSchemaObject

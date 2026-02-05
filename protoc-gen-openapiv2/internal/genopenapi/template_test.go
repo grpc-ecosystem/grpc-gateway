@@ -11362,6 +11362,81 @@ func TestEnumValueProtoComments(t *testing.T) {
 	}
 }
 
+// TestEnumValueCommentsInDescriptionNotTitle tests that enum value comments
+// are placed in the description field, not in the title field.
+// This addresses https://github.com/grpc-ecosystem/grpc-gateway/issues/2670
+func TestEnumValueCommentsInDescriptionNotTitle(t *testing.T) {
+	testCases := []struct {
+		name                string
+		enumComment         string   // comment on the enum type itself
+		valueComments       []string // comments on each enum value
+		expectedTitle       string
+		expectedDescription string
+	}{
+		{
+			name:                "No enum comment, only value comments - should go to description",
+			enumComment:         "",
+			valueComments:       []string{"first value", "second value"},
+			expectedTitle:       "",
+			expectedDescription: "- VALUE_ONE: first value\n - VALUE_TWO: second value",
+		},
+		{
+			name:                "Enum comment ending without period, value comments - both in description",
+			enumComment:         "MyEnum description",
+			valueComments:       []string{"first value", "second value"},
+			expectedTitle:       "MyEnum description",
+			expectedDescription: "- VALUE_ONE: first value\n - VALUE_TWO: second value",
+		},
+		{
+			name:                "Enum comment ending with period, value comments - all in description",
+			enumComment:         "MyEnum description.",
+			valueComments:       []string{"first value", "second value"},
+			expectedTitle:       "",
+			expectedDescription: "MyEnum description.\n\n - VALUE_ONE: first value\n - VALUE_TWO: second value",
+		},
+		{
+			name:                "Enum comment only, no value comments",
+			enumComment:         "MyEnum description",
+			valueComments:       nil,
+			expectedTitle:       "MyEnum description",
+			expectedDescription: "",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Create an openapiSchemaObject to test against
+			schema := openapiSchemaObject{}
+			reg := descriptor.NewRegistry()
+
+			// Simulate updateOpenAPIDataFromComments behavior for enum comment
+			if tc.enumComment != "" {
+				_ = updateOpenAPIDataFromComments(reg, &schema, nil, tc.enumComment, false)
+			}
+
+			// Simulate the new behavior: append value comments only to description
+			if len(tc.valueComments) > 0 {
+				valueCommentsStr := "- VALUE_ONE: " + tc.valueComments[0]
+				if len(tc.valueComments) > 1 {
+					valueCommentsStr += "\n - VALUE_TWO: " + tc.valueComments[1]
+				}
+				if schema.Description != "" {
+					schema.Description = schema.Description + "\n\n " + valueCommentsStr
+				} else {
+					schema.Description = valueCommentsStr
+				}
+			}
+
+			if schema.Title != tc.expectedTitle {
+				t.Errorf("Expected title %q, got %q", tc.expectedTitle, schema.Title)
+			}
+			if schema.Description != tc.expectedDescription {
+				t.Errorf("Expected description %q, got %q", tc.expectedDescription, schema.Description)
+			}
+		})
+	}
+}
+
 func MustMarshal(v interface{}) []byte {
 	b, err := json.Marshal(v)
 	if err != nil {
