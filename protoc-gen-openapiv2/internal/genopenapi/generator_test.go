@@ -2075,3 +2075,368 @@ func TestIssue5684_UnusedMethodsNotInOpenAPI(t *testing.T) {
 		t.Errorf("expected exactly 1 path, got %d paths", len(paths))
 	}
 }
+
+// TestGenerateMergeFilesWithBodyAndPathParams tests issue #6274:
+// When processing multiple proto files where one file has messages (no services)
+// and another has services with body:"*" and path params, the generator should
+// not panic when looking up method FQNs for body definitions.
+func TestGenerateMergeFilesWithBodyAndPathParams(t *testing.T) {
+	t.Parallel()
+
+	// File 1: messages.proto - defines messages but no services
+	const messagesProto = `
+	file_to_generate: "example/messages.proto"
+	proto_file: {
+		name: "example/messages.proto"
+		package: "example"
+		message_type: {
+			name: "Item"
+			field: {
+				name: "id"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "id"
+			}
+			field: {
+				name: "name"
+				number: 2
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "name"
+			}
+		}
+		message_type: {
+			name: "CreateItemRequest"
+			field: {
+				name: "parent"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "parent"
+			}
+			field: {
+				name: "item"
+				number: 2
+				label: LABEL_OPTIONAL
+				type: TYPE_MESSAGE
+				type_name: ".example.Item"
+				json_name: "item"
+			}
+		}
+		message_type: {
+			name: "CreateItemResponse"
+			field: {
+				name: "item"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_MESSAGE
+				type_name: ".example.Item"
+				json_name: "item"
+			}
+		}
+		options: {
+			go_package: "github.com/example/v1;example"
+		}
+	}`
+
+	// File 2: service.proto - defines a service with body:"*" and path params
+	const serviceProto = `
+	file_to_generate: "example/service.proto"
+	proto_file: {
+		name: "example/service.proto"
+		package: "example"
+		dependency: "example/messages.proto"
+		service: {
+			name: "ItemService"
+			method: {
+				name: "CreateItem"
+				input_type: ".example.CreateItemRequest"
+				output_type: ".example.CreateItemResponse"
+				options: {
+					[google.api.http]: {
+						post: "/v1/{parent=projects/*}/items"
+						body: "*"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/example/v1;example"
+		}
+	}`
+
+	var req1, req2 pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(messagesProto), &req1); err != nil {
+		t.Fatalf("failed to unmarshal messages proto: %s", err)
+	}
+	if err := prototext.Unmarshal([]byte(serviceProto), &req2); err != nil {
+		t.Fatalf("failed to unmarshal service proto: %s", err)
+	}
+
+	// Combine into a single request with both files as targets
+	req1.ProtoFile = append(req1.ProtoFile, req2.ProtoFile...)
+	req1.FileToGenerate = append(req1.FileToGenerate, req2.FileToGenerate...)
+
+	// This should not panic - the bug was that processing messages.proto first
+	// would build a cache without method FQNs, causing service.proto to panic
+	// when looking up method FQNs for body:"*" with path params.
+	resp := requireGenerate(t, &req1, genopenapi.FormatJSON, false, false)
+
+	// We expect 2 files (one per proto file)
+	if len(resp) != 2 {
+		t.Fatalf("expected 2 response files, got %d", len(resp))
+	}
+
+	// Verify the service file has the expected structure
+	var foundService bool
+	for _, r := range resp {
+		if strings.Contains(r.GetName(), "service") {
+			foundService = true
+			content := r.GetContent()
+
+			// Verify the body definition was created
+			if !strings.Contains(content, "ItemServiceCreateItemBody") {
+				t.Errorf("expected ItemServiceCreateItemBody definition, not found in output:\n%s", content)
+			}
+		}
+	}
+
+	if !foundService {
+		t.Error("service.proto output not found in response")
+	}
+}
+
+// requireGenerateWithNamingStrategy is a helper that allows setting the naming strategy
+func requireGenerateWithNamingStrategy(
+	tb testing.TB,
+	req *pluginpb.CodeGeneratorRequest,
+	format genopenapi.Format,
+	preserveRPCOrder bool,
+	allowMerge bool,
+	namingStrategy string,
+) []*descriptor.ResponseFile {
+	tb.Helper()
+
+	reg := descriptor.NewRegistry()
+	reg.SetPreserveRPCOrder(preserveRPCOrder)
+	reg.SetAllowMerge(allowMerge)
+	reg.SetOpenAPINamingStrategy(namingStrategy)
+
+	if err := reg.Load(req); err != nil {
+		tb.Fatalf("failed to load request: %s", err)
+	}
+
+	var targets []*descriptor.File
+	for _, target := range req.FileToGenerate {
+		f, err := reg.LookupFile(target)
+		if err != nil {
+			tb.Fatalf("failed to lookup file: %s", err)
+		}
+
+		targets = append(targets, f)
+	}
+
+	g := genopenapi.New(reg, format)
+
+	resp, err := g.Generate(targets)
+	switch {
+	case err != nil:
+		tb.Fatalf("failed to generate targets: %s", err)
+	case len(resp) != len(targets) && !allowMerge:
+		tb.Fatalf("invalid count, expected: %d, actual: %d", len(targets), len(resp))
+	}
+
+	return resp
+}
+
+// TestGenerateMultiFileNamingConsistency tests issue #6308:
+// When using simple naming strategy with multiple files, $refs and definitions
+// must use consistent names. Previously, renderServices() would use one cache
+// while renderMessagesAsDefinition() would use a different filtered cache,
+// causing $ref mismatches.
+func TestGenerateMultiFileNamingConsistency(t *testing.T) {
+	t.Parallel()
+
+	// File 1: types.proto - has a nested Status enum that could collide with google.rpc.Status
+	const typesProto = `
+	file_to_generate: "myapi/types.proto"
+	proto_file: {
+		name: "myapi/types.proto"
+		package: "myapi"
+		message_type: {
+			name: "Operation"
+			field: {
+				name: "status"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_ENUM
+				type_name: ".myapi.Operation.Status"
+				json_name: "status"
+			}
+			enum_type: {
+				name: "Status"
+				value: { name: "UNKNOWN" number: 0 }
+				value: { name: "RUNNING" number: 1 }
+				value: { name: "COMPLETED" number: 2 }
+			}
+		}
+		message_type: {
+			name: "GetOperationRequest"
+			field: {
+				name: "name"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "name"
+			}
+		}
+		service: {
+			name: "OperationService"
+			method: {
+				name: "GetOperation"
+				input_type: ".myapi.GetOperationRequest"
+				output_type: ".myapi.Operation"
+				options: {
+					[google.api.http]: {
+						get: "/v1/operations/{name}"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/myapi/v1;myapi"
+		}
+	}`
+
+	// File 2: service.proto - references google.rpc.Status via default error responses
+	// but does NOT use Operation.Status
+	const serviceProto = `
+	file_to_generate: "myapi/service.proto"
+	proto_file: {
+		name: "myapi/service.proto"
+		package: "myapi"
+		message_type: {
+			name: "EchoRequest"
+			field: {
+				name: "message"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "message"
+			}
+		}
+		message_type: {
+			name: "EchoResponse"
+			field: {
+				name: "message"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "message"
+			}
+		}
+		service: {
+			name: "EchoService"
+			method: {
+				name: "Echo"
+				input_type: ".myapi.EchoRequest"
+				output_type: ".myapi.EchoResponse"
+				options: {
+					[google.api.http]: {
+						post: "/v1/echo"
+						body: "*"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/myapi/v1;myapi"
+		}
+	}`
+
+	var req1, req2 pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(typesProto), &req1); err != nil {
+		t.Fatalf("failed to unmarshal types proto: %s", err)
+	}
+	if err := prototext.Unmarshal([]byte(serviceProto), &req2); err != nil {
+		t.Fatalf("failed to unmarshal service proto: %s", err)
+	}
+
+	// Combine into single request, processing types.proto first
+	req1.ProtoFile = append(req1.ProtoFile, req2.ProtoFile...)
+	req1.FileToGenerate = append(req1.FileToGenerate, req2.FileToGenerate...)
+
+	// Use "simple" naming strategy which is most likely to produce collisions
+	resp := requireGenerateWithNamingStrategy(t, &req1, genopenapi.FormatJSON, false, false, "simple")
+
+	if len(resp) != 2 {
+		t.Fatalf("expected 2 response files, got %d", len(resp))
+	}
+
+	// For each output file, verify that all $refs have matching definitions
+	for _, r := range resp {
+		content := r.GetContent()
+
+		// Parse the JSON to verify $ref consistency
+		var doc map[string]interface{}
+		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
+			t.Fatalf("failed to parse OpenAPI JSON for %s: %v", r.GetName(), err)
+		}
+
+		definitions, ok := doc["definitions"].(map[string]interface{})
+		if !ok {
+			// No definitions is acceptable for some files
+			continue
+		}
+
+		// Collect all $refs from the document
+		refs := collectRefs(doc)
+
+		// Verify each $ref has a matching definition
+		for ref := range refs {
+			// Extract definition name from $ref (format: "#/definitions/Name")
+			if !strings.HasPrefix(ref, "#/definitions/") {
+				continue
+			}
+			defName := strings.TrimPrefix(ref, "#/definitions/")
+
+			if _, exists := definitions[defName]; !exists {
+				t.Errorf("file %s: $ref %q has no matching definition. Available definitions: %v",
+					r.GetName(), ref, getKeys(definitions))
+			}
+		}
+	}
+}
+
+// collectRefs recursively collects all $ref values from a document
+func collectRefs(v interface{}) map[string]bool {
+	refs := make(map[string]bool)
+	collectRefsRecursive(v, refs)
+	return refs
+}
+
+func collectRefsRecursive(v interface{}, refs map[string]bool) {
+	switch val := v.(type) {
+	case map[string]interface{}:
+		if ref, ok := val["$ref"].(string); ok {
+			refs[ref] = true
+		}
+		for _, child := range val {
+			collectRefsRecursive(child, refs)
+		}
+	case []interface{}:
+		for _, item := range val {
+			collectRefsRecursive(item, refs)
+		}
+	}
+}
+
+func getKeys(m map[string]interface{}) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}

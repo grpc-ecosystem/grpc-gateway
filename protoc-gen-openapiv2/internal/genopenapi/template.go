@@ -519,6 +519,80 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 	}
 }
 
+// collectReferencedNamesForCache scans services and messages to collect all
+// FQMNs/FQENs that will be referenced, WITHOUT using the naming cache.
+// This allows us to build the cache with the correct filtered names BEFORE
+// any code tries to use it.
+func collectReferencedNamesForCache(services []*descriptor.Service, messages []*descriptor.Message, reg *descriptor.Registry) map[string]bool {
+	refs := make(map[string]bool)
+
+	// Add all messages from the current file
+	for _, msg := range messages {
+		refs[msg.FQMN()] = true
+	}
+
+	// Scan services
+	for _, svc := range services {
+		if !isVisible(getServiceVisibilityOption(svc), reg) {
+			continue
+		}
+		for _, meth := range svc.Methods {
+			if !isVisible(getMethodVisibilityOption(meth), reg) {
+				continue
+			}
+			if len(meth.Bindings) == 0 {
+				continue
+			}
+
+			// Add method FQN (needed for body:"*" with path params)
+			refs[meth.FQMN()] = true
+
+			// Add request/response types
+			refs[meth.RequestType.FQMN()] = true
+			refs[meth.ResponseType.FQMN()] = true
+
+			// Recursively add nested types
+			collectNestedTypeFQNs(meth.RequestType, reg, refs)
+			collectNestedTypeFQNs(meth.ResponseType, reg, refs)
+		}
+	}
+
+	// Add google.rpc.Status if default errors enabled
+	if !reg.GetDisableDefaultErrors() {
+		refs[".google.rpc.Status"] = true
+		// Also add nested types of Status
+		if statusMsg, err := reg.LookupMsg("google.rpc", "Status"); err == nil {
+			collectNestedTypeFQNs(statusMsg, reg, refs)
+		}
+	}
+
+	return refs
+}
+
+// collectNestedTypeFQNs recursively collects FQMNs/FQENs for all nested types
+// of a message. Does NOT use the naming cache.
+func collectNestedTypeFQNs(message *descriptor.Message, reg *descriptor.Registry, refs map[string]bool) {
+	for _, field := range message.Fields {
+		if !isVisible(getFieldVisibilityOption(field), reg) {
+			continue
+		}
+		fieldType := field.GetTypeName()
+		if fieldType == "" {
+			continue // primitive type
+		}
+		if refs[fieldType] {
+			continue // already visited
+		}
+		refs[fieldType] = true
+
+		// If it's a message, recurse
+		if msg, err := reg.LookupMsg("", fieldType); err == nil {
+			collectNestedTypeFQNs(msg, reg, refs)
+		}
+		// Enums don't have nested types, no recursion needed
+	}
+}
+
 func skipRenderingRef(refName string) bool {
 	_, ok := wktSchemas[refName]
 	return ok
@@ -2093,58 +2167,13 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		},
 	}
 
-	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
-	// and create entries for all of them.
-	// Also adds custom user specified references to second map.
-	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages, s.Definitions); err != nil {
-		panic(err)
-	}
-
-	messages := messageMap{}
-	streamingMessages := messageMap{}
-	enums := enumMap{}
-
-	if !p.reg.GetDisableDefaultErrors() {
-		// Add the error type to the message map
-		runtimeError, swgRef, err := lookupMsgAndOpenAPIName("google.rpc", "Status", p.reg)
-		if err == nil {
-			messages[swgRef] = runtimeError
-		} else {
-			// just in case there is an error looking up runtimeError
-			grpclog.Error(err)
-		}
-	}
-
-	// Find all the service's messages and enumerations that are defined (recursively)
-	// and write request, response and other custom (but referenced) types out as definition objects.
-	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
-
-	// Build a set of messages/enums that are actually referenced in this file
-	// we should only consider naming collisions for types that are actually used
-	referencedNames := make(map[string]bool)
-
-	// Add all messages from the current file being processed
-	for _, msg := range p.Messages {
-		referencedNames[msg.FQMN()] = true
-	}
-
-	// Add all messages that are referenced (iterate over values to get FQMN, not keys)
-	for _, msg := range messages {
-		referencedNames[msg.FQMN()] = true
-	}
-
-	// Add all enums that are referenced
-	for _, enum := range enums {
-		referencedNames[enum.FQEN()] = true
-	}
-
-	// Add all method names
-	for _, svc := range p.Services {
-		for _, meth := range svc.Methods {
-			referencedNames[meth.FQMN()] = true
-		}
-	}
+	// IMPORTANT: Initialize the naming cache BEFORE any code that uses fullyQualifiedNameToOpenAPIName.
+	// This ensures consistent naming between renderServices (which generates $refs) and
+	// renderMessagesAsDefinition (which generates definitions).
+	//
+	// Pre-scan to collect referenced names WITHOUT using the naming cache.
+	// This allows us to build the cache with the correct filtered names upfront.
+	referencedNames := collectReferencedNamesForCache(p.Services, p.Messages, p.reg)
 
 	// Get all names from the registry
 	allFQMNs := p.reg.GetAllFQMNs()
@@ -2172,11 +2201,40 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 		}
 	}
 
-	// Clear and recompute the naming cache based only on names that are actually in scope
+	// Initialize the naming cache BEFORE renderServices so all lookups use consistent naming
 	registriesSeenMutex.Lock()
 	resolvedNames := resolveFullyQualifiedNameToOpenAPINames(filteredNames, p.reg.GetOpenAPINamingStrategy())
 	registriesSeen[p.reg] = resolvedNames
 	registriesSeenMutex.Unlock()
+
+	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
+	// and create entries for all of them.
+	// Also adds custom user specified references to second map.
+	// NOTE: This now uses the naming cache initialized above.
+	requestResponseRefs, customRefs := refMap{}, refMap{}
+	if err := renderServices(p.Services, &s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages, s.Definitions); err != nil {
+		panic(err)
+	}
+
+	messages := messageMap{}
+	streamingMessages := messageMap{}
+	enums := enumMap{}
+
+	if !p.reg.GetDisableDefaultErrors() {
+		// Add the error type to the message map
+		runtimeError, swgRef, err := lookupMsgAndOpenAPIName("google.rpc", "Status", p.reg)
+		if err == nil {
+			messages[swgRef] = runtimeError
+		} else {
+			// just in case there is an error looking up runtimeError
+			grpclog.Error(err)
+		}
+	}
+
+	// Find all the service's messages and enumerations that are defined (recursively)
+	// and write request, response and other custom (but referenced) types out as definition objects.
+	// NOTE: This uses the same naming cache that was used by renderServices above.
+	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
 
 	if err := renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs, nil); err != nil {
 		return nil, err
