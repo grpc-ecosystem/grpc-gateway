@@ -148,6 +148,9 @@ proto:
 		--template examples/internal/proto/examplepb/enum_with_single_value.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/enum_with_single_value.proto
 	buf generate \
+		--template ./examples/internal/proto/examplepb/proto3_field_semantics.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/proto3_field_semantics.proto
+	buf generate \
 		--template ./protoc-gen-openapiv2/options/buf.gen.yaml \
 		--path ./protoc-gen-openapiv2/options/annotations.proto \
 		--path ./protoc-gen-openapiv2/options/openapiv2.proto

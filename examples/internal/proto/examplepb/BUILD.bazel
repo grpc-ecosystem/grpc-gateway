@@ -67,6 +67,7 @@ proto_library(
         "generated_output.proto",
         "ignore_comment.proto",
         "non_standard_names.proto",
+        "proto3_field_semantics.proto",
         "remove_internal_comment.proto",
         "response_body_service.proto",
         "stream.proto",

@@ -1,0 +1,6 @@
+version: v2
+plugins:
+  - local: protoc-gen-openapiv2
+    out: .
+    opt:
+      - use_proto3_field_semantics=true

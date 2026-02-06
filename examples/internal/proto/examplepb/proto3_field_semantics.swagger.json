@@ -1,0 +1,151 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "examples/internal/proto/examplepb/proto3_field_semantics.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Proto3FieldSemanticsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/filter": {
+      "get": {
+        "operationId": "Proto3FieldSemanticsService_GetFilter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbGetFilterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Proto3FieldSemanticsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "examplepbFilter": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "#/definitions/examplepbFilterCondition"
+        },
+        "group": {
+          "$ref": "#/definitions/examplepbFilterGroup"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "examplepbFilterCondition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "value"
+      ]
+    },
+    "examplepbFilterGroup": {
+      "type": "object",
+      "properties": {
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/examplepbFilter"
+          }
+        },
+        "operator": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "filters",
+        "operator"
+      ]
+    },
+    "examplepbGetFilterResponse": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "$ref": "#/definitions/examplepbFilter"
+        }
+      },
+      "required": [
+        "filter"
+      ]
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {},
+      "required": [
+        "typeUrl",
+        "value"
+      ]
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "details"
+      ]
+    }
+  }
+}

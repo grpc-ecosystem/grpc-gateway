@@ -3444,7 +3444,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
 	required := false
 	if reg.GetUseProto3FieldSemantics() {
-		required = !field.GetProto3Optional()
+		required = !field.GetProto3Optional() && field.OneofIndex == nil
 	}
 	for _, fb := range j {
 		switch fb {

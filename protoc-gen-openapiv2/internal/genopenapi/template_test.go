@@ -11968,6 +11968,13 @@ func Test_updateSwaggerObjectFromFieldBehavior(t *testing.T) {
 		Number:         proto.Int32(1),
 		Proto3Optional: &boolTrue,
 	}}
+	oneofIndex := int32(0)
+	proto3FieldOneof := &descriptor.Field{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+		Name:       proto.String("name"),
+		Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		Number:     proto.Int32(1),
+		OneofIndex: &oneofIndex,
+	}}
 	tests := []struct {
 		name     string
 		args     args
@@ -12012,6 +12019,38 @@ func Test_updateSwaggerObjectFromFieldBehavior(t *testing.T) {
 				j:     []annotations.FieldBehavior{},
 				reg:   regWithProto3FieldSemantics,
 				field: proto3Field,
+			},
+			required: []string{"name"},
+		},
+		{
+			name: "Oneof field not required with proto3 field semantics",
+			args: args{
+				s:     &openapiSchemaObject{},
+				j:     []annotations.FieldBehavior{},
+				reg:   regWithProto3FieldSemantics,
+				field: proto3FieldOneof,
+			},
+			required: nil,
+		},
+		{
+			name: "Oneof field not required without proto3 field semantics",
+			args: args{
+				s:     &openapiSchemaObject{},
+				j:     []annotations.FieldBehavior{},
+				reg:   regWithNoProto3FieldSemantics,
+				field: proto3FieldOneof,
+			},
+			required: nil,
+		},
+		{
+			name: "Oneof field required when explicitly annotated REQUIRED",
+			args: args{
+				s: &openapiSchemaObject{},
+				j: []annotations.FieldBehavior{
+					annotations.FieldBehavior_REQUIRED,
+				},
+				reg:   regWithProto3FieldSemantics,
+				field: proto3FieldOneof,
 			},
 			required: []string{"name"},
 		},
