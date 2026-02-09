@@ -22,6 +22,7 @@ lint:
       - examples/internal/proto/examplepb/opaque.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
+      - examples/internal/proto/examplepb/proto3_field_semantics.proto
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
@@ -68,6 +69,7 @@ lint:
       - examples/internal/proto/examplepb/opaque.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
+      - examples/internal/proto/examplepb/proto3_field_semantics.proto
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
@@ -100,6 +102,7 @@ lint:
       - examples/internal/proto/examplepb/excess_body.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
       - examples/internal/proto/examplepb/opaque.proto
+      - examples/internal/proto/examplepb/proto3_field_semantics.proto
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
@@ -126,6 +129,7 @@ lint:
       - examples/internal/proto/examplepb/opaque.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
+      - examples/internal/proto/examplepb/proto3_field_semantics.proto
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
