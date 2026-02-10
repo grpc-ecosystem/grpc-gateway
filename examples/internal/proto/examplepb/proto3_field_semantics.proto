@@ -8,9 +8,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 
 service Proto3FieldSemanticsService {
   rpc GetFilter(GetFilterRequest) returns (GetFilterResponse) {
-    option (google.api.http) = {
-      get: "/v1/filter"
-    };
+    option (google.api.http) = {get: "/v1/filter"};
   }
 }
 
