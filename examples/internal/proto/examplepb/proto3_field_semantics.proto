@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+service Proto3FieldSemanticsService {
+  rpc GetFilter(GetFilterRequest) returns (GetFilterResponse) {
+    option (google.api.http) = {get: "/v1/filter"};
+  }
+}
+
+message GetFilterRequest {
+  string name = 1;
+}
+
+message GetFilterResponse {
+  Filter filter = 1;
+}
+
+message Filter {
+  string name = 1;
+
+  oneof filter_union {
+    FilterCondition condition = 2;
+    FilterGroup group = 3;
+  }
+}
+
+message FilterCondition {
+  string field = 1;
+  string value = 2;
+}
+
+message FilterGroup {
+  repeated Filter filters = 1;
+  string operator = 2;
+}
