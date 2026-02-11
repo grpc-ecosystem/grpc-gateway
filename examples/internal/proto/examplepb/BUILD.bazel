@@ -178,6 +178,7 @@ go_library(
         "openapi_merge_b.pb.go",
         "openapi_merge_b.pb.gw.go",
         "openapi_merge_b_grpc.pb.go",
+        "proto3_field_semantics.pb.gw.go",
     ],
     embed = [
         ":examplepb_go_proto",
