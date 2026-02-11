@@ -45,6 +45,7 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude opaque_grpc.pb.go
 # gazelle:exclude openapi_merge_a.proto
 # gazelle:exclude openapi_merge_b.proto
+# gazelle:exclude proto3_field_semantics.pb.gw.go
 # gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc, //protoc-gen-grpc-gateway:go_gen_grpc_gateway
 
 genrule(
