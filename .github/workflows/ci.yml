@@ -143,14 +143,14 @@ jobs:
           
           # Install latest stable Docker 27.x (avoid beta/rc versions)
           sudo apt-get update
-          DOCKER_VERSION=$(apt-cache madison docker-ce | grep -E '27\.[0-9]+\.[0-9]+-[0-9]+' | grep -v '~rc' | grep -v '~beta' | head -1 | awk '{print $3}')
+          DOCKER_VERSION=$(apt-cache madison docker-ce | grep '5:27\.' | grep -v '~rc' | grep -v '~beta' | head -1 | awk '{print $3}')
           if [ -z "$DOCKER_VERSION" ]; then
             echo "Error: No stable Docker 27.x version found"
             exit 1
           fi
           echo "Installing Docker version: $DOCKER_VERSION"
           # Install with latest containerd.io for compatibility
-          sudo apt-get install -y docker-ce=$DOCKER_VERSION docker-ce-cli=$DOCKER_VERSION containerd.io
+          sudo apt-get install -y docker-ce=$DOCKER_VERSION docker-ce-cli=$DOCKER_VERSION containerd.io docker-buildx-plugin docker-compose-plugin
           
           # Verify installation
           docker version
