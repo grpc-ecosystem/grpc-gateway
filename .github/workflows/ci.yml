@@ -120,26 +120,28 @@ jobs:
       - uses: dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2 # v1.4.0
         with:
           install-go: false
-  fuzz:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build Fuzzers
-        id: build
-        uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
-        with:
-          oss-fuzz-project-name: "grpc-gateway"
-          dry-run: false
-          language: go
-      - name: Run Fuzzers
-        uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
-        with:
-          oss-fuzz-project-name: "grpc-gateway"
-          fuzz-seconds: 600
-          dry-run: false
-          language: go
-      - name: Upload Crash
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        if: failure() && steps.build.outcome == 'success'
-        with:
-          name: artifacts
-          path: ./out/artifacts
+  # Fuzz job disabled due to Docker API version incompatibility
+  # See https://github.com/google/oss-fuzz/issues/14945
+  # fuzz:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Build Fuzzers
+  #       id: build
+  #       uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
+  #       with:
+  #         oss-fuzz-project-name: "grpc-gateway"
+  #         dry-run: false
+  #         language: go
+  #     - name: Run Fuzzers
+  #       uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
+  #       with:
+  #         oss-fuzz-project-name: "grpc-gateway"
+  #         fuzz-seconds: 600
+  #         dry-run: false
+  #         language: go
+  #     - name: Upload Crash
+  #       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+  #       if: failure() && steps.build.outcome == 'success'
+  #       with:
+  #         name: artifacts
+  #         path: ./out/artifacts
