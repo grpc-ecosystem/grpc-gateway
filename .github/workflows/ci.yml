@@ -123,15 +123,14 @@ jobs:
   fuzz:
     runs-on: ubuntu-24.04
     steps:
-      - name: Install Docker 27.x for API compatibility
+      - name: Downgrade Docker to 27.x for API compatibility
         run: |
           # OSS-Fuzz container uses Docker client API 1.41
           # Docker 29.x requires API 1.44+ minimum
-          # Install Docker 27.x which supports API 1.41-1.46
+          # Downgrade to Docker 27.x which supports API 1.41-1.47
           
-          # Remove current Docker
-          sudo systemctl stop docker.socket docker.service || true
-          sudo apt-get remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
+          # Stop Docker service
+          sudo systemctl stop docker.socket docker.service
           
           # Setup Docker repository
           sudo apt-get update
@@ -141,16 +140,18 @@ jobs:
           sudo chmod a+r /etc/apt/keyrings/docker.asc
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           
-          # Install latest stable Docker 27.x (avoid beta/rc versions)
+          # Downgrade to Docker 27.x
           sudo apt-get update
           DOCKER_VERSION=$(apt-cache madison docker-ce | grep '5:27\.' | grep -v '~rc' | grep -v '~beta' | head -1 | awk '{print $3}')
           if [ -z "$DOCKER_VERSION" ]; then
             echo "Error: No stable Docker 27.x version found"
             exit 1
           fi
-          echo "Installing Docker version: $DOCKER_VERSION"
-          # Install with latest containerd.io for compatibility
-          sudo apt-get install -y docker-ce=$DOCKER_VERSION docker-ce-cli=$DOCKER_VERSION containerd.io docker-buildx-plugin docker-compose-plugin
+          echo "Downgrading to Docker version: $DOCKER_VERSION"
+          sudo apt-get install -y --allow-downgrades docker-ce=$DOCKER_VERSION docker-ce-cli=$DOCKER_VERSION
+          
+          # Restart Docker service
+          sudo systemctl start docker.service
           
           # Verify installation
           docker version
