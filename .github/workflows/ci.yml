@@ -123,6 +123,32 @@ jobs:
   fuzz:
     runs-on: ubuntu-24.04
     steps:
+      - name: Install Docker 27.x for API compatibility
+        run: |
+          # OSS-Fuzz container uses Docker client API 1.41
+          # Docker 29.x requires API 1.44+ minimum
+          # Install Docker 27.x which supports API 1.41-1.46
+          
+          # Remove current Docker
+          sudo systemctl stop docker.socket docker.service || true
+          sudo apt-get remove -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || true
+          
+          # Setup Docker repository
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates curl
+          sudo install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+          sudo chmod a+r /etc/apt/keyrings/docker.asc
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          
+          # Install latest Docker 27.x
+          sudo apt-get update
+          DOCKER_VERSION=$(apt-cache madison docker-ce | grep '27\.' | head -1 | awk '{print $3}')
+          echo "Installing Docker version: $DOCKER_VERSION"
+          sudo apt-get install -y docker-ce=$DOCKER_VERSION docker-ce-cli=$DOCKER_VERSION containerd.io
+          
+          # Verify installation
+          docker version
       - name: Build Fuzzers
         id: build
         uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
