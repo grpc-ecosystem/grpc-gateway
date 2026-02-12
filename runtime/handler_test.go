@@ -33,10 +33,11 @@ func TestForwardResponseStream(t *testing.T) {
 		err error
 	}
 	tests := []struct {
-		name         string
-		msgs         []msg
-		statusCode   int
-		responseBody bool
+		name                   string
+		msgs                   []msg
+		statusCode             int
+		responseBody           bool
+		disableChunkedEncoding bool
 	}{{
 		name: "encoding",
 		msgs: []msg{
@@ -74,6 +75,13 @@ func TestForwardResponseStream(t *testing.T) {
 		},
 		responseBody: true,
 		statusCode:   http.StatusOK,
+	}, {
+		name: "disable chunked encoding",
+		msgs: []msg{
+			{&pb.SimpleMessage{Id: "One"}, nil},
+		},
+		statusCode:             http.StatusOK,
+		disableChunkedEncoding: true,
 	}}
 
 	newTestRecv := func(t *testing.T, msgs []msg) func() (proto.Message, error) {
@@ -97,14 +105,24 @@ func TestForwardResponseStream(t *testing.T) {
 			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
 			resp := httptest.NewRecorder()
 
-			runtime.ForwardResponseStream(ctx, runtime.NewServeMux(), marshaler, resp, req, recv)
+			mux := runtime.NewServeMux()
+			if tt.disableChunkedEncoding {
+				mux = runtime.NewServeMux(runtime.WithDisableChunkedEncoding())
+			}
+			runtime.ForwardResponseStream(ctx, mux, marshaler, resp, req, recv)
 
 			w := resp.Result()
 			if w.StatusCode != tt.statusCode {
 				t.Errorf("StatusCode %d want %d", w.StatusCode, tt.statusCode)
 			}
-			if h := w.Header.Get("Transfer-Encoding"); h != "chunked" {
-				t.Errorf("ForwardResponseStream missing header chunked")
+			if !tt.disableChunkedEncoding {
+				if h := w.Header.Get("Transfer-Encoding"); h != "chunked" {
+					t.Errorf("ForwardResponseStream missing header chunked")
+				}
+			} else {
+				if h := w.Header.Get("Transfer-Encoding"); h != "" {
+					t.Errorf("ForwardResponseStream unexpected Transfer-Encoding header %s", h)
+				}
 			}
 			body, err := io.ReadAll(w.Body)
 			if err != nil {
