@@ -127,7 +127,7 @@ jobs:
         run: |
           # OSS-Fuzz container uses Docker client API 1.41
           # Docker 29.x requires API 1.44+ minimum
-          # Downgrade to Docker 27.x which supports API 1.41-1.47
+          # Downgrade to Docker 27.x which supports API 1.24-1.47
           
           # Stop Docker service
           sudo systemctl stop docker.socket docker.service
@@ -148,6 +148,7 @@ jobs:
             exit 1
           fi
           echo "Downgrading to Docker version: $DOCKER_VERSION"
+          # Downgrade docker-ce and docker-ce-cli only; keep containerd.io and plugins at current versions
           sudo apt-get install -y --allow-downgrades docker-ce=$DOCKER_VERSION docker-ce-cli=$DOCKER_VERSION
           
           # Restart Docker service
