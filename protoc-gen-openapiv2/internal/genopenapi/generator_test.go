@@ -2440,3 +2440,224 @@ func getKeys(m map[string]interface{}) []string {
 	sort.Strings(keys)
 	return keys
 }
+
+// TestGenerateEnumInNestedMessageMultiComponentPackage tests issue #6366:
+// When a service method returns a message that contains another message with an
+// enum field, and the package has multiple components (e.g. "example.v1"),
+// protoc-gen-openapiv2 panicked with "can't resolve OpenAPI ref from typename".
+// This was caused by two bugs in PR #6315:
+// 1. collectReferencedNamesForCache pre-populated all message FQMNs before scanning
+//    services, causing collectNestedTypeFQNs to short-circuit on already-visited
+//    entries and miss nested enum types.
+// 2. The package filter compared only the first dot-component against the full
+//    multi-component package name, so it never matched.
+func TestGenerateEnumInNestedMessageMultiComponentPackage(t *testing.T) {
+	t.Parallel()
+
+	// Single file with multi-component package "example.v1":
+	// service Do(DoRequest) returns (DoResponse)
+	// DoResponse has field "what" of type What
+	// What has field "type" of enum EventType
+	const protoText = `
+	file_to_generate: "example/v1/example.proto"
+	proto_file: {
+		name: "example/v1/example.proto"
+		package: "example.v1"
+		message_type: {
+			name: "DoRequest"
+		}
+		message_type: {
+			name: "DoResponse"
+			field: {
+				name: "what"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_MESSAGE
+				type_name: ".example.v1.What"
+				json_name: "what"
+			}
+		}
+		message_type: {
+			name: "What"
+			field: {
+				name: "type"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_ENUM
+				type_name: ".example.v1.EventType"
+				json_name: "type"
+			}
+		}
+		enum_type: {
+			name: "EventType"
+			value: { name: "EVENT_TYPE_UNSPECIFIED" number: 0 }
+			value: { name: "EVENT_TYPE_ONE" number: 1 }
+		}
+		service: {
+			name: "ExampleService"
+			method: {
+				name: "Do"
+				input_type: ".example.v1.DoRequest"
+				output_type: ".example.v1.DoResponse"
+				options: {
+					[google.api.http]: {
+						post: "/v1/do"
+						body: "*"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/example/v1;example"
+		}
+	}`
+
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(protoText), &req); err != nil {
+		t.Fatalf("failed to unmarshal proto: %s", err)
+	}
+
+	// This should not panic. Before the fix, it panicked with:
+	// "can't resolve OpenAPI ref from typename .example.v1.EventType"
+	resp := requireGenerate(t, &req, genopenapi.FormatJSON, false, false)
+
+	if len(resp) != 1 {
+		t.Fatalf("expected 1 response file, got %d", len(resp))
+	}
+
+	content := resp[0].GetContent()
+
+	var doc map[string]interface{}
+	if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse OpenAPI JSON: %v", err)
+	}
+
+	definitions, ok := doc["definitions"].(map[string]interface{})
+	if !ok {
+		t.Fatal("expected definitions in OpenAPI output")
+	}
+
+	// Verify all $refs resolve to existing definitions
+	refs := collectRefs(doc)
+	for ref := range refs {
+		if !strings.HasPrefix(ref, "#/definitions/") {
+			continue
+		}
+		defName := strings.TrimPrefix(ref, "#/definitions/")
+		if _, exists := definitions[defName]; !exists {
+			t.Errorf("$ref %q has no matching definition. Available definitions: %v",
+				ref, getKeys(definitions))
+		}
+	}
+}
+
+// TestGenerateCrossPackageMessageReference tests a scenario related to #6366:
+// When a message in the current file references a message type from a different
+// proto package, the cross-package type must be included in the naming cache.
+// Without this, renderMessagesAsDefinition panics because it renders all
+// messages from the file but the naming cache only contains types reachable
+// from service method request/response types.
+func TestGenerateCrossPackageMessageReference(t *testing.T) {
+	t.Parallel()
+
+	// File 1: user.proto defines User in package domains.user.v1
+	// File 2: usercontrol.proto has a service and a message referencing User
+	const userProto = `
+	file_to_generate: "domains/user/v1/user.proto"
+	proto_file: {
+		name: "domains/user/v1/user.proto"
+		package: "domains.user.v1"
+		message_type: {
+			name: "User"
+			field: {
+				name: "name"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "name"
+			}
+		}
+		options: {
+			go_package: "github.com/example/domains/user/v1;user"
+		}
+	}`
+
+	const usercontrolProto = `
+	file_to_generate: "usercontrol/v1/usercontrol.proto"
+	proto_file: {
+		name: "usercontrol/v1/usercontrol.proto"
+		package: "usercontrol.v1"
+		dependency: "domains/user/v1/user.proto"
+		message_type: {
+			name: "ListUsersRequest"
+		}
+		message_type: {
+			name: "ListUsersResponse"
+			field: {
+				name: "users"
+				number: 1
+				label: LABEL_REPEATED
+				type: TYPE_MESSAGE
+				type_name: ".domains.user.v1.User"
+				json_name: "users"
+			}
+		}
+		service: {
+			name: "UserControlService"
+			method: {
+				name: "ListUsers"
+				input_type: ".usercontrol.v1.ListUsersRequest"
+				output_type: ".usercontrol.v1.ListUsersResponse"
+				options: {
+					[google.api.http]: {
+						get: "/v1/users"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/example/usercontrol/v1;usercontrol"
+		}
+	}`
+
+	var req1, req2 pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(userProto), &req1); err != nil {
+		t.Fatalf("failed to unmarshal user proto: %s", err)
+	}
+	if err := prototext.Unmarshal([]byte(usercontrolProto), &req2); err != nil {
+		t.Fatalf("failed to unmarshal usercontrol proto: %s", err)
+	}
+
+	// Combine: process both files, but only generate usercontrol
+	req2.ProtoFile = append(req1.ProtoFile, req2.ProtoFile...)
+	req2.FileToGenerate = []string{"usercontrol/v1/usercontrol.proto"}
+
+	// This should not panic
+	resp := requireGenerate(t, &req2, genopenapi.FormatJSON, false, false)
+
+	if len(resp) != 1 {
+		t.Fatalf("expected 1 response file, got %d", len(resp))
+	}
+
+	var doc map[string]interface{}
+	if err := yaml.Unmarshal([]byte(resp[0].GetContent()), &doc); err != nil {
+		t.Fatalf("failed to parse OpenAPI JSON: %v", err)
+	}
+
+	definitions, ok := doc["definitions"].(map[string]interface{})
+	if !ok {
+		t.Fatal("expected definitions in OpenAPI output")
+	}
+
+	refs := collectRefs(doc)
+	for ref := range refs {
+		if !strings.HasPrefix(ref, "#/definitions/") {
+			continue
+		}
+		defName := strings.TrimPrefix(ref, "#/definitions/")
+		if _, exists := definitions[defName]; !exists {
+			t.Errorf("$ref %q has no matching definition. Available definitions: %v",
+				ref, getKeys(definitions))
+		}
+	}
+}

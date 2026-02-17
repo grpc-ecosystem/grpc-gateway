@@ -526,12 +526,8 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 func collectReferencedNamesForCache(services []*descriptor.Service, messages []*descriptor.Message, reg *descriptor.Registry) map[string]bool {
 	refs := make(map[string]bool)
 
-	// Add all messages from the current file
-	for _, msg := range messages {
-		refs[msg.FQMN()] = true
-	}
-
-	// Scan services
+	// Scan services FIRST so collectNestedTypeFQNs fully traverses
+	// message graphs without being short-circuited by pre-populated entries.
 	for _, svc := range services {
 		if !isVisible(getServiceVisibilityOption(svc), reg) {
 			continue
@@ -555,6 +551,19 @@ func collectReferencedNamesForCache(services []*descriptor.Service, messages []*
 			collectNestedTypeFQNs(meth.RequestType, reg, refs)
 			collectNestedTypeFQNs(meth.ResponseType, reg, refs)
 		}
+	}
+
+	// Add messages from the current file AFTER service scanning.
+	// This must come after the service loop's collectNestedTypeFQNs calls,
+	// otherwise pre-populated message entries cause the traversal to
+	// short-circuit and miss nested types like enums inside referenced messages.
+	// We also traverse each message's nested types here because
+	// renderMessagesAsDefinition renders ALL messages from the file, not just
+	// those reachable from service methods. Without this, cross-package types
+	// referenced by non-service messages would be missing from the naming cache.
+	for _, msg := range messages {
+		refs[msg.FQMN()] = true
+		collectNestedTypeFQNs(msg, reg, refs)
 	}
 
 	// Add google.rpc.Status if default errors enabled
@@ -2186,17 +2195,15 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	currentPackage := p.File.GetPackage()
 	filteredNames := make([]string, 0, len(allNames))
 	for _, name := range allNames {
-		// Determine the package of this name
-		// Names are like ".package.Type" or ".package.subpackage.Type"
-		// We want to extract the top-level package
-		parts := strings.Split(strings.TrimPrefix(name, "."), ".")
-		if len(parts) == 0 {
+		trimmedName := strings.TrimPrefix(name, ".")
+		if trimmedName == "" {
 			continue
 		}
-		namePackage := parts[0]
-
 		// Include if: (1) from current package, OR (2) actually referenced, OR (3) from google.*/grpc.* packages
-		if namePackage == currentPackage || referencedNames[name] || namePackage == "google" || namePackage == "grpc" {
+		isCurrentPackage := strings.HasPrefix(trimmedName, currentPackage+".")
+		isGoogle := strings.HasPrefix(trimmedName, "google.")
+		isGRPC := strings.HasPrefix(trimmedName, "grpc.")
+		if isCurrentPackage || referencedNames[name] || isGoogle || isGRPC {
 			filteredNames = append(filteredNames, name)
 		}
 	}
