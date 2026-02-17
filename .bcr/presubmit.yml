@@ -1,0 +1,14 @@
+bcr_test_module:
+  module_path: "MODULE.bazel"
+  matrix:
+    platform: ["debian11", "macos", "macos_arm64", "ubuntu2404", "windows"]
+    bazel: [6.x, 7.x, 8.x]
+  tasks:
+    run_tests:
+      name: "Build and test grpc-gateway module"
+      platform: ${{ platform }}
+      bazel: ${{ bazel }}
+      build_targets:
+        - "//..."
+      test_targets:
+        - "//..."

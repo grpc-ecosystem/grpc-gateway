@@ -9,6 +9,18 @@
     "postUpdateOptions": [
         "gomodTidy"
     ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": [".bcr/presubmit.yml"],
+            "matchStrings": [
+                "bazel:\\s*\\[(?<currentValue>[0-9.x,\\s]+)\\]"
+            ],
+            "depNameTemplate": "Bazel",
+            "datasourceTemplate": "bazel",
+            "versioningTemplate": "regex:^\\d+\\.x$"
+        }
+    ],
     "packageRules": [
         {
             "updateTypes": [
@@ -44,6 +56,15 @@
                 "slsa-framework/slsa-github-generator"
             ],
             "pinDigests": false
+        },
+        {
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchPackageNames": [
+                "bazel-contrib/publish-to-bcr"
+            ],
+            "automerge": true
         }
     ]
 }
