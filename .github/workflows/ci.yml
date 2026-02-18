@@ -21,6 +21,7 @@ jobs:
     steps:
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
+          go-version: 1.26
           check-latest: true
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - run: go test ./...
@@ -33,6 +34,7 @@ jobs:
           node-version: 24
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
+          go-version: 1.26
           check-latest: true
       - run: >
           cd examples/internal/browser &&
@@ -43,19 +45,11 @@ jobs:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
     runs-on: ubuntu-latest
-    env:
-      PATH: /usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - name: Install Go 1.26.0
-        run: |
-          wget -q https://go.dev/dl/go1.26.0.linux-amd64.tar.gz
-          rm -rf /usr/local/go
-          tar -C /usr/local -xzf go1.26.0.linux-amd64.tar.gz
-          go version
       - run: make install
       - run: make clean
       - run: make generate
@@ -65,8 +59,6 @@ jobs:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
     runs-on: ubuntu-latest
-    env:
-      PATH: /usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
@@ -77,12 +69,6 @@ jobs:
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - name: Install Go 1.26.0
-        run: |
-          wget -q https://go.dev/dl/go1.26.0.linux-amd64.tar.gz
-          rm -rf /usr/local/go
-          tar -C /usr/local -xzf go1.26.0.linux-amd64.tar.gz
-          go version
       - name: Configure bazel
         run:
           | # put .bazelrc in $HOME so that it's read before project's .bazelrc
@@ -119,6 +105,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
+          go-version: 1.26
           check-latest: true
       - run: make install
       - run: PATH=$PATH:~/go/bin buf build
