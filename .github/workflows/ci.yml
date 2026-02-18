@@ -50,7 +50,7 @@ jobs:
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - name: Install Go 1.25+
+      - name: Install Go 1.26.0
         run: |
           wget -q https://go.dev/dl/go1.26.0.linux-amd64.tar.gz
           rm -rf /usr/local/go
@@ -77,7 +77,7 @@ jobs:
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-      - name: Install Go 1.25+
+      - name: Install Go 1.26.0
         run: |
           wget -q https://go.dev/dl/go1.26.0.linux-amd64.tar.gz
           rm -rf /usr/local/go
