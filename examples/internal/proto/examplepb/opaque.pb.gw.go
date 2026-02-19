@@ -128,7 +128,7 @@ func request_OpaqueEcommerceService_OpaqueCreateProduct_0(ctx context.Context, m
 	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	protoReq = bodyData
+	proto.Merge(&protoReq, &bodyData)
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
@@ -145,7 +145,7 @@ func local_request_OpaqueEcommerceService_OpaqueCreateProduct_0(ctx context.Cont
 	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	protoReq = bodyData
+	proto.Merge(&protoReq, &bodyData)
 	msg, err := server.OpaqueCreateProduct(ctx, &protoReq)
 	return msg, metadata, err
 }
