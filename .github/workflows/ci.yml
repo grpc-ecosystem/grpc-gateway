@@ -21,6 +21,7 @@ jobs:
     steps:
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
+          go-version: 1.26
           check-latest: true
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - run: go test ./...
@@ -33,6 +34,7 @@ jobs:
           node-version: 24
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
+          go-version: 1.26
           check-latest: true
       - run: >
           cd examples/internal/browser &&
@@ -103,6 +105,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
+          go-version: 1.26
           check-latest: true
       - run: make install
       - run: PATH=$PATH:~/go/bin buf build
