@@ -552,7 +552,13 @@ service ABitOfEverythingService {
     option (google.api.http) = {get: "/v1/example/a_bit_of_everything/{uuid}"};
   }
   rpc Custom(ABitOfEverything) returns (ABitOfEverything) {
-    option (google.api.http) = {post: "/v1/example/a_bit_of_everything/{uuid}:custom"};
+    option (google.api.http) = {
+      post: "/v1/example/a_bit_of_everything/{uuid}:custom"
+      additional_bindings: {
+        // Testing proto3 optional field
+        get: "/v1/example/a_bit_of_everything/custom/{optional_string_value}"
+      }
+    };
   }
   rpc DoubleColon(ABitOfEverything) returns (ABitOfEverything) {
     option (google.api.http) = {post: "/v1/example/a_bit_of_everything/{uuid}:custom:custom"};

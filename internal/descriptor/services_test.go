@@ -2,7 +2,6 @@ package descriptor
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
@@ -1398,7 +1397,7 @@ func TestCauseErrorWithPathParam(t *testing.T) {
 	}
 }
 
-func TestOptionalProto3URLPathMappingError(t *testing.T) {
+func TestOptionalProto3URLPathMappingSuccess(t *testing.T) {
 	src := `
 		name: "path/to/example.proto"
 		package: "example"
@@ -1435,13 +1434,8 @@ func TestOptionalProto3URLPathMappingError(t *testing.T) {
 	reg.loadFile(fd.GetName(), &protogen.File{
 		Proto: &fd,
 	})
-	wantErrMsg := "field not allowed in field path: field1 in field1"
 	err := reg.loadServices(reg.files[target])
 	if err != nil {
-		if !strings.Contains(err.Error(), wantErrMsg) {
-			t.Errorf("loadServices(%q, %q) failed with %v; want %s", target, input, err, wantErrMsg)
-		}
-	} else {
-		t.Errorf("loadServices(%q, %q) expected an error %s, got nil", target, input, wantErrMsg)
+		t.Errorf("loadServices(%q, %q) failed with %v; want success", target, input, err)
 	}
 }
