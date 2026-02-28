@@ -278,6 +278,10 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		if pathParam.Target == field {
 			return nil, nil
 		}
+		// make sure if path parameter is of type one_of then other field should not be present as query parameters
+		if pathParam.Target.OneofIndex != nil && field.OneofIndex != nil && pathParam.Target.GetOneofIndex() == field.GetOneofIndex() {
+			return nil, nil
+		}
 	}
 	// make sure the parameter is not already listed as a body parameter
 	if body != nil {

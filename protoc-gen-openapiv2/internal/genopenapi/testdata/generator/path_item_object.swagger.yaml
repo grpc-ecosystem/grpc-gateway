@@ -22,6 +22,75 @@ paths:
           in: query
           required: false
           type: string
+        - name: uuid
+          in: query
+          required: false
+          type: string
+        - name: id
+          in: query
+          required: false
+          type: string
+      tags:
+        - YourService
+  /api/echo/{id}:
+    get:
+      operationId: YourService_Echo4
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/StringMessage'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: value
+          in: query
+          required: false
+          type: string
+      tags:
+        - YourService
+  /api/echo/{uuid}:
+    get:
+      operationId: YourService_Echo3
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/StringMessage'
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+        - name: value
+          in: query
+          required: false
+          type: string
+      tags:
+        - YourService
+  /api/echo/{value}:
+    get:
+      operationId: YourService_Echo2
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/StringMessage'
+      parameters:
+        - name: value
+          in: path
+          required: true
+          type: string
+        - name: uuid
+          in: query
+          required: false
+          type: string
+        - name: id
+          in: query
+          required: false
+          type: string
       tags:
         - YourService
 definitions:
@@ -29,4 +98,8 @@ definitions:
     type: object
     properties:
       value:
+        type: string
+      uuid:
+        type: string
+      id:
         type: string

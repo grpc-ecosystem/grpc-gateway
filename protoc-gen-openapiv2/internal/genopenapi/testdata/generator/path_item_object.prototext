@@ -11,6 +11,25 @@ proto_file:  {
    type:  TYPE_STRING
    json_name:  "value"
   }
+  oneof_decl: {
+    name: "primary_key"
+  }
+  field: {
+    name: "uuid"
+    number: 2
+    label: LABEL_OPTIONAL
+    type: TYPE_STRING
+    oneof_index: 0
+    json_name: "uuid"
+  }
+  field: {
+    name: "id"
+    number: 3
+    label: LABEL_OPTIONAL
+    type: TYPE_STRING
+    oneof_index: 0
+    json_name: "id"
+  }
  }
  service:  {
   name:  "YourService"
@@ -21,6 +40,12 @@ proto_file:  {
    options:  {
     [google.api.http]:  {
      post:  "/api/echo"
+      additional_bindings: {
+			get: "/api/echo/{value}" }
+      additional_bindings: {
+			get: "/api/echo/{uuid}" }
+      additional_bindings: {
+			get: "/api/echo/{id}" }
     }
    }
   }

@@ -474,44 +474,11 @@
             "type": "string"
           },
           {
-            "name": "lineNum",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "status.progress",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "status.note",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "en",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
-          },
-          {
-            "name": "no.progress",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "no.note",
-            "in": "query",
-            "required": false,
-            "type": "string"
           },
           {
             "name": "resourceId",
@@ -585,27 +552,7 @@
             "format": "int64"
           },
           {
-            "name": "lang",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "status.progress",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
             "name": "en",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "no.progress",
             "in": "query",
             "required": false,
             "type": "string",
@@ -676,34 +623,7 @@
             "format": "int64"
           },
           {
-            "name": "lineNum",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "lang",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "status.progress",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
             "name": "en",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "no.progress",
             "in": "query",
             "required": false,
             "type": "string",
