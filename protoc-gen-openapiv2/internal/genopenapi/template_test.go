@@ -672,6 +672,242 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
+// TestMessageToQueryParametersWithMapEnumValue tests that map fields with enum values
+// are properly converted to query parameters with the correct type (string for enums).
+func TestMessageToQueryParametersWithMapEnumValue(t *testing.T) {
+	type test struct {
+		MsgDescs   []*descriptorpb.DescriptorProto
+		EnumDescs  []*descriptorpb.EnumDescriptorProto
+		Message    string
+		Params     []openapiParameterObject
+		EnumsAsInt bool
+	}
+
+	tests := []test{
+		// Test map<string, Enum> with string enum representation
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("map_enum"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.ExampleMessage.MapEnumEntry"),
+							Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number:   proto.Int32(1),
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{
+						{
+							Name:    proto.String("MapEnumEntry"),
+							Options: &descriptorpb.MessageOptions{MapEntry: proto.Bool(true)},
+							Field: []*descriptorpb.FieldDescriptorProto{
+								{
+									Name:   proto.String("key"),
+									Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+									Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+									Number: proto.Int32(1),
+								},
+								{
+									Name:     proto.String("value"),
+									Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+									Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+									TypeName: proto.String(".example.NumericEnum"),
+									Number:   proto.Int32(2),
+								},
+							},
+						},
+					},
+				},
+			},
+			EnumDescs: []*descriptorpb.EnumDescriptorProto{
+				{
+					Name: proto.String("NumericEnum"),
+					Value: []*descriptorpb.EnumValueDescriptorProto{
+						{Name: proto.String("ZERO"), Number: proto.Int32(0)},
+						{Name: proto.String("ONE"), Number: proto.Int32(1)},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "map_enum[string]",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+			EnumsAsInt: false,
+		},
+		// Test map<string, Enum> with integer enum representation
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("map_enum"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.ExampleMessage.MapEnumEntry"),
+							Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number:   proto.Int32(1),
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{
+						{
+							Name:    proto.String("MapEnumEntry"),
+							Options: &descriptorpb.MessageOptions{MapEntry: proto.Bool(true)},
+							Field: []*descriptorpb.FieldDescriptorProto{
+								{
+									Name:   proto.String("key"),
+									Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+									Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+									Number: proto.Int32(1),
+								},
+								{
+									Name:     proto.String("value"),
+									Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+									Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+									TypeName: proto.String(".example.NumericEnum"),
+									Number:   proto.Int32(2),
+								},
+							},
+						},
+					},
+				},
+			},
+			EnumDescs: []*descriptorpb.EnumDescriptorProto{
+				{
+					Name: proto.String("NumericEnum"),
+					Value: []*descriptorpb.EnumValueDescriptorProto{
+						{Name: proto.String("ZERO"), Number: proto.Int32(0)},
+						{Name: proto.String("ONE"), Number: proto.Int32(1)},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "map_enum[string]",
+					In:       "query",
+					Required: false,
+					Type:     "integer",
+				},
+			},
+			EnumsAsInt: true,
+		},
+		// Test map<string, NestedMessage> - should be skipped (not supported)
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("map_nested"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.ExampleMessage.MapNestedEntry"),
+							Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number:   proto.Int32(1),
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{
+						{
+							Name:    proto.String("MapNestedEntry"),
+							Options: &descriptorpb.MessageOptions{MapEntry: proto.Bool(true)},
+							Field: []*descriptorpb.FieldDescriptorProto{
+								{
+									Name:   proto.String("key"),
+									Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+									Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+									Number: proto.Int32(1),
+								},
+								{
+									Name:     proto.String("value"),
+									Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+									Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+									TypeName: proto.String(".example.Nested"),
+									Number:   proto.Int32(2),
+								},
+							},
+						},
+					},
+				},
+				{
+					Name: proto.String("Nested"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("name"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+					},
+				},
+			},
+			Message:    "ExampleMessage",
+			Params:     []openapiParameterObject{},
+			EnumsAsInt: false,
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		if test.EnumsAsInt {
+			reg.SetEnumsAsInts(true)
+		}
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				EnumType:       test.EnumDescs,
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		// avoid checking Items for array types
+		for i := range params {
+			params[i].Items = nil
+		}
+		// Handle nil vs empty slice comparison
+		if len(params) == 0 && len(test.Params) == 0 {
+			continue
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
 // TestMessageToQueryParametersNoRecursive, is a check that cyclical references between messages
 // are not falsely detected given previous known edge-cases.
 func TestMessageToQueryParametersNoRecursive(t *testing.T) {
