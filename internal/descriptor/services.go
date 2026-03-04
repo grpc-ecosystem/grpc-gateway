@@ -345,9 +345,6 @@ func (r *Registry) resolveFieldPath(msg *Message, path string, isPathParam bool)
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
-		if isPathParam && f.GetProto3Optional() {
-			return nil, fmt.Errorf("optional field not allowed in field path: %s in %s", f.GetName(), path)
-		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})
 	}
 	return result, nil
