@@ -1,0 +1,8 @@
+--- a/toolchain/cc_toolchain_config.bzl
++++ b/toolchain/cc_toolchain_config.bzl
+@@ -1,4 +1,5 @@
+ load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
++load("@rules_cc//cc/toolchains:cc_toolchain_config_info.bzl", "CcToolchainConfigInfo")
+ load(
+     "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+     "artifact_name_pattern",
