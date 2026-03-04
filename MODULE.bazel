@@ -15,6 +15,16 @@ bazel_dep(name = "rules_shell", version = "0.6.1")
 bazel_dep(name = "gazelle", version = "0.47.0", repo_name = "bazel_gazelle")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "protobuf", version = "34.0", repo_name = "com_google_protobuf")
+
+# Protobuf v34.0 registers CC cross-compilation toolchains (without dev_dependency=True)
+# that use CcToolchainConfigInfo as a global which is None in Bazel 9.0.0.
+# This patch adds the proper import from rules_cc to fix the toolchain loading error.
+# TODO: Remove this override once protobuf v34.x fixes the toolchain compatibility.
+single_version_override(
+    module_name = "protobuf",
+    patches = ["//patches:protobuf_fix_cc_toolchain_config.patch"],
+    patch_strip = 1,
+)
 bazel_dep(name = "googleapis", version = "0.0.0-20260223-edfe7983")
 
 # This is required as a transitive dependency and not directly needed by this module.
