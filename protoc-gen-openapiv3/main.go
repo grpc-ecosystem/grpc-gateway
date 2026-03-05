@@ -42,6 +42,7 @@ var (
 	enableFieldDeprecation     = flag.Bool("enable_field_deprecation", false, "whether to process proto field's deprecated option")
 	expandSlashedPathPatterns  = flag.Bool("expand_slashed_path_patterns", false, "if set, expands path parameters with URI sub-paths into the URI")
 	proto3OptionalNullable     = flag.Bool("proto3_optional_nullable", false, "whether Proto3 Optional fields should be marked as nullable")
+	useProto3FieldSemantics    = flag.Bool("use_proto3_field_semantics", true, "if set, uses proto3 field semantics for the OpenAPI schema. This means that non-optional fields are required by default")
 	openAPIVersion             = flag.String("openapi_version", "3.0.3", "OpenAPI version to use (3.0.3, 3.1.0)")
 
 	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
@@ -127,6 +128,7 @@ func main() {
 	reg.SetEnableFieldDeprecation(*enableFieldDeprecation)
 	reg.SetExpandSlashedPathPatterns(*expandSlashedPathPatterns)
 	reg.SetProto3OptionalNullable(*proto3OptionalNullable)
+	reg.SetUseProto3FieldSemantics(*useProto3FieldSemantics)
 
 	for k, v := range pkgMap {
 		reg.AddPkgMap(k, v)

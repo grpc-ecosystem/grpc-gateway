@@ -420,6 +420,11 @@ func (g *generator) buildParameters(method *descriptor.Method, binding *descript
 				param.Deprecated = field.GetOptions().GetDeprecated()
 			}
 
+			// Mark as required when using proto3 field semantics
+			if g.reg.GetUseProto3FieldSemantics() && g.isFieldRequired(field) {
+				param.Required = true
+			}
+
 			params = append(params, &ParameterRef{Value: param})
 		}
 	}
@@ -568,10 +573,16 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 	// Process regular fields (not in oneof)
 	for _, field := range regularFields {
 		g.addFieldToSchema(doc, schema, field, visited)
+
+		// Track required fields when using proto3 field semantics
+		if g.reg.GetUseProto3FieldSemantics() && g.isFieldRequired(field) {
+			schema.Required = append(schema.Required, g.fieldName(field))
+		}
 	}
 
 	// Process oneof groups - add all oneof fields as properties too
 	// (they need to be in properties for JSON serialization)
+	// Note: oneof fields are not required since only one can be set
 	for _, group := range oneofGroups {
 		for _, field := range group.fields {
 			g.addFieldToSchema(doc, schema, field, visited)
@@ -965,4 +976,25 @@ func isBodyField(field *descriptor.Field, body *descriptor.Body) bool {
 		}
 	}
 	return false
+}
+
+// isFieldRequired determines if a field should be marked as required.
+// In proto3, a field is required if:
+// - It's NOT a proto3 optional field (which explicitly tracks presence)
+// - It's NOT part of a oneof (handled separately, only one can be set)
+// - It's NOT a repeated field (empty array is equivalent to absent)
+func (g *generator) isFieldRequired(field *descriptor.Field) bool {
+	// Proto3 optional fields explicitly track presence, so can be absent
+	if field.GetProto3Optional() {
+		return false
+	}
+	// Oneof fields are mutually exclusive, not required individually
+	if field.OneofIndex != nil {
+		return false
+	}
+	// Repeated fields default to empty, so are effectively optional
+	if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+		return false
+	}
+	return true
 }
