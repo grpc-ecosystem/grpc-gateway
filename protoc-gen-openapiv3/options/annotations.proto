@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+import "google/protobuf/descriptor.proto";
+import "protoc-gen-openapiv3/options/openapiv3.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+
+extend google.protobuf.FileOptions {
+  // Provides OpenAPI v3 document-level configuration.
+  // Use this to set info, servers, security, tags, and other document-level options.
+  //
+  // Example:
+  //
+  //  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_openapi) = {
+  //    info: {
+  //      title: "My API";
+  //      version: "1.0";
+  //      description: "A great API";
+  //    };
+  //    servers: [
+  //      { url: "https://api.example.com"; }
+  //    ];
+  //  };
+  //
+  // Using 1043 temporarily. For production use, register with
+  // protobuf-global-extension-registry@google.com
+  OpenAPI openapiv3_openapi = 1043;
+}
+
+extend google.protobuf.MethodOptions {
+  // Provides OpenAPI v3 operation-level configuration.
+  // Use this to customize operation summary, description, tags, responses, etc.
+  //
+  // Example:
+  //
+  //  rpc GetUser(GetUserRequest) returns (User) {
+  //    option (google.api.http) = {
+  //      get: "/v1/users/{id}"
+  //    };
+  //    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+  //      summary: "Get a user by ID";
+  //      tags: ["users"];
+  //      responses: {
+  //        key: "404"
+  //        value: { description: "User not found" }
+  //      }
+  //    };
+  //  }
+  //
+  // Using 1043 temporarily.
+  Operation openapiv3_operation = 1043;
+}
+
+extend google.protobuf.MessageOptions {
+  // Provides OpenAPI v3 schema-level configuration for messages.
+  // Use this to customize schema title, description, required fields, example, etc.
+  //
+  // Example:
+  //
+  //  message User {
+  //    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema) = {
+  //      title: "User";
+  //      description: "Represents a user in the system";
+  //      required: ["id", "email"];
+  //      example: "{\"id\": \"123\", \"email\": \"user@example.com\"}";
+  //    };
+  //
+  //    string id = 1;
+  //    string email = 2;
+  //  }
+  //
+  // Using 1043 temporarily.
+  Schema openapiv3_schema = 1043;
+}
+
+extend google.protobuf.FieldOptions {
+  // Provides OpenAPI v3 schema-level configuration for fields.
+  // Use this to customize field description, validation, format, etc.
+  //
+  // Example:
+  //
+  //  message User {
+  //    string email = 1 [
+  //      (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field) = {
+  //        description: "User's email address";
+  //        pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+  //        min_length: 5;
+  //        max_length: 255;
+  //      }
+  //    ];
+  //  }
+  //
+  // Using 1043 temporarily.
+  Schema openapiv3_field = 1043;
+}
+
+extend google.protobuf.ServiceOptions {
+  // Provides OpenAPI v3 tag configuration for services.
+  // Use this to customize the tag description and external docs for a service.
+  //
+  // Example:
+  //
+  //  service UserService {
+  //    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_tag) = {
+  //      name: "Users";
+  //      description: "Operations related to user management";
+  //      external_docs: {
+  //        url: "https://docs.example.com/users";
+  //        description: "User management documentation";
+  //      }
+  //    };
+  //  }
+  //
+  // Using 1043 temporarily.
+  Tag openapiv3_tag = 1043;
+}
+
+extend google.protobuf.EnumOptions {
+  // Provides OpenAPI v3 schema configuration for enums.
+  // Use this to customize enum title, description, example, etc.
+  //
+  // Example:
+  //
+  //  enum Status {
+  //    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_enum) = {
+  //      title: "Status";
+  //      description: "The status of an entity";
+  //    };
+  //    STATUS_UNKNOWN = 0;
+  //    STATUS_ACTIVE = 1;
+  //    STATUS_INACTIVE = 2;
+  //  }
+  //
+  // Using 1043 temporarily.
+  EnumSchema openapiv3_enum = 1043;
+}

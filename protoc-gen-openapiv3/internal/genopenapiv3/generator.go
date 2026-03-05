@@ -172,6 +172,9 @@ func (g *generator) generateFileSpec(file *descriptor.File) (*OpenAPI, error) {
 		g.addErrorSchema(doc)
 	}
 
+	// Apply file-level annotations
+	g.applyFileAnnotation(doc, file)
+
 	return doc, nil
 }
 
@@ -185,10 +188,15 @@ func (g *generator) generateServicePaths(doc *OpenAPI, svc *descriptor.Service, 
 		}
 
 		svcComment := serviceComments(g.reg, svc)
-		doc.Tags = append(doc.Tags, &Tag{
+		tag := &Tag{
 			Name:        tagName,
 			Description: svcComment,
-		})
+		}
+
+		// Apply service-level annotations
+		g.applyServiceAnnotation(tag, svc)
+
+		doc.Tags = append(doc.Tags, tag)
 	}
 
 	// Generate paths for each method
@@ -288,7 +296,7 @@ func (g *generator) buildOperation(svc *descriptor.Service, method *descriptor.M
 		deprecated = method.GetOptions().GetDeprecated()
 	}
 
-	return &Operation{
+	op := &Operation{
 		Tags:        tags,
 		Summary:     summary,
 		Description: description,
@@ -298,6 +306,11 @@ func (g *generator) buildOperation(svc *descriptor.Service, method *descriptor.M
 		Responses:   responses,
 		Deprecated:  deprecated,
 	}
+
+	// Apply method-level annotations
+	g.applyOperationAnnotation(op, method)
+
+	return op
 }
 
 // buildUnboundOperation builds an Operation for methods without HTTP bindings.
@@ -333,7 +346,7 @@ func (g *generator) buildUnboundOperation(svc *descriptor.Service, method *descr
 		deprecated = method.GetOptions().GetDeprecated()
 	}
 
-	return &Operation{
+	op := &Operation{
 		Tags:        tags,
 		Summary:     summary,
 		Description: description,
@@ -342,6 +355,11 @@ func (g *generator) buildUnboundOperation(svc *descriptor.Service, method *descr
 		Responses:   responses,
 		Deprecated:  deprecated,
 	}
+
+	// Apply method-level annotations
+	g.applyOperationAnnotation(op, method)
+
+	return op
 }
 
 // buildOperationID generates a unique operation ID.
@@ -499,6 +517,9 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		schema.Description = comment
 	}
 
+	// Apply message-level annotations
+	g.applySchemaAnnotation(schema, msg)
+
 	// Process each field
 	for _, field := range msg.Fields {
 		fieldSchemaRef := g.fieldToSchemaRef(field, nil)
@@ -509,6 +530,11 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		fieldComment := fieldComments(g.reg, field)
 		if fieldComment != "" && fieldSchemaRef.Value != nil {
 			fieldSchemaRef.Value.Description = fieldComment
+		}
+
+		// Apply field-level annotations
+		if fieldSchemaRef.Value != nil {
+			g.applyFieldAnnotation(fieldSchemaRef.Value, field)
 		}
 
 		// If field references another message, generate that too
@@ -570,6 +596,9 @@ func (g *generator) generateEnumSchema(doc *OpenAPI, enum *descriptor.Enum) {
 	if comment != "" {
 		schema.Description = comment
 	}
+
+	// Apply enum-level annotations
+	g.applyEnumAnnotation(schema, enum)
 
 	doc.Components.Schemas[schemaName] = &SchemaRef{Value: schema}
 }

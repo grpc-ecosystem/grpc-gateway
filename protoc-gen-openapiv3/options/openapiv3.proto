@@ -1,0 +1,568 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+
+// `OpenAPI` is a representation of OpenAPI v3 specification's OpenAPI object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#openapi-object
+//
+// Example:
+//
+//  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_openapi) = {
+//    info: {
+//      title: "Echo API";
+//      version: "1.0";
+//      description: "A simple echo service";
+//      contact: {
+//        name: "gRPC-Gateway project";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway";
+//        email: "none@example.com";
+//      };
+//      license: {
+//        name: "BSD 3-Clause License";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE";
+//      };
+//    };
+//    servers: [
+//      { url: "https://api.example.com/v1"; description: "Production"; }
+//    ];
+//  };
+//
+message OpenAPI {
+  // Specifies the OpenAPI Specification version being used.
+  // The value MUST be "3.0.0", "3.0.1", "3.0.2", "3.0.3", or "3.1.0".
+  string openapi = 1;
+  // Provides metadata about the API. The metadata MAY be used by
+  // tooling as required.
+  Info info = 2;
+  // An array of Server Objects, which provide connectivity information to a
+  // target server.
+  repeated Server servers = 3;
+  // field 4 is reserved for 'paths'.
+  reserved 4;
+  // An element to hold various schemas for the document.
+  Components components = 5;
+  // A declaration of which security mechanisms can be used across the API.
+  repeated SecurityRequirement security = 6;
+  // A list of tags used by the document with additional metadata.
+  repeated Tag tags = 7;
+  // Additional external documentation.
+  ExternalDocumentation external_docs = 8;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  map<string, google.protobuf.Value> extensions = 9;
+}
+
+// `Info` is a representation of OpenAPI v3 specification's Info object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#info-object
+//
+message Info {
+  // REQUIRED. The title of the API.
+  string title = 1;
+  // A short summary of the API.
+  string summary = 2;
+  // A description of the API. CommonMark syntax MAY be used for rich text
+  // representation.
+  string description = 3;
+  // A URL to the Terms of Service for the API. This MUST be in the format of
+  // a URL.
+  string terms_of_service = 4;
+  // The contact information for the exposed API.
+  Contact contact = 5;
+  // The license information for the exposed API.
+  License license = 6;
+  // REQUIRED. The version of the OpenAPI document.
+  string version = 7;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 8;
+}
+
+// `Contact` is a representation of OpenAPI v3 specification's Contact object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#contact-object
+//
+message Contact {
+  // The identifying name of the contact person/organization.
+  string name = 1;
+  // The URL pointing to the contact information. This MUST be in the format of
+  // a URL.
+  string url = 2;
+  // The email address of the contact person/organization. This MUST be in the
+  // format of an email address.
+  string email = 3;
+}
+
+// `License` is a representation of OpenAPI v3 specification's License object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#license-object
+//
+message License {
+  // REQUIRED. The license name used for the API.
+  string name = 1;
+  // An SPDX license expression for the API. (v3.1 only)
+  string identifier = 2;
+  // A URL to the license used for the API. This MUST be in the format of a URL.
+  string url = 3;
+}
+
+// `Server` is a representation of OpenAPI v3 specification's Server object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#server-object
+//
+message Server {
+  // REQUIRED. A URL to the target host.
+  string url = 1;
+  // An optional string describing the host designated by the URL.
+  string description = 2;
+  // A map between a variable name and its value.
+  map<string, ServerVariable> variables = 3;
+}
+
+// `ServerVariable` is a representation of OpenAPI v3 specification's
+// Server Variable object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#server-variable-object
+//
+message ServerVariable {
+  // An enumeration of string values to be used if the substitution options
+  // are from a limited set.
+  repeated string enum = 1;
+  // REQUIRED. The default value to use for substitution.
+  string default = 2;
+  // An optional description for the server variable.
+  string description = 3;
+}
+
+// `Components` is a representation of OpenAPI v3 specification's Components object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#components-object
+//
+message Components {
+  // An object to hold reusable Security Scheme Objects.
+  map<string, SecurityScheme> security_schemes = 1;
+  // An object to hold reusable Response Objects.
+  map<string, Response> responses = 2;
+  // An object to hold reusable Parameter Objects.
+  map<string, Parameter> parameters = 3;
+  // An object to hold reusable Request Body Objects.
+  map<string, RequestBody> request_bodies = 4;
+  // An object to hold reusable Header Objects.
+  map<string, Header> headers = 5;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 6;
+}
+
+// `Operation` is a representation of OpenAPI v3 specification's Operation object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#operation-object
+//
+// Example:
+//
+//  service EchoService {
+//    rpc Echo(SimpleMessage) returns (SimpleMessage) {
+//      option (google.api.http) = {
+//        get: "/v1/example/echo/{id}"
+//      };
+//
+//      option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+//        summary: "Get a message.";
+//        operation_id: "getMessage";
+//        tags: "echo";
+//        responses: {
+//          key: "200"
+//          value: {
+//            description: "OK";
+//          }
+//        }
+//      };
+//    }
+//  }
+message Operation {
+  // A list of tags for API documentation control.
+  repeated string tags = 1;
+  // A short summary of what the operation does.
+  string summary = 2;
+  // A verbose explanation of the operation behavior. CommonMark syntax MAY be
+  // used for rich text representation.
+  string description = 3;
+  // Additional external documentation for this operation.
+  ExternalDocumentation external_docs = 4;
+  // Unique string used to identify the operation.
+  string operation_id = 5;
+  // field 6 is reserved for 'parameters'.
+  reserved 6;
+  // The request body applicable for this operation.
+  RequestBody request_body = 7;
+  // The list of possible responses as they are returned from executing this
+  // operation.
+  map<string, Response> responses = 8;
+  // Declares this operation to be deprecated. Default value is false.
+  bool deprecated = 9;
+  // A declaration of which security mechanisms can be used for this operation.
+  repeated SecurityRequirement security = 10;
+  // An alternative server array to service this operation.
+  repeated Server servers = 11;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 12;
+}
+
+// `Response` is a representation of OpenAPI v3 specification's Response object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#response-object
+//
+message Response {
+  // REQUIRED. A description of the response. CommonMark syntax MAY be used
+  // for rich text representation.
+  string description = 1;
+  // Maps a header name to its definition.
+  map<string, Header> headers = 2;
+  // A map containing descriptions of potential response payloads.
+  map<string, MediaType> content = 3;
+  // A map of operations links that can be followed from the response.
+  map<string, Link> links = 4;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 5;
+}
+
+// `MediaType` is a representation of OpenAPI v3 specification's Media Type object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#media-type-object
+//
+message MediaType {
+  // The schema defining the content of the request, response, or parameter.
+  Schema schema = 1;
+  // Example of the media type.
+  string example = 2;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 3;
+}
+
+// `RequestBody` is a representation of OpenAPI v3 specification's Request Body object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#request-body-object
+//
+message RequestBody {
+  // A brief description of the request body.
+  string description = 1;
+  // REQUIRED. The content of the request body.
+  map<string, MediaType> content = 2;
+  // Determines if the request body is required in the request.
+  bool required = 3;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 4;
+}
+
+// `Parameter` is a representation of OpenAPI v3 specification's Parameter object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#parameter-object
+//
+message Parameter {
+  // REQUIRED. The name of the parameter.
+  string name = 1;
+  // REQUIRED. The location of the parameter. Possible values are "query",
+  // "header", "path" or "cookie".
+  string in = 2;
+  // A brief description of the parameter.
+  string description = 3;
+  // Determines whether this parameter is mandatory.
+  bool required = 4;
+  // Specifies that a parameter is deprecated.
+  bool deprecated = 5;
+  // Sets the ability to pass empty-valued parameters.
+  bool allow_empty_value = 6;
+  // Describes how the parameter value will be serialized.
+  string style = 7;
+  // When this is true, parameter values of type array or object generate
+  // separate parameters for each value.
+  bool explode = 8;
+  // Determines whether the parameter value SHOULD allow reserved characters.
+  bool allow_reserved = 9;
+  // The schema defining the type used for the parameter.
+  Schema schema = 10;
+  // Example of the parameter's potential value.
+  string example = 11;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 12;
+}
+
+// `Header` is a representation of OpenAPI v3 specification's Header object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#header-object
+//
+message Header {
+  // A brief description of the header.
+  string description = 1;
+  // Determines whether this header is mandatory.
+  bool required = 2;
+  // Specifies that a header is deprecated.
+  bool deprecated = 3;
+  // Sets the ability to pass empty-valued headers.
+  bool allow_empty_value = 4;
+  // Describes how the header value will be serialized.
+  string style = 5;
+  // When this is true, header values of type array or object generate
+  // separate parameters for each value.
+  bool explode = 6;
+  // Determines whether the header value SHOULD allow reserved characters.
+  bool allow_reserved = 7;
+  // The schema defining the type used for the header.
+  Schema schema = 8;
+  // Example of the header's potential value.
+  string example = 9;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 10;
+}
+
+// `Link` is a representation of OpenAPI v3 specification's Link object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#link-object
+//
+message Link {
+  // A relative or absolute URI reference to an OAS operation.
+  string operation_ref = 1;
+  // The name of an existing, resolvable OAS operation.
+  string operation_id = 2;
+  // A map representing parameters to pass to an operation.
+  map<string, string> parameters = 3;
+  // A literal value or expression to use as a request body.
+  string request_body = 4;
+  // A description of the link.
+  string description = 5;
+  // A server object to be used by the target operation.
+  Server server = 6;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 7;
+}
+
+// `Schema` is a representation of OpenAPI v3 specification's Schema object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#schema-object
+//
+// Example:
+//
+//  message SimpleMessage {
+//    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema) = {
+//      title: "SimpleMessage"
+//      description: "A simple message."
+//      required: ["id"]
+//      example: "{\"id\": \"123\"}"
+//    };
+//
+//    string id = 1 [
+//      (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field) = {
+//        description: "The unique identifier of the simple message."
+//        min_length: 1
+//        max_length: 100
+//      }
+//    ];
+//  }
+//
+message Schema {
+  // Allows referencing another schema.
+  string ref = 1;
+  // The title of the schema.
+  string title = 2;
+  // A description of the schema. CommonMark syntax MAY be used for rich text
+  // representation.
+  string description = 3;
+  // The default value represents what would be assumed by the consumer of the
+  // input as the value of the schema if one is not provided.
+  string default = 4;
+  // Allows sending a null value for the defined schema. Default value is false.
+  bool nullable = 5;
+  // Relevant only for Schema "properties" definitions. Declares the property as
+  // "read only".
+  bool read_only = 6;
+  // Relevant only for Schema "properties" definitions. Declares the property as
+  // "write only".
+  bool write_only = 7;
+  // Specifies that a schema is deprecated and SHOULD be transitioned out of
+  // usage.
+  bool deprecated = 8;
+  // Additional external documentation for this schema.
+  ExternalDocumentation external_docs = 9;
+  // A free-form property to include an example of an instance for this schema.
+  string example = 10;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 11;
+
+  // JSON Schema validation keywords
+  double multiple_of = 20;
+  double maximum = 21;
+  bool exclusive_maximum = 22;
+  double minimum = 23;
+  bool exclusive_minimum = 24;
+  uint64 max_length = 25;
+  uint64 min_length = 26;
+  string pattern = 27;
+  uint64 max_items = 28;
+  uint64 min_items = 29;
+  bool unique_items = 30;
+  uint64 max_properties = 31;
+  uint64 min_properties = 32;
+  repeated string required = 33;
+  repeated string enum = 34;
+  string type = 35;
+  string format = 36;
+}
+
+// `EnumSchema` is a subset of Schema fields applicable to Enums.
+//
+// Example:
+//
+//  enum Status {
+//    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_enum) = {
+//      title: "Status";
+//      description: "The status of the operation.";
+//    };
+//    UNKNOWN = 0;
+//    ACTIVE = 1;
+//    INACTIVE = 2;
+//  }
+//
+message EnumSchema {
+  // The title of the enum.
+  string title = 1;
+  // A description of the enum.
+  string description = 2;
+  // The default value for this enum.
+  string default = 3;
+  // Specifies that the enum is deprecated.
+  bool deprecated = 4;
+  // Additional external documentation for this enum.
+  ExternalDocumentation external_docs = 5;
+  // A free-form property to include an example.
+  string example = 6;
+  // Allows referencing another schema.
+  string ref = 7;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 8;
+}
+
+// `Tag` is a representation of OpenAPI v3 specification's Tag object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#tag-object
+//
+message Tag {
+  // The name of the tag.
+  string name = 1;
+  // A description for the tag. CommonMark syntax MAY be used for rich text
+  // representation.
+  string description = 2;
+  // Additional external documentation for this tag.
+  ExternalDocumentation external_docs = 3;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 4;
+}
+
+// `ExternalDocumentation` is a representation of OpenAPI v3 specification's
+// External Documentation object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#external-documentation-object
+//
+message ExternalDocumentation {
+  // A description of the target documentation. CommonMark syntax MAY be used
+  // for rich text representation.
+  string description = 1;
+  // REQUIRED. The URL for the target documentation.
+  string url = 2;
+}
+
+// `SecurityScheme` is a representation of OpenAPI v3 specification's
+// Security Scheme object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#security-scheme-object
+//
+message SecurityScheme {
+  // The type of the security scheme.
+  enum Type {
+    TYPE_INVALID = 0;
+    TYPE_API_KEY = 1;
+    TYPE_HTTP = 2;
+    TYPE_OAUTH2 = 3;
+    TYPE_OPEN_ID_CONNECT = 4;
+  }
+
+  // The location of the API key.
+  enum In {
+    IN_INVALID = 0;
+    IN_QUERY = 1;
+    IN_HEADER = 2;
+    IN_COOKIE = 3;
+  }
+
+  // REQUIRED. The type of the security scheme.
+  Type type = 1;
+  // A description for security scheme.
+  string description = 2;
+  // REQUIRED for apiKey. The name of the header, query or cookie parameter.
+  string name = 3;
+  // REQUIRED for apiKey. The location of the API key.
+  In in = 4;
+  // REQUIRED for http. The name of the HTTP Authorization scheme.
+  string scheme = 5;
+  // A hint to the client to identify how the bearer token is formatted.
+  string bearer_format = 6;
+  // REQUIRED for oauth2. An object containing configuration information for
+  // the flow types supported.
+  OAuthFlows flows = 7;
+  // REQUIRED for openIdConnect. OpenId Connect URL to discover OAuth2
+  // configuration values.
+  string open_id_connect_url = 8;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 9;
+}
+
+// `OAuthFlows` is a representation of OpenAPI v3 specification's OAuth Flows object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#oauth-flows-object
+//
+message OAuthFlows {
+  // Configuration for the OAuth Implicit flow.
+  OAuthFlow implicit = 1;
+  // Configuration for the OAuth Resource Owner Password flow.
+  OAuthFlow password = 2;
+  // Configuration for the OAuth Client Credentials flow.
+  OAuthFlow client_credentials = 3;
+  // Configuration for the OAuth Authorization Code flow.
+  OAuthFlow authorization_code = 4;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 5;
+}
+
+// `OAuthFlow` is a representation of OpenAPI v3 specification's OAuth Flow object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#oauth-flow-object
+//
+message OAuthFlow {
+  // The authorization URL to be used for this flow.
+  string authorization_url = 1;
+  // The token URL to be used for this flow.
+  string token_url = 2;
+  // The URL to be used for obtaining refresh tokens.
+  string refresh_url = 3;
+  // REQUIRED. The available scopes for the OAuth2 security scheme.
+  map<string, string> scopes = 4;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 5;
+}
+
+// `SecurityRequirement` is a representation of OpenAPI v3 specification's
+// Security Requirement object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#security-requirement-object
+//
+message SecurityRequirement {
+  // The list of scope names required for the execution.
+  message SecurityRequirementValue {
+    repeated string scope = 1;
+  }
+  // Each name MUST correspond to a security scheme which is declared in the
+  // Security Schemes under the Components Object.
+  map<string, SecurityRequirementValue> security_requirement = 1;
+}
