@@ -27,7 +27,7 @@ var (
 	includePackageInTags       = flag.Bool("include_package_in_tags", false, "if unset, the gRPC service name is added to the `Tags` field of each operation")
 	openAPINamingStrategy      = flag.String("openapi_naming_strategy", "legacy", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`, `package`")
 	ignoreComments             = flag.Bool("ignore_comments", false, "if set, all protofile comments are excluded from output")
-	removeInternalComments     = flag.Bool("remove_internal_comments", false, "if set, removes all substrings in comments that start with `(--` and end with `--)`")
+	removeInternalComments     = flag.Bool("remove_internal_comments", true, "if set, removes all substrings in comments that start with `(--` and end with `--)`")
 	disableDefaultErrors       = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors")
 	enumsAsInts                = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 	simpleOperationIDs         = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation")
