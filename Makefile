@@ -85,6 +85,7 @@ install:
 	go install github.com/bufbuild/buf/cmd/buf@v1.45.0
 	go install \
 		./protoc-gen-openapiv2 \
+		./protoc-gen-openapiv3 \
 		./protoc-gen-grpc-gateway
 
 proto:
@@ -101,6 +102,9 @@ proto:
 	# Remove swagger files for openapiv2 definitions, they're unused
 	rm ./protoc-gen-openapiv2/options/annotations.swagger.json
 	rm ./protoc-gen-openapiv2/options/openapiv2.swagger.json
+	# Remove swagger files for openapiv3 definitions, they're unused
+	rm -f ./protoc-gen-openapiv3/options/annotations.swagger.json
+	rm -f ./protoc-gen-openapiv3/options/openapiv3.swagger.json
 	buf generate \
 		--template ./examples/internal/proto/examplepb/openapi_merge.buf.gen.yaml \
 		--path ./examples/internal/proto/examplepb/openapi_merge_a.proto \
@@ -154,6 +158,10 @@ proto:
 		--template ./protoc-gen-openapiv2/options/buf.gen.yaml \
 		--path ./protoc-gen-openapiv2/options/annotations.proto \
 		--path ./protoc-gen-openapiv2/options/openapiv2.proto
+	buf generate \
+		--template ./protoc-gen-openapiv3/options/buf.gen.yaml \
+		--path ./protoc-gen-openapiv3/options/annotations.proto \
+		--path ./protoc-gen-openapiv3/options/openapiv3.proto
 	buf generate \
 		--template ./examples/internal/proto/examplepb/opaque.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/opaque.proto
