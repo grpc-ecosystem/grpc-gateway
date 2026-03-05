@@ -13,7 +13,7 @@ extend google.protobuf.FileOptions {
   //
   // Example:
   //
-  //  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_openapi) = {
+  //  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
   //    info: {
   //      title: "My API";
   //      version: "1.0";
@@ -26,7 +26,7 @@ extend google.protobuf.FileOptions {
   //
   // Using 1043 temporarily. For production use, register with
   // protobuf-global-extension-registry@google.com
-  OpenAPI openapiv3_openapi = 1043;
+  OpenAPI openapiv3_document = 1043;
 }
 
 extend google.protobuf.MethodOptions {

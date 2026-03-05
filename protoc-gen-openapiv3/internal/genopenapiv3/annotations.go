@@ -11,7 +11,7 @@ func getFileAnnotation(file *descriptor.File) *options.OpenAPI {
 	if file.Options == nil {
 		return nil
 	}
-	ext := proto.GetExtension(file.Options, options.E_Openapiv3Openapi)
+	ext := proto.GetExtension(file.Options, options.E_Openapiv3Document)
 	opts, ok := ext.(*options.OpenAPI)
 	if !ok || opts == nil {
 		return nil
