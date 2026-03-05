@@ -318,6 +318,34 @@ message Header {
   map<string, google.protobuf.Value> extensions = 10;
 }
 
+// `Discriminator` is a representation of OpenAPI v3 specification's Discriminator object.
+//
+// See: https://spec.openapis.org/oas/v3.0.3#discriminator-object
+//
+// When request bodies or response payloads may be one of a number of different schemas,
+// a discriminator object can be used to aid in serialization, deserialization, and validation.
+//
+message Discriminator {
+  // REQUIRED. The name of the property in the payload that will hold the
+  // discriminator value.
+  string property_name = 1;
+  // An object to hold mappings between payload values and schema names or
+  // references.
+  map<string, string> mapping = 2;
+}
+
+// `AdditionalPropertiesItem` represents the additionalProperties field which can be
+// either a boolean or a schema.
+//
+message AdditionalPropertiesItem {
+  oneof kind {
+    // Allows additional properties of any type.
+    bool allows = 1;
+    // Schema for additional properties.
+    Schema schema = 2;
+  }
+}
+
 // `Link` is a representation of OpenAPI v3 specification's Link object.
 //
 // See: https://spec.openapis.org/oas/v3.0.3#link-object
@@ -409,6 +437,50 @@ message Schema {
   repeated string enum = 34;
   string type = 35;
   string format = 36;
+
+  // Schema composition keywords (OpenAPI v3 / JSON Schema)
+
+  // An instance validates successfully against this keyword if it validates
+  // successfully against all schemas defined by this keyword's value.
+  repeated Schema all_of = 40;
+  // An instance validates successfully against this keyword if it validates
+  // successfully against at least one schema defined by this keyword's value.
+  repeated Schema any_of = 41;
+  // An instance validates successfully against this keyword if it validates
+  // successfully against exactly one schema defined by this keyword's value.
+  repeated Schema one_of = 42;
+  // An instance is valid against this keyword if it fails to validate
+  // successfully against the schema defined by this keyword.
+  Schema not = 43;
+
+  // Adds support for polymorphism. The discriminator is used to determine which
+  // of a set of schemas a payload is expected to satisfy.
+  Discriminator discriminator = 44;
+
+  // Array-specific keywords
+
+  // Value MUST be a valid JSON Schema. Used to validate all items in an array.
+  Schema items = 50;
+  // Value MUST be an array of valid JSON Schemas. Used to validate tuple-like arrays.
+  repeated Schema prefix_items = 51;
+  // Used with prefixItems to control validation of additional items.
+  Schema contains = 52;
+  // Minimum number of items that must match the contains schema.
+  uint64 min_contains = 53;
+  // Maximum number of items that must match the contains schema.
+  uint64 max_contains = 54;
+
+  // Object-specific keywords
+
+  // Value MUST be an object. Each value of this object MUST be a valid JSON Schema.
+  map<string, Schema> properties = 60;
+  // Controls handling of extra properties not covered by the properties keyword.
+  AdditionalPropertiesItem additional_properties = 61;
+  // Value MUST be a valid JSON Schema. Used to validate property names.
+  Schema property_names = 62;
+  // Value MUST be an object where each value is a valid JSON Schema.
+  // Properties must match the regex key patterns.
+  map<string, Schema> pattern_properties = 63;
 }
 
 // `EnumSchema` is a subset of Schema fields applicable to Enums.

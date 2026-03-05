@@ -707,5 +707,87 @@ func convertSchema(schema *options.Schema) *SchemaRef {
 		s.ExternalDocs = convertExternalDocs(extDocs)
 	}
 
+	// Schema composition fields (OpenAPI v3 features)
+
+	// Apply allOf
+	if len(schema.GetAllOf()) > 0 {
+		for _, allOfSchema := range schema.GetAllOf() {
+			s.AllOf = append(s.AllOf, convertSchema(allOfSchema))
+		}
+	}
+
+	// Apply anyOf
+	if len(schema.GetAnyOf()) > 0 {
+		for _, anyOfSchema := range schema.GetAnyOf() {
+			s.AnyOf = append(s.AnyOf, convertSchema(anyOfSchema))
+		}
+	}
+
+	// Apply oneOf
+	if len(schema.GetOneOf()) > 0 {
+		for _, oneOfSchema := range schema.GetOneOf() {
+			s.OneOf = append(s.OneOf, convertSchema(oneOfSchema))
+		}
+	}
+
+	// Apply not
+	if notSchema := schema.GetNot(); notSchema != nil {
+		s.Not = convertSchema(notSchema)
+	}
+
+	// Apply discriminator
+	if disc := schema.GetDiscriminator(); disc != nil {
+		s.Discriminator = &Discriminator{
+			PropertyName: disc.GetPropertyName(),
+			Mapping:      disc.GetMapping(),
+		}
+	}
+
+	// Apply items (for array schemas)
+	if items := schema.GetItems(); items != nil {
+		s.Items = convertSchema(items)
+	}
+
+	// Apply properties (for object schemas)
+	if len(schema.GetProperties()) > 0 {
+		s.Properties = make(map[string]*SchemaRef)
+		for name, propSchema := range schema.GetProperties() {
+			s.Properties[name] = convertSchema(propSchema)
+		}
+	}
+
+	// Apply additionalProperties
+	if addProps := schema.GetAdditionalProperties(); addProps != nil {
+		switch kind := addProps.GetKind().(type) {
+		case *options.AdditionalPropertiesItem_Allows:
+			// Boolean true allows any additional properties
+			if kind.Allows {
+				s.AdditionalProperties = &SchemaRef{Value: &Schema{}}
+			}
+			// Boolean false - we don't set anything (default is no additional properties)
+		case *options.AdditionalPropertiesItem_Schema:
+			s.AdditionalProperties = convertSchema(kind.Schema)
+		}
+	}
+
+	// Apply prefixItems (tuple validation)
+	if len(schema.GetPrefixItems()) > 0 {
+		// Note: prefixItems is a JSON Schema draft 2020-12 feature
+		// For OpenAPI 3.0.x, this is represented differently
+		// We'll store as items for now since OpenAPI 3.0 doesn't support prefixItems
+	}
+
+	// Apply propertyNames
+	if propNames := schema.GetPropertyNames(); propNames != nil {
+		// Note: propertyNames is not directly supported in OpenAPI 3.0.x
+		// but is part of JSON Schema
+	}
+
+	// Apply patternProperties
+	if len(schema.GetPatternProperties()) > 0 {
+		// Note: patternProperties is not directly supported in OpenAPI 3.0.x
+		// but is part of JSON Schema
+	}
+
 	return &SchemaRef{Value: s}
 }

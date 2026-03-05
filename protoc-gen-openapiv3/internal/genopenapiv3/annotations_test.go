@@ -440,3 +440,203 @@ func TestConvertHeader(t *testing.T) {
 		t.Fatal("Schema should not be nil")
 	}
 }
+
+func TestConvertSchemaComposition(t *testing.T) {
+	t.Run("oneOf schema", func(t *testing.T) {
+		input := &options.Schema{
+			OneOf: []*options.Schema{
+				{Type: "string"},
+				{Type: "integer"},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if len(result.Value.OneOf) != 2 {
+			t.Errorf("OneOf count = %d, want %d", len(result.Value.OneOf), 2)
+		}
+		if result.Value.OneOf[0].Value.Type != "string" {
+			t.Errorf("OneOf[0].Type = %q, want %q", result.Value.OneOf[0].Value.Type, "string")
+		}
+		if result.Value.OneOf[1].Value.Type != "integer" {
+			t.Errorf("OneOf[1].Type = %q, want %q", result.Value.OneOf[1].Value.Type, "integer")
+		}
+	})
+
+	t.Run("anyOf schema", func(t *testing.T) {
+		input := &options.Schema{
+			AnyOf: []*options.Schema{
+				{Type: "string"},
+				{Type: "number"},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if len(result.Value.AnyOf) != 2 {
+			t.Errorf("AnyOf count = %d, want %d", len(result.Value.AnyOf), 2)
+		}
+	})
+
+	t.Run("allOf schema", func(t *testing.T) {
+		input := &options.Schema{
+			AllOf: []*options.Schema{
+				{Ref: "#/components/schemas/Base"},
+				{Type: "object", Required: []string{"extra_field"}},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if len(result.Value.AllOf) != 2 {
+			t.Errorf("AllOf count = %d, want %d", len(result.Value.AllOf), 2)
+		}
+		if result.Value.AllOf[0].Ref != "#/components/schemas/Base" {
+			t.Errorf("AllOf[0].Ref = %q, want %q", result.Value.AllOf[0].Ref, "#/components/schemas/Base")
+		}
+	})
+
+	t.Run("not schema", func(t *testing.T) {
+		input := &options.Schema{
+			Type: "string",
+			Not:  &options.Schema{Enum: []string{"forbidden"}},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if result.Value.Not == nil {
+			t.Fatal("Not should not be nil")
+		}
+		if len(result.Value.Not.Value.Enum) != 1 {
+			t.Errorf("Not.Enum count = %d, want %d", len(result.Value.Not.Value.Enum), 1)
+		}
+	})
+
+	t.Run("discriminator", func(t *testing.T) {
+		input := &options.Schema{
+			OneOf: []*options.Schema{
+				{Ref: "#/components/schemas/Cat"},
+				{Ref: "#/components/schemas/Dog"},
+			},
+			Discriminator: &options.Discriminator{
+				PropertyName: "petType",
+				Mapping: map[string]string{
+					"cat": "#/components/schemas/Cat",
+					"dog": "#/components/schemas/Dog",
+				},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if result.Value.Discriminator == nil {
+			t.Fatal("Discriminator should not be nil")
+		}
+		if result.Value.Discriminator.PropertyName != "petType" {
+			t.Errorf("Discriminator.PropertyName = %q, want %q", result.Value.Discriminator.PropertyName, "petType")
+		}
+		if len(result.Value.Discriminator.Mapping) != 2 {
+			t.Errorf("Discriminator.Mapping count = %d, want %d", len(result.Value.Discriminator.Mapping), 2)
+		}
+	})
+
+	t.Run("items for array", func(t *testing.T) {
+		input := &options.Schema{
+			Type:  "array",
+			Items: &options.Schema{Type: "string"},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if result.Value.Items == nil {
+			t.Fatal("Items should not be nil")
+		}
+		if result.Value.Items.Value.Type != "string" {
+			t.Errorf("Items.Type = %q, want %q", result.Value.Items.Value.Type, "string")
+		}
+	})
+
+	t.Run("properties for object", func(t *testing.T) {
+		input := &options.Schema{
+			Type: "object",
+			Properties: map[string]*options.Schema{
+				"name": {Type: "string"},
+				"age":  {Type: "integer"},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if len(result.Value.Properties) != 2 {
+			t.Errorf("Properties count = %d, want %d", len(result.Value.Properties), 2)
+		}
+		if result.Value.Properties["name"].Value.Type != "string" {
+			t.Errorf("Properties[name].Type = %q, want %q", result.Value.Properties["name"].Value.Type, "string")
+		}
+		if result.Value.Properties["age"].Value.Type != "integer" {
+			t.Errorf("Properties[age].Type = %q, want %q", result.Value.Properties["age"].Value.Type, "integer")
+		}
+	})
+
+	t.Run("additionalProperties with schema", func(t *testing.T) {
+		input := &options.Schema{
+			Type: "object",
+			AdditionalProperties: &options.AdditionalPropertiesItem{
+				Kind: &options.AdditionalPropertiesItem_Schema{
+					Schema: &options.Schema{Type: "string"},
+				},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if result.Value.AdditionalProperties == nil {
+			t.Fatal("AdditionalProperties should not be nil")
+		}
+		if result.Value.AdditionalProperties.Value.Type != "string" {
+			t.Errorf("AdditionalProperties.Type = %q, want %q", result.Value.AdditionalProperties.Value.Type, "string")
+		}
+	})
+
+	t.Run("additionalProperties allows", func(t *testing.T) {
+		input := &options.Schema{
+			Type: "object",
+			AdditionalProperties: &options.AdditionalPropertiesItem{
+				Kind: &options.AdditionalPropertiesItem_Allows{Allows: true},
+			},
+		}
+
+		result := convertSchema(input)
+
+		if result.Value == nil {
+			t.Fatal("Value should not be nil")
+		}
+		if result.Value.AdditionalProperties == nil {
+			t.Fatal("AdditionalProperties should not be nil when allows=true")
+		}
+	})
+}

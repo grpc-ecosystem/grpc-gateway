@@ -522,6 +522,9 @@ type Schema struct {
 	AllOf []*SchemaRef `json:"allOf,omitempty" yaml:"allOf,omitempty"` // All must match
 	Not   *SchemaRef   `json:"not,omitempty" yaml:"not,omitempty"`     // Must not match
 
+	// Discriminator for polymorphism with oneOf/anyOf
+	Discriminator *Discriminator `json:"discriminator,omitempty" yaml:"discriminator,omitempty"`
+
 	// Access control
 	ReadOnly  bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 	WriteOnly bool `json:"writeOnly,omitempty" yaml:"writeOnly,omitempty"`
