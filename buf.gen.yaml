@@ -18,3 +18,5 @@ plugins:
     out: .
     opt:
       - allow_repeated_fields_in_body=true
+  - local: protoc-gen-openapiv3
+    out: .

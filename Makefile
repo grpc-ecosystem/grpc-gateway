@@ -105,6 +105,11 @@ proto:
 	# Remove swagger files for openapiv3 definitions, they're unused
 	rm -f ./protoc-gen-openapiv3/options/annotations.swagger.json
 	rm -f ./protoc-gen-openapiv3/options/openapiv3.swagger.json
+	# Remove openapi v3 files for option definitions, they're unused
+	rm -f ./protoc-gen-openapiv2/options/annotations.openapi.json
+	rm -f ./protoc-gen-openapiv2/options/openapiv2.openapi.json
+	rm -f ./protoc-gen-openapiv3/options/annotations.openapi.json
+	rm -f ./protoc-gen-openapiv3/options/openapiv3.openapi.json
 	buf generate \
 		--template ./examples/internal/proto/examplepb/openapi_merge.buf.gen.yaml \
 		--path ./examples/internal/proto/examplepb/openapi_merge_a.proto \
@@ -175,6 +180,7 @@ test: proto
 clean:
 	find . -type f -name '*.pb.go' -delete
 	find . -type f -name '*.swagger.json' -delete
+	find . -type f -name '*.openapi.json' -delete
 	find . -type f -name '*.pb.gw.go' -delete
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 
