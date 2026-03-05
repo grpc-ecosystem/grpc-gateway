@@ -211,6 +211,16 @@ func TestRemoveInternalComments(t *testing.T) {
 			input:    "Public comment\n(-- api-linter: core::0131::http-body=disabled\n    api-linter: core::0131::http-method=disabled --)\nMore public",
 			expected: "Public comment\n\nMore public",
 		},
+		{
+			name:     "buf lint ignore directive",
+			input:    "Some description\nbuf:lint:ignore ENUM_VALUE_PREFIX\nbuf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\nMore text",
+			expected: "Some description\n\nMore text",
+		},
+		{
+			name:     "buf lint ignore only",
+			input:    "buf:lint:ignore FIELD_LOWER_SNAKE_CASE",
+			expected: "",
+		},
 	}
 
 	for _, tt := range tests {

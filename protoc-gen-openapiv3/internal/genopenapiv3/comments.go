@@ -311,10 +311,20 @@ func pathMatches(a, b []int32) bool {
 // Uses (?s) flag to make . match newlines for multi-line internal comments
 var internalCommentPattern = regexp.MustCompile(`(?s)\(--.*?--\)`)
 
+// bufLintIgnorePattern matches buf lint ignore directives: buf:lint:ignore RULE_NAME
+var bufLintIgnorePattern = regexp.MustCompile(`(?m)^\s*buf:lint:ignore\s+\S+\s*$`)
+
 // removeInternalComments removes internal comments per Google AIP-192.
 // These are marked with (-- ... --) and should not appear in public docs.
+// Also removes buf:lint:ignore directives which are tooling-specific.
 func removeInternalComments(comment string) string {
-	return strings.TrimSpace(internalCommentPattern.ReplaceAllString(comment, ""))
+	// Remove AIP-192 internal comments
+	result := internalCommentPattern.ReplaceAllString(comment, "")
+	// Remove buf lint ignore directives
+	result = bufLintIgnorePattern.ReplaceAllString(result, "")
+	// Clean up extra blank lines
+	result = regexp.MustCompile(`\n{3,}`).ReplaceAllString(result, "\n\n")
+	return strings.TrimSpace(result)
 }
 
 // splitSummaryDescription splits comments into summary (first paragraph) and description (rest).
