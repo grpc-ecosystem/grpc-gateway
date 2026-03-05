@@ -1,0 +1,1348 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/helloworld/helloworld.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/say/boolval/{boolVal}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_4",
+        "parameters": [
+          {
+            "name": "boolVal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/bytesval/{bytesVal}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_5",
+        "parameters": [
+          {
+            "name": "bytesVal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/doubleval/{doubleVal}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_3",
+        "parameters": [
+          {
+            "name": "doubleVal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/floatval/{floatVal}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_2",
+        "parameters": [
+          {
+            "name": "floatVal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/int32val/{int32Val}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_6",
+        "parameters": [
+          {
+            "name": "int32Val",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/int64val/{int64Val}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_8",
+        "parameters": [
+          {
+            "name": "int64Val",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/strval/{strVal}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_1",
+        "parameters": [
+          {
+            "name": "strVal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/uint32val/{uint32Val}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_7",
+        "parameters": [
+          {
+            "name": "uint32Val",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/uint64val/{uint64Val}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello_9",
+        "parameters": [
+          {
+            "name": "uint64Val",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/say/{name}": {
+      "get": {
+        "tags": [
+          "Greeter"
+        ],
+        "operationId": "Greeter_SayHello",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "strVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "floatVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "nullable": true
+            }
+          },
+          {
+            "name": "doubleVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "nullable": true
+            }
+          },
+          {
+            "name": "boolVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bytesVal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint32Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "int64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64",
+              "nullable": true
+            }
+          },
+          {
+            "name": "uint64Val",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uint64",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.helloworld.HelloReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.helloworld.HelloReply": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Greeter"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/openapi_merge_b.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/b/1": {
+      "post": {
+        "tags": [
+          "ServiceB"
+        ],
+        "summary": "ServiceB.MethodOne receives InMessageB and returns OutMessageB",
+        "description": "Here is the detail explanation about ServiceB.MethodOne.",
+        "operationId": "ServiceB_MethodOne",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.InMessageB"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OutMessageB represents a message returned from ServiceB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.OutMessageB"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/b/2": {
+      "post": {
+        "tags": [
+          "ServiceB"
+        ],
+        "summary": "ServiceB.MethodTwo receives OutMessageB and returns InMessageB",
+        "description": "Here is the detail explanation about ServiceB.MethodTwo.",
+        "operationId": "ServiceB_MethodTwo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.OutMessageB"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "InMessageB represents a message to ServiceB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.InMessageB"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.examplepb.InMessageB": {
+        "type": "object",
+        "description": "InMessageB represents a message to ServiceB.",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Here is the explanation about InMessageB.values"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.examplepb.OutMessageB": {
+        "type": "object",
+        "description": "OutMessageB represents a message returned from ServiceB.",
+        "properties": {
+          "values": {
+            "type": "array",
+            "description": "Here is the explanation about OutMessageB.value",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ServiceB",
+      "description": "ServiceB service responds to incoming merge requests."
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/excess_body.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/rpc/excess-body/rpc": {
+      "post": {
+        "tags": [
+          "ExcessBodyService"
+        ],
+        "operationId": "ExcessBodyService_NoBodyRpc",
+        "responses": {
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rpc/excess-body/rpc/with-body": {
+      "post": {
+        "tags": [
+          "ExcessBodyService"
+        ],
+        "operationId": "ExcessBodyService_WithBodyRpc",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.Empty"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rpc/excess-body/stream": {
+      "post": {
+        "tags": [
+          "ExcessBodyService"
+        ],
+        "operationId": "ExcessBodyService_NoBodyServerStream",
+        "responses": {
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rpc/excess-body/stream/with-body": {
+      "post": {
+        "tags": [
+          "ExcessBodyService"
+        ],
+        "operationId": "ExcessBodyService_WithBodyServerStream",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.Empty"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.protobuf.Empty": {
+        "type": "object"
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ExcessBodyService"
+    }
+  ]
+}

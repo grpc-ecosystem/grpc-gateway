@@ -1,0 +1,292 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/non_standard_names.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/non_standard/update": {
+      "patch": {
+        "tags": [
+          "NonStandardService"
+        ],
+        "summary": "Apply field mask to empty NonStandardMessage and return result.",
+        "operationId": "NonStandardService_Update",
+        "parameters": [
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "NonStandardMessage has oddly named fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/non_standard/update_with_json_names": {
+      "patch": {
+        "tags": [
+          "NonStandardService"
+        ],
+        "summary": "Apply field mask to empty NonStandardMessageWithJSONNames and return result.",
+        "operationId": "NonStandardService_UpdateWithJSONNames",
+        "parameters": [
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "NonStandardMessageWithJSONNames maps odd field names to odd JSON names for maximum confusion.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage": {
+        "type": "object",
+        "description": "NonStandardMessage has oddly named fields.",
+        "properties": {
+          "Num": {
+            "type": "string",
+            "format": "int64"
+          },
+          "STATUS": {
+            "type": "string"
+          },
+          "enGB": {
+            "type": "string",
+            "format": "int64"
+          },
+          "id": {
+            "type": "string",
+            "description": "Id represents the message identifier."
+          },
+          "langIdent": {
+            "type": "string"
+          },
+          "lineNum": {
+            "type": "string",
+            "format": "int64"
+          },
+          "no": {
+            "type": "string"
+          },
+          "thing": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage.Thing"
+          }
+        },
+        "required": [
+          "id",
+          "Num",
+          "lineNum",
+          "langIdent",
+          "STATUS",
+          "enGB",
+          "no",
+          "thing"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage.Thing": {
+        "type": "object",
+        "properties": {
+          "subThing": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage.Thing.SubThing"
+          }
+        },
+        "required": [
+          "subThing"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NonStandardMessage.Thing.SubThing": {
+        "type": "object",
+        "properties": {
+          "subValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subValue"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames": {
+        "type": "object",
+        "description": "NonStandardMessageWithJSONNames maps odd field names to odd JSON names for maximum confusion.",
+        "properties": {
+          "En_GB": {
+            "type": "string",
+            "format": "int64"
+          },
+          "ID": {
+            "type": "string",
+            "description": "Id represents the message identifier."
+          },
+          "LineNum": {
+            "type": "string",
+            "format": "int64"
+          },
+          "Num": {
+            "type": "string",
+            "format": "int64"
+          },
+          "Thingy": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames.Thing"
+          },
+          "langIdent": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "yes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ID",
+          "Num",
+          "LineNum",
+          "langIdent",
+          "status",
+          "En_GB",
+          "yes",
+          "Thingy"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames.Thing": {
+        "type": "object",
+        "properties": {
+          "SubThing": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames.Thing.SubThing"
+          }
+        },
+        "required": [
+          "SubThing"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NonStandardMessageWithJSONNames.Thing.SubThing": {
+        "type": "object",
+        "properties": {
+          "sub_Value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sub_Value"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "NonStandardService",
+      "description": "NonStandardService responds to incoming messages, applies a field mask and returns the masked response."
+    }
+  ]
+}

@@ -1,0 +1,269 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/openapi_merge_a.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/a/1": {
+      "post": {
+        "tags": [
+          "ServiceA"
+        ],
+        "summary": "ServiceA.MethodOne receives InMessageA and returns OutMessageA",
+        "description": "Here is the detail explanation about ServiceA.MethodOne.",
+        "operationId": "ServiceA_MethodOne",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.InMessageA"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OutMessageA represents a message returned from ServiceA.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.OutMessageA"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/a/2": {
+      "post": {
+        "tags": [
+          "ServiceA"
+        ],
+        "summary": "ServiceA.MethodTwo receives OutMessageA and returns InMessageA",
+        "description": "Here is the detail explanation about ServiceA.MethodTwo.",
+        "operationId": "ServiceA_MethodTwo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.OutMessageA"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "InMessageA represents a message to ServiceA and ServiceC.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.InMessageA"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/c/1": {
+      "post": {
+        "tags": [
+          "ServiceC"
+        ],
+        "summary": "ServiceC.MethodOne receives InMessageA and returns OutMessageC",
+        "description": "Here is the detail explanation about ServiceC.MethodOne.",
+        "operationId": "ServiceC_MethodOne",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.InMessageA"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OutMessageC represents a message returned from ServiceC.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.OutMessageC"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/c/2": {
+      "post": {
+        "tags": [
+          "ServiceC"
+        ],
+        "summary": "ServiceC.MethodTwo receives OutMessageA and returns InMessageA",
+        "description": "Here is the detail explanation about ServiceC.MethodTwo.",
+        "operationId": "ServiceC_MethodTwo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.OutMessageA"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "InMessageA represents a message to ServiceA and ServiceC.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.examplepb.InMessageA"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.examplepb.InMessageA": {
+        "type": "object",
+        "description": "InMessageA represents a message to ServiceA and ServiceC.",
+        "properties": {
+          "values": {
+            "type": "array",
+            "description": "Here is the explanation about InMessageA.values",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.examplepb.OutMessageA": {
+        "type": "object",
+        "description": "OutMessageA represents a message returned from ServiceA.",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Here is the explanation about OutMessageA.value"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.examplepb.OutMessageC": {
+        "type": "object",
+        "description": "OutMessageC represents a message returned from ServiceC.",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Here is the explanation about OutMessageC.value"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ServiceA",
+      "description": "ServiceA provides MethodOne and MethodTwo"
+    },
+    {
+      "name": "ServiceC",
+      "description": "ServiceC service responds to incoming merge requests."
+    }
+  ]
+}

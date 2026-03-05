@@ -1,0 +1,602 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/wrappers.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/wrappers": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Wrappers"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Wrappers"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testBool": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateBoolValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.BoolValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `bool`.\n\nThe JSON representation for `BoolValue` is JSON `true` and `false`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.BoolValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testBytes": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateBytesValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.BytesValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `bytes`.\n\nThe JSON representation for `BytesValue` is JSON string.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.BytesValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testDouble": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateDoubleValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.DoubleValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `double`.\n\nThe JSON representation for `DoubleValue` is JSON number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.DoubleValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testEmpty": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateEmpty",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.Empty"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testFloat": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateFloatValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.FloatValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `float`.\n\nThe JSON representation for `FloatValue` is JSON number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.FloatValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testInt32": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateInt32Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.Int32Value"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `int32`.\n\nThe JSON representation for `Int32Value` is JSON number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Int32Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testInt64": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateInt64Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.Int64Value"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `int64`.\n\nThe JSON representation for `Int64Value` is JSON string.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Int64Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testString": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateStringValue",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.StringValue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `string`.\n\nThe JSON representation for `StringValue` is JSON string.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.StringValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testUint32": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateUInt32Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.UInt32Value"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `uint32`.\n\nThe JSON representation for `UInt32Value` is JSON number.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.UInt32Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/testUint64": {
+      "post": {
+        "tags": [
+          "WrappersService"
+        ],
+        "operationId": "WrappersService_CreateUInt64Value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/google.protobuf.UInt64Value"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wrapper message for `uint64`.\n\nThe JSON representation for `UInt64Value` is JSON string.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.UInt64Value"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.protobuf.BoolValue": {
+        "type": "boolean",
+        "nullable": true
+      },
+      "google.protobuf.BytesValue": {
+        "type": "string",
+        "format": "byte",
+        "nullable": true
+      },
+      "google.protobuf.DoubleValue": {
+        "type": "number",
+        "format": "double",
+        "nullable": true
+      },
+      "google.protobuf.Empty": {
+        "type": "object"
+      },
+      "google.protobuf.FloatValue": {
+        "type": "number",
+        "format": "float",
+        "nullable": true
+      },
+      "google.protobuf.Int32Value": {
+        "type": "integer",
+        "format": "int32",
+        "nullable": true
+      },
+      "google.protobuf.Int64Value": {
+        "type": "string",
+        "format": "int64",
+        "nullable": true
+      },
+      "google.protobuf.StringValue": {
+        "type": "string",
+        "nullable": true
+      },
+      "google.protobuf.UInt32Value": {
+        "type": "integer",
+        "format": "int64",
+        "nullable": true
+      },
+      "google.protobuf.UInt64Value": {
+        "type": "string",
+        "format": "uint64",
+        "nullable": true
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.Wrappers": {
+        "type": "object",
+        "properties": {
+          "boolValue": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "bytesValue": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "doubleValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "floatValue": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "int32Value": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "int64Value": {
+            "type": "string",
+            "format": "int64",
+            "nullable": true
+          },
+          "stringValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "uint32Value": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "uint64Value": {
+            "type": "string",
+            "format": "uint64",
+            "nullable": true
+          }
+        },
+        "required": [
+          "stringValue",
+          "int32Value",
+          "int64Value",
+          "floatValue",
+          "doubleValue",
+          "boolValue",
+          "uint32Value",
+          "uint64Value",
+          "bytesValue"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "WrappersService"
+    }
+  ]
+}

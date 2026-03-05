@@ -1,0 +1,335 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/response_body_service.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/responsebodies/{data}": {
+      "get": {
+        "tags": [
+          "ResponseBodyService"
+        ],
+        "operationId": "ResponseBodyService_ListResponseBodies",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/responsebody/samename/{data}": {
+      "get": {
+        "tags": [
+          "ResponseBodyService"
+        ],
+        "operationId": "ResponseBodyService_GetResponseBodySameName",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyValue"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/responsebody/stream/{data}": {
+      "get": {
+        "tags": [
+          "ResponseBodyService"
+        ],
+        "operationId": "ResponseBodyService_GetResponseBodyStream",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/responsebody/{data}": {
+      "get": {
+        "tags": [
+          "ResponseBodyService"
+        ],
+        "operationId": "ResponseBodyService_GetResponseBody",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/responsestrings/{data}": {
+      "get": {
+        "tags": [
+          "ResponseBodyService"
+        ],
+        "operationId": "ResponseBodyService_ListResponseStrings",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseStrings"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response"
+            }
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response.ResponseType"
+          }
+        },
+        "required": [
+          "data",
+          "type"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseBodyOut.Response.ResponseType": {
+        "type": "string",
+        "enum": [
+          "UNKNOWN",
+          "A",
+          "B"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.RepeatedResponseStrings": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut": {
+        "type": "object",
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut.Response"
+          }
+        },
+        "required": [
+          "response"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ResponseBodyOut.Response": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ResponseBodyValue": {
+        "type": "object",
+        "properties": {
+          "responseBodyValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "responseBodyValue"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ResponseBodyService"
+    }
+  ]
+}

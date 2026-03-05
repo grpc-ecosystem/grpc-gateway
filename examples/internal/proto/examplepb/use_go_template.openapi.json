@@ -1,0 +1,211 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/use_go_template.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/login": {
+      "post": {
+        "tags": [
+          "LoginService"
+        ],
+        "summary": "Login",
+        "description": "{{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the \"{{.Service.Name}}\" service.\nIt takes in \"{{.RequestType.Name}}\" and returns a \"{{.ResponseType.Name}}\".\n\n## {{.RequestType.Name}}\n| Field ID    | Name      | Type                                                       | Description                  |\n| ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}\n| {{.Number}} | {{.Name}} | {{if eq .Label.String \"LABEL_REPEATED\"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}\n\n## {{.ResponseType.Name}}\n| Field ID    | Name      | Type                                                       | Description                  |\n| ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}\n| {{.Number}} | {{.Name}} | {{if eq .Label.String \"LABEL_REPEATED\"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}",
+        "operationId": "LoginService_Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.LoginReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/logout": {
+      "post": {
+        "tags": [
+          "LoginService"
+        ],
+        "summary": "Logout",
+        "description": "{{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the \"{{.Service.Name}}\" service.\nIt takes in \"{{.RequestType.Name}}\" and returns a \"{{.ResponseType.Name}}\".\n\n## {{.RequestType.Name}}\n| Field ID    | Name      | Type                                                       | Description                  |\n| ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}\n| {{.Number}} | {{.Name}} | {{if eq .Label.String \"LABEL_REPEATED\"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}\n\n## {{.ResponseType.Name}}\n| Field ID    | Name      | Type                                                       | Description                  |\n| ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}\n| {{.Number}} | {{.Name}} | {{if eq .Label.String \"LABEL_REPEATED\"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}",
+        "operationId": "LoginService_Logout",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.LogoutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.LogoutReply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.LoginReply": {
+        "type": "object",
+        "properties": {
+          "access": {
+            "type": "boolean",
+            "description": "Whether you have access or not"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "access"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.LoginRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "The entered password"
+          },
+          "username": {
+            "type": "string",
+            "description": "The entered username"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.LogoutReply": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message that tells you whether your\nlogout was successful or not"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.LogoutRequest": {
+        "type": "object",
+        "properties": {
+          "stringarray": {
+            "type": "array",
+            "description": "This is an array\n\nIt displays that using [] in front of the type",
+            "items": {
+              "type": "string"
+            }
+          },
+          "test": {
+            "type": "integer",
+            "format": "int32",
+            "description": "This is the title\n\nThis is the \"Description\" of field test\nyou can use as many newlines as you want\n\nit will still format the same in the table"
+          },
+          "timeoflogout": {
+            "type": "string",
+            "description": "The time the logout was registered"
+          }
+        },
+        "required": [
+          "timeoflogout",
+          "test"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "LoginService"
+    }
+  ]
+}

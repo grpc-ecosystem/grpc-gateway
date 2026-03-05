@@ -1,0 +1,896 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/visibility_rule_echo_service.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/echo/{id}": {
+      "post": {
+        "tags": [
+          "VisibilityRuleEchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.\nIt should always be visible in the open API output.",
+        "operationId": "VisibilityRuleEchoService_Echo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum"
+            }
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_internal": {
+      "get": {
+        "tags": [
+          "VisibilityRuleEchoService"
+        ],
+        "summary": "EchoInternal is an internal API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"INTERNAL\".",
+        "operationId": "VisibilityRuleEchoService_EchoInternal",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum"
+            }
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_internal_and_preview": {
+      "get": {
+        "tags": [
+          "VisibilityRuleEchoService"
+        ],
+        "summary": "EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\" or \"INTERNAL\".",
+        "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum"
+            }
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_preview": {
+      "get": {
+        "tags": [
+          "VisibilityRuleEchoService"
+        ],
+        "summary": "EchoPreview is a preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\".",
+        "operationId": "VisibilityRuleEchoService_EchoPreview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum"
+            }
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MessageInPreviewMethod doesn't define its own visibility restrictions,\nbut is only included in a method marked as \"PREVIEW\", so it will only\nappear if `visibility_restriction_selectors` include \"PREVIEW\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleMessageInPreviewMethod"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/internal/echo/{id}": {
+      "post": {
+        "tags": [
+          "VisibilityRuleInternalEchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.\nIt should not be visible in the open API output.",
+        "operationId": "VisibilityRuleInternalEchoService_Echo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+            }
+          },
+          {
+            "name": "internalField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "previewField",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "anEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum"
+            }
+          },
+          {
+            "name": "ahiddenDefaultEnum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded": {
+        "type": "object",
+        "description": "Embedded represents a message embedded in SimpleMessage.",
+        "properties": {
+          "internalField": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "previewField": {
+            "type": "string"
+          },
+          "progress": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "mark.progress",
+            "properties": {
+              "progress": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "required": [
+              "progress"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mark.note",
+            "properties": {
+              "note": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "note"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mark.internalField",
+            "properties": {
+              "internalField": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "internalField"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mark.previewField",
+            "properties": {
+              "previewField": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "previewField"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEnumInPreviewMethod": {
+        "type": "string",
+        "description": "EnumInPreviewMethod doesn't define its own visibility restrictions,\nbut is only included in a method marked as \"PREVIEW\", so it will only\nappear if `visibility_restriction_selectors` include \"PREVIEW\".",
+        "enum": [
+          "VISIBILITY_RULE_ENUM_IN_PREVIEW_METHOD_UNSPECIFIED"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleMessageInPreviewMethod": {
+        "type": "object",
+        "description": "MessageInPreviewMethod doesn't define its own visibility restrictions,\nbut is only included in a method marked as \"PREVIEW\", so it will only\nappear if `visibility_restriction_selectors` include \"PREVIEW\".",
+        "properties": {
+          "enum": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEnumInPreviewMethod"
+          },
+          "id": {
+            "type": "string"
+          },
+          "subMessage": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSubMessageInPreviewMethod"
+          }
+        },
+        "required": [
+          "id",
+          "subMessage",
+          "enum"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage": {
+        "type": "object",
+        "description": "SimpleMessage represents a simple message sent to the Echo service.",
+        "properties": {
+          "ahiddenDefaultEnum": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault"
+          },
+          "anEnum": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum"
+          },
+          "en": {
+            "type": "string",
+            "format": "int64"
+          },
+          "id": {
+            "type": "string",
+            "description": "Id represents the message identifier."
+          },
+          "internalField": {
+            "type": "string"
+          },
+          "lang": {
+            "type": "string"
+          },
+          "lineNum": {
+            "type": "string",
+            "format": "int64"
+          },
+          "no": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+          },
+          "num": {
+            "type": "string",
+            "format": "int64"
+          },
+          "previewField": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+          }
+        },
+        "required": [
+          "id",
+          "num",
+          "status",
+          "internalField",
+          "previewField",
+          "anEnum",
+          "ahiddenDefaultEnum"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "code.lineNum",
+            "properties": {
+              "lineNum": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "required": [
+              "lineNum"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "code.lang",
+            "properties": {
+              "lang": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "lang"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "ext.en",
+            "properties": {
+              "en": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "required": [
+              "en"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "ext.no",
+            "properties": {
+              "no": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEmbedded"
+              }
+            },
+            "required": [
+              "no"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnum": {
+        "type": "string",
+        "enum": [
+          "VISIBILITY_ENUM_UNSPECIFIED",
+          "VISIBILITY_ENUM_VISIBLE",
+          "VISIBILITY_ENUM_INTERNAL",
+          "VISIBILITY_ENUM_PREVIEW"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSimpleMessage.VisibilityEnumHiddenDefault": {
+        "type": "string",
+        "enum": [
+          "VISIBILITY_ENUM_HIDDEN_DEFAULT_UNSPECIFIED",
+          "VISIBILITY_ENUM_HIDDEN_DEFAULT_VISIBLE"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleSubMessageInPreviewMethod": {
+        "type": "object",
+        "description": "SubMessageInPreviewMethod doesn't define its own visibility restrictions,\nbut is only included in a method marked as \"PREVIEW\", so it will only\nappear if `visibility_restriction_selectors` include \"PREVIEW\".",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "VisibilityRuleEchoService",
+      "description": "VisibilityRuleEchoService service responds to incoming echo requests.\nDifferent services will be available in the swagger documentation depending\nbased on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`\nflag when calling protoc-gen-openapiv2."
+    },
+    {
+      "name": "VisibilityRuleInternalEchoService",
+      "description": "VisibilityRuleInternalEchoService service responds to incoming echo requests.\nIt should only be visible in the OpenAPI spec if `visibility_restriction_selectors` includes \"INTERNAL\"."
+    }
+  ]
+}

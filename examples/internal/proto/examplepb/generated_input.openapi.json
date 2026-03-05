@@ -1,0 +1,486 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/generated_input.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/a_bit_of_everything/generated_create": {
+      "post": {
+        "tags": [
+          "GeneratedService"
+        ],
+        "operationId": "GeneratedService_Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.protobuf.Empty"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.protobuf.Empty": {
+        "type": "object"
+      },
+      "google.protobuf.Timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum": {
+        "type": "string",
+        "enum": [
+          "GHI",
+          "JKL"
+        ]
+      },
+      "grpc.gateway.examples.internal.pathenum.PathEnum": {
+        "type": "string",
+        "enum": [
+          "ABC",
+          "DEF"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything": {
+        "type": "object",
+        "description": "Intentionally complicated message type to cover many features of Protobuf.",
+        "properties": {
+          "boolValue": {
+            "type": "boolean"
+          },
+          "bytesValue": {
+            "type": "string",
+            "format": "byte"
+          },
+          "doubleValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "enumValue": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NumericEnum"
+          },
+          "enumValueAnnotation": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NumericEnum"
+          },
+          "fixed32Value": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fixed64Value": {
+            "type": "string",
+            "format": "uint64"
+          },
+          "floatValue": {
+            "type": "number",
+            "format": "float"
+          },
+          "int32Value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "int64OverrideType": {
+            "type": "string",
+            "format": "int64"
+          },
+          "int64Value": {
+            "type": "string",
+            "format": "int64"
+          },
+          "mapValue": {
+            "type": "array",
+            "description": "map of numeric enum",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MapValueEntry"
+            }
+          },
+          "mappedNestedValue": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedNestedValueEntry"
+            }
+          },
+          "mappedStringValue": {
+            "type": "array",
+            "description": "map of string  (This comment is overridden by the field annotation)",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedStringValueEntry"
+            }
+          },
+          "nested": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
+            }
+          },
+          "nestedAnnotation": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
+          },
+          "nestedPathEnumValue": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum"
+          },
+          "nonConventionalNameValue": {
+            "type": "string"
+          },
+          "oneofEmpty": {
+            "type": "object"
+          },
+          "oneofString": {
+            "type": "string"
+          },
+          "optionalStringField": {
+            "type": "string",
+            "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
+          },
+          "optionalStringValue": {
+            "type": "string"
+          },
+          "outputOnlyStringViaFieldBehaviorAnnotation": {
+            "type": "string",
+            "description": "mark a field as readonly in Open API definition"
+          },
+          "pathEnumValue": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.pathenum.PathEnum"
+          },
+          "productId": {
+            "type": "array",
+            "description": "Test openapiv2 generation of repeated fields",
+            "items": {
+              "type": "string"
+            }
+          },
+          "repeatedEnumAnnotation": {
+            "type": "array",
+            "description": "repeated numeric enum comment (This comment is overridden by the field annotation)",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NumericEnum"
+            }
+          },
+          "repeatedEnumValue": {
+            "type": "array",
+            "description": "repeated enum value. it is comma-separated in query",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NumericEnum"
+            }
+          },
+          "repeatedNestedAnnotation": {
+            "type": "array",
+            "description": "repeated nested object comment (This comment is overridden by the field annotation)",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
+            }
+          },
+          "repeatedStringAnnotation": {
+            "type": "array",
+            "description": "repeated string comment (This comment is overridden by the field annotation)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "repeatedStringValue": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requiredStringField1": {
+            "type": "string"
+          },
+          "requiredStringField2": {
+            "type": "string"
+          },
+          "requiredStringViaFieldBehaviorAnnotation": {
+            "type": "string",
+            "description": "mark a field as required in Open API definition"
+          },
+          "required_field_behavior_json_name_custom": {
+            "type": "string",
+            "description": "Test openapiv2 handling of required json_name fields"
+          },
+          "required_field_schema_json_name_custom": {
+            "type": "string"
+          },
+          "sfixed32Value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sfixed64Value": {
+            "type": "string",
+            "format": "int64"
+          },
+          "singleNested": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
+          },
+          "sint32Value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sint64Value": {
+            "type": "string",
+            "format": "int64"
+          },
+          "stringValue": {
+            "type": "string"
+          },
+          "timestampValue": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trailingBoth": {
+            "type": "string",
+            "description": "Leading both\n\nTrailing both."
+          },
+          "trailingMultiline": {
+            "type": "string",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline."
+          },
+          "trailingOnly": {
+            "type": "string",
+            "description": "Trailing only"
+          },
+          "trailingOnlyDot": {
+            "type": "string",
+            "description": "Trailing only dot."
+          },
+          "uint32Value": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uint64Value": {
+            "type": "string",
+            "format": "uint64"
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "uuids": {
+            "type": "array",
+            "description": "Specify a custom format of repeated field items",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "singleNested",
+          "uuid",
+          "floatValue",
+          "doubleValue",
+          "int64Value",
+          "uint64Value",
+          "int32Value",
+          "fixed64Value",
+          "fixed32Value",
+          "boolValue",
+          "stringValue",
+          "bytesValue",
+          "uint32Value",
+          "enumValue",
+          "pathEnumValue",
+          "nestedPathEnumValue",
+          "sfixed32Value",
+          "sfixed64Value",
+          "sint32Value",
+          "sint64Value",
+          "nonConventionalNameValue",
+          "timestampValue",
+          "enumValueAnnotation",
+          "nestedAnnotation",
+          "int64OverrideType",
+          "requiredStringViaFieldBehaviorAnnotation",
+          "outputOnlyStringViaFieldBehaviorAnnotation",
+          "optionalStringField",
+          "requiredStringField1",
+          "requiredStringField2",
+          "required_field_behavior_json_name_custom",
+          "required_field_schema_json_name_custom",
+          "trailingOnly",
+          "trailingOnlyDot",
+          "trailingBoth",
+          "trailingMultiline"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "oneof_value.oneofEmpty",
+            "properties": {
+              "oneofEmpty": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "oneofEmpty"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "oneof_value.oneofString",
+            "properties": {
+              "oneofString": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "oneofString"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MapValueEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NumericEnum"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedNestedValueEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.MappedStringValueEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested": {
+        "type": "object",
+        "description": "Nested is nested type.",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "name is nested field."
+          },
+          "ok": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested.DeepEnum"
+          }
+        },
+        "required": [
+          "name",
+          "amount",
+          "ok"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested.DeepEnum": {
+        "type": "string",
+        "description": "DeepEnum is one or zero.",
+        "enum": [
+          "FALSE",
+          "TRUE"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NumericEnum": {
+        "type": "string",
+        "description": "NumericEnum is one or zero.",
+        "enum": [
+          "ZERO",
+          "ONE"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "GeneratedService",
+      "description": "Defines some more operations to be added to ABitOfEverythingService"
+    }
+  ]
+}

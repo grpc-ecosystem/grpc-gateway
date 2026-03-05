@@ -1,0 +1,121 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/remove_internal_comment.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/foo": {
+      "post": {
+        "tags": [
+          "Foo2Service"
+        ],
+        "summary": "Foo Summary",
+        "description": "Description",
+        "operationId": "Foo2Service_Foo2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Foo2Request"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Foo2Reply"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.Foo2Reply": {
+        "type": "object"
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.Foo2Request": {
+        "type": "object",
+        "description": "Foo2Request",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "Password.\n\nNew row."
+          },
+          "username": {
+            "type": "string",
+            "description": "Username.\n\nSame row, single line break doesn't count on markdown."
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Foo2Service",
+      "description": "Foo2Service"
+    }
+  ]
+}

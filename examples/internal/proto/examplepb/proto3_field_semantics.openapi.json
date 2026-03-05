@@ -1,0 +1,183 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/proto3_field_semantics.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/filter": {
+      "get": {
+        "tags": [
+          "Proto3FieldSemanticsService"
+        ],
+        "operationId": "Proto3FieldSemanticsService_GetFilter",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.GetFilterResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.Filter": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.FilterCondition"
+          },
+          "group": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.FilterGroup"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "filter_union.condition",
+            "properties": {
+              "condition": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.FilterCondition"
+              }
+            },
+            "required": [
+              "condition"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "filter_union.group",
+            "properties": {
+              "group": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.FilterGroup"
+              }
+            },
+            "required": [
+              "group"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.FilterCondition": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.FilterGroup": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Filter"
+            }
+          },
+          "operator": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operator"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.GetFilterResponse": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Filter"
+          }
+        },
+        "required": [
+          "filter"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Proto3FieldSemanticsService"
+    }
+  ]
+}

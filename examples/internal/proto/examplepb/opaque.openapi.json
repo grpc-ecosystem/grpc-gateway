@@ -1,0 +1,1802 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/opaque.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/customer/activity": {
+      "post": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueStreamCustomerActivity - Stream request, stream response\nBidirectional streaming for real-time customer activity monitoring",
+        "operationId": "OpaqueEcommerceService_OpaqueStreamCustomerActivity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OpaqueStreamCustomerActivityRequest represents a report of server activity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/notes:echo": {
+      "post": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueEchoNote - Unary request with nested body field from another package.\nExercises the opaque body import path by referencing grpc.gateway.examples.internal.proto.sub.StringMessage.",
+        "operationId": "OpaqueEcommerceService_OpaqueEchoNote",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.sub.StringMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OpaqueEchoNoteResponse mirrors the request payload for simplicity.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueEchoNoteResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orders/process": {
+      "post": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueProcessOrders - Stream request, unary response\nProcesses multiple orders in a batch and returns a summary",
+        "operationId": "OpaqueEcommerceService_OpaqueProcessOrders",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OpaqueProcessOrdersResponse represents orders processing result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orders/search/{order.status}/shipAddressType/{order.shipping_address.address_type}": {
+      "get": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueSearchOrders - Unary request, unary response\nUses enum params (both top level and nested) to populate fields to test opaque get chain",
+        "operationId": "OpaqueEcommerceService_OpaqueSearchOrders",
+        "parameters": [
+          {
+            "name": "order.status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueOrderStatus"
+            }
+          },
+          {
+            "name": "order.shipping_address.address_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.OpaqueAddressType"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OpaqueSearchOrdersResponse represents a list of orders found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchOrdersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products": {
+      "post": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueCreateProduct - Unary request with body field, unary response\nCreates a new product with the product details in the body",
+        "operationId": "OpaqueEcommerceService_OpaqueCreateProduct",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OpaqueCreateProductResponse represents the created product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products/search": {
+      "get": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueSearchProducts - Unary request, stream response\nSearches for products based on criteria and streams results back",
+        "operationId": "OpaqueEcommerceService_OpaqueSearchProducts",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "brands",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.OpaqueSortOrder"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currencyCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldMask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.FiltersEntry"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OpaqueSearchProductsResponse represents a single product in search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products/{product.product_id}": {
+      "patch": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueUpdateProduct - PATCH request with FieldMask and body field mapping\nto reproduce the compilation issue with bodyData as a value type.",
+        "operationId": "OpaqueEcommerceService_OpaqueUpdateProduct",
+        "parameters": [
+          {
+            "name": "product.product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OpaqueUpdateProductResponse represents the response for OpaqueUpdateProduct",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products/{product_id}": {
+      "get": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueGetProduct - Unary request, unary response\nRetrieves detailed information about a specific product",
+        "operationId": "OpaqueEcommerceService_OpaqueGetProduct",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeVariants",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeRelatedProducts",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currencyCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OpaqueGetProductResponse represents a response with product information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/productsField": {
+      "post": {
+        "tags": [
+          "OpaqueEcommerceService"
+        ],
+        "summary": "OpaqueCreateProductField - same as above, but with body field mapping.",
+        "operationId": "OpaqueEcommerceService_OpaqueCreateProductField",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OpaqueCreateProductFieldResponse represents the created product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.protobuf.BoolValue": {
+        "type": "boolean",
+        "nullable": true
+      },
+      "google.protobuf.DoubleValue": {
+        "type": "number",
+        "format": "double",
+        "nullable": true
+      },
+      "google.protobuf.Duration": {
+        "type": "string"
+      },
+      "google.protobuf.Timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate": {
+        "type": "object",
+        "description": "OpaqueActivityUpdate represents a server response to customer activity",
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "discountPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "inventoryCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "notificationId": {
+            "type": "string"
+          },
+          "offerCode": {
+            "type": "string"
+          },
+          "offerExpiry": {
+            "type": "string"
+          },
+          "priceUpdate": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "redirectUrl": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.UpdateDataEntry"
+            }
+          },
+          "updateType": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.OpaqueUpdateType"
+          }
+        },
+        "required": [
+          "customerId",
+          "sessionId",
+          "updateType",
+          "timestamp",
+          "message",
+          "priceUpdate",
+          "inventoryCount",
+          "offerCode",
+          "offerExpiry",
+          "discountPercentage",
+          "priority"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "action_data.redirectUrl",
+            "properties": {
+              "redirectUrl": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "redirectUrl"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "action_data.notificationId",
+            "properties": {
+              "notificationId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "notificationId"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.OpaqueUpdateType": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_UPDATE_TYPE_UNSPECIFIED",
+          "OPAQUE_UPDATE_TYPE_RECOMMENDATION",
+          "OPAQUE_UPDATE_TYPE_NOTIFICATION",
+          "OPAQUE_UPDATE_TYPE_OFFER",
+          "OPAQUE_UPDATE_TYPE_INVENTORY_UPDATE",
+          "OPAQUE_UPDATE_TYPE_PRICE_CHANGE",
+          "OPAQUE_UPDATE_TYPE_CART_REMINDER"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate.UpdateDataEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress": {
+        "type": "object",
+        "description": "OpaqueAddress represents a physical address",
+        "properties": {
+          "addressType": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.OpaqueAddressType"
+          },
+          "city": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.MetadataEntry"
+            }
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "streetLine1": {
+            "type": "string"
+          },
+          "streetLine2": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "streetLine1",
+          "streetLine2",
+          "city",
+          "state",
+          "country",
+          "postalCode",
+          "addressType",
+          "isDefault"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.MetadataEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress.OpaqueAddressType": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_ADDRESS_TYPE_UNSPECIFIED",
+          "OPAQUE_ADDRESS_TYPE_RESIDENTIAL",
+          "OPAQUE_ADDRESS_TYPE_BUSINESS",
+          "OPAQUE_ADDRESS_TYPE_SHIPPING",
+          "OPAQUE_ADDRESS_TYPE_BILLING"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductFieldResponse": {
+        "type": "object",
+        "description": "OpaqueCreateProductFieldResponse represents the created product",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+          }
+        },
+        "required": [
+          "product"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductRequest": {
+        "type": "object",
+        "description": "OpaqueCreateProductRequest represents a request to create a product",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+          },
+          "productId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "product"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueCreateProductResponse": {
+        "type": "object",
+        "description": "OpaqueCreateProductResponse represents the created product",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+          }
+        },
+        "required": [
+          "product"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent": {
+        "type": "object",
+        "description": "OpaqueCustomerEvent represents a customer activity event",
+        "properties": {
+          "categoryId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "deviceType": {
+            "type": "string"
+          },
+          "eventData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.EventDataEntry"
+            }
+          },
+          "eventType": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.OpaqueEventType"
+          },
+          "ipAddress": {
+            "type": "string"
+          },
+          "pageUrl": {
+            "type": "string"
+          },
+          "productId": {
+            "type": "string"
+          },
+          "searchQuery": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userAgent": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "customerId",
+          "sessionId",
+          "eventType",
+          "timestamp",
+          "productId",
+          "categoryId",
+          "searchQuery",
+          "pageUrl",
+          "value",
+          "deviceType",
+          "ipAddress",
+          "userAgent"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.EventDataEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent.OpaqueEventType": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_EVENT_TYPE_UNSPECIFIED",
+          "OPAQUE_EVENT_TYPE_PAGE_VIEW",
+          "OPAQUE_EVENT_TYPE_PRODUCT_VIEW",
+          "OPAQUE_EVENT_TYPE_ADD_TO_CART",
+          "OPAQUE_EVENT_TYPE_REMOVE_FROM_CART",
+          "OPAQUE_EVENT_TYPE_CHECKOUT_START",
+          "OPAQUE_EVENT_TYPE_CHECKOUT_COMPLETE",
+          "OPAQUE_EVENT_TYPE_SEARCH",
+          "OPAQUE_EVENT_TYPE_ACCOUNT_UPDATE"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueEchoNoteResponse": {
+        "type": "object",
+        "description": "OpaqueEchoNoteResponse mirrors the request payload for simplicity.",
+        "properties": {
+          "note": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.sub.StringMessage"
+          }
+        },
+        "required": [
+          "note"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueGetProductResponse": {
+        "type": "object",
+        "description": "OpaqueGetProductResponse represents a response with product information",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+          }
+        },
+        "required": [
+          "product"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder": {
+        "type": "object",
+        "description": "OpaqueOrder represents a customer order",
+        "properties": {
+          "billingAddress": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress"
+          },
+          "couponCode": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "deliveredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem"
+            }
+          },
+          "metadata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.MetadataEntry"
+            }
+          },
+          "orderId": {
+            "type": "string"
+          },
+          "paymentMethodId": {
+            "type": "string"
+          },
+          "promotionId": {
+            "type": "string"
+          },
+          "shippedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "shipping": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueAddress"
+          },
+          "shippingInfo": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo"
+          },
+          "status": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueOrderStatus"
+          },
+          "subtotal": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "tax": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "total": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "trackingNumber": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "orderId",
+          "customerId",
+          "subtotal",
+          "tax",
+          "shipping",
+          "total",
+          "shippingAddress",
+          "billingAddress",
+          "status",
+          "paymentMethodId",
+          "trackingNumber",
+          "createdAt",
+          "updatedAt",
+          "shippedAt",
+          "deliveredAt",
+          "shippingInfo"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "discount_applied.couponCode",
+            "properties": {
+              "couponCode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "couponCode"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "discount_applied.promotionId",
+            "properties": {
+              "promotionId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "promotionId"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.MetadataEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueOrderStatus": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_ORDER_STATUS_UNSPECIFIED",
+          "OPAQUE_ORDER_STATUS_PENDING",
+          "OPAQUE_ORDER_STATUS_PROCESSING",
+          "OPAQUE_ORDER_STATUS_SHIPPED",
+          "OPAQUE_ORDER_STATUS_DELIVERED",
+          "OPAQUE_ORDER_STATUS_CANCELLED",
+          "OPAQUE_ORDER_STATUS_RETURNED"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder.OpaqueShippingInfo": {
+        "type": "object",
+        "properties": {
+          "carrier": {
+            "type": "string"
+          },
+          "estimatedDeliveryTime": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "trackingUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "carrier",
+          "method",
+          "estimatedDeliveryTime"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem": {
+        "type": "object",
+        "description": "OpaqueOrderItem represents an item in an order",
+        "properties": {
+          "giftMessage": {
+            "type": "string"
+          },
+          "giftWrapped": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "productId": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "selectedAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.SelectedAttributesEntry"
+            }
+          },
+          "totalPrice": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "unitPrice": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "variantId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "variantId",
+          "productName",
+          "quantity",
+          "unitPrice",
+          "totalPrice",
+          "giftWrapped",
+          "giftMessage"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderItem.SelectedAttributesEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary": {
+        "type": "object",
+        "description": "OpaqueOrderSummary represents a summary of processed orders",
+        "properties": {
+          "errorDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.ErrorDetailsEntry"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.OpaqueOrderError"
+            }
+          },
+          "failedOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "processingTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "successfulOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalOrdersProcessed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalValue": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          }
+        },
+        "required": [
+          "totalOrdersProcessed",
+          "successfulOrders",
+          "failedOrders",
+          "totalValue",
+          "processingTime"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.ErrorDetailsEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary.OpaqueOrderError": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderId",
+          "errorCode",
+          "errorMessage"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaquePrice": {
+        "type": "object",
+        "description": "OpaquePrice represents a monetary value with currency",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "isDiscounted": {
+            "type": "boolean"
+          },
+          "originalAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "priceValidUntil": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "amount",
+          "currencyCode",
+          "isDiscounted",
+          "originalAmount",
+          "priceValidUntil"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersRequest": {
+        "type": "object",
+        "description": "OpaqueProcessOrdersRequest represents a request to process order",
+        "properties": {
+          "order": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder"
+          }
+        },
+        "required": [
+          "order"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProcessOrdersResponse": {
+        "type": "object",
+        "description": "OpaqueProcessOrdersResponse represents orders processing result",
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrderSummary"
+          }
+        },
+        "required": [
+          "summary"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct": {
+        "type": "object",
+        "description": "OpaqueProduct represents a product in the e-commerce system",
+        "properties": {
+          "averageRating": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageShippingTime": {
+            "type": "string"
+          },
+          "basePrice": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dimensions": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions"
+          },
+          "isFeatured": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.MetadataEntry"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "productId": {
+            "type": "string"
+          },
+          "regionalPrices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry"
+            }
+          },
+          "reviewCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductStatus"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "taxExempt": {
+            "type": "boolean"
+          },
+          "taxPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant"
+            }
+          }
+        },
+        "required": [
+          "productId",
+          "name",
+          "description",
+          "brand",
+          "basePrice",
+          "category",
+          "averageRating",
+          "reviewCount",
+          "isFeatured",
+          "createdAt",
+          "updatedAt",
+          "averageShippingTime",
+          "status",
+          "dimensions"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "tax_info.taxPercentage",
+            "properties": {
+              "taxPercentage": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            "required": [
+              "taxPercentage"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "tax_info.taxExempt",
+            "properties": {
+              "taxExempt": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "taxExempt"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.MetadataEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions": {
+        "type": "object",
+        "properties": {
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "length": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions.OpaqueUnit"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "length",
+          "width",
+          "height",
+          "weight",
+          "unit"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductDimensions.OpaqueUnit": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_UNIT_UNSPECIFIED",
+          "OPAQUE_UNIT_METRIC",
+          "OPAQUE_UNIT_IMPERIAL"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.OpaqueProductStatus": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_PRODUCT_STATUS_UNSPECIFIED",
+          "OPAQUE_PRODUCT_STATUS_DRAFT",
+          "OPAQUE_PRODUCT_STATUS_ACTIVE",
+          "OPAQUE_PRODUCT_STATUS_OUT_OF_STOCK",
+          "OPAQUE_PRODUCT_STATUS_DISCONTINUED"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct.RegionalPricesEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory": {
+        "type": "object",
+        "description": "OpaqueProductCategory represents a product category",
+        "properties": {
+          "categoryId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentCategory": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProductCategory"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "categoryId",
+          "name",
+          "description",
+          "parentCategory",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant": {
+        "type": "object",
+        "description": "OpaqueProductVariant represents a specific variant of a product",
+        "properties": {
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.AttributesEntry"
+            }
+          },
+          "fixedAmountOff": {
+            "type": "number",
+            "format": "double"
+          },
+          "imageData": {
+            "type": "string",
+            "format": "byte"
+          },
+          "imageUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "inventoryCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isAvailable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "percentageOff": {
+            "type": "number",
+            "format": "double"
+          },
+          "price": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaquePrice"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "variantId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "variantId",
+          "sku",
+          "name",
+          "price",
+          "inventoryCount",
+          "imageData",
+          "isAvailable"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "discount_info.percentageOff",
+            "properties": {
+              "percentageOff": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            "required": [
+              "percentageOff"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "discount_info.fixedAmountOff",
+            "properties": {
+              "fixedAmountOff": {
+                "type": "number",
+                "format": "double"
+              }
+            },
+            "required": [
+              "fixedAmountOff"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueProductVariant.AttributesEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchOrdersResponse": {
+        "type": "object",
+        "description": "OpaqueSearchOrdersResponse represents a list of orders found",
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueOrder"
+            }
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.FiltersEntry": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsRequest.OpaqueSortOrder": {
+        "type": "string",
+        "enum": [
+          "OPAQUE_SORT_ORDER_UNSPECIFIED",
+          "OPAQUE_SORT_ORDER_RELEVANCE",
+          "OPAQUE_SORT_ORDER_PRICE_LOW_TO_HIGH",
+          "OPAQUE_SORT_ORDER_PRICE_HIGH_TO_LOW",
+          "OPAQUE_SORT_ORDER_NEWEST_FIRST",
+          "OPAQUE_SORT_ORDER_RATING",
+          "OPAQUE_SORT_ORDER_POPULARITY"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueSearchProductsResponse": {
+        "type": "object",
+        "description": "OpaqueSearchProductsResponse represents a single product in search results",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+          }
+        },
+        "required": [
+          "product"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityRequest": {
+        "type": "object",
+        "description": "OpaqueStreamCustomerActivityRequest represents a report of user activity",
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueCustomerEvent"
+          }
+        },
+        "required": [
+          "event"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueStreamCustomerActivityResponse": {
+        "type": "object",
+        "description": "OpaqueStreamCustomerActivityRequest represents a report of server activity",
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueActivityUpdate"
+          }
+        },
+        "required": [
+          "event"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.OpaqueUpdateProductResponse": {
+        "type": "object",
+        "description": "OpaqueUpdateProductResponse represents the response for OpaqueUpdateProduct",
+        "properties": {
+          "product": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.OpaqueProduct"
+          }
+        },
+        "required": [
+          "product"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.sub.StringMessage": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "value"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "OpaqueEcommerceService",
+      "description": "OpaqueEcommerceService provides a comprehensive e-commerce API with various request/response patterns"
+    }
+  ]
+}

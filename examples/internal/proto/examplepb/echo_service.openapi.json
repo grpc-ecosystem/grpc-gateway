@@ -1,0 +1,1541 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "examples/internal/proto/examplepb/echo_service.proto",
+    "version": "version not set"
+  },
+  "paths": {
+    "/v1/example/echo/nested/{n_id.n_id}": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo_6",
+        "parameters": [
+          {
+            "name": "n_id.n_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo/resource/{resource_id}": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo_5",
+        "parameters": [
+          {
+            "name": "resource_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo/{id}": {
+      "post": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo/{id}/{num}": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo/{id}/{num}/{lang}": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo1/{id}/{line_num}/{status.note}": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "line_num",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status.note",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo2/{no.note}": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo_4",
+        "parameters": [
+          {
+            "name": "no.note",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_body": {
+      "post": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "EchoBody method receives a simple message and returns it.",
+        "operationId": "EchoService_EchoBody",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_body/{id}": {
+      "put": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "EchoBody method receives a simple message and returns it.",
+        "operationId": "EchoService_EchoBody_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_delete": {
+      "delete": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "EchoDelete method receives a simple message and returns it.",
+        "operationId": "EchoService_EchoDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_patch": {
+      "patch": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "EchoPatch method receives a NonStandardUpdateRequest and returns it.",
+        "operationId": "EchoService_EchoPatch",
+        "parameters": [
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.DynamicMessage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.DynamicMessageUpdate"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_status": {
+      "post": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "EchoStatus demonstrates handling of name collisions.\nIt uses Status types from both sub and sub2 packages which have the same name\nbut different structures, demonstrating how the OpenAPI generator handles this scenario.",
+        "operationId": "EchoService_EchoStatus",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.StatusCheckRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.StatusCheckResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/echo_unauthorized": {
+      "get": {
+        "tags": [
+          "EchoService"
+        ],
+        "summary": "EchoUnauthorized method receives a simple message and returns it. It must\nalways return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code\nof 401.",
+        "operationId": "EchoService_EchoUnauthorized",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Id represents the message identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "no",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+            }
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.SimpleMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "google.protobuf.Any": {
+        "type": "object",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+          }
+        },
+        "additionalProperties": {}
+      },
+      "google.protobuf.FieldMask": {
+        "type": "string"
+      },
+      "google.protobuf.Struct": {
+        "type": "object"
+      },
+      "google.protobuf.Value": {},
+      "google.rpc.Status": {
+        "type": "object",
+        "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The status code, which should be an enum value of google.rpc.Code."
+          },
+          "details": {
+            "type": "array",
+            "description": "A list of messages that carry the error details.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "@type": {
+                  "type": "string",
+                  "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                }
+              },
+              "additionalProperties": {}
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "A developer-facing error message, which should be in English."
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.DynamicMessage": {
+        "type": "object",
+        "description": "DynamicMessage represents a message which can have its structure\nbuilt dynamically using Struct and Values.",
+        "properties": {
+          "structField": {
+            "type": "object"
+          },
+          "valueField": {}
+        },
+        "required": [
+          "structField",
+          "valueField"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.DynamicMessageUpdate": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.DynamicMessage"
+          },
+          "updateMask": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "updateMask"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.Embedded": {
+        "type": "object",
+        "description": "Embedded represents a message embedded in SimpleMessage.",
+        "properties": {
+          "note": {
+            "type": "string"
+          },
+          "progress": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "mark.progress",
+            "properties": {
+              "progress": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "required": [
+              "progress"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mark.note",
+            "properties": {
+              "note": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "note"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NestedMessage": {
+        "type": "object",
+        "properties": {
+          "nId": {
+            "type": "string"
+          },
+          "val": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "nId",
+          "val"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.SimpleMessage": {
+        "type": "object",
+        "description": "SimpleMessage represents a simple message sent to the Echo service.",
+        "properties": {
+          "en": {
+            "type": "string",
+            "format": "int64"
+          },
+          "id": {
+            "type": "string",
+            "description": "Id represents the message identifier."
+          },
+          "lang": {
+            "type": "string"
+          },
+          "lineNum": {
+            "type": "string",
+            "format": "int64"
+          },
+          "nId": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedMessage"
+          },
+          "no": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+          },
+          "num": {
+            "type": "string",
+            "format": "int64"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+          }
+        },
+        "required": [
+          "id",
+          "num",
+          "status",
+          "resourceId",
+          "nId"
+        ],
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "code.lineNum",
+            "properties": {
+              "lineNum": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "required": [
+              "lineNum"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "code.lang",
+            "properties": {
+              "lang": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "lang"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "ext.en",
+            "properties": {
+              "en": {
+                "type": "string",
+                "format": "int64"
+              }
+            },
+            "required": [
+              "en"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "ext.no",
+            "properties": {
+              "no": {
+                "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.Embedded"
+              }
+            },
+            "required": [
+              "no"
+            ]
+          }
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.StatusCheckRequest": {
+        "type": "object",
+        "description": "StatusCheckRequest demonstrates name collision handling.\nIt uses Status message from both sub and sub2 packages.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sub2Status": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.sub2.Status"
+          },
+          "subStatus": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.sub.Status"
+          }
+        },
+        "required": [
+          "id",
+          "subStatus",
+          "sub2Status"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.StatusCheckResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string"
+          },
+          "sub2Status": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.sub2.Status"
+          },
+          "subStatus": {
+            "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.sub.Status"
+          }
+        },
+        "required": [
+          "result",
+          "subStatus",
+          "sub2Status"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.sub.Status": {
+        "type": "object",
+        "description": "Status message in sub package",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "grpc.gateway.examples.internal.proto.sub2.Status": {
+        "type": "object",
+        "description": "Status message in sub2 package (different structure from sub.Status)",
+        "properties": {
+          "errorCode": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "errorCode",
+          "errorMessage",
+          "severity"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "EchoService",
+      "description": "Echo service responds to incoming echo requests."
+    }
+  ]
+}
