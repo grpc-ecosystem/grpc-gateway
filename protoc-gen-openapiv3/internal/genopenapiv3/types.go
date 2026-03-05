@@ -17,8 +17,6 @@ type OpenAPI struct {
 	Security     []SecurityRequirement   `json:"security,omitempty" yaml:"security,omitempty"`
 	Tags         []*Tag                  `json:"tags,omitempty" yaml:"tags,omitempty"`
 	ExternalDocs *ExternalDocumentation  `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // NewOpenAPI creates a new OpenAPI v3 document with required fields.
@@ -46,8 +44,6 @@ type Info struct {
 	Contact        *Contact `json:"contact,omitempty" yaml:"contact,omitempty"`
 	License        *License `json:"license,omitempty" yaml:"license,omitempty"`
 	Version        string   `json:"version" yaml:"version"`                                 // REQUIRED
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // Contact information for the exposed API.
@@ -230,8 +226,6 @@ type Operation struct {
 	Deprecated   bool                   `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 	Security     []SecurityRequirement  `json:"security,omitempty" yaml:"security,omitempty"`
 	Servers      []*Server              `json:"servers,omitempty" yaml:"servers,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // Parameter describes a single operation parameter.
@@ -250,8 +244,6 @@ type Parameter struct {
 	Example         any         `json:"example,omitempty" yaml:"example,omitempty"`
 	Examples        map[string]*ExampleRef `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Content         map[string]*MediaType  `json:"content,omitempty" yaml:"content,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // NewPathParameter creates a path parameter (always required).
@@ -316,8 +308,6 @@ type RequestBody struct {
 	Description string                `json:"description,omitempty" yaml:"description,omitempty"`
 	Content     map[string]*MediaType `json:"content" yaml:"content"` // REQUIRED
 	Required    bool                  `json:"required,omitempty" yaml:"required,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // NewJSONRequestBody creates a request body with JSON content.
@@ -430,8 +420,6 @@ type Response struct {
 	Headers     map[string]*HeaderRef  `json:"headers,omitempty" yaml:"headers,omitempty"`
 	Content     map[string]*MediaType  `json:"content,omitempty" yaml:"content,omitempty"`
 	Links       map[string]*LinkRef    `json:"links,omitempty" yaml:"links,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // NewResponse creates a response with required description.
@@ -538,8 +526,6 @@ type Schema struct {
 
 	// External docs
 	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // SchemaRef can be either a reference or an inline schema.
@@ -608,8 +594,6 @@ type SecurityScheme struct {
 	BearerFormat     string      `json:"bearerFormat,omitempty" yaml:"bearerFormat,omitempty"`
 	Flows            *OAuthFlows `json:"flows,omitempty" yaml:"flows,omitempty"`                   // REQUIRED for oauth2
 	OpenIdConnectUrl string      `json:"openIdConnectUrl,omitempty" yaml:"openIdConnectUrl,omitempty"` // REQUIRED for openIdConnect
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // SecuritySchemeRef can be a reference or inline security scheme.
@@ -646,8 +630,6 @@ type OAuthFlows struct {
 	Password          *OAuthFlow `json:"password,omitempty" yaml:"password,omitempty"`
 	ClientCredentials *OAuthFlow `json:"clientCredentials,omitempty" yaml:"clientCredentials,omitempty"`
 	AuthorizationCode *OAuthFlow `json:"authorizationCode,omitempty" yaml:"authorizationCode,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // OAuthFlow configuration details for a specific OAuth flow.
@@ -656,8 +638,6 @@ type OAuthFlow struct {
 	TokenURL         string            `json:"tokenUrl,omitempty" yaml:"tokenUrl,omitempty"`
 	RefreshURL       string            `json:"refreshUrl,omitempty" yaml:"refreshUrl,omitempty"`
 	Scopes           map[string]string `json:"scopes" yaml:"scopes"` // REQUIRED
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // SecurityRequirement maps scheme names to required scopes.
@@ -669,8 +649,6 @@ type Tag struct {
 	Name         string                 `json:"name" yaml:"name"` // REQUIRED
 	Description  string                 `json:"description,omitempty" yaml:"description,omitempty"`
 	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // ExternalDocumentation allows referencing external resource for extended documentation.
@@ -693,8 +671,6 @@ type Header struct {
 	Example         any        `json:"example,omitempty" yaml:"example,omitempty"`
 	Examples        map[string]*ExampleRef `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Content         map[string]*MediaType  `json:"content,omitempty" yaml:"content,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // HeaderRef can be a reference or inline header.
@@ -731,8 +707,6 @@ type Example struct {
 	Description   string `json:"description,omitempty" yaml:"description,omitempty"`
 	Value         any    `json:"value,omitempty" yaml:"value,omitempty"`
 	ExternalValue string `json:"externalValue,omitempty" yaml:"externalValue,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // ExampleRef can be a reference or inline example.
@@ -771,8 +745,6 @@ type Link struct {
 	RequestBody  any               `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
 	Description  string            `json:"description,omitempty" yaml:"description,omitempty"`
 	Server       *Server           `json:"server,omitempty" yaml:"server,omitempty"`
-
-	extensions []extension `json:"-" yaml:"-"`
 }
 
 // LinkRef can be a reference or inline link.
@@ -840,8 +812,3 @@ type Discriminator struct {
 	Mapping      map[string]string `json:"mapping,omitempty" yaml:"mapping,omitempty"`
 }
 
-// extension holds a custom extension key-value pair.
-type extension struct {
-	key   string
-	value json.RawMessage
-}

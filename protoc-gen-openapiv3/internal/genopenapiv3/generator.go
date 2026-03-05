@@ -439,7 +439,7 @@ func (g *generator) buildRequestBody(method *descriptor.Method, binding *descrip
 	}
 
 	// If body="*", use the entire request message minus path params
-	if binding.Body.FieldPath == nil || len(binding.Body.FieldPath) == 0 {
+	if len(binding.Body.FieldPath) == 0 {
 		// Build schema for body fields only
 		schemaName := g.messageSchemaName(method.RequestType)
 		referencedSchemas[schemaName] = true
@@ -966,7 +966,7 @@ func isBodyField(field *descriptor.Field, body *descriptor.Body) bool {
 		return false
 	}
 	// body="*" means entire message is body
-	if body.FieldPath == nil || len(body.FieldPath) == 0 {
+	if len(body.FieldPath) == 0 {
 		return true
 	}
 	// Check if field is in body field path

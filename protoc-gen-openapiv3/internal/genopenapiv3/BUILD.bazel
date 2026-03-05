@@ -15,12 +15,10 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapiv3",
     deps = [
-        "//internal/casing",
         "//internal/descriptor",
         "//internal/generator",
         "//protoc-gen-openapiv3/options",
         "@in_yaml_go_yaml_v3//:yaml",
-        "@org_golang_google_genproto_googleapis_api//annotations",
         "@org_golang_google_genproto_googleapis_rpc//status",
         "@org_golang_google_grpc//grpclog",
         "@org_golang_google_protobuf//proto",
