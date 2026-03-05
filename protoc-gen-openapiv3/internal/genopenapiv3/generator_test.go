@@ -206,6 +206,11 @@ func TestRemoveInternalComments(t *testing.T) {
 			input:    "Visible(-- hidden --)",
 			expected: "Visible",
 		},
+		{
+			name:     "multi-line internal comment",
+			input:    "Public comment\n(-- api-linter: core::0131::http-body=disabled\n    api-linter: core::0131::http-method=disabled --)\nMore public",
+			expected: "Public comment\n\nMore public",
+		},
 	}
 
 	for _, tt := range tests {

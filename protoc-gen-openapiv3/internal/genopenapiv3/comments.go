@@ -308,7 +308,8 @@ func pathMatches(a, b []int32) bool {
 }
 
 // internalCommentPattern matches internal comments: (-- ... --)
-var internalCommentPattern = regexp.MustCompile(`\(--.*?--\)`)
+// Uses (?s) flag to make . match newlines for multi-line internal comments
+var internalCommentPattern = regexp.MustCompile(`(?s)\(--.*?--\)`)
 
 // removeInternalComments removes internal comments per Google AIP-192.
 // These are marked with (-- ... --) and should not appear in public docs.
