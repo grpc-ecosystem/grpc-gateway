@@ -236,6 +236,42 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 	if extDocs := opts.GetExternalDocs(); extDocs != nil {
 		schema.ExternalDocs = convertExternalDocs(extDocs)
 	}
+
+	// Apply composition types (OpenAPI v3 specific)
+
+	// Apply allOf
+	if len(opts.GetAllOf()) > 0 {
+		for _, allOfSchema := range opts.GetAllOf() {
+			schema.AllOf = append(schema.AllOf, convertSchema(allOfSchema))
+		}
+	}
+
+	// Apply anyOf
+	if len(opts.GetAnyOf()) > 0 {
+		for _, anyOfSchema := range opts.GetAnyOf() {
+			schema.AnyOf = append(schema.AnyOf, convertSchema(anyOfSchema))
+		}
+	}
+
+	// Apply oneOf (appends to auto-detected oneOf from proto oneof fields)
+	if len(opts.GetOneOf()) > 0 {
+		for _, oneOfSchema := range opts.GetOneOf() {
+			schema.OneOf = append(schema.OneOf, convertSchema(oneOfSchema))
+		}
+	}
+
+	// Apply not
+	if notSchema := opts.GetNot(); notSchema != nil {
+		schema.Not = convertSchema(notSchema)
+	}
+
+	// Apply discriminator
+	if disc := opts.GetDiscriminator(); disc != nil {
+		schema.Discriminator = &Discriminator{
+			PropertyName: disc.GetPropertyName(),
+			Mapping:      disc.GetMapping(),
+		}
+	}
 }
 
 // applyFieldAnnotation applies field-level annotations to a field schema.
@@ -361,6 +397,42 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 	// Apply external docs
 	if extDocs := opts.GetExternalDocs(); extDocs != nil {
 		schema.ExternalDocs = convertExternalDocs(extDocs)
+	}
+
+	// Apply composition types (OpenAPI v3 specific)
+
+	// Apply allOf
+	if len(opts.GetAllOf()) > 0 {
+		for _, allOfSchema := range opts.GetAllOf() {
+			schema.AllOf = append(schema.AllOf, convertSchema(allOfSchema))
+		}
+	}
+
+	// Apply anyOf
+	if len(opts.GetAnyOf()) > 0 {
+		for _, anyOfSchema := range opts.GetAnyOf() {
+			schema.AnyOf = append(schema.AnyOf, convertSchema(anyOfSchema))
+		}
+	}
+
+	// Apply oneOf
+	if len(opts.GetOneOf()) > 0 {
+		for _, oneOfSchema := range opts.GetOneOf() {
+			schema.OneOf = append(schema.OneOf, convertSchema(oneOfSchema))
+		}
+	}
+
+	// Apply not
+	if notSchema := opts.GetNot(); notSchema != nil {
+		schema.Not = convertSchema(notSchema)
+	}
+
+	// Apply discriminator
+	if disc := opts.GetDiscriminator(); disc != nil {
+		schema.Discriminator = &Discriminator{
+			PropertyName: disc.GetPropertyName(),
+			Mapping:      disc.GetMapping(),
+		}
 	}
 }
 

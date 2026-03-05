@@ -5,6 +5,9 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func TestConvertPathTemplate(t *testing.T) {
@@ -512,6 +515,143 @@ func TestPathItemSetOperation(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGenerateOneOfSchemas(t *testing.T) {
+	// Create a generator with a registry that uses JSON names
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	g := &generator{reg: reg}
+
+	// Create a parent schema with properties (using JSON names)
+	parentSchema := &Schema{
+		Type: "object",
+		Properties: map[string]*SchemaRef{
+			"stringValue":  {Value: &Schema{Type: "string"}},
+			"intValue":     {Value: &Schema{Type: "integer"}},
+			"regularField": {Value: &Schema{Type: "boolean"}},
+		},
+	}
+
+	// Create oneof groups
+	groups := []oneofGroup{
+		{
+			name: "value",
+			fields: []*descriptor.Field{
+				{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     stringPtr("string_value"),
+					JsonName: stringPtr("stringValue"),
+				}},
+				{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     stringPtr("int_value"),
+					JsonName: stringPtr("intValue"),
+				}},
+			},
+		},
+	}
+
+	oneOfSchemas := g.generateOneOfSchemas(parentSchema, groups)
+
+	// Should have 2 oneOf options (one per field in the oneof)
+	if len(oneOfSchemas) != 2 {
+		t.Fatalf("Expected 2 oneOf schemas, got %d", len(oneOfSchemas))
+	}
+
+	// First option should be for stringValue
+	opt1 := oneOfSchemas[0].Value
+	if opt1.Type != "object" {
+		t.Errorf("Option 1 Type = %q, want %q", opt1.Type, "object")
+	}
+	if len(opt1.Properties) != 1 {
+		t.Errorf("Option 1 should have 1 property, got %d", len(opt1.Properties))
+	}
+	if _, ok := opt1.Properties["stringValue"]; !ok {
+		t.Error("Option 1 should have 'stringValue' property")
+	}
+	if len(opt1.Required) != 1 || opt1.Required[0] != "stringValue" {
+		t.Errorf("Option 1 Required = %v, want [stringValue]", opt1.Required)
+	}
+
+	// Second option should be for intValue
+	opt2 := oneOfSchemas[1].Value
+	if _, ok := opt2.Properties["intValue"]; !ok {
+		t.Error("Option 2 should have 'intValue' property")
+	}
+	if len(opt2.Required) != 1 || opt2.Required[0] != "intValue" {
+		t.Errorf("Option 2 Required = %v, want [intValue]", opt2.Required)
+	}
+}
+
+func TestGenerateOneOfSchemasMultipleGroups(t *testing.T) {
+	// Create a generator with a registry that uses JSON names
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	g := &generator{reg: reg}
+
+	// Create a parent schema with properties for multiple oneofs
+	parentSchema := &Schema{
+		Type: "object",
+		Properties: map[string]*SchemaRef{
+			"createEvent": {Value: &Schema{Type: "object"}},
+			"updateEvent": {Value: &Schema{Type: "object"}},
+			"error":       {Value: &Schema{Type: "object"}},
+			"success":     {Value: &Schema{Type: "object"}},
+		},
+	}
+
+	// Create multiple oneof groups
+	groups := []oneofGroup{
+		{
+			name: "event",
+			fields: []*descriptor.Field{
+				{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     stringPtr("create_event"),
+					JsonName: stringPtr("createEvent"),
+				}},
+				{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     stringPtr("update_event"),
+					JsonName: stringPtr("updateEvent"),
+				}},
+			},
+		},
+		{
+			name: "result",
+			fields: []*descriptor.Field{
+				{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     stringPtr("error"),
+					JsonName: stringPtr("error"),
+				}},
+				{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     stringPtr("success"),
+					JsonName: stringPtr("success"),
+				}},
+			},
+		},
+	}
+
+	oneOfSchemas := g.generateOneOfSchemas(parentSchema, groups)
+
+	// Should have 4 oneOf options (2 per group)
+	if len(oneOfSchemas) != 4 {
+		t.Fatalf("Expected 4 oneOf schemas, got %d", len(oneOfSchemas))
+	}
+
+	// Check that titles identify the oneof group
+	titles := make(map[string]bool)
+	for _, schema := range oneOfSchemas {
+		titles[schema.Value.Title] = true
+	}
+
+	expectedTitles := []string{"event.createEvent", "event.updateEvent", "result.error", "result.success"}
+	for _, title := range expectedTitles {
+		if !titles[title] {
+			t.Errorf("Missing expected oneOf option with title %q", title)
+		}
+	}
+}
+
+func stringPtr(s string) *string {
+	return &s
 }
 
 // Helper function to compare JSON

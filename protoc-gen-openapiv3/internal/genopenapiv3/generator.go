@@ -483,6 +483,48 @@ func (g *generator) buildResponses(method *descriptor.Method, referencedSchemas 
 	return responses
 }
 
+// oneofGroup holds fields belonging to a single oneof declaration.
+type oneofGroup struct {
+	name   string
+	fields []*descriptor.Field
+}
+
+// groupFieldsByOneof separates regular fields from oneof fields and groups oneof fields.
+// Returns: regular fields, oneof groups
+// Note: proto3 optional fields use synthetic oneofs, which we skip.
+func (g *generator) groupFieldsByOneof(msg *descriptor.Message) ([]*descriptor.Field, []oneofGroup) {
+	var regularFields []*descriptor.Field
+	oneofMap := make(map[int32]*oneofGroup)
+
+	for _, field := range msg.Fields {
+		oneofIndex := field.GetOneofIndex()
+		// Check if field is part of a oneof (and not a proto3 optional synthetic oneof)
+		if field.OneofIndex != nil && !field.GetProto3Optional() {
+			idx := oneofIndex
+			if _, exists := oneofMap[idx]; !exists {
+				oneofDecl := msg.GetOneofDecl()[idx]
+				oneofMap[idx] = &oneofGroup{
+					name:   oneofDecl.GetName(),
+					fields: []*descriptor.Field{},
+				}
+			}
+			oneofMap[idx].fields = append(oneofMap[idx].fields, field)
+		} else {
+			regularFields = append(regularFields, field)
+		}
+	}
+
+	// Convert map to slice, preserving order by index
+	var oneofGroups []oneofGroup
+	for i := int32(0); i < int32(len(msg.GetOneofDecl())); i++ {
+		if group, exists := oneofMap[i]; exists {
+			oneofGroups = append(oneofGroups, *group)
+		}
+	}
+
+	return regularFields, oneofGroups
+}
+
 // generateMessageSchema generates a schema definition for a message.
 func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message, visited map[string]bool) {
 	schemaName := g.messageSchemaName(msg)
@@ -505,6 +547,9 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		return
 	}
 
+	// Group fields by oneof
+	regularFields, oneofGroups := g.groupFieldsByOneof(msg)
+
 	// Build schema for this message
 	schema := &Schema{
 		Type:       "object",
@@ -520,39 +565,86 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 	// Apply message-level annotations
 	g.applySchemaAnnotation(schema, msg)
 
-	// Process each field
-	for _, field := range msg.Fields {
-		fieldSchemaRef := g.fieldToSchemaRef(field, nil)
-		fieldName := g.fieldName(field)
-		schema.Properties[fieldName] = fieldSchemaRef
+	// Process regular fields (not in oneof)
+	for _, field := range regularFields {
+		g.addFieldToSchema(doc, schema, field, visited)
+	}
 
-		// Add description from field comments
-		fieldComment := fieldComments(g.reg, field)
-		if fieldComment != "" && fieldSchemaRef.Value != nil {
-			fieldSchemaRef.Value.Description = fieldComment
-		}
-
-		// Apply field-level annotations
-		if fieldSchemaRef.Value != nil {
-			g.applyFieldAnnotation(fieldSchemaRef.Value, field)
-		}
-
-		// If field references another message, generate that too
-		if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
-			if refMsg, err := g.reg.LookupMsg("", field.GetTypeName()); err == nil {
-				g.generateMessageSchema(doc, refMsg, visited)
-			}
-		}
-
-		// If field references an enum, generate that too
-		if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM {
-			if refEnum, err := g.reg.LookupEnum("", field.GetTypeName()); err == nil {
-				g.generateEnumSchema(doc, refEnum)
-			}
+	// Process oneof groups - add all oneof fields as properties too
+	// (they need to be in properties for JSON serialization)
+	for _, group := range oneofGroups {
+		for _, field := range group.fields {
+			g.addFieldToSchema(doc, schema, field, visited)
 		}
 	}
 
+	// Generate oneOf constraint for each oneof group
+	if len(oneofGroups) > 0 {
+		schema.OneOf = g.generateOneOfSchemas(schema, oneofGroups)
+	}
+
 	doc.Components.Schemas[schemaName] = &SchemaRef{Value: schema}
+}
+
+// addFieldToSchema adds a single field to the schema's properties.
+func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descriptor.Field, visited map[string]bool) {
+	fieldSchemaRef := g.fieldToSchemaRef(field, nil)
+	fieldName := g.fieldName(field)
+	schema.Properties[fieldName] = fieldSchemaRef
+
+	// Add description from field comments
+	fieldComment := fieldComments(g.reg, field)
+	if fieldComment != "" && fieldSchemaRef.Value != nil {
+		fieldSchemaRef.Value.Description = fieldComment
+	}
+
+	// Apply field-level annotations
+	if fieldSchemaRef.Value != nil {
+		g.applyFieldAnnotation(fieldSchemaRef.Value, field)
+	}
+
+	// If field references another message, generate that too
+	if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+		if refMsg, err := g.reg.LookupMsg("", field.GetTypeName()); err == nil {
+			g.generateMessageSchema(doc, refMsg, visited)
+		}
+	}
+
+	// If field references an enum, generate that too
+	if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM {
+		if refEnum, err := g.reg.LookupEnum("", field.GetTypeName()); err == nil {
+			g.generateEnumSchema(doc, refEnum)
+		}
+	}
+}
+
+// generateOneOfSchemas generates oneOf schemas for oneof field groups.
+// Each oneof option becomes a schema requiring exactly that field.
+func (g *generator) generateOneOfSchemas(parentSchema *Schema, groups []oneofGroup) []*SchemaRef {
+	var oneOfSchemas []*SchemaRef
+
+	for _, group := range groups {
+		// For each field in the oneof, create a schema that requires only that field
+		for _, field := range group.fields {
+			fieldName := g.fieldName(field)
+
+			// Create a schema that requires this specific field from the oneof
+			optionSchema := &Schema{
+				Type: "object",
+				Properties: map[string]*SchemaRef{
+					fieldName: parentSchema.Properties[fieldName],
+				},
+				Required: []string{fieldName},
+			}
+
+			// Add a title to identify which oneof option this is
+			optionSchema.Title = fmt.Sprintf("%s.%s", group.name, fieldName)
+
+			oneOfSchemas = append(oneOfSchemas, &SchemaRef{Value: optionSchema})
+		}
+	}
+
+	return oneOfSchemas
 }
 
 // generateEnumSchema generates a schema definition for an enum.
