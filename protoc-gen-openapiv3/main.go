@@ -147,6 +147,14 @@ func main() {
 		return
 	}
 
+	// Validate naming strategy
+	if *openAPINamingStrategy != "" {
+		if genopenapiv3.LookupNamingStrategy(*openAPINamingStrategy) == nil {
+			emitError(fmt.Errorf("invalid openapi_naming_strategy %q: allowed values are fqn, legacy, simple, package", *openAPINamingStrategy))
+			return
+		}
+	}
+
 	g := genopenapiv3.New(reg, format, *openAPIVersion)
 
 	if err := genopenapiv3.AddErrorDefs(reg); err != nil {

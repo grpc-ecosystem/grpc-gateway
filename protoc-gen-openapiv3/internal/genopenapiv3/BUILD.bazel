@@ -10,6 +10,7 @@ go_library(
         "comments.go",
         "format.go",
         "generator.go",
+        "naming.go",
         "types.go",
         "well_known_types.go",
     ],
@@ -36,6 +37,7 @@ go_test(
     srcs = [
         "annotations_test.go",
         "generator_test.go",
+        "naming_test.go",
     ],
     embed = [":genopenapiv3"],
     deps = [

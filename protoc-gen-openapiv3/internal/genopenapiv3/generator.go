@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
@@ -149,20 +150,22 @@ func (g *generator) generateFileSpec(file *descriptor.File) (*OpenAPI, error) {
 	}
 
 	// Generate schema definitions for referenced messages
-	for schemaName := range referencedSchemas {
-		if _, exists := doc.Components.Schemas[schemaName]; exists {
+	// referencedSchemas contains FQMNs (with leading dot) or special names like "google.rpc.Status"
+	for fqn := range referencedSchemas {
+		// Try to look up the message
+		msg, err := g.reg.LookupMsg("", fqn)
+		if err != nil {
+			// Try looking up as enum
+			enum, err := g.reg.LookupEnum("", fqn)
+			if err != nil {
+				continue // Skip if not found (e.g., google.rpc.Status handled separately)
+			}
+			g.generateEnumSchema(doc, enum)
 			continue
 		}
 
-		// Try to look up the message
-		msg, err := g.reg.LookupMsg("", "."+schemaName)
-		if err != nil {
-			// Try looking up as enum
-			enum, err := g.reg.LookupEnum("", "."+schemaName)
-			if err != nil {
-				continue // Skip if not found
-			}
-			g.generateEnumSchema(doc, enum)
+		schemaName := g.messageSchemaName(msg)
+		if _, exists := doc.Components.Schemas[schemaName]; exists {
 			continue
 		}
 		g.generateMessageSchema(doc, msg, make(map[string]bool))
@@ -334,7 +337,7 @@ func (g *generator) buildUnboundOperation(svc *descriptor.Service, method *descr
 	var requestBody *RequestBodyRef
 	if method.RequestType != nil {
 		schemaName := g.messageSchemaName(method.RequestType)
-		referencedSchemas[schemaName] = true
+		referencedSchemas[method.RequestType.FQMN()] = true
 		requestBody = &RequestBodyRef{
 			Value: NewJSONRequestBody(NewSchemaRef(schemaName), true),
 		}
@@ -443,7 +446,7 @@ func (g *generator) buildRequestBody(method *descriptor.Method, binding *descrip
 	if len(binding.Body.FieldPath) == 0 {
 		// Build schema for body fields only
 		schemaName := g.messageSchemaName(method.RequestType)
-		referencedSchemas[schemaName] = true
+		referencedSchemas[method.RequestType.FQMN()] = true
 
 		return &RequestBodyRef{
 			Value: NewJSONRequestBody(NewSchemaRef(schemaName), true),
@@ -466,7 +469,7 @@ func (g *generator) buildResponses(method *descriptor.Method, referencedSchemas 
 	// Success response (200)
 	if method.ResponseType != nil {
 		schemaName := g.messageSchemaName(method.ResponseType)
-		referencedSchemas[schemaName] = true
+		referencedSchemas[method.ResponseType.FQMN()] = true
 
 		successComment := messageComments(g.reg, method.ResponseType)
 		if successComment == "" {
@@ -620,6 +623,13 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 	isRequired := false
 	if fieldSchemaRef.Value != nil {
 		isRequired = g.applyFieldBehaviorToSchema(fieldSchemaRef.Value, field)
+	}
+
+	// Apply proto3 optional nullable
+	if g.reg.GetProto3OptionalNullable() && field.GetProto3Optional() {
+		if fieldSchemaRef.Value != nil {
+			fieldSchemaRef.Value.Nullable = true
+		}
 	}
 
 	// If field references another message, generate that too
@@ -838,7 +848,7 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 		}
 		schemaName := g.messageSchemaName(msg)
 		if referencedSchemas != nil {
-			referencedSchemas[schemaName] = true
+			referencedSchemas[msg.FQMN()] = true
 		}
 		return NewSchemaRef(schemaName)
 
@@ -850,7 +860,7 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 		}
 		schemaName := g.enumSchemaName(enum)
 		if referencedSchemas != nil {
-			referencedSchemas[schemaName] = true
+			referencedSchemas[enum.FQEN()] = true
 		}
 		return NewSchemaRef(schemaName)
 
@@ -859,18 +869,46 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 	}
 }
 
+// registriesSeen holds memoized OpenAPI name mappings per registry.
+// This ensures consistent naming across the entire generation run.
+var (
+	registriesSeen      = map[*descriptor.Registry]map[string]string{}
+	registriesSeenMutex sync.Mutex
+)
+
+// resolveOpenAPIName resolves a fully-qualified name to an OpenAPI name
+// using the configured naming strategy. Results are memoized per registry.
+func (g *generator) resolveOpenAPIName(fqn string) string {
+	registriesSeenMutex.Lock()
+	defer registriesSeenMutex.Unlock()
+
+	if mapping, present := registriesSeen[g.reg]; present {
+		if name, ok := mapping[fqn]; ok {
+			return name
+		}
+	}
+
+	// Collect all FQMNs and FQENs
+	allNames := append(g.reg.GetAllFQMNs(), g.reg.GetAllFQENs()...)
+	strategy := g.reg.GetOpenAPINamingStrategy()
+	if strategy == "" {
+		strategy = "legacy" // Default matches v2 behavior
+	}
+
+	mapping := resolveFullyQualifiedNameToOpenAPINames(allNames, strategy)
+	registriesSeen[g.reg] = mapping
+
+	return mapping[fqn]
+}
+
 // messageSchemaName returns the schema name for a message.
 func (g *generator) messageSchemaName(msg *descriptor.Message) string {
-	fqmn := msg.FQMN()
-	// Remove leading dot
-	return strings.TrimPrefix(fqmn, ".")
+	return g.resolveOpenAPIName(msg.FQMN())
 }
 
 // enumSchemaName returns the schema name for an enum.
 func (g *generator) enumSchemaName(enum *descriptor.Enum) string {
-	fqen := enum.FQEN()
-	// Remove leading dot
-	return strings.TrimPrefix(fqen, ".")
+	return g.resolveOpenAPIName(enum.FQEN())
 }
 
 // fieldName returns the JSON field name for a proto field.

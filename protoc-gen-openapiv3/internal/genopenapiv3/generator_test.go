@@ -890,3 +890,90 @@ func TestSchemaReadOnlyWriteOnlyFields(t *testing.T) {
 func int32Ptr(i int32) *int32 {
 	return &i
 }
+
+func TestResolveOpenAPINameWithStrategy(t *testing.T) {
+	tests := []struct {
+		name         string
+		strategy     string
+		fqmn         string
+		allFQMNs     []string
+		expectedName string
+	}{
+		{
+			name:         "fqn strategy",
+			strategy:     "fqn",
+			fqmn:         ".test.v1.User",
+			allFQMNs:     []string{".test.v1.User", ".test.v1.Request"},
+			expectedName: "test.v1.User",
+		},
+		{
+			name:         "simple strategy unique name",
+			strategy:     "simple",
+			fqmn:         ".test.v1.User",
+			allFQMNs:     []string{".test.v1.User", ".test.v1.Request"},
+			expectedName: "User",
+		},
+		{
+			name:         "simple strategy with collision",
+			strategy:     "simple",
+			fqmn:         ".pkg1.User",
+			allFQMNs:     []string{".pkg1.User", ".pkg2.User"},
+			expectedName: "pkg1.User",
+		},
+		{
+			name:         "legacy strategy",
+			strategy:     "legacy",
+			fqmn:         ".test.v1.User",
+			allFQMNs:     []string{".test.v1.User", ".test.v1.Request"},
+			expectedName: "v1User",
+		},
+		{
+			name:         "package strategy",
+			strategy:     "package",
+			fqmn:         ".test.v1.Outer.Inner",
+			allFQMNs:     []string{".test.v1.Outer.Inner"},
+			expectedName: "Outer.Inner",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := resolveFullyQualifiedNameToOpenAPINames(tt.allFQMNs, tt.strategy)
+			if result[tt.fqmn] != tt.expectedName {
+				t.Errorf("resolveFullyQualifiedNameToOpenAPINames()[%q] = %q, want %q",
+					tt.fqmn, result[tt.fqmn], tt.expectedName)
+			}
+		})
+	}
+}
+
+func TestSchemaNullableField(t *testing.T) {
+	// Test that nullable field is correctly serialized
+	schema := &Schema{
+		Type:     "string",
+		Nullable: true,
+	}
+
+	data, err := json.Marshal(schema)
+	if err != nil {
+		t.Fatalf("Failed to marshal schema: %v", err)
+	}
+
+	if !strings.Contains(string(data), `"nullable":true`) {
+		t.Errorf("Expected nullable:true in output, got: %s", string(data))
+	}
+
+	// Test schema without nullable
+	schemaNonNullable := &Schema{
+		Type: "string",
+	}
+
+	data, err = json.Marshal(schemaNonNullable)
+	if err != nil {
+		t.Fatalf("Failed to marshal schema: %v", err)
+	}
+
+	if strings.Contains(string(data), `"nullable"`) {
+		t.Errorf("Expected no nullable field in output, got: %s", string(data))
+	}
+}
