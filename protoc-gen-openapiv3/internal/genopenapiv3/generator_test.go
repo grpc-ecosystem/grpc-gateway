@@ -684,3 +684,209 @@ func jsonEqual(t *testing.T, a, b string) bool {
 	}
 	return reflect.DeepEqual(objA, objB)
 }
+
+func TestExtractFieldBehavior(t *testing.T) {
+	tests := []struct {
+		name     string
+		options  *descriptorpb.FieldOptions
+		expected int // expected number of behaviors
+	}{
+		{
+			name:     "nil options",
+			options:  nil,
+			expected: 0,
+		},
+		{
+			name:     "empty options",
+			options:  &descriptorpb.FieldOptions{},
+			expected: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fd := &descriptorpb.FieldDescriptorProto{
+				Name:    stringPtr("test_field"),
+				Options: tt.options,
+			}
+			behaviors := extractFieldBehavior(fd)
+			if len(behaviors) != tt.expected {
+				t.Errorf("extractFieldBehavior() returned %d behaviors, want %d", len(behaviors), tt.expected)
+			}
+		})
+	}
+}
+
+func TestGetFieldBehavior(t *testing.T) {
+	// Test with nil options
+	field := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:    stringPtr("test_field"),
+			Options: nil,
+		},
+	}
+
+	behaviors := getFieldBehavior(field)
+	if len(behaviors) != 0 {
+		t.Errorf("getFieldBehavior() returned %d behaviors, want 0", len(behaviors))
+	}
+}
+
+func TestApplyFieldBehaviorToSchema(t *testing.T) {
+	tests := []struct {
+		name               string
+		useProto3Semantics bool
+		proto3Optional     bool
+		oneofIndex         *int32
+		wantRequired       bool
+	}{
+		{
+			name:               "proto3 semantics disabled",
+			useProto3Semantics: false,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			wantRequired:       false,
+		},
+		{
+			name:               "proto3 semantics enabled, regular field",
+			useProto3Semantics: true,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			wantRequired:       true,
+		},
+		{
+			name:               "proto3 semantics enabled, optional field",
+			useProto3Semantics: true,
+			proto3Optional:     true,
+			oneofIndex:         nil,
+			wantRequired:       false,
+		},
+		{
+			name:               "proto3 semantics enabled, oneof field",
+			useProto3Semantics: true,
+			proto3Optional:     false,
+			oneofIndex:         int32Ptr(0),
+			wantRequired:       false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			reg.SetUseProto3FieldSemantics(tt.useProto3Semantics)
+			g := &generator{reg: reg}
+
+			schema := &Schema{Type: "string"}
+			field := &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:           stringPtr("test_field"),
+					Proto3Optional: &tt.proto3Optional,
+					OneofIndex:     tt.oneofIndex,
+					Options:        nil,
+				},
+			}
+
+			gotRequired := g.applyFieldBehaviorToSchema(schema, field)
+			if gotRequired != tt.wantRequired {
+				t.Errorf("applyFieldBehaviorToSchema() returned required=%v, want %v", gotRequired, tt.wantRequired)
+			}
+		})
+	}
+}
+
+func TestGetFieldRequiredFromBehavior(t *testing.T) {
+	tests := []struct {
+		name               string
+		useProto3Semantics bool
+		proto3Optional     bool
+		oneofIndex         *int32
+		wantRequired       bool
+	}{
+		{
+			name:               "proto3 semantics disabled",
+			useProto3Semantics: false,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			wantRequired:       false,
+		},
+		{
+			name:               "proto3 semantics enabled, regular field",
+			useProto3Semantics: true,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			wantRequired:       true,
+		},
+		{
+			name:               "proto3 semantics enabled, optional field",
+			useProto3Semantics: true,
+			proto3Optional:     true,
+			oneofIndex:         nil,
+			wantRequired:       false,
+		},
+		{
+			name:               "proto3 semantics enabled, oneof field",
+			useProto3Semantics: true,
+			proto3Optional:     false,
+			oneofIndex:         int32Ptr(0),
+			wantRequired:       false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			reg.SetUseProto3FieldSemantics(tt.useProto3Semantics)
+			g := &generator{reg: reg}
+
+			field := &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:           stringPtr("test_field"),
+					Proto3Optional: &tt.proto3Optional,
+					OneofIndex:     tt.oneofIndex,
+					Options:        nil,
+				},
+			}
+
+			gotRequired := g.getFieldRequiredFromBehavior(field)
+			if gotRequired != tt.wantRequired {
+				t.Errorf("getFieldRequiredFromBehavior() returned required=%v, want %v", gotRequired, tt.wantRequired)
+			}
+		})
+	}
+}
+
+func TestSchemaReadOnlyWriteOnlyFields(t *testing.T) {
+	// Test that Schema can serialize readOnly and writeOnly properly
+	schema := &Schema{
+		Type:      "string",
+		ReadOnly:  true,
+		WriteOnly: false,
+	}
+
+	data, err := json.Marshal(schema)
+	if err != nil {
+		t.Fatalf("Failed to marshal schema: %v", err)
+	}
+
+	if !strings.Contains(string(data), `"readOnly":true`) {
+		t.Error("Schema should contain readOnly:true")
+	}
+
+	schema2 := &Schema{
+		Type:      "string",
+		WriteOnly: true,
+	}
+
+	data2, err := json.Marshal(schema2)
+	if err != nil {
+		t.Fatalf("Failed to marshal schema: %v", err)
+	}
+
+	if !strings.Contains(string(data2), `"writeOnly":true`) {
+		t.Error("Schema should contain writeOnly:true")
+	}
+}
+
+func int32Ptr(i int32) *int32 {
+	return &i
+}

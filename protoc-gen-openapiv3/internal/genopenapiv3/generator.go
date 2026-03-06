@@ -10,6 +10,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
@@ -420,8 +421,8 @@ func (g *generator) buildParameters(method *descriptor.Method, binding *descript
 				param.Deprecated = field.GetOptions().GetDeprecated()
 			}
 
-			// Mark as required when using proto3 field semantics
-			if g.reg.GetUseProto3FieldSemantics() && g.isFieldRequired(field) {
+			// Mark as required based on field_behavior annotations
+			if g.getFieldRequiredFromBehavior(field) {
 				param.Required = true
 			}
 
@@ -572,10 +573,10 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 
 	// Process regular fields (not in oneof)
 	for _, field := range regularFields {
-		g.addFieldToSchema(doc, schema, field, visited)
+		isRequired := g.addFieldToSchema(doc, schema, field, visited)
 
-		// Track required fields when using proto3 field semantics
-		if g.reg.GetUseProto3FieldSemantics() && g.isFieldRequired(field) {
+		// Track required fields based on field_behavior annotations
+		if isRequired {
 			schema.Required = append(schema.Required, g.fieldName(field))
 		}
 	}
@@ -585,7 +586,7 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 	// Note: oneof fields are not required since only one can be set
 	for _, group := range oneofGroups {
 		for _, field := range group.fields {
-			g.addFieldToSchema(doc, schema, field, visited)
+			_ = g.addFieldToSchema(doc, schema, field, visited)
 		}
 	}
 
@@ -598,7 +599,8 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 }
 
 // addFieldToSchema adds a single field to the schema's properties.
-func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descriptor.Field, visited map[string]bool) {
+// Returns whether the field should be marked as required.
+func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descriptor.Field, visited map[string]bool) bool {
 	fieldSchemaRef := g.fieldToSchemaRef(field, nil)
 	fieldName := g.fieldName(field)
 	schema.Properties[fieldName] = fieldSchemaRef
@@ -614,6 +616,12 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 		g.applyFieldAnnotation(fieldSchemaRef.Value, field)
 	}
 
+	// Apply field_behavior annotations and determine if required
+	isRequired := false
+	if fieldSchemaRef.Value != nil {
+		isRequired = g.applyFieldBehaviorToSchema(fieldSchemaRef.Value, field)
+	}
+
 	// If field references another message, generate that too
 	if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 		if refMsg, err := g.reg.LookupMsg("", field.GetTypeName()); err == nil {
@@ -627,6 +635,8 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 			g.generateEnumSchema(doc, refEnum)
 		}
 	}
+
+	return isRequired
 }
 
 // generateOneOfSchemas generates oneOf schemas for oneof field groups.
@@ -978,23 +988,78 @@ func isBodyField(field *descriptor.Field, body *descriptor.Body) bool {
 	return false
 }
 
-// isFieldRequired determines if a field should be marked as required.
-// In proto3, a field is required if:
-// - It's NOT a proto3 optional field (which explicitly tracks presence)
-// - It's NOT part of a oneof (handled separately, only one can be set)
-// - It's NOT a repeated field (empty array is equivalent to absent)
-func (g *generator) isFieldRequired(field *descriptor.Field) bool {
-	// Proto3 optional fields explicitly track presence, so can be absent
-	if field.GetProto3Optional() {
-		return false
+// extractFieldBehavior extracts google.api.field_behavior from a field descriptor.
+// This matches the pattern from openapiv2's template.go.
+func extractFieldBehavior(fd *descriptorpb.FieldDescriptorProto) []annotations.FieldBehavior {
+	if fd.Options == nil {
+		return nil
 	}
-	// Oneof fields are mutually exclusive, not required individually
-	if field.OneofIndex != nil {
-		return false
+	if !proto.HasExtension(fd.Options, annotations.E_FieldBehavior) {
+		return nil
 	}
-	// Repeated fields default to empty, so are effectively optional
-	if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
-		return false
+	ext := proto.GetExtension(fd.Options, annotations.E_FieldBehavior)
+	opts, ok := ext.([]annotations.FieldBehavior)
+	if !ok {
+		return nil
 	}
-	return true
+	return opts
+}
+
+// getFieldBehavior returns field behavior annotations for a descriptor.Field.
+func getFieldBehavior(field *descriptor.Field) []annotations.FieldBehavior {
+	return extractFieldBehavior(field.FieldDescriptorProto)
+}
+
+// applyFieldBehaviorToSchema applies field_behavior annotations to a schema.
+// Returns whether the field should be marked as required.
+// This matches the pattern from openapiv2's updateSwaggerObjectFromFieldBehavior.
+func (g *generator) applyFieldBehaviorToSchema(schema *Schema, field *descriptor.Field) bool {
+	// Start with proto3 semantics as default (if enabled)
+	required := false
+	if g.reg.GetUseProto3FieldSemantics() {
+		required = !field.GetProto3Optional() && field.OneofIndex == nil
+	}
+
+	// Apply field_behavior annotations (these take precedence)
+	behaviors := getFieldBehavior(field)
+	for _, fb := range behaviors {
+		switch fb {
+		case annotations.FieldBehavior_REQUIRED:
+			required = true
+		case annotations.FieldBehavior_OUTPUT_ONLY:
+			schema.ReadOnly = true
+		case annotations.FieldBehavior_OPTIONAL:
+			required = false
+		case annotations.FieldBehavior_INPUT_ONLY:
+			schema.WriteOnly = true // OpenAPI v3 supports this!
+		case annotations.FieldBehavior_IMMUTABLE:
+			// No direct OpenAPI mapping
+		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
+			// No action
+		}
+	}
+
+	return required
+}
+
+// getFieldRequiredFromBehavior determines if a field should be required based on
+// field_behavior annotations and proto3 semantics.
+func (g *generator) getFieldRequiredFromBehavior(field *descriptor.Field) bool {
+	// Start with proto3 semantics as default (if enabled)
+	required := false
+	if g.reg.GetUseProto3FieldSemantics() {
+		required = !field.GetProto3Optional() && field.OneofIndex == nil
+	}
+
+	// Apply field_behavior annotations (these take precedence)
+	for _, fb := range getFieldBehavior(field) {
+		switch fb {
+		case annotations.FieldBehavior_REQUIRED:
+			required = true
+		case annotations.FieldBehavior_OPTIONAL:
+			required = false
+		}
+	}
+
+	return required
 }
