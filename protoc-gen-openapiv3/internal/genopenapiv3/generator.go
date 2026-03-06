@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
@@ -849,18 +850,46 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 	}
 }
 
+// registriesSeen holds memoized OpenAPI name mappings per registry.
+// This ensures consistent naming across the entire generation run.
+var (
+	registriesSeen      = map[*descriptor.Registry]map[string]string{}
+	registriesSeenMutex sync.Mutex
+)
+
+// resolveOpenAPIName resolves a fully-qualified name to an OpenAPI name
+// using the configured naming strategy. Results are memoized per registry.
+func (g *generator) resolveOpenAPIName(fqn string) string {
+	registriesSeenMutex.Lock()
+	defer registriesSeenMutex.Unlock()
+
+	if mapping, present := registriesSeen[g.reg]; present {
+		if name, ok := mapping[fqn]; ok {
+			return name
+		}
+	}
+
+	// Collect all FQMNs and FQENs
+	allNames := append(g.reg.GetAllFQMNs(), g.reg.GetAllFQENs()...)
+	strategy := g.reg.GetOpenAPINamingStrategy()
+	if strategy == "" {
+		strategy = "legacy" // Default matches v2 behavior
+	}
+
+	mapping := resolveFullyQualifiedNameToOpenAPINames(allNames, strategy)
+	registriesSeen[g.reg] = mapping
+
+	return mapping[fqn]
+}
+
 // messageSchemaName returns the schema name for a message.
 func (g *generator) messageSchemaName(msg *descriptor.Message) string {
-	fqmn := msg.FQMN()
-	// Remove leading dot
-	return strings.TrimPrefix(fqmn, ".")
+	return g.resolveOpenAPIName(msg.FQMN())
 }
 
 // enumSchemaName returns the schema name for an enum.
 func (g *generator) enumSchemaName(enum *descriptor.Enum) string {
-	fqen := enum.FQEN()
-	// Remove leading dot
-	return strings.TrimPrefix(fqen, ".")
+	return g.resolveOpenAPIName(enum.FQEN())
 }
 
 // fieldName returns the JSON field name for a proto field.
