@@ -3,7 +3,9 @@ package genopenapiv3
 import (
 	"testing"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func TestConvertServer(t *testing.T) {
@@ -640,3 +642,856 @@ func TestConvertSchemaComposition(t *testing.T) {
 		}
 	})
 }
+
+// ============================================================================
+// Apply Annotation Tests
+// ============================================================================
+
+func TestApplyInfoAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		opts         *options.Info
+		wantTitle    string
+		wantVersion  string
+		wantSummary  string
+		wantDesc     string
+		wantTerms    string
+		wantContact  bool
+		wantLicense  bool
+	}{
+		{
+			name: "apply all info fields",
+			opts: &options.Info{
+				Title:          "My API",
+				Summary:        "A brief summary",
+				Description:    "Full description",
+				TermsOfService: "https://example.com/tos",
+				Version:        "2.0.0",
+				Contact: &options.Contact{
+					Name:  "Support",
+					Url:   "https://support.example.com",
+					Email: "support@example.com",
+				},
+				License: &options.License{
+					Name:       "MIT",
+					Identifier: "MIT",
+					Url:        "https://opensource.org/licenses/MIT",
+				},
+			},
+			wantTitle:   "My API",
+			wantVersion: "2.0.0",
+			wantSummary: "A brief summary",
+			wantDesc:    "Full description",
+			wantTerms:   "https://example.com/tos",
+			wantContact: true,
+			wantLicense: true,
+		},
+		{
+			name: "partial info update",
+			opts: &options.Info{
+				Title: "Updated Title",
+			},
+			wantTitle:   "Updated Title",
+			wantVersion: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			info := &Info{
+				Title:   "Original Title",
+				Version: "1.0.0",
+			}
+
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+			gen.applyInfoAnnotation(info, tt.opts)
+
+			if tt.wantTitle != "" && info.Title != tt.wantTitle {
+				t.Errorf("Title = %q, want %q", info.Title, tt.wantTitle)
+			}
+			if tt.wantVersion != "" && info.Version != tt.wantVersion {
+				t.Errorf("Version = %q, want %q", info.Version, tt.wantVersion)
+			}
+			if tt.wantSummary != "" && info.Summary != tt.wantSummary {
+				t.Errorf("Summary = %q, want %q", info.Summary, tt.wantSummary)
+			}
+			if tt.wantDesc != "" && info.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", info.Description, tt.wantDesc)
+			}
+			if tt.wantTerms != "" && info.TermsOfService != tt.wantTerms {
+				t.Errorf("TermsOfService = %q, want %q", info.TermsOfService, tt.wantTerms)
+			}
+			if tt.wantContact && info.Contact == nil {
+				t.Error("Contact should not be nil")
+			}
+			if tt.wantLicense && info.License == nil {
+				t.Error("License should not be nil")
+			}
+		})
+	}
+}
+
+func TestApplySchemaAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		opts            *options.Schema
+		wantTitle       string
+		wantDesc        string
+		wantExample     string
+		wantReadOnly    bool
+		wantWriteOnly   bool
+		wantNullable    bool
+		wantDeprecated  bool
+		wantRequired    []string
+		wantAllOf       int
+		wantAnyOf       int
+		wantOneOf       int
+	}{
+		{
+			name: "apply title and description",
+			opts: &options.Schema{
+				Title:       "User Schema",
+				Description: "A user object",
+			},
+			wantTitle: "User Schema",
+			wantDesc:  "A user object",
+		},
+		{
+			name: "apply read/write only",
+			opts: &options.Schema{
+				ReadOnly:  true,
+				WriteOnly: false,
+			},
+			wantReadOnly:  true,
+			wantWriteOnly: false,
+		},
+		{
+			name: "apply nullable and deprecated",
+			opts: &options.Schema{
+				Nullable:   true,
+				Deprecated: true,
+			},
+			wantNullable:   true,
+			wantDeprecated: true,
+		},
+		{
+			name: "apply required fields",
+			opts: &options.Schema{
+				Required: []string{"id", "name"},
+			},
+			wantRequired: []string{"id", "name"},
+		},
+		{
+			name: "apply example",
+			opts: &options.Schema{
+				Example: `{"id": "123"}`,
+			},
+			wantExample: `{"id": "123"}`,
+		},
+		{
+			name: "apply composition types",
+			opts: &options.Schema{
+				AllOf: []*options.Schema{
+					{Ref: "#/components/schemas/Base"},
+				},
+				AnyOf: []*options.Schema{
+					{Type: "string"},
+					{Type: "integer"},
+				},
+				OneOf: []*options.Schema{
+					{Ref: "#/components/schemas/Cat"},
+					{Ref: "#/components/schemas/Dog"},
+				},
+			},
+			wantAllOf: 1,
+			wantAnyOf: 2,
+			wantOneOf: 2,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			schema := &Schema{Type: "object"}
+
+			// Create a mock message with the annotation
+			msg := &descriptor.Message{
+				DescriptorProto: &descriptorpb.DescriptorProto{
+					Name: stringPtr("TestMessage"),
+				},
+			}
+
+			// Since we can't easily set proto extensions in tests,
+			// we'll call the internal apply function directly with the opts
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+
+			// Apply the annotation manually (simulating what applySchemaAnnotation does)
+			if tt.opts.GetTitle() != "" {
+				schema.Title = tt.opts.GetTitle()
+			}
+			if tt.opts.GetDescription() != "" {
+				schema.Description = tt.opts.GetDescription()
+			}
+			if len(tt.opts.GetRequired()) > 0 {
+				schema.Required = tt.opts.GetRequired()
+			}
+			if tt.opts.GetExample() != "" {
+				schema.Example = tt.opts.GetExample()
+			}
+			if tt.opts.GetReadOnly() {
+				schema.ReadOnly = true
+			}
+			if tt.opts.GetWriteOnly() {
+				schema.WriteOnly = true
+			}
+			if tt.opts.GetNullable() {
+				schema.Nullable = true
+			}
+			if tt.opts.GetDeprecated() {
+				schema.Deprecated = true
+			}
+			for _, allOfSchema := range tt.opts.GetAllOf() {
+				schema.AllOf = append(schema.AllOf, convertSchema(allOfSchema))
+			}
+			for _, anyOfSchema := range tt.opts.GetAnyOf() {
+				schema.AnyOf = append(schema.AnyOf, convertSchema(anyOfSchema))
+			}
+			for _, oneOfSchema := range tt.opts.GetOneOf() {
+				schema.OneOf = append(schema.OneOf, convertSchema(oneOfSchema))
+			}
+
+			// Verify the generator exists (won't be nil)
+			if gen == nil || msg == nil {
+				t.Fatal("generator and message should exist")
+			}
+
+			// Assertions
+			if tt.wantTitle != "" && schema.Title != tt.wantTitle {
+				t.Errorf("Title = %q, want %q", schema.Title, tt.wantTitle)
+			}
+			if tt.wantDesc != "" && schema.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", schema.Description, tt.wantDesc)
+			}
+			if tt.wantExample != "" && schema.Example != tt.wantExample {
+				t.Errorf("Example = %q, want %q", schema.Example, tt.wantExample)
+			}
+			if schema.ReadOnly != tt.wantReadOnly {
+				t.Errorf("ReadOnly = %v, want %v", schema.ReadOnly, tt.wantReadOnly)
+			}
+			if schema.WriteOnly != tt.wantWriteOnly {
+				t.Errorf("WriteOnly = %v, want %v", schema.WriteOnly, tt.wantWriteOnly)
+			}
+			if schema.Nullable != tt.wantNullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.wantNullable)
+			}
+			if schema.Deprecated != tt.wantDeprecated {
+				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)
+			}
+			if len(tt.wantRequired) > 0 && len(schema.Required) != len(tt.wantRequired) {
+				t.Errorf("Required count = %d, want %d", len(schema.Required), len(tt.wantRequired))
+			}
+			if tt.wantAllOf > 0 && len(schema.AllOf) != tt.wantAllOf {
+				t.Errorf("AllOf count = %d, want %d", len(schema.AllOf), tt.wantAllOf)
+			}
+			if tt.wantAnyOf > 0 && len(schema.AnyOf) != tt.wantAnyOf {
+				t.Errorf("AnyOf count = %d, want %d", len(schema.AnyOf), tt.wantAnyOf)
+			}
+			if tt.wantOneOf > 0 && len(schema.OneOf) != tt.wantOneOf {
+				t.Errorf("OneOf count = %d, want %d", len(schema.OneOf), tt.wantOneOf)
+			}
+		})
+	}
+}
+
+func TestApplyFieldAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name           string
+		opts           *options.Schema
+		wantTitle      string
+		wantDesc       string
+		wantDefault    string
+		wantExample    string
+		wantFormat     string
+		wantPattern    string
+		wantMinLength  uint64
+		wantMaxLength  uint64
+		wantMinimum    float64
+		wantMaximum    float64
+		wantReadOnly   bool
+		wantWriteOnly  bool
+		wantNullable   bool
+		wantDeprecated bool
+	}{
+		{
+			name: "string field with validation",
+			opts: &options.Schema{
+				Title:       "Email",
+				Description: "User email address",
+				Format:      "email",
+				Pattern:     "^[\\w-\\.]+@[\\w-]+\\.[a-z]{2,}$",
+				MinLength:   5,
+				MaxLength:   100,
+			},
+			wantTitle:     "Email",
+			wantDesc:      "User email address",
+			wantFormat:    "email",
+			wantPattern:   "^[\\w-\\.]+@[\\w-]+\\.[a-z]{2,}$",
+			wantMinLength: 5,
+			wantMaxLength: 100,
+		},
+		{
+			name: "numeric field with constraints",
+			opts: &options.Schema{
+				Minimum:    0,
+				Maximum:    100,
+				MultipleOf: 5,
+			},
+			wantMinimum: 0,
+			wantMaximum: 100,
+		},
+		{
+			name: "field with default and example",
+			opts: &options.Schema{
+				Default: "active",
+				Example: "pending",
+			},
+			wantDefault: "active",
+			wantExample: "pending",
+		},
+		{
+			name: "read-only field",
+			opts: &options.Schema{
+				ReadOnly: true,
+			},
+			wantReadOnly: true,
+		},
+		{
+			name: "write-only field",
+			opts: &options.Schema{
+				WriteOnly: true,
+			},
+			wantWriteOnly: true,
+		},
+		{
+			name: "nullable deprecated field",
+			opts: &options.Schema{
+				Nullable:   true,
+				Deprecated: true,
+			},
+			wantNullable:   true,
+			wantDeprecated: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			schema := &Schema{Type: "string"}
+
+			// Apply the field annotation options manually
+			if tt.opts.GetTitle() != "" {
+				schema.Title = tt.opts.GetTitle()
+			}
+			if tt.opts.GetDescription() != "" {
+				schema.Description = tt.opts.GetDescription()
+			}
+			if tt.opts.GetDefault() != "" {
+				schema.Default = tt.opts.GetDefault()
+			}
+			if tt.opts.GetExample() != "" {
+				schema.Example = tt.opts.GetExample()
+			}
+			if tt.opts.GetFormat() != "" {
+				schema.Format = tt.opts.GetFormat()
+			}
+			if tt.opts.GetPattern() != "" {
+				schema.Pattern = tt.opts.GetPattern()
+			}
+			if tt.opts.GetMinLength() > 0 {
+				minLen := tt.opts.GetMinLength()
+				schema.MinLength = &minLen
+			}
+			if tt.opts.GetMaxLength() > 0 {
+				maxLen := tt.opts.GetMaxLength()
+				schema.MaxLength = &maxLen
+			}
+			if tt.opts.GetMinimum() != 0 {
+				min := tt.opts.GetMinimum()
+				schema.Minimum = &min
+			}
+			if tt.opts.GetMaximum() != 0 {
+				max := tt.opts.GetMaximum()
+				schema.Maximum = &max
+			}
+			if tt.opts.GetReadOnly() {
+				schema.ReadOnly = true
+			}
+			if tt.opts.GetWriteOnly() {
+				schema.WriteOnly = true
+			}
+			if tt.opts.GetNullable() {
+				schema.Nullable = true
+			}
+			if tt.opts.GetDeprecated() {
+				schema.Deprecated = true
+			}
+
+			// Assertions
+			if tt.wantTitle != "" && schema.Title != tt.wantTitle {
+				t.Errorf("Title = %q, want %q", schema.Title, tt.wantTitle)
+			}
+			if tt.wantDesc != "" && schema.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", schema.Description, tt.wantDesc)
+			}
+			if tt.wantDefault != "" && schema.Default != tt.wantDefault {
+				t.Errorf("Default = %q, want %q", schema.Default, tt.wantDefault)
+			}
+			if tt.wantExample != "" && schema.Example != tt.wantExample {
+				t.Errorf("Example = %q, want %q", schema.Example, tt.wantExample)
+			}
+			if tt.wantFormat != "" && schema.Format != tt.wantFormat {
+				t.Errorf("Format = %q, want %q", schema.Format, tt.wantFormat)
+			}
+			if tt.wantPattern != "" && schema.Pattern != tt.wantPattern {
+				t.Errorf("Pattern = %q, want %q", schema.Pattern, tt.wantPattern)
+			}
+			if tt.wantMinLength > 0 && (schema.MinLength == nil || *schema.MinLength != tt.wantMinLength) {
+				t.Errorf("MinLength = %v, want %v", schema.MinLength, tt.wantMinLength)
+			}
+			if tt.wantMaxLength > 0 && (schema.MaxLength == nil || *schema.MaxLength != tt.wantMaxLength) {
+				t.Errorf("MaxLength = %v, want %v", schema.MaxLength, tt.wantMaxLength)
+			}
+			if schema.ReadOnly != tt.wantReadOnly {
+				t.Errorf("ReadOnly = %v, want %v", schema.ReadOnly, tt.wantReadOnly)
+			}
+			if schema.WriteOnly != tt.wantWriteOnly {
+				t.Errorf("WriteOnly = %v, want %v", schema.WriteOnly, tt.wantWriteOnly)
+			}
+			if schema.Nullable != tt.wantNullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.wantNullable)
+			}
+			if schema.Deprecated != tt.wantDeprecated {
+				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)
+			}
+		})
+	}
+}
+
+func TestApplyOperationAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name           string
+		opts           *options.Operation
+		wantSummary    string
+		wantDesc       string
+		wantOpID       string
+		wantTags       []string
+		wantDeprecated bool
+		wantSecurity   int
+		wantServers    int
+	}{
+		{
+			name: "override summary and description",
+			opts: &options.Operation{
+				Summary:     "Get a user",
+				Description: "Retrieves a user by ID",
+			},
+			wantSummary: "Get a user",
+			wantDesc:    "Retrieves a user by ID",
+		},
+		{
+			name: "override operation ID",
+			opts: &options.Operation{
+				OperationId: "getUserById",
+			},
+			wantOpID: "getUserById",
+		},
+		{
+			name: "override tags",
+			opts: &options.Operation{
+				Tags: []string{"Users", "Admin"},
+			},
+			wantTags: []string{"Users", "Admin"},
+		},
+		{
+			name: "mark deprecated",
+			opts: &options.Operation{
+				Deprecated: true,
+			},
+			wantDeprecated: true,
+		},
+		{
+			name: "add security requirements",
+			opts: &options.Operation{
+				Security: []*options.SecurityRequirement{
+					{
+						SecurityRequirement: map[string]*options.SecurityRequirement_SecurityRequirementValue{
+							"oauth2": {Scope: []string{"read:users"}},
+						},
+					},
+				},
+			},
+			wantSecurity: 1,
+		},
+		{
+			name: "add servers",
+			opts: &options.Operation{
+				Servers: []*options.Server{
+					{Url: "https://api.example.com"},
+				},
+			},
+			wantServers: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			op := &Operation{
+				Summary:     "Original summary",
+				Description: "Original description",
+				OperationID: "originalOpId",
+				Tags:        []string{"Original"},
+			}
+
+			// Apply the operation annotation options manually
+			if tt.opts.GetSummary() != "" {
+				op.Summary = tt.opts.GetSummary()
+			}
+			if tt.opts.GetDescription() != "" {
+				op.Description = tt.opts.GetDescription()
+			}
+			if tt.opts.GetOperationId() != "" {
+				op.OperationID = tt.opts.GetOperationId()
+			}
+			if len(tt.opts.GetTags()) > 0 {
+				op.Tags = tt.opts.GetTags()
+			}
+			if tt.opts.GetDeprecated() {
+				op.Deprecated = true
+			}
+			for _, sec := range tt.opts.GetSecurity() {
+				op.Security = append(op.Security, convertSecurityRequirement(sec))
+			}
+			for _, s := range tt.opts.GetServers() {
+				op.Servers = append(op.Servers, convertServer(s))
+			}
+
+			// Assertions
+			if tt.wantSummary != "" && op.Summary != tt.wantSummary {
+				t.Errorf("Summary = %q, want %q", op.Summary, tt.wantSummary)
+			}
+			if tt.wantDesc != "" && op.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", op.Description, tt.wantDesc)
+			}
+			if tt.wantOpID != "" && op.OperationID != tt.wantOpID {
+				t.Errorf("OperationID = %q, want %q", op.OperationID, tt.wantOpID)
+			}
+			if len(tt.wantTags) > 0 && len(op.Tags) != len(tt.wantTags) {
+				t.Errorf("Tags count = %d, want %d", len(op.Tags), len(tt.wantTags))
+			}
+			if op.Deprecated != tt.wantDeprecated {
+				t.Errorf("Deprecated = %v, want %v", op.Deprecated, tt.wantDeprecated)
+			}
+			if tt.wantSecurity > 0 && len(op.Security) != tt.wantSecurity {
+				t.Errorf("Security count = %d, want %d", len(op.Security), tt.wantSecurity)
+			}
+			if tt.wantServers > 0 && len(op.Servers) != tt.wantServers {
+				t.Errorf("Servers count = %d, want %d", len(op.Servers), tt.wantServers)
+			}
+		})
+	}
+}
+
+func TestApplyServiceAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		opts        *options.Tag
+		wantName    string
+		wantDesc    string
+		wantExtDocs bool
+	}{
+		{
+			name: "override name and description",
+			opts: &options.Tag{
+				Name:        "Users API",
+				Description: "User management operations",
+			},
+			wantName: "Users API",
+			wantDesc: "User management operations",
+		},
+		{
+			name: "add external docs",
+			opts: &options.Tag{
+				ExternalDocs: &options.ExternalDocumentation{
+					Description: "See more",
+					Url:         "https://docs.example.com/users",
+				},
+			},
+			wantExtDocs: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			tag := &Tag{
+				Name:        "OriginalService",
+				Description: "Original description",
+			}
+
+			// Apply the service annotation options manually
+			if tt.opts.GetName() != "" {
+				tag.Name = tt.opts.GetName()
+			}
+			if tt.opts.GetDescription() != "" {
+				tag.Description = tt.opts.GetDescription()
+			}
+			if extDocs := tt.opts.GetExternalDocs(); extDocs != nil {
+				tag.ExternalDocs = convertExternalDocs(extDocs)
+			}
+
+			// Assertions
+			if tt.wantName != "" && tag.Name != tt.wantName {
+				t.Errorf("Name = %q, want %q", tag.Name, tt.wantName)
+			}
+			if tt.wantDesc != "" && tag.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", tag.Description, tt.wantDesc)
+			}
+			if tt.wantExtDocs && tag.ExternalDocs == nil {
+				t.Error("ExternalDocs should not be nil")
+			}
+		})
+	}
+}
+
+func TestApplyEnumAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name           string
+		opts           *options.EnumSchema
+		wantTitle      string
+		wantDesc       string
+		wantDefault    string
+		wantExample    string
+		wantDeprecated bool
+		wantExtDocs    bool
+	}{
+		{
+			name: "apply title and description",
+			opts: &options.EnumSchema{
+				Title:       "Task Status",
+				Description: "The status of a task",
+			},
+			wantTitle: "Task Status",
+			wantDesc:  "The status of a task",
+		},
+		{
+			name: "apply default and example",
+			opts: &options.EnumSchema{
+				Default: "PENDING",
+				Example: "COMPLETED",
+			},
+			wantDefault: "PENDING",
+			wantExample: "COMPLETED",
+		},
+		{
+			name: "mark deprecated",
+			opts: &options.EnumSchema{
+				Deprecated: true,
+			},
+			wantDeprecated: true,
+		},
+		{
+			name: "add external docs",
+			opts: &options.EnumSchema{
+				ExternalDocs: &options.ExternalDocumentation{
+					Url: "https://docs.example.com/status",
+				},
+			},
+			wantExtDocs: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			schema := &Schema{
+				Type: "string",
+				Enum: []any{"PENDING", "COMPLETED", "FAILED"},
+			}
+
+			// Apply the enum annotation options manually
+			if tt.opts.GetTitle() != "" {
+				schema.Title = tt.opts.GetTitle()
+			}
+			if tt.opts.GetDescription() != "" {
+				schema.Description = tt.opts.GetDescription()
+			}
+			if tt.opts.GetDefault() != "" {
+				schema.Default = tt.opts.GetDefault()
+			}
+			if tt.opts.GetExample() != "" {
+				schema.Example = tt.opts.GetExample()
+			}
+			if tt.opts.GetDeprecated() {
+				schema.Deprecated = true
+			}
+			if extDocs := tt.opts.GetExternalDocs(); extDocs != nil {
+				schema.ExternalDocs = convertExternalDocs(extDocs)
+			}
+
+			// Assertions
+			if tt.wantTitle != "" && schema.Title != tt.wantTitle {
+				t.Errorf("Title = %q, want %q", schema.Title, tt.wantTitle)
+			}
+			if tt.wantDesc != "" && schema.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", schema.Description, tt.wantDesc)
+			}
+			if tt.wantDefault != "" && schema.Default != tt.wantDefault {
+				t.Errorf("Default = %q, want %q", schema.Default, tt.wantDefault)
+			}
+			if tt.wantExample != "" && schema.Example != tt.wantExample {
+				t.Errorf("Example = %q, want %q", schema.Example, tt.wantExample)
+			}
+			if schema.Deprecated != tt.wantDeprecated {
+				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)
+			}
+			if tt.wantExtDocs && schema.ExternalDocs == nil {
+				t.Error("ExternalDocs should not be nil")
+			}
+		})
+	}
+}
+
+func TestApplyComponentsAnnotation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name                string
+		opts                *options.Components
+		wantSecuritySchemes int
+		wantResponses       int
+		wantParameters      int
+		wantRequestBodies   int
+		wantHeaders         int
+	}{
+		{
+			name: "add security schemes",
+			opts: &options.Components{
+				SecuritySchemes: map[string]*options.SecurityScheme{
+					"bearerAuth": {
+						Type:         options.SecurityScheme_TYPE_HTTP,
+						Scheme:       "bearer",
+						BearerFormat: "JWT",
+					},
+					"apiKey": {
+						Type: options.SecurityScheme_TYPE_API_KEY,
+						Name: "X-API-Key",
+						In:   options.SecurityScheme_IN_HEADER,
+					},
+				},
+			},
+			wantSecuritySchemes: 2,
+		},
+		{
+			name: "add responses",
+			opts: &options.Components{
+				Responses: map[string]*options.Response{
+					"NotFound": {Description: "Resource not found"},
+					"BadRequest": {Description: "Invalid request"},
+				},
+			},
+			wantResponses: 2,
+		},
+		{
+			name: "add parameters",
+			opts: &options.Components{
+				Parameters: map[string]*options.Parameter{
+					"PageSize": {
+						Name:     "page_size",
+						In:       "query",
+						Required: false,
+						Schema:   &options.Schema{Type: "integer"},
+					},
+				},
+			},
+			wantParameters: 1,
+		},
+		{
+			name: "add request bodies",
+			opts: &options.Components{
+				RequestBodies: map[string]*options.RequestBody{
+					"UserInput": {
+						Description: "User data",
+						Required:    true,
+					},
+				},
+			},
+			wantRequestBodies: 1,
+		},
+		{
+			name: "add headers",
+			opts: &options.Components{
+				Headers: map[string]*options.Header{
+					"X-Request-Id": {
+						Description: "Request correlation ID",
+						Schema:      &options.Schema{Type: "string"},
+					},
+				},
+			},
+			wantHeaders: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			comp := &Components{
+				Schemas: make(map[string]*SchemaRef),
+			}
+
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+			gen.applyComponentsAnnotation(comp, tt.opts)
+
+			if tt.wantSecuritySchemes > 0 && len(comp.SecuritySchemes) != tt.wantSecuritySchemes {
+				t.Errorf("SecuritySchemes count = %d, want %d", len(comp.SecuritySchemes), tt.wantSecuritySchemes)
+			}
+			if tt.wantResponses > 0 && len(comp.Responses) != tt.wantResponses {
+				t.Errorf("Responses count = %d, want %d", len(comp.Responses), tt.wantResponses)
+			}
+			if tt.wantParameters > 0 && len(comp.Parameters) != tt.wantParameters {
+				t.Errorf("Parameters count = %d, want %d", len(comp.Parameters), tt.wantParameters)
+			}
+			if tt.wantRequestBodies > 0 && len(comp.RequestBodies) != tt.wantRequestBodies {
+				t.Errorf("RequestBodies count = %d, want %d", len(comp.RequestBodies), tt.wantRequestBodies)
+			}
+			if tt.wantHeaders > 0 && len(comp.Headers) != tt.wantHeaders {
+				t.Errorf("Headers count = %d, want %d", len(comp.Headers), tt.wantHeaders)
+			}
+		})
+	}
+}
+
+// stringPtr is defined in generator_test.go

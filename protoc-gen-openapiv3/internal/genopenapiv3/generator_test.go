@@ -1160,3 +1160,545 @@ func requireGenerate(
 
 	return resp
 }
+
+// ============================================================================
+// Inline Prototext Tests
+// ============================================================================
+
+// requireGenerateInline is a helper that generates OpenAPI from inline prototext.
+func requireGenerateInline(
+	tb testing.TB,
+	protoText string,
+	registryModifier func(*descriptor.Registry),
+) []*descriptor.ResponseFile {
+	tb.Helper()
+
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(protoText), &req); err != nil {
+		tb.Fatalf("failed to unmarshal prototext: %s", err)
+	}
+
+	return requireGenerate(tb, &req, "3.0.3", registryModifier)
+}
+
+// Basic prototext for a simple service with GET/POST endpoints
+const basicServiceProtoInline = `
+file_to_generate: "test/v1/service.proto"
+proto_file: {
+	name: "test/v1/service.proto"
+	package: "test.v1"
+	message_type: {
+		name: "GetUserRequest"
+		field: {
+			name: "user_id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "userId"
+		}
+	}
+	message_type: {
+		name: "User"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "name"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "name"
+		}
+	}
+	message_type: {
+		name: "CreateUserRequest"
+		field: {
+			name: "name"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "name"
+		}
+	}
+	service: {
+		name: "UserService"
+		method: {
+			name: "GetUser"
+			input_type: ".test.v1.GetUserRequest"
+			output_type: ".test.v1.User"
+			options: {
+				[google.api.http]: {
+					get: "/v1/users/{user_id}"
+				}
+			}
+		}
+		method: {
+			name: "CreateUser"
+			input_type: ".test.v1.CreateUserRequest"
+			output_type: ".test.v1.User"
+			options: {
+				[google.api.http]: {
+					post: "/v1/users"
+					body: "*"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestGenerateInline_BasicService(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, basicServiceProtoInline, nil)
+
+	if len(resp) != 1 {
+		t.Fatalf("expected 1 response file, got %d", len(resp))
+	}
+
+	content := resp[0].GetContent()
+
+	// Verify basic structure
+	assertions := []string{
+		`"openapi": "3.0.3"`,
+		`"/v1/users/{user_id}"`,
+		`"/v1/users"`,
+		`"get":`,
+		`"post":`,
+		`"UserService_GetUser"`,
+		`"UserService_CreateUser"`,
+	}
+
+	for _, assertion := range assertions {
+		if !strings.Contains(content, assertion) {
+			t.Errorf("expected output to contain %q", assertion)
+		}
+	}
+}
+
+func TestGenerateInline_NamingStrategies(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name           string
+		strategy       string
+		wantSchemaName string
+	}{
+		{"fqn", "fqn", `"test.v1.User"`},
+		{"simple", "simple", `"User"`},
+		{"legacy", "legacy", `"v1User"`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			resp := requireGenerateInline(t, basicServiceProtoInline, func(reg *descriptor.Registry) {
+				reg.SetOpenAPINamingStrategy(tt.strategy)
+			})
+
+			if len(resp) != 1 {
+				t.Fatalf("expected 1 response file, got %d", len(resp))
+			}
+
+			content := resp[0].GetContent()
+
+			if !strings.Contains(content, tt.wantSchemaName) {
+				t.Errorf("expected schema name %s with strategy %s", tt.wantSchemaName, tt.strategy)
+			}
+		})
+	}
+}
+
+func TestGenerateInline_SimpleOperationIDs(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, basicServiceProtoInline, func(reg *descriptor.Registry) {
+		reg.SetSimpleOperationIDs(true)
+	})
+
+	content := resp[0].GetContent()
+
+	if !strings.Contains(content, `"operationId": "GetUser"`) {
+		t.Error("expected simple operation ID 'GetUser'")
+	}
+
+	if strings.Contains(content, `"operationId": "UserService_GetUser"`) {
+		t.Error("should not have service prefix in operation ID")
+	}
+}
+
+// Proto with enum for testing enum options
+const enumServiceProtoInline = `
+file_to_generate: "test/v1/enum.proto"
+proto_file: {
+	name: "test/v1/enum.proto"
+	package: "test.v1"
+	message_type: {
+		name: "Task"
+		field: {
+			name: "status"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_ENUM
+			type_name: ".test.v1.TaskStatus"
+			json_name: "status"
+		}
+	}
+	message_type: {
+		name: "GetTaskRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	enum_type: {
+		name: "TaskStatus"
+		value: { name: "TASK_STATUS_UNSPECIFIED" number: 0 }
+		value: { name: "TASK_STATUS_PENDING" number: 1 }
+		value: { name: "TASK_STATUS_COMPLETED" number: 2 }
+	}
+	service: {
+		name: "TaskService"
+		method: {
+			name: "GetTask"
+			input_type: ".test.v1.GetTaskRequest"
+			output_type: ".test.v1.Task"
+			options: {
+				[google.api.http]: {
+					get: "/v1/tasks/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestGenerateInline_EnumsAsStrings(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, enumServiceProtoInline, nil)
+	content := resp[0].GetContent()
+
+	assertions := []string{
+		`"TASK_STATUS_UNSPECIFIED"`,
+		`"TASK_STATUS_PENDING"`,
+		`"TASK_STATUS_COMPLETED"`,
+		`"type": "string"`,
+	}
+
+	for _, assertion := range assertions {
+		if !strings.Contains(content, assertion) {
+			t.Errorf("expected output to contain %q", assertion)
+		}
+	}
+}
+
+func TestGenerateInline_EnumsAsInts(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, enumServiceProtoInline, func(reg *descriptor.Registry) {
+		reg.SetEnumsAsInts(true)
+	})
+	content := resp[0].GetContent()
+
+	if !strings.Contains(content, `"type": "integer"`) {
+		t.Error("expected enum type to be integer when enums_as_ints enabled")
+	}
+}
+
+func TestGenerateInline_OmitEnumDefaultValue(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, enumServiceProtoInline, func(reg *descriptor.Registry) {
+		reg.SetOmitEnumDefaultValue(true)
+	})
+	content := resp[0].GetContent()
+
+	if strings.Contains(content, `"TASK_STATUS_UNSPECIFIED"`) {
+		t.Error("should not have default enum value when omit_enum_default_value enabled")
+	}
+
+	if !strings.Contains(content, `"TASK_STATUS_PENDING"`) {
+		t.Error("should have non-default enum values")
+	}
+}
+
+// Proto with path parameters
+const pathParamsProtoInline = `
+file_to_generate: "test/v1/path.proto"
+proto_file: {
+	name: "test/v1/path.proto"
+	package: "test.v1"
+	message_type: {
+		name: "GetResourceRequest"
+		field: {
+			name: "project_id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "projectId"
+		}
+		field: {
+			name: "resource_id"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "resourceId"
+		}
+	}
+	message_type: {
+		name: "Resource"
+		field: {
+			name: "name"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "name"
+		}
+	}
+	service: {
+		name: "ResourceService"
+		method: {
+			name: "GetResource"
+			input_type: ".test.v1.GetResourceRequest"
+			output_type: ".test.v1.Resource"
+			options: {
+				[google.api.http]: {
+					get: "/v1/projects/{project_id}/resources/{resource_id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestGenerateInline_PathParameters(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, pathParamsProtoInline, nil)
+	content := resp[0].GetContent()
+
+	assertions := []string{
+		`/v1/projects/{project_id}/resources/{resource_id}`,
+		`"in": "path"`,
+		`"required": true`,
+		`"name": "project_id"`,
+		`"name": "resource_id"`,
+	}
+
+	for _, assertion := range assertions {
+		if !strings.Contains(content, assertion) {
+			t.Errorf("expected output to contain %q", assertion)
+		}
+	}
+}
+
+// Proto with query parameters
+const queryParamsProtoInline = `
+file_to_generate: "test/v1/query.proto"
+proto_file: {
+	name: "test/v1/query.proto"
+	package: "test.v1"
+	message_type: {
+		name: "ListUsersRequest"
+		field: {
+			name: "page_size"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_INT32
+			json_name: "pageSize"
+		}
+		field: {
+			name: "page_token"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "pageToken"
+		}
+	}
+	message_type: {
+		name: "ListUsersResponse"
+		field: {
+			name: "users"
+			number: 1
+			label: LABEL_REPEATED
+			type: TYPE_STRING
+			json_name: "users"
+		}
+	}
+	service: {
+		name: "UserService"
+		method: {
+			name: "ListUsers"
+			input_type: ".test.v1.ListUsersRequest"
+			output_type: ".test.v1.ListUsersResponse"
+			options: {
+				[google.api.http]: {
+					get: "/v1/users"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestGenerateInline_QueryParameters(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, queryParamsProtoInline, nil)
+	content := resp[0].GetContent()
+
+	assertions := []string{
+		`"in": "query"`,
+		`"name": "page_size"`,
+		`"name": "page_token"`,
+	}
+
+	for _, assertion := range assertions {
+		if !strings.Contains(content, assertion) {
+			t.Errorf("expected output to contain %q", assertion)
+		}
+	}
+}
+
+func TestGenerateInline_QueryParameters_JSONNames(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, queryParamsProtoInline, func(reg *descriptor.Registry) {
+		reg.SetUseJSONNamesForFields(true)
+	})
+	content := resp[0].GetContent()
+
+	assertions := []string{
+		`"in": "query"`,
+		`"name": "pageSize"`,
+		`"name": "pageToken"`,
+	}
+
+	for _, assertion := range assertions {
+		if !strings.Contains(content, assertion) {
+			t.Errorf("expected output to contain %q with JSON names", assertion)
+		}
+	}
+}
+
+// Well-known type schema tests
+func TestWellKnownTypeSchema_Timestamp(t *testing.T) {
+	t.Parallel()
+
+	schema := wellKnownTypeSchema(".google.protobuf.Timestamp")
+	if schema == nil {
+		t.Fatal("expected schema for Timestamp")
+	}
+
+	if schema.Type != "string" {
+		t.Errorf("Timestamp Type = %q, want %q", schema.Type, "string")
+	}
+	if schema.Format != "date-time" {
+		t.Errorf("Timestamp Format = %q, want %q", schema.Format, "date-time")
+	}
+}
+
+func TestWellKnownTypeSchema_Duration(t *testing.T) {
+	t.Parallel()
+
+	schema := wellKnownTypeSchema(".google.protobuf.Duration")
+	if schema == nil {
+		t.Fatal("expected schema for Duration")
+	}
+
+	if schema.Type != "string" {
+		t.Errorf("Duration Type = %q, want %q", schema.Type, "string")
+	}
+}
+
+func TestWellKnownTypeSchema_Wrappers(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		typeName   string
+		expectType string
+		expectFmt  string
+	}{
+		{".google.protobuf.StringValue", "string", ""},
+		{".google.protobuf.Int32Value", "integer", "int32"},
+		{".google.protobuf.Int64Value", "string", "int64"},
+		{".google.protobuf.BoolValue", "boolean", ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.typeName, func(t *testing.T) {
+			schema := wellKnownTypeSchema(tt.typeName)
+			if schema == nil {
+				t.Fatalf("expected schema for %s", tt.typeName)
+			}
+			if schema.Type != tt.expectType {
+				t.Errorf("Type = %q, want %q", schema.Type, tt.expectType)
+			}
+			if tt.expectFmt != "" && schema.Format != tt.expectFmt {
+				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFmt)
+			}
+		})
+	}
+}
+
+func TestWellKnownTypeSchema_StructTypes(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Struct", func(t *testing.T) {
+		schema := wellKnownTypeSchema(".google.protobuf.Struct")
+		if schema == nil {
+			t.Fatal("expected schema for Struct")
+		}
+		if schema.Type != "object" {
+			t.Errorf("Type = %q, want %q", schema.Type, "object")
+		}
+	})
+
+	t.Run("Empty", func(t *testing.T) {
+		schema := wellKnownTypeSchema(".google.protobuf.Empty")
+		if schema == nil {
+			t.Fatal("expected schema for Empty")
+		}
+		if schema.Type != "object" {
+			t.Errorf("Type = %q, want %q", schema.Type, "object")
+		}
+	})
+
+	t.Run("Any", func(t *testing.T) {
+		schema := wellKnownTypeSchema(".google.protobuf.Any")
+		if schema == nil {
+			t.Fatal("expected schema for Any")
+		}
+		if schema.Type != "object" {
+			t.Errorf("Type = %q, want %q", schema.Type, "object")
+		}
+		if schema.Properties == nil || schema.Properties["@type"] == nil {
+			t.Error("expected @type property")
+		}
+	})
+}
