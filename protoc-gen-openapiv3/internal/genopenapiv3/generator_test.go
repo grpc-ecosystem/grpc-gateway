@@ -1,13 +1,17 @@
 package genopenapiv3
 
 import (
+	"bytes"
 	"encoding/json"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func TestConvertPathTemplate(t *testing.T) {
@@ -685,6 +689,19 @@ func jsonEqual(t *testing.T, a, b string) bool {
 	return reflect.DeepEqual(objA, objB)
 }
 
+func jsonEqualOrdered(t *testing.T, a, b []byte) bool {
+	var bufA, bufB bytes.Buffer
+	if err := json.Compact(&bufA, a); err != nil {
+		t.Errorf("Failed to compact first JSON: %v", err)
+		return false
+	}
+	if err := json.Compact(&bufB, b); err != nil {
+		t.Errorf("Failed to compact second JSON: %v", err)
+		return false
+	}
+	return bytes.Equal(bufA.Bytes(), bufB.Bytes())
+}
+
 func TestExtractFieldBehavior(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -725,7 +742,6 @@ func TestGetFieldBehavior(t *testing.T) {
 			Options: nil,
 		},
 	}
-
 	behaviors := getFieldBehavior(field)
 	if len(behaviors) != 0 {
 		t.Errorf("getFieldBehavior() returned %d behaviors, want 0", len(behaviors))
@@ -976,4 +992,171 @@ func TestSchemaNullableField(t *testing.T) {
 	if strings.Contains(string(data), `"nullable"`) {
 		t.Errorf("Expected no nullable field in output, got: %s", string(data))
 	}
+}
+
+func TestGenerateFromProtoDescriptor(t *testing.T) {
+	tests := []struct {
+		name             string
+		inputProtoText   string
+		wantJSON         string
+		registryModifier func(*descriptor.Registry)
+	}{
+		{
+			name:           "simple echo service",
+			inputProtoText: "testdata/generator/simple_echo.prototext",
+			wantJSON:       "testdata/generator/simple_echo.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetPreserveRPCOrder(false)
+			},
+		},
+		{
+			name:           "simple echo service ordered",
+			inputProtoText: "testdata/generator/simple_echo.prototext",
+			wantJSON:       "testdata/generator/simple_echo_ordered.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetPreserveRPCOrder(true)
+			},
+		},
+		{
+			name:           "merged",
+			inputProtoText: "testdata/generator/merged.prototext",
+			wantJSON:       "testdata/generator/merged.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetAllowMerge(true)
+			},
+		},
+		{
+			name:           "merged ordered",
+			inputProtoText: "testdata/generator/merged.prototext",
+			wantJSON:       "testdata/generator/merged_ordered.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetAllowMerge(true)
+				reg.SetPreserveRPCOrder(true)
+			},
+		},
+		{
+			name:           "disable default errors",
+			inputProtoText: "testdata/generator/simple_echo.prototext",
+			wantJSON:       "testdata/generator/disable_default_errors.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetDisableDefaultErrors(true)
+			},
+		},
+		{
+			name:           "disable default responses",
+			inputProtoText: "testdata/generator/disable_default_responses.prototext",
+			wantJSON:       "testdata/generator/disable_default_responses.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetDisableDefaultResponses(true)
+				reg.SetDisableDefaultErrors(true)
+			},
+		},
+		{
+			name:           "visibility restriction selectors internal",
+			inputProtoText: "testdata/generator/visibility.prototext",
+			wantJSON:       "testdata/generator/visibility_internal.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{"INTERNAL"})
+				reg.SetAllowMerge(true)
+			},
+		},
+		{
+			name:           "visibility restriction selectors none",
+			inputProtoText: "testdata/generator/visibility.prototext",
+			wantJSON:       "testdata/generator/visibility_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetAllowMerge(true)
+			},
+		},
+		{
+			name:           "query param field visibility - internal fields should be excluded",
+			inputProtoText: "testdata/generator/query_param_visibility.prototext",
+			wantJSON:       "testdata/generator/query_param_visibility_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
+		{
+			name:           "oneof field visibility - internal fields should be excluded from oneof",
+			inputProtoText: "testdata/generator/oneof_visibility.prototext",
+			wantJSON:       "testdata/generator/oneof_visibility_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Load prototext file
+			b, err := os.ReadFile(tt.inputProtoText)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			// Unmarshal into CodeGeneratorRequest
+			var req pluginpb.CodeGeneratorRequest
+			if err := prototext.Unmarshal(b, &req); err != nil {
+				t.Fatal(err)
+			}
+
+			// Generate OpenAPI spec
+			resp := requireGenerate(t, &req, "3.1.0", tt.registryModifier)
+			if len(resp) != 1 {
+				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+			}
+			got := resp[0].GetContent()
+
+			// Load expected JSON
+			wantBytes, err := os.ReadFile(tt.wantJSON)
+			if err != nil {
+				t.Fatalf("Failed to read expected JSON file: %v", err)
+			}
+			want := string(wantBytes)
+
+			// Compare generated JSON with expected JSON
+			if !jsonEqualOrdered(t, []byte(got), []byte(want)) {
+				t.Errorf("Generated JSON does not match expected JSON.\nGot:\n%s\n\nWant:\n%s", got, want)
+			}
+		})
+	}
+}
+
+// requireGenerate is a helper function that generates OpenAPI specs from a CodeGeneratorRequest.
+func requireGenerate(
+	tb testing.TB,
+	req *pluginpb.CodeGeneratorRequest,
+	openapiVersion string,
+	registryModifier func(*descriptor.Registry),
+) []*descriptor.ResponseFile {
+	tb.Helper()
+
+	reg := descriptor.NewRegistry()
+	if registryModifier != nil {
+		registryModifier(reg)
+	}
+
+	if err := reg.Load(req); err != nil {
+		tb.Fatalf("failed to load request: %s", err)
+	}
+
+	var targets []*descriptor.File
+	for _, target := range req.FileToGenerate {
+		f, err := reg.LookupFile(target)
+		if err != nil {
+			tb.Fatalf("failed to lookup file: %s", err)
+		}
+
+		targets = append(targets, f)
+	}
+
+	g := New(reg, FormatJSON, openapiVersion)
+
+	resp, err := g.Generate(targets)
+	if err != nil {
+		tb.Fatalf("failed to generate targets: %s", err)
+	}
+
+	return resp
 }

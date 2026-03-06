@@ -11,6 +11,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
+	openapioptions "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/grpclog"
@@ -19,6 +20,8 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
+
+	"google.golang.org/genproto/googleapis/api/visibility"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
@@ -49,8 +52,16 @@ func New(reg *descriptor.Registry, format Format, openapiVersion string) gen.Gen
 func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
 	var files []*descriptor.ResponseFile
 
-	// Handle merge mode
 	if g.reg.IsAllowMerge() {
+		// Collect all file-level annotations first
+		var documentAnnotations []*descriptor.File
+		for _, f := range targets {
+			if proto.HasExtension(f.Options, openapioptions.E_Openapiv3Document) {
+				documentAnnotations = append(documentAnnotations, f)
+			}
+		}
+
+		// Merge all files
 		var mergedTarget *descriptor.File
 		for _, f := range targets {
 			if mergedTarget == nil {
@@ -61,6 +72,14 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 				mergedTarget.Services = append(mergedTarget.Services, f.Services...)
 			}
 		}
+
+		// Apply annotations from the annotated file(s) to merged target
+		// This separates concerns: annotations vs content
+		if len(documentAnnotations) > 0 {
+			// Use the first annotated file's options
+			mergedTarget.Options = documentAnnotations[0].Options
+		}
+
 		targets = []*descriptor.File{mergedTarget}
 	}
 
@@ -123,14 +142,16 @@ func (g *generator) generateFileSpec(file *descriptor.File) (*OpenAPI, error) {
 	// Check if any service has HTTP bindings (unless generating unbound methods)
 	hasBindings := false
 	for _, svc := range file.Services {
-		for _, method := range svc.Methods {
-			if len(method.Bindings) > 0 {
-				hasBindings = true
+		if isVisible(getServiceVisibilityOption(svc), g.reg) {
+			for _, method := range svc.Methods {
+				if len(method.Bindings) > 0 && isVisible(getMethodVisibilityOption(method), g.reg) {
+					hasBindings = true
+					break
+				}
+			}
+			if hasBindings {
 				break
 			}
-		}
-		if hasBindings {
-			break
 		}
 	}
 
@@ -184,6 +205,10 @@ func (g *generator) generateFileSpec(file *descriptor.File) (*OpenAPI, error) {
 
 // generateServicePaths generates paths for all methods in a service.
 func (g *generator) generateServicePaths(doc *OpenAPI, svc *descriptor.Service, referencedSchemas map[string]bool) {
+	if !isVisible(getServiceVisibilityOption(svc), g.reg) {
+		return
+	}
+
 	// Add service as a tag (unless disabled)
 	if !g.reg.GetDisableServiceTags() {
 		tagName := svc.GetName()
@@ -211,6 +236,9 @@ func (g *generator) generateServicePaths(doc *OpenAPI, svc *descriptor.Service, 
 
 // generateMethodPaths generates paths for all HTTP bindings of a method.
 func (g *generator) generateMethodPaths(doc *OpenAPI, svc *descriptor.Service, method *descriptor.Method, referencedSchemas map[string]bool) {
+	if !isVisible(getMethodVisibilityOption(method), g.reg) {
+		return
+	}
 	// If no bindings and not generating unbound methods, skip
 	if len(method.Bindings) == 0 {
 		if !g.reg.GetGenerateUnboundMethods() {
@@ -386,6 +414,9 @@ func (g *generator) buildParameters(method *descriptor.Method, binding *descript
 
 	// Add path parameters
 	for _, pathParam := range binding.PathParams {
+		if !isVisible(getFieldVisibilityOption(pathParam.Target), g.reg) {
+			continue
+		}
 		schema := g.fieldToSchemaRef(pathParam.Target, referencedSchemas)
 		param := NewPathParameter(pathParam.FieldPath.String(), schema)
 
@@ -401,6 +432,9 @@ func (g *generator) buildParameters(method *descriptor.Method, binding *descript
 	// Add query parameters (fields not in path or body)
 	if method.RequestType != nil {
 		for _, field := range method.RequestType.Fields {
+			if !isVisible(getFieldVisibilityOption(field), g.reg) {
+				continue
+			}
 			// Skip path parameters
 			if isPathParam(field, binding.PathParams) {
 				continue
@@ -467,7 +501,7 @@ func (g *generator) buildResponses(method *descriptor.Method, referencedSchemas 
 	responses := NewResponses()
 
 	// Success response (200)
-	if method.ResponseType != nil {
+	if !g.reg.GetDisableDefaultResponses() && method.ResponseType != nil {
 		schemaName := g.messageSchemaName(method.ResponseType)
 		referencedSchemas[method.ResponseType.FQMN()] = true
 
@@ -482,7 +516,7 @@ func (g *generator) buildResponses(method *descriptor.Method, referencedSchemas 
 	}
 
 	// Default error response (unless disabled)
-	if !g.reg.GetDisableDefaultResponses() {
+	if !g.reg.GetDisableDefaultErrors() {
 		responses.Default = &ResponseRef{
 			Value: NewResponse("An unexpected error response").WithJSONSchema(NewSchemaRef("google.rpc.Status")),
 		}
@@ -576,6 +610,9 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 
 	// Process regular fields (not in oneof)
 	for _, field := range regularFields {
+		if !isVisible(getFieldVisibilityOption(field), g.reg) {
+			continue
+		}
 		isRequired := g.addFieldToSchema(doc, schema, field, visited)
 
 		// Track required fields based on field_behavior annotations
@@ -589,6 +626,9 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 	// Note: oneof fields are not required since only one can be set
 	for _, group := range oneofGroups {
 		for _, field := range group.fields {
+			if !isVisible(getFieldVisibilityOption(field), g.reg) {
+				continue
+			}
 			_ = g.addFieldToSchema(doc, schema, field, visited)
 		}
 	}
@@ -657,6 +697,9 @@ func (g *generator) generateOneOfSchemas(parentSchema *Schema, groups []oneofGro
 	for _, group := range groups {
 		// For each field in the oneof, create a schema that requires only that field
 		for _, field := range group.fields {
+			if !isVisible(getFieldVisibilityOption(field), g.reg) {
+				continue
+			}
 			fieldName := g.fieldName(field)
 
 			// Create a schema that requires this specific field from the oneof
@@ -691,14 +734,14 @@ func (g *generator) generateEnumSchema(doc *OpenAPI, enum *descriptor.Enum) {
 	var enumValues []any
 	if g.reg.GetEnumsAsInts() {
 		for _, v := range enum.GetValue() {
-			if g.reg.GetOmitEnumDefaultValue() && v.GetNumber() == 0 {
+			if !isVisible(getEnumValueVisibilityOption(v), g.reg) || (g.reg.GetOmitEnumDefaultValue() && v.GetNumber() == 0) {
 				continue
 			}
 			enumValues = append(enumValues, int(v.GetNumber()))
 		}
 	} else {
 		for _, v := range enum.GetValue() {
-			if g.reg.GetOmitEnumDefaultValue() && v.GetNumber() == 0 {
+			if !isVisible(getEnumValueVisibilityOption(v), g.reg) || (g.reg.GetOmitEnumDefaultValue() && v.GetNumber() == 0) {
 				continue
 			}
 			enumValues = append(enumValues, v.GetName())
@@ -960,7 +1003,7 @@ func (g *generator) encodeOpenAPI(file *wrapper) (*descriptor.ResponseFile, erro
 	name := file.fileName
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
-	output := fmt.Sprintf("%s.openapi." + string(g.format), base)
+	output := fmt.Sprintf("%s.openapi."+string(g.format), base)
 
 	return &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
@@ -1100,4 +1143,89 @@ func (g *generator) getFieldRequiredFromBehavior(field *descriptor.Field) bool {
 	}
 
 	return required
+}
+
+// Visibility helpers
+func getFieldVisibilityOption(fd *descriptor.Field) *visibility.VisibilityRule {
+	if fd.Options == nil {
+		return nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_FieldVisibility) {
+		return nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_FieldVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil
+	}
+	return opts
+}
+
+func getServiceVisibilityOption(fd *descriptor.Service) *visibility.VisibilityRule {
+	if fd.Options == nil {
+		return nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_ApiVisibility) {
+		return nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_ApiVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil
+	}
+	return opts
+}
+
+func getMethodVisibilityOption(fd *descriptor.Method) *visibility.VisibilityRule {
+	if fd.Options == nil {
+		return nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_MethodVisibility) {
+		return nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_MethodVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil
+	}
+	return opts
+}
+
+func getEnumValueVisibilityOption(fd *descriptorpb.EnumValueDescriptorProto) *visibility.VisibilityRule {
+	if fd.Options == nil {
+		return nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_ValueVisibility) {
+		return nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_ValueVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil
+	}
+	return opts
+}
+
+// isVisible checks if a field/RPC is visible based on the visibility restriction
+// combined with the `visibility_restriction_selectors`.
+// Elements with an overlap on `visibility_restriction_selectors` are visible, those without are not visible.
+// Elements without `google.api.VisibilityRule` annotations entirely are always visible.
+func isVisible(r *visibility.VisibilityRule, reg *descriptor.Registry) bool {
+	if r == nil {
+		return true
+	}
+
+	restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
+	// No restrictions results in the element always being visible
+	if len(restrictions) == 0 {
+		return true
+	}
+
+	for _, restriction := range restrictions {
+		if reg.GetVisibilityRestrictionSelectors()[strings.TrimSpace(restriction)] {
+			return true
+		}
+	}
+
+	return false
 }
