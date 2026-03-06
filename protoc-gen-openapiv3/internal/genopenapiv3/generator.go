@@ -615,6 +615,13 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 		g.applyFieldAnnotation(fieldSchemaRef.Value, field)
 	}
 
+	// Apply proto3 optional nullable
+	if g.reg.GetProto3OptionalNullable() && field.GetProto3Optional() {
+		if fieldSchemaRef.Value != nil {
+			fieldSchemaRef.Value.Nullable = true
+		}
+	}
+
 	// If field references another message, generate that too
 	if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 		if refMsg, err := g.reg.LookupMsg("", field.GetTypeName()); err == nil {
