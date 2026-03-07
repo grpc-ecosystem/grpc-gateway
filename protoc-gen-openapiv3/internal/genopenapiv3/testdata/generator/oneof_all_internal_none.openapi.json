@@ -1,0 +1,94 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Oneof All Internal Fields Test",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/test": {
+            "get": {
+                "tags": [
+                    "TestService"
+                ],
+                "operationId": "TestService_GetResponse",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testOneofAllInternalFields"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            },
+            "testOneofAllInternalFields": {
+                "type": "object",
+                "properties": {
+                    "regular_field": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "TestService"
+        }
+    ]
+}

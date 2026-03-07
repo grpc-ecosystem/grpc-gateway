@@ -1359,6 +1359,22 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
 			},
 		},
+		{
+			name:           "oneof all fields internal - all fields filtered by visibility",
+			inputProtoText: "testdata/generator/oneof_all_internal.prototext",
+			wantJSON:       "testdata/generator/oneof_all_internal_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
+		{
+			name:           "oneof multiple groups - one group becomes empty after visibility filter",
+			inputProtoText: "testdata/generator/oneof_multiple_groups.prototext",
+			wantJSON:       "testdata/generator/oneof_multiple_groups_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
 	}
 
 	for _, tt := range tests {
