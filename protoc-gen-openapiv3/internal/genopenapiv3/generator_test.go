@@ -578,9 +578,9 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 		t.Error("Single group should not use allOf")
 	}
 
-	// Should have 2 oneOf options (one per field in the oneof)
-	if len(oneOf) != 2 {
-		t.Fatalf("Expected 2 oneOf schemas, got %d", len(oneOf))
+	// Should have 3 oneOf options (2 fields + neither)
+	if len(oneOf) != 3 {
+		t.Fatalf("Expected 3 oneOf schemas (2 fields + neither), got %d", len(oneOf))
 	}
 
 	// First option should be for stringValue
@@ -611,6 +611,21 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 	}
 	if opt2.Title != "value.intValue" {
 		t.Errorf("Option 2 Title = %q, want %q", opt2.Title, "value.intValue")
+	}
+
+	// Third option should be "neither" - allows none of the oneof fields to be set
+	neitherOpt := oneOf[2].Value
+	if neitherOpt.Title != "value.none" {
+		t.Errorf("Neither option Title = %q, want %q", neitherOpt.Title, "value.none")
+	}
+	if neitherOpt.Not == nil {
+		t.Fatal("Neither option should have 'not' schema")
+	}
+	if neitherOpt.Not.Value == nil {
+		t.Fatal("Neither option 'not' should have value")
+	}
+	if neitherOpt.Not.Value.AnyOf == nil || len(neitherOpt.Not.Value.AnyOf) != 2 {
+		t.Fatalf("Neither option 'not.anyOf' should have 2 entries, got %v", neitherOpt.Not.Value.AnyOf)
 	}
 }
 
@@ -673,15 +688,15 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 		t.Fatalf("Expected 2 allOf schemas (one per group), got %d", len(allOf))
 	}
 
-	// Each allOf entry should wrap a oneOf with 2 options (one per field)
+	// Each allOf entry should wrap a oneOf with 3 options (2 fields + neither)
 	for groupIdx, allOfEntry := range allOf {
 		if allOfEntry.Value == nil {
 			t.Errorf("allOf[%d] should have value", groupIdx)
 			continue
 		}
 		groupOneOf := allOfEntry.Value.OneOf
-		if len(groupOneOf) != 2 {
-			t.Errorf("Group %d should have 2 oneOf options, got %d", groupIdx, len(groupOneOf))
+		if len(groupOneOf) != 3 {
+			t.Errorf("Group %d should have 3 oneOf options (2 fields + neither), got %d", groupIdx, len(groupOneOf))
 		}
 	}
 
@@ -691,7 +706,7 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 	for _, schema := range group1OneOf {
 		group1Titles[schema.Value.Title] = true
 	}
-	for _, expected := range []string{"event.createEvent", "event.updateEvent"} {
+	for _, expected := range []string{"event.createEvent", "event.updateEvent", "event.none"} {
 		if !group1Titles[expected] {
 			t.Errorf("Group 1 missing expected oneOf option with title %q", expected)
 		}
@@ -703,9 +718,48 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 	for _, schema := range group2OneOf {
 		group2Titles[schema.Value.Title] = true
 	}
-	for _, expected := range []string{"result.error", "result.success"} {
+	for _, expected := range []string{"result.error", "result.success", "result.none"} {
 		if !group2Titles[expected] {
 			t.Errorf("Group 2 missing expected oneOf option with title %q", expected)
+		}
+	}
+}
+
+func TestBuildNeitherSetSchema(t *testing.T) {
+	g := &generator{}
+
+	schema := g.buildNeitherSetSchema("myGroup", []string{"field1", "field2", "field3"})
+
+	// Should have correct title
+	if schema.Title != "myGroup.none" {
+		t.Errorf("Title = %q, want %q", schema.Title, "myGroup.none")
+	}
+
+	// Should have "not" with "anyOf"
+	if schema.Not == nil {
+		t.Fatal("Schema should have 'not'")
+	}
+	if schema.Not.Value == nil {
+		t.Fatal("Not should have value")
+	}
+	if schema.Not.Value.AnyOf == nil {
+		t.Fatal("Not should have anyOf")
+	}
+
+	// AnyOf should contain required entry for each field
+	if len(schema.Not.Value.AnyOf) != 3 {
+		t.Errorf("anyOf should have 3 entries, got %d", len(schema.Not.Value.AnyOf))
+	}
+
+	requiredFields := make(map[string]bool)
+	for _, ref := range schema.Not.Value.AnyOf {
+		if ref.Value != nil && len(ref.Value.Required) == 1 {
+			requiredFields[ref.Value.Required[0]] = true
+		}
+	}
+	for _, field := range []string{"field1", "field2", "field3"} {
+		if !requiredFields[field] {
+			t.Errorf("Missing required entry for field %q", field)
 		}
 	}
 }

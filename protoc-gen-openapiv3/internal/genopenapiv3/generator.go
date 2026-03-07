@@ -716,14 +716,17 @@ func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneo
 }
 
 // generateSingleGroupOneOf generates oneOf options for a single oneof group.
+// Includes options for each field + a "neither" option since protobuf oneofs are optional.
 func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGroup) []*SchemaRef {
 	var options []*SchemaRef
+	var fieldNames []string
 
 	for _, field := range group.fields {
 		if !isVisible(getFieldVisibilityOption(field), g.reg) {
 			continue
 		}
 		fieldName := g.fieldName(field)
+		fieldNames = append(fieldNames, fieldName)
 
 		// Create a schema that requires this specific field from the oneof
 		optionSchema := &Schema{
@@ -740,7 +743,35 @@ func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGr
 		options = append(options, &SchemaRef{Value: optionSchema})
 	}
 
+	// Add "neither" option - oneofs are optional in protobuf
+	if len(fieldNames) > 0 {
+		neitherSchema := g.buildNeitherSetSchema(group.name, fieldNames)
+		options = append(options, &SchemaRef{Value: neitherSchema})
+	}
+
 	return options
+}
+
+// buildNeitherSetSchema creates a schema that matches when none of the oneof fields are set.
+// Uses the pattern: { "not": { "anyOf": [{ "required": ["field1"] }, { "required": ["field2"] }] } }
+func (g *generator) buildNeitherSetSchema(groupName string, fieldNames []string) *Schema {
+	var anyOfSchemas []*SchemaRef
+	for _, fieldName := range fieldNames {
+		anyOfSchemas = append(anyOfSchemas, &SchemaRef{
+			Value: &Schema{
+				Required: []string{fieldName},
+			},
+		})
+	}
+
+	return &Schema{
+		Title: fmt.Sprintf("%s.none", groupName),
+		Not: &SchemaRef{
+			Value: &Schema{
+				AnyOf: anyOfSchemas,
+			},
+		},
+	}
 }
 
 // generateEnumSchema generates a schema definition for an enum.

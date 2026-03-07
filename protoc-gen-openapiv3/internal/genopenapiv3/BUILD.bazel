@@ -45,7 +45,9 @@ go_test(
     deps = [
         "//internal/descriptor",
         "//protoc-gen-openapiv3/options",
+        "@org_golang_google_genproto_googleapis_api//annotations",
         "@org_golang_google_protobuf//encoding/prototext",
+        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/descriptorpb",
         "@org_golang_google_protobuf//types/pluginpb",
     ],
