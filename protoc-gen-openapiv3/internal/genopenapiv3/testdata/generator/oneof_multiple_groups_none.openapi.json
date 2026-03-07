@@ -115,6 +115,23 @@
                         "required": [
                             "public_choice_b"
                         ]
+                    },
+                    {
+                        "title": "public_group.none",
+                        "not": {
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "public_choice_a"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "public_choice_b"
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 ]
             }

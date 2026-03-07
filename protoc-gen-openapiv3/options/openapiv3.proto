@@ -420,10 +420,11 @@ message Schema {
   map<string, google.protobuf.Value> extensions = 11;
 
   // JSON Schema validation keywords
-  double multiple_of = 20;
-  double maximum = 21;
+  // Using optional to allow distinguishing "not set" from "set to 0"
+  optional double multiple_of = 20;
+  optional double maximum = 21;
   bool exclusive_maximum = 22;
-  double minimum = 23;
+  optional double minimum = 23;
   bool exclusive_minimum = 24;
   uint64 max_length = 25;
   uint64 min_length = 26;

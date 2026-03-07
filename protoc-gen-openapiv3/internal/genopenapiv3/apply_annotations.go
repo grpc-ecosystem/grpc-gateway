@@ -347,15 +347,16 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 	}
 
 	// Apply numeric constraints
-	if opts.GetMultipleOf() != 0 {
+	// Using pointer checks to correctly handle zero values (0 is valid for min/max)
+	if opts.MultipleOf != nil {
 		multipleOf := opts.GetMultipleOf()
 		schema.MultipleOf = &multipleOf
 	}
-	if opts.GetMinimum() != 0 {
+	if opts.Minimum != nil {
 		min := opts.GetMinimum()
 		schema.Minimum = &min
 	}
-	if opts.GetMaximum() != 0 {
+	if opts.Maximum != nil {
 		max := opts.GetMaximum()
 		schema.Maximum = &max
 	}

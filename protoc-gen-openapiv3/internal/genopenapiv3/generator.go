@@ -570,6 +570,11 @@ func (g *generator) groupFieldsByOneof(msg *descriptor.Message) ([]*descriptor.F
 
 // generateMessageSchema generates a schema definition for a message.
 func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message, visited map[string]bool) {
+	// Skip synthetic map entry messages - they're handled inline by tryMapFieldSchema
+	if msg.GetOptions() != nil && msg.GetOptions().GetMapEntry() {
+		return
+	}
+
 	schemaName := g.messageSchemaName(msg)
 
 	// Prevent infinite recursion for self-referential messages
@@ -875,8 +880,16 @@ func (g *generator) addErrorSchema(doc *OpenAPI) {
 
 // fieldToSchemaRef converts a proto field to a SchemaRef.
 func (g *generator) fieldToSchemaRef(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaRef {
-	// Handle repeated fields (arrays)
+	// Handle repeated fields (arrays or maps)
 	if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+		// Check if this is a map field (repeated message with map_entry=true)
+		if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+			if mapSchema := g.tryMapFieldSchema(field, referencedSchemas); mapSchema != nil {
+				return mapSchema
+			}
+		}
+
+		// Regular array
 		itemSchema := g.fieldTypeToSchema(field, referencedSchemas)
 		return &SchemaRef{
 			Value: &Schema{
@@ -887,6 +900,57 @@ func (g *generator) fieldToSchemaRef(field *descriptor.Field, referencedSchemas 
 	}
 
 	return g.fieldTypeToSchema(field, referencedSchemas)
+}
+
+// tryMapFieldSchema checks if a repeated message field is a map and returns
+// the appropriate object schema with additionalProperties. Returns nil if
+// the field is not a map.
+func (g *generator) tryMapFieldSchema(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaRef {
+	// Look up the message type
+	msg, err := g.reg.LookupMsg("", field.GetTypeName())
+	if err != nil {
+		return nil
+	}
+
+	// Check if the message has map_entry=true option
+	if msg.GetOptions() == nil || !msg.GetOptions().GetMapEntry() {
+		return nil
+	}
+
+	// This is a map field. Map entries have two fields: key (field 1) and value (field 2)
+	// We need to get the value field's type for additionalProperties
+	fields := msg.GetField()
+	if len(fields) != 2 {
+		return nil
+	}
+
+	// Find the value field (should be field number 2)
+	var valueField *descriptorpb.FieldDescriptorProto
+	for _, f := range fields {
+		if f.GetNumber() == 2 {
+			valueField = f
+			break
+		}
+	}
+	if valueField == nil {
+		return nil
+	}
+
+	// Create a descriptor.Field wrapper for the value field to reuse fieldTypeToSchema
+	valueDescField := &descriptor.Field{
+		FieldDescriptorProto: valueField,
+	}
+
+	// Get the schema for the value type
+	valueSchema := g.fieldTypeToSchema(valueDescField, referencedSchemas)
+
+	// Return object schema with additionalProperties
+	return &SchemaRef{
+		Value: &Schema{
+			Type:                 "object",
+			AdditionalProperties: valueSchema,
+		},
+	}
 }
 
 // fieldTypeToSchema converts a field type to a SchemaRef.
@@ -1276,12 +1340,13 @@ func isVisible(r *visibility.VisibilityRule, reg *descriptor.Registry) bool {
 		return true
 	}
 
-	restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
-	// No restrictions results in the element always being visible
-	if len(restrictions) == 0 {
+	// Trim the restriction first - empty/whitespace-only means no restriction
+	trimmedRestriction := strings.TrimSpace(r.Restriction)
+	if trimmedRestriction == "" {
 		return true
 	}
 
+	restrictions := strings.Split(trimmedRestriction, ",")
 	for _, restriction := range restrictions {
 		if reg.GetVisibilityRestrictionSelectors()[strings.TrimSpace(restriction)] {
 			return true

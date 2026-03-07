@@ -8,6 +8,11 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
+// float64Ptr is a helper to create *float64 for test cases
+func float64Ptr(f float64) *float64 {
+	return &f
+}
+
 func TestConvertServer(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -331,9 +336,9 @@ func TestConvertSchema(t *testing.T) {
 			name: "schema with validation",
 			input: &options.Schema{
 				Type:       "integer",
-				Minimum:    0,
-				Maximum:    100,
-				MultipleOf: 5,
+				Minimum:    float64Ptr(0),
+				Maximum:    float64Ptr(100),
+				MultipleOf: float64Ptr(5),
 			},
 			wantRef: false,
 			expected: &Schema{
@@ -953,9 +958,9 @@ func TestApplyFieldAnnotation(t *testing.T) {
 		{
 			name: "numeric field with constraints",
 			opts: &options.Schema{
-				Minimum:    0,
-				Maximum:    100,
-				MultipleOf: 5,
+				Minimum:    float64Ptr(0),
+				Maximum:    float64Ptr(100),
+				MultipleOf: float64Ptr(5),
 			},
 			wantMinimum: 0,
 			wantMaximum: 100,
