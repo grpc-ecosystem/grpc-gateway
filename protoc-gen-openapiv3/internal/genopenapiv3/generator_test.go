@@ -898,6 +898,78 @@ func TestApplyFieldBehaviorToSchema(t *testing.T) {
 	}
 }
 
+func TestFieldBehaviorRequiredIntegration(t *testing.T) {
+	// Integration test verifying multiple fields with different behaviors
+	// result in correct schema.Required array
+	reg := descriptor.NewRegistry()
+	g := &generator{reg: reg}
+
+	parentSchema := &Schema{Required: []string{}}
+
+	// Field 1: REQUIRED behavior - should be in Required array
+	opts1 := &descriptorpb.FieldOptions{}
+	proto.SetExtension(opts1, annotations.E_FieldBehavior, []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED})
+	field1 := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:    stringPtr("required_field"),
+			Options: opts1,
+		},
+	}
+	fieldSchema1 := &Schema{Type: "string"}
+	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema1, field1)
+
+	// Field 2: OUTPUT_ONLY behavior - should NOT be in Required array
+	opts2 := &descriptorpb.FieldOptions{}
+	proto.SetExtension(opts2, annotations.E_FieldBehavior, []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY})
+	field2 := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:    stringPtr("output_only_field"),
+			Options: opts2,
+		},
+	}
+	fieldSchema2 := &Schema{Type: "string"}
+	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema2, field2)
+
+	// Field 3: No behavior - should NOT be in Required array
+	field3 := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:    stringPtr("plain_field"),
+			Options: nil,
+		},
+	}
+	fieldSchema3 := &Schema{Type: "string"}
+	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema3, field3)
+
+	// Field 4: REQUIRED + OUTPUT_ONLY - should be in Required array
+	opts4 := &descriptorpb.FieldOptions{}
+	proto.SetExtension(opts4, annotations.E_FieldBehavior, []annotations.FieldBehavior{
+		annotations.FieldBehavior_REQUIRED,
+		annotations.FieldBehavior_OUTPUT_ONLY,
+	})
+	field4 := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:    stringPtr("required_output_field"),
+			Options: opts4,
+		},
+	}
+	fieldSchema4 := &Schema{Type: "string"}
+	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema4, field4)
+
+	// Verify Required array contains exactly the expected fields
+	expectedRequired := []string{"required_field", "required_output_field"}
+	if !reflect.DeepEqual(parentSchema.Required, expectedRequired) {
+		t.Errorf("parentSchema.Required = %v, want %v", parentSchema.Required, expectedRequired)
+	}
+
+	// Verify ReadOnly/WriteOnly are set correctly
+	if !fieldSchema2.ReadOnly {
+		t.Error("output_only_field should have ReadOnly=true")
+	}
+	if !fieldSchema4.ReadOnly {
+		t.Error("required_output_field should have ReadOnly=true")
+	}
+}
+
 func TestGetFieldRequiredFromBehavior(t *testing.T) {
 	tests := []struct {
 		name               string
