@@ -930,3 +930,39 @@ func TestServeMux_InjectPattern(t *testing.T) {
 		t.Errorf("request not processed")
 	}
 }
+
+func TestServeHTTP_WithDisableHTTPMethodOverride(t *testing.T) {
+	// When WithDisableHTTPMethodOverride is set, X-HTTP-Method-Override
+	// header should be ignored and the request should match the POST
+	// handler directly.
+	mux := runtime.NewServeMux(runtime.WithDisableHTTPMethodOverride())
+
+	pat, err := runtime.NewPattern(1, []int{int(utilities.OpLitPush), 0}, []string{"foo"}, "")
+	if err != nil {
+		t.Fatalf("runtime.NewPattern failed: %v", err)
+	}
+	mux.Handle("GET", pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		_, _ = fmt.Fprintf(w, "GET /foo")
+	})
+
+	postPat, err := runtime.NewPattern(1, []int{int(utilities.OpLitPush), 0}, []string{"foo"}, "")
+	if err != nil {
+		t.Fatalf("runtime.NewPattern failed: %v", err)
+	}
+	mux.Handle("POST", postPat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		_, _ = fmt.Fprintf(w, "POST /foo")
+	})
+
+	r := httptest.NewRequest("POST", "https://host.example/foo", bytes.NewReader(nil))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Set("X-HTTP-Method-Override", "GET")
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if got, want := w.Code, http.StatusOK; got != want {
+		t.Errorf("w.Code = %d; want %d", got, want)
+	}
+	if got, want := w.Body.String(), "POST /foo"; got != want {
+		t.Errorf("w.Body = %q; want %q", got, want)
+	}
+}

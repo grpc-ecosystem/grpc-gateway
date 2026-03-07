@@ -492,3 +492,33 @@ mux := runtime.NewServeMux(
 	runtime.WithRoutingErrorHandler(handleRoutingError),
 )
 ```
+
+## Disabling X-HTTP-Method-Override
+
+By default, the gRPC-Gateway allows clients to send a `POST` request with an
+`X-HTTP-Method-Override` header to override the HTTP method. For example, a
+`POST` request with `X-HTTP-Method-Override: GET` will be routed as if it were
+a `GET` request. This is part of the path length fallback behavior, which
+allows HTML forms (which only support `GET` and `POST`) to call other methods.
+
+This can lead to HTTP method confusion when your gateway sits behind a Web
+Application Firewall (WAF) or reverse proxy that enforces method-based access
+controls. For example, if a WAF is configured to only allow `POST` requests to
+a particular endpoint, a client could send a `POST` with
+`X-HTTP-Method-Override: DELETE` and the gateway would route the request to the
+`DELETE` handler, bypassing the WAF's intended restrictions. The WAF sees a
+`POST` request, but the gateway processes it as a `DELETE`.
+
+To disable the `X-HTTP-Method-Override` header handling, use the
+`WithDisableHTTPMethodOverride` option:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithDisableHTTPMethodOverride(),
+)
+```
+
+This disables only the method override header. The path length fallback (routing
+a `POST` with `Content-Type: application/x-www-form-urlencoded` to a matching
+`GET` handler) remains available unless separately disabled with
+`WithDisablePathLengthFallback`.
