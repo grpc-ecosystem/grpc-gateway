@@ -764,6 +764,27 @@ func TestBuildNeitherSetSchema(t *testing.T) {
 	}
 }
 
+func TestGenerateOneOfConstraintsEmptyGroups(t *testing.T) {
+	// Test edge case: empty groups slice should return nil for both oneOf and allOf
+	reg := descriptor.NewRegistry()
+	g := &generator{reg: reg}
+
+	parentSchema := &Schema{
+		Type:       "object",
+		Properties: map[string]*SchemaRef{},
+	}
+
+	// Empty groups
+	oneOf, allOf := g.generateOneOfConstraints(parentSchema, []oneofGroup{})
+
+	if oneOf != nil {
+		t.Errorf("Expected oneOf to be nil for empty groups, got %v", oneOf)
+	}
+	if allOf != nil {
+		t.Errorf("Expected allOf to be nil for empty groups, got %v", allOf)
+	}
+}
+
 func stringPtr(s string) *string {
 	return &s
 }

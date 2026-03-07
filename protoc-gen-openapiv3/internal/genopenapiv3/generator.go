@@ -709,10 +709,15 @@ func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneo
 
 	// Single group: use oneOf directly
 	// Multiple groups: wrap each in allOf so they're independent
-	if len(groupConstraints) == 1 {
+	// No visible groups: return nil for both
+	switch len(groupConstraints) {
+	case 0:
+		return nil, nil
+	case 1:
 		return groupConstraints[0].Value.OneOf, nil
+	default:
+		return nil, groupConstraints
 	}
-	return nil, groupConstraints
 }
 
 // generateSingleGroupOneOf generates oneOf options for a single oneof group.
