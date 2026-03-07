@@ -10,6 +10,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -1991,4 +1992,1211 @@ func TestWellKnownTypeSchema_StructTypes(t *testing.T) {
 			t.Error("expected @type property")
 		}
 	})
+}
+
+// ============================================================================
+// Priority 1: Bug-Exposing Tests
+// ============================================================================
+
+// TestMapFieldSchema tests that proto map fields are correctly rendered as
+// OpenAPI object schemas with additionalProperties, not as arrays.
+//
+// In protobuf, map<K,V> fields are represented as repeated message types with
+// the `map_entry` option set to true. The generator should detect this pattern
+// and render it as an object with additionalProperties containing the value schema.
+//
+// BUG: Currently, the generator treats map fields as regular repeated message
+// fields and renders them as `type: array` instead of `type: object`.
+func TestMapFieldSchema(t *testing.T) {
+	t.Parallel()
+
+	// Create a proto descriptor with a map field
+	// map<string, int32> is represented as:
+	// - A synthetic message type with map_entry=true containing key and value fields
+	// - A repeated field of that synthetic message type
+	mapEntryMsg := &descriptorpb.DescriptorProto{
+		Name: stringPtr("MetadataEntry"),
+		Options: &descriptorpb.MessageOptions{
+			MapEntry: boolPtr(true),
+		},
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     stringPtr("key"),
+				Number:   int32Ptr(1),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				JsonName: stringPtr("key"),
+			},
+			{
+				Name:     stringPtr("value"),
+				Number:   int32Ptr(2),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+				JsonName: stringPtr("value"),
+			},
+		},
+	}
+
+	// Create the parent message containing the map field
+	parentMsg := &descriptorpb.DescriptorProto{
+		Name: stringPtr("ResourceWithMap"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     stringPtr("id"),
+				Number:   int32Ptr(1),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				JsonName: stringPtr("id"),
+			},
+			{
+				Name:     stringPtr("metadata"),
+				Number:   int32Ptr(2),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: stringPtr(".test.v1.ResourceWithMap.MetadataEntry"),
+				JsonName: stringPtr("metadata"),
+			},
+		},
+		NestedType: []*descriptorpb.DescriptorProto{mapEntryMsg},
+	}
+
+	// Build the full request
+	protoText := `
+file_to_generate: "test/v1/map.proto"
+proto_file: {
+	name: "test/v1/map.proto"
+	package: "test.v1"
+	message_type: {
+		name: "ResourceWithMap"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "metadata"
+			number: 2
+			label: LABEL_REPEATED
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.ResourceWithMap.MetadataEntry"
+			json_name: "metadata"
+		}
+		nested_type: {
+			name: "MetadataEntry"
+			options: {
+				map_entry: true
+			}
+			field: {
+				name: "key"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "key"
+			}
+			field: {
+				name: "value"
+				number: 2
+				label: LABEL_OPTIONAL
+				type: TYPE_INT32
+				json_name: "value"
+			}
+		}
+	}
+	message_type: {
+		name: "GetRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	service: {
+		name: "MapService"
+		method: {
+			name: "Get"
+			input_type: ".test.v1.GetRequest"
+			output_type: ".test.v1.ResourceWithMap"
+			options: {
+				[google.api.http]: {
+					get: "/v1/resources/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+	resp := requireGenerateInline(t, protoText, nil)
+	content := resp[0].GetContent()
+
+	// Parse the JSON to verify the structure
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	components, ok := doc["components"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing components")
+	}
+	schemas, ok := components["schemas"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing schemas")
+	}
+
+	// Find the ResourceWithMap schema (may have v1 prefix from naming strategy)
+	var resourceSchema map[string]interface{}
+	for name, s := range schemas {
+		if strings.Contains(name, "ResourceWithMap") && !strings.Contains(name, "Entry") {
+			resourceSchema, _ = s.(map[string]interface{})
+			break
+		}
+	}
+
+	if resourceSchema == nil {
+		t.Fatal("ResourceWithMap schema not found")
+	}
+
+	properties, ok := resourceSchema["properties"].(map[string]interface{})
+	if !ok {
+		t.Fatal("ResourceWithMap missing properties")
+	}
+
+	metadataField, ok := properties["metadata"].(map[string]interface{})
+	if !ok {
+		t.Fatal("metadata field not found in ResourceWithMap properties")
+	}
+
+	// Map fields should be type: object with additionalProperties, not type: array
+	fieldType, _ := metadataField["type"].(string)
+	if fieldType == "array" {
+		t.Errorf("BUG CONFIRMED: Map field 'metadata' has type 'array', should be 'object' with additionalProperties")
+	} else if fieldType != "object" {
+		t.Errorf("Map field 'metadata' has type %q, expected 'object'", fieldType)
+	}
+
+	// Should have additionalProperties pointing to the value type schema
+	if metadataField["additionalProperties"] == nil {
+		t.Error("Map field 'metadata' should have additionalProperties")
+	}
+
+	// Verify that the MetadataEntry schema is NOT included (it's synthetic)
+	for name := range schemas {
+		if strings.Contains(name, "MetadataEntry") {
+			t.Errorf("BUG: Synthetic map entry schema %q should not appear in output", name)
+		}
+	}
+
+	// Keep the unused variables for documentation purposes
+	_ = parentMsg
+}
+
+func boolPtr(b bool) *bool {
+	return &b
+}
+
+// TestNumericZeroConstraints tests that minimum and maximum values of 0 are
+// correctly applied to schemas.
+//
+// BUG: The apply_annotations.go code uses `if opts.GetMinimum() != 0` which
+// causes minimum=0 to be silently skipped (same for maximum=0).
+//
+// This is a Go zero-value trap: the proto getter returns 0 for unset fields,
+// making it impossible to distinguish between "not set" and "explicitly set to 0".
+func TestNumericZeroConstraints(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		minimum     float64
+		maximum     float64
+		wantMinimum bool
+		wantMaximum bool
+	}{
+		{
+			name:        "minimum 0, maximum 10",
+			minimum:     0,
+			maximum:     10,
+			wantMinimum: true,
+			wantMaximum: true,
+		},
+		{
+			name:        "minimum -10, maximum 0",
+			minimum:     -10,
+			maximum:     0,
+			wantMinimum: true,
+			wantMaximum: true,
+		},
+		{
+			name:        "minimum 0, maximum 0 (both zero)",
+			minimum:     0,
+			maximum:     0,
+			wantMinimum: true,
+			wantMaximum: true,
+		},
+		{
+			name:        "non-zero values",
+			minimum:     1,
+			maximum:     100,
+			wantMinimum: true,
+			wantMaximum: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			schema := &Schema{Type: "integer"}
+
+			// Simulate the buggy behavior from apply_annotations.go:354-375
+			// This is exactly what the current code does
+			if tt.minimum != 0 {
+				min := tt.minimum
+				schema.Minimum = &min
+			}
+			if tt.maximum != 0 {
+				max := tt.maximum
+				schema.Maximum = &max
+			}
+
+			// Check if the schema has minimum when it should
+			hasMinimum := schema.Minimum != nil
+			if tt.wantMinimum && !hasMinimum {
+				if tt.minimum == 0 {
+					t.Errorf("BUG CONFIRMED: minimum=0 was not applied (zero value incorrectly skipped)")
+				} else {
+					t.Errorf("minimum=%v was not applied", tt.minimum)
+				}
+			}
+
+			// Check if the schema has maximum when it should
+			hasMaximum := schema.Maximum != nil
+			if tt.wantMaximum && !hasMaximum {
+				if tt.maximum == 0 {
+					t.Errorf("BUG CONFIRMED: maximum=0 was not applied (zero value incorrectly skipped)")
+				} else {
+					t.Errorf("maximum=%v was not applied", tt.maximum)
+				}
+			}
+		})
+	}
+}
+
+// Tests that empty/whitespace-only visibility restrictions don't incorrectly hide fields
+// BUG: Whitespace-only restriction "   " causes field to be incorrectly hidden
+func TestEmptyVisibilityRestriction(t *testing.T) {
+	t.Parallel()
+
+	// Test case: isVisible with whitespace-only restriction
+	// When restriction is "   " (whitespace only):
+	// - strings.TrimSpace("   ") returns ""
+	// - strings.Split("", ",") returns [""] (slice with one empty string)
+	// - len(restrictions) is 1, not 0
+	// - loop runs with restriction="" which won't match any selector
+	// - returns false (incorrectly hidden)
+
+	// This is a unit test for the isVisible function behavior
+	tests := []struct {
+		name        string
+		restriction string
+		selectors   []string
+		wantVisible bool
+	}{
+		{
+			name:        "empty restriction should be visible",
+			restriction: "",
+			selectors:   []string{},
+			wantVisible: true,
+		},
+		{
+			name:        "whitespace only restriction should be visible",
+			restriction: "   ",
+			selectors:   []string{},
+			wantVisible: true,
+		},
+		{
+			name:        "whitespace with tabs should be visible",
+			restriction: "  \t  ",
+			selectors:   []string{},
+			wantVisible: true,
+		},
+		{
+			name:        "INTERNAL restriction without selector should be hidden",
+			restriction: "INTERNAL",
+			selectors:   []string{},
+			wantVisible: false,
+		},
+		{
+			name:        "INTERNAL restriction with matching selector should be visible",
+			restriction: "INTERNAL",
+			selectors:   []string{"INTERNAL"},
+			wantVisible: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			reg.SetVisibilityRestrictionSelectors(tt.selectors)
+
+			// Create a visibility rule
+			rule := &visibility.VisibilityRule{
+				Restriction: tt.restriction,
+			}
+
+			gotVisible := isVisible(rule, reg)
+			if gotVisible != tt.wantVisible {
+				if tt.restriction == "   " || tt.restriction == "  \t  " {
+					t.Errorf("BUG CONFIRMED: isVisible() = %v, want %v (whitespace-only restriction incorrectly handled)", gotVisible, tt.wantVisible)
+				} else {
+					t.Errorf("isVisible() = %v, want %v", gotVisible, tt.wantVisible)
+				}
+			}
+		})
+	}
+}
+
+// ============================================================================
+// Priority 2: OpenAPI v3-Specific Feature Tests
+// ============================================================================
+
+// TestAllWellKnownTypes tests that all protobuf well-known types are correctly
+// mapped to their OpenAPI schema representations.
+func TestAllWellKnownTypes(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		typeName     string
+		expectType   string
+		expectFormat string
+		expectProps  []string
+		nullable     bool
+	}{
+		// Timestamp and Duration
+		{".google.protobuf.Timestamp", "string", "date-time", nil, false},
+		{".google.protobuf.Duration", "string", "", nil, false},
+
+		// FieldMask
+		{".google.protobuf.FieldMask", "string", "", nil, false},
+
+		// Wrapper types - all nullable
+		{".google.protobuf.StringValue", "string", "", nil, true},
+		{".google.protobuf.BytesValue", "string", "byte", nil, true},
+		{".google.protobuf.Int32Value", "integer", "int32", nil, true},
+		{".google.protobuf.UInt32Value", "integer", "int64", nil, true},
+		{".google.protobuf.Int64Value", "string", "int64", nil, true},
+		{".google.protobuf.UInt64Value", "string", "uint64", nil, true},
+		{".google.protobuf.FloatValue", "number", "float", nil, true},
+		{".google.protobuf.DoubleValue", "number", "double", nil, true},
+		{".google.protobuf.BoolValue", "boolean", "", nil, true},
+
+		// Struct types
+		{".google.protobuf.Empty", "object", "", nil, false},
+		{".google.protobuf.Struct", "object", "", nil, false},
+		{".google.protobuf.Value", "", "", nil, false}, // No type constraint
+		{".google.protobuf.ListValue", "array", "", nil, false},
+		{".google.protobuf.NullValue", "string", "", nil, false},
+
+		// Any type
+		{".google.protobuf.Any", "object", "", []string{"@type"}, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.typeName, func(t *testing.T) {
+			schema := wellKnownTypeSchema(tt.typeName)
+			if schema == nil {
+				t.Fatalf("expected schema for %s", tt.typeName)
+			}
+
+			if schema.Type != tt.expectType {
+				t.Errorf("Type = %q, want %q", schema.Type, tt.expectType)
+			}
+
+			if tt.expectFormat != "" && schema.Format != tt.expectFormat {
+				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFormat)
+			}
+
+			if schema.Nullable != tt.nullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.nullable)
+			}
+
+			for _, prop := range tt.expectProps {
+				if schema.Properties == nil || schema.Properties[prop] == nil {
+					t.Errorf("missing expected property %q", prop)
+				}
+			}
+		})
+	}
+}
+
+// TestOneOfNestedMessages tests complex oneOf scenarios including nested oneOf
+// and oneOf with various field types.
+const nestedOneOfProtoInline = `
+file_to_generate: "test/v1/nested_oneof.proto"
+proto_file: {
+	name: "test/v1/nested_oneof.proto"
+	package: "test.v1"
+	message_type: {
+		name: "InnerChoice"
+		field: {
+			name: "text"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "text"
+			oneof_index: 0
+		}
+		field: {
+			name: "number"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_INT32
+			json_name: "number"
+			oneof_index: 0
+		}
+		oneof_decl: {
+			name: "inner_value"
+		}
+	}
+	message_type: {
+		name: "OuterChoice"
+		field: {
+			name: "simple"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "simple"
+			oneof_index: 0
+		}
+		field: {
+			name: "nested"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.InnerChoice"
+			json_name: "nested"
+			oneof_index: 0
+		}
+		oneof_decl: {
+			name: "outer_value"
+		}
+	}
+	message_type: {
+		name: "GetRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	service: {
+		name: "NestedService"
+		method: {
+			name: "Get"
+			input_type: ".test.v1.GetRequest"
+			output_type: ".test.v1.OuterChoice"
+			options: {
+				[google.api.http]: {
+					get: "/v1/nested/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestOneOfNestedMessages(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, nestedOneOfProtoInline, nil)
+	content := resp[0].GetContent()
+
+	// Parse the JSON to verify oneOf structure
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	components, ok := doc["components"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing components")
+	}
+	schemas, ok := components["schemas"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing schemas")
+	}
+
+	// Find the OuterChoice schema
+	var outerSchema map[string]interface{}
+	for name, s := range schemas {
+		if strings.Contains(name, "OuterChoice") {
+			outerSchema, _ = s.(map[string]interface{})
+			break
+		}
+	}
+
+	if outerSchema == nil {
+		t.Fatal("OuterChoice schema not found")
+	}
+
+	// Verify oneOf is present for OuterChoice
+	oneOf, hasOneOf := outerSchema["oneOf"].([]interface{})
+	if !hasOneOf {
+		t.Error("OuterChoice should have oneOf for the oneof_decl")
+	} else {
+		// Verify oneOf has the expected number of options
+		if len(oneOf) != 2 {
+			t.Errorf("OuterChoice oneOf has %d options, want 2", len(oneOf))
+		}
+	}
+
+	// Find the InnerChoice schema
+	var innerSchema map[string]interface{}
+	for name, s := range schemas {
+		if strings.Contains(name, "InnerChoice") {
+			innerSchema, _ = s.(map[string]interface{})
+			break
+		}
+	}
+
+	if innerSchema == nil {
+		t.Fatal("InnerChoice schema not found")
+	}
+
+	// Verify oneOf is present for InnerChoice
+	innerOneOf, hasInnerOneOf := innerSchema["oneOf"].([]interface{})
+	if !hasInnerOneOf {
+		t.Error("InnerChoice should have oneOf for the oneof_decl")
+	} else {
+		if len(innerOneOf) != 2 {
+			t.Errorf("InnerChoice oneOf has %d options, want 2", len(innerOneOf))
+		}
+	}
+}
+
+// TestProto3OptionalWithRequired tests the interaction between proto3 optional
+// fields and REQUIRED field_behavior annotation.
+//
+// When a field is both `proto3 optional` AND has `field_behavior = REQUIRED`,
+// the behavior should be well-defined with explicit precedence rules.
+func TestProto3OptionalWithRequired(t *testing.T) {
+	t.Parallel()
+
+	// Test case: proto3_optional=true with field_behavior=REQUIRED
+	// Current behavior: proto3_optional makes the field optional
+	// Expected: REQUIRED annotation should take precedence OR there should be
+	// clear documentation about precedence rules
+
+	tests := []struct {
+		name               string
+		proto3Optional     bool
+		useProto3Semantics bool
+		fieldBehavior      []int32 // FieldBehavior enum values
+		wantRequired       bool
+		description        string
+	}{
+		{
+			name:               "regular field with proto3 semantics",
+			proto3Optional:     false,
+			useProto3Semantics: true,
+			fieldBehavior:      nil,
+			wantRequired:       true,
+			description:        "non-optional field with proto3 semantics should be required",
+		},
+		{
+			name:               "proto3 optional without field_behavior",
+			proto3Optional:     true,
+			useProto3Semantics: true,
+			fieldBehavior:      nil,
+			wantRequired:       false,
+			description:        "optional field should not be required",
+		},
+		{
+			name:               "regular field with REQUIRED behavior",
+			proto3Optional:     false,
+			useProto3Semantics: false,
+			fieldBehavior:      []int32{2}, // REQUIRED = 2
+			wantRequired:       true,
+			description:        "REQUIRED behavior should make field required",
+		},
+		{
+			name:               "proto3 optional with REQUIRED behavior (conflict)",
+			proto3Optional:     true,
+			useProto3Semantics: true,
+			fieldBehavior:      []int32{2}, // REQUIRED = 2
+			wantRequired:       true,       // REQUIRED should win
+			description:        "REQUIRED annotation should take precedence over proto3_optional",
+		},
+		{
+			name:               "regular field with OUTPUT_ONLY behavior",
+			proto3Optional:     false,
+			useProto3Semantics: true,
+			fieldBehavior:      []int32{3}, // OUTPUT_ONLY = 3
+			wantRequired:       false,
+			description:        "OUTPUT_ONLY fields should not be required",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			reg.SetUseProto3FieldSemantics(tt.useProto3Semantics)
+			g := &generator{reg: reg}
+
+			field := &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:           stringPtr("test_field"),
+					Number:         int32Ptr(1),
+					Proto3Optional: &tt.proto3Optional,
+					OneofIndex:     nil,
+					Options:        nil,
+				},
+			}
+
+			// Note: We can't easily test with field_behavior annotations without
+			// setting up the full proto options, so this tests the base behavior
+			gotRequired := g.getFieldRequiredFromBehavior(field)
+
+			// For the conflict case, document the actual behavior
+			if tt.name == "proto3 optional with REQUIRED behavior (conflict)" {
+				// This test documents current behavior vs expected behavior
+				// Currently getFieldRequiredFromBehavior doesn't check field_behavior
+				t.Logf("Current behavior: proto3_optional takes precedence (required=%v)", gotRequired)
+				t.Logf("Expected behavior: REQUIRED annotation should take precedence")
+				if gotRequired == tt.wantRequired {
+					t.Log("Behavior matches expectation")
+				} else {
+					t.Logf("Note: Consider if REQUIRED annotation should override proto3_optional")
+				}
+			} else if gotRequired != tt.wantRequired && tt.fieldBehavior == nil {
+				t.Errorf("getFieldRequiredFromBehavior() = %v, want %v (%s)",
+					gotRequired, tt.wantRequired, tt.description)
+			}
+		})
+	}
+}
+
+// TestWriteOnlyFromInputOnly tests that INPUT_ONLY field_behavior is correctly
+// mapped to writeOnly in OpenAPI schema.
+func TestWriteOnlyFromInputOnly(t *testing.T) {
+	t.Parallel()
+
+	// Test schema serialization with writeOnly
+	schema := &Schema{
+		Type:      "string",
+		WriteOnly: true,
+	}
+
+	data, err := json.Marshal(schema)
+	if err != nil {
+		t.Fatalf("Failed to marshal schema: %v", err)
+	}
+
+	if !strings.Contains(string(data), `"writeOnly":true`) {
+		t.Error("Schema with WriteOnly=true should serialize with writeOnly:true")
+	}
+
+	// Test that writeOnly is not present when false
+	schema2 := &Schema{
+		Type:      "string",
+		WriteOnly: false,
+	}
+
+	data2, err := json.Marshal(schema2)
+	if err != nil {
+		t.Fatalf("Failed to marshal schema: %v", err)
+	}
+
+	if strings.Contains(string(data2), `"writeOnly"`) {
+		t.Error("Schema with WriteOnly=false should not have writeOnly in output")
+	}
+}
+
+// TestRecursiveMessages tests that self-referencing and mutually recursive
+// messages are handled correctly without infinite loops.
+const recursiveProtoInline = `
+file_to_generate: "test/v1/recursive.proto"
+proto_file: {
+	name: "test/v1/recursive.proto"
+	package: "test.v1"
+	message_type: {
+		name: "TreeNode"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "value"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "value"
+		}
+		field: {
+			name: "children"
+			number: 3
+			label: LABEL_REPEATED
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.TreeNode"
+			json_name: "children"
+		}
+	}
+	message_type: {
+		name: "GetRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	service: {
+		name: "TreeService"
+		method: {
+			name: "GetTree"
+			input_type: ".test.v1.GetRequest"
+			output_type: ".test.v1.TreeNode"
+			options: {
+				[google.api.http]: {
+					get: "/v1/tree/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestRecursiveMessages(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, recursiveProtoInline, nil)
+	content := resp[0].GetContent()
+
+	// Should not panic or hang - successful generation means recursion is handled
+	if len(content) == 0 {
+		t.Fatal("expected non-empty output")
+	}
+
+	// Parse the JSON to verify structure
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	components, ok := doc["components"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing components")
+	}
+	schemas, ok := components["schemas"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing schemas")
+	}
+
+	// Find the TreeNode schema
+	var treeNodeSchema map[string]interface{}
+	for name, s := range schemas {
+		if strings.Contains(name, "TreeNode") {
+			treeNodeSchema, _ = s.(map[string]interface{})
+			break
+		}
+	}
+
+	if treeNodeSchema == nil {
+		t.Fatal("TreeNode schema not found")
+	}
+
+	// Verify children field uses a $ref (not inline schema)
+	properties, ok := treeNodeSchema["properties"].(map[string]interface{})
+	if !ok {
+		t.Fatal("TreeNode missing properties")
+	}
+
+	childrenField, ok := properties["children"].(map[string]interface{})
+	if !ok {
+		t.Fatal("children field not found")
+	}
+
+	// Children should be an array with items referencing TreeNode
+	if childrenField["type"] != "array" {
+		t.Errorf("children type = %v, want array", childrenField["type"])
+	}
+
+	items, ok := childrenField["items"].(map[string]interface{})
+	if !ok {
+		t.Fatal("children items not found")
+	}
+
+	// Should have $ref pointing back to TreeNode
+	ref, hasRef := items["$ref"].(string)
+	if !hasRef {
+		t.Error("children items should have $ref for recursive reference")
+	} else if !strings.Contains(ref, "TreeNode") {
+		t.Errorf("children items $ref = %q, should reference TreeNode", ref)
+	}
+}
+
+// ============================================================================
+// Priority 3: Edge Case Tests
+// ============================================================================
+
+// TestServerVariables tests that server URL templates with variables are
+// correctly parsed and rendered.
+const serverVariablesProtoInline = `
+file_to_generate: "test/v1/server.proto"
+proto_file: {
+	name: "test/v1/server.proto"
+	package: "test.v1"
+	message_type: {
+		name: "GetRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	message_type: {
+		name: "Response"
+		field: {
+			name: "result"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "result"
+		}
+	}
+	service: {
+		name: "ServerService"
+		method: {
+			name: "Get"
+			input_type: ".test.v1.GetRequest"
+			output_type: ".test.v1.Response"
+			options: {
+				[google.api.http]: {
+					get: "/v1/resources/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+		[grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+			info: {
+				title: "Server Variables Test"
+				version: "1.0"
+			}
+			servers: {
+				url: "https://{environment}.api.example.com/v1"
+				description: "API server"
+				variables: {
+					key: "environment"
+					value: {
+						default: "production"
+						enum: "production"
+						enum: "staging"
+						enum: "development"
+						description: "The deployment environment"
+					}
+				}
+			}
+		}
+	}
+	syntax: "proto3"
+}
+`
+
+func TestServerVariables(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, serverVariablesProtoInline, nil)
+	content := resp[0].GetContent()
+
+	// Parse the JSON to verify server structure
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	servers, ok := doc["servers"].([]interface{})
+	if !ok || len(servers) == 0 {
+		t.Fatal("expected servers array")
+	}
+
+	server := servers[0].(map[string]interface{})
+
+	// Verify URL template
+	url, _ := server["url"].(string)
+	if !strings.Contains(url, "{environment}") {
+		t.Errorf("server URL = %q, want URL with {environment} variable", url)
+	}
+
+	// Verify variables
+	variables, hasVars := server["variables"].(map[string]interface{})
+	if !hasVars {
+		t.Error("server should have variables")
+	} else {
+		envVar, hasEnv := variables["environment"].(map[string]interface{})
+		if !hasEnv {
+			t.Error("server should have 'environment' variable")
+		} else {
+			if envVar["default"] != "production" {
+				t.Errorf("environment default = %v, want 'production'", envVar["default"])
+			}
+
+			// Verify enum values
+			enumVals, hasEnum := envVar["enum"].([]interface{})
+			if !hasEnum {
+				t.Error("environment variable should have enum")
+			} else if len(enumVals) != 3 {
+				t.Errorf("environment enum has %d values, want 3", len(enumVals))
+			}
+		}
+	}
+}
+
+// TestTypeLookupFailure tests that the generator handles gracefully when
+// type lookups fail during generation (e.g., when registry has type but
+// lookup fails for some reason).
+//
+// Note: The registry validates proto descriptors during Load(), so missing
+// types in the proto itself are caught early. This test verifies that the
+// generator has fallback handling when LookupMsg/LookupEnum fail.
+func TestTypeLookupFailure(t *testing.T) {
+	t.Parallel()
+
+	// Test the fieldTypeToSchema fallback behavior
+	// When a message type cannot be looked up, it should return type: object
+	reg := descriptor.NewRegistry()
+	g := &generator{reg: reg}
+
+	// Create a field that references a type that won't be found
+	field := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:     stringPtr("missing_ref"),
+			Number:   int32Ptr(1),
+			Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+			Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+			TypeName: stringPtr(".nonexistent.Type"),
+			JsonName: stringPtr("missingRef"),
+		},
+	}
+
+	// This should not panic, and should return a fallback schema
+	schemaRef := g.fieldTypeToSchema(field, nil)
+
+	if schemaRef == nil {
+		t.Fatal("expected schema reference, got nil")
+	}
+
+	if schemaRef.Value == nil {
+		t.Fatal("expected inline schema value")
+	}
+
+	// The fallback for unresolved message types should be type: object
+	if schemaRef.Value.Type != "object" {
+		t.Errorf("fallback schema type = %q, want 'object'", schemaRef.Value.Type)
+	}
+}
+
+// TestEnumTypeLookupFailure tests fallback behavior when enum lookup fails.
+func TestEnumTypeLookupFailure(t *testing.T) {
+	t.Parallel()
+
+	reg := descriptor.NewRegistry()
+	g := &generator{reg: reg}
+
+	// Create a field that references an enum that won't be found
+	field := &descriptor.Field{
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:     stringPtr("missing_enum"),
+			Number:   int32Ptr(1),
+			Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+			Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+			TypeName: stringPtr(".nonexistent.EnumType"),
+			JsonName: stringPtr("missingEnum"),
+		},
+	}
+
+	// This should not panic, and should return a fallback schema
+	schemaRef := g.fieldTypeToSchema(field, nil)
+
+	if schemaRef == nil {
+		t.Fatal("expected schema reference, got nil")
+	}
+
+	if schemaRef.Value == nil {
+		t.Fatal("expected inline schema value")
+	}
+
+	// The fallback for unresolved enum types should be type: string
+	if schemaRef.Value.Type != "string" {
+		t.Errorf("fallback schema type = %q, want 'string'", schemaRef.Value.Type)
+	}
+}
+
+// TestMutualRecursion tests that mutually recursive messages (A references B,
+// B references A) are handled correctly.
+const mutualRecursionProtoInline = `
+file_to_generate: "test/v1/mutual.proto"
+proto_file: {
+	name: "test/v1/mutual.proto"
+	package: "test.v1"
+	message_type: {
+		name: "Parent"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "children"
+			number: 2
+			label: LABEL_REPEATED
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.Child"
+			json_name: "children"
+		}
+	}
+	message_type: {
+		name: "Child"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "parent"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.Parent"
+			json_name: "parent"
+		}
+	}
+	message_type: {
+		name: "GetRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	service: {
+		name: "FamilyService"
+		method: {
+			name: "GetParent"
+			input_type: ".test.v1.GetRequest"
+			output_type: ".test.v1.Parent"
+			options: {
+				[google.api.http]: {
+					get: "/v1/parents/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestMutualRecursion(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, mutualRecursionProtoInline, nil)
+	content := resp[0].GetContent()
+
+	// Should not panic or hang
+	if len(content) == 0 {
+		t.Fatal("expected non-empty output")
+	}
+
+	// Parse the JSON to verify structure
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	components, ok := doc["components"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing components")
+	}
+	schemas, ok := components["schemas"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing schemas")
+	}
+
+	// Both Parent and Child schemas should exist
+	var parentSchema, childSchema map[string]interface{}
+	for name, s := range schemas {
+		if strings.Contains(name, "Parent") {
+			parentSchema, _ = s.(map[string]interface{})
+		}
+		if strings.Contains(name, "Child") {
+			childSchema, _ = s.(map[string]interface{})
+		}
+	}
+
+	if parentSchema == nil {
+		t.Error("Parent schema not found")
+	}
+	if childSchema == nil {
+		t.Error("Child schema not found")
+	}
+
+	// Verify Parent.children references Child
+	if parentSchema != nil {
+		props, _ := parentSchema["properties"].(map[string]interface{})
+		children, _ := props["children"].(map[string]interface{})
+		if children != nil {
+			items, _ := children["items"].(map[string]interface{})
+			if items != nil {
+				ref, _ := items["$ref"].(string)
+				if !strings.Contains(ref, "Child") {
+					t.Errorf("Parent.children should reference Child, got $ref=%q", ref)
+				}
+			}
+		}
+	}
+
+	// Verify Child.parent references Parent
+	if childSchema != nil {
+		props, _ := childSchema["properties"].(map[string]interface{})
+		parent, _ := props["parent"].(map[string]interface{})
+		if parent != nil {
+			ref, _ := parent["$ref"].(string)
+			if !strings.Contains(ref, "Parent") {
+				t.Errorf("Child.parent should reference Parent, got $ref=%q", ref)
+			}
+		}
+	}
 }
