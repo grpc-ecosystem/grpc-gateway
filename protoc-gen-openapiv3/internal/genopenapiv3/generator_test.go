@@ -538,7 +538,7 @@ func TestPathItemSetOperation(t *testing.T) {
 	}
 }
 
-func TestGenerateOneOfSchemas(t *testing.T) {
+func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 	// Create a generator with a registry that uses JSON names
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
@@ -571,15 +571,20 @@ func TestGenerateOneOfSchemas(t *testing.T) {
 		},
 	}
 
-	oneOfSchemas := g.generateOneOfSchemas(parentSchema, groups)
+	oneOf, allOf := g.generateOneOfConstraints(parentSchema, groups)
+
+	// Single group should use oneOf directly, not allOf
+	if allOf != nil {
+		t.Error("Single group should not use allOf")
+	}
 
 	// Should have 2 oneOf options (one per field in the oneof)
-	if len(oneOfSchemas) != 2 {
-		t.Fatalf("Expected 2 oneOf schemas, got %d", len(oneOfSchemas))
+	if len(oneOf) != 2 {
+		t.Fatalf("Expected 2 oneOf schemas, got %d", len(oneOf))
 	}
 
 	// First option should be for stringValue
-	opt1 := oneOfSchemas[0].Value
+	opt1 := oneOf[0].Value
 	if opt1.Type != "object" {
 		t.Errorf("Option 1 Type = %q, want %q", opt1.Type, "object")
 	}
@@ -592,18 +597,24 @@ func TestGenerateOneOfSchemas(t *testing.T) {
 	if len(opt1.Required) != 1 || opt1.Required[0] != "stringValue" {
 		t.Errorf("Option 1 Required = %v, want [stringValue]", opt1.Required)
 	}
+	if opt1.Title != "value.stringValue" {
+		t.Errorf("Option 1 Title = %q, want %q", opt1.Title, "value.stringValue")
+	}
 
 	// Second option should be for intValue
-	opt2 := oneOfSchemas[1].Value
+	opt2 := oneOf[1].Value
 	if _, ok := opt2.Properties["intValue"]; !ok {
 		t.Error("Option 2 should have 'intValue' property")
 	}
 	if len(opt2.Required) != 1 || opt2.Required[0] != "intValue" {
 		t.Errorf("Option 2 Required = %v, want [intValue]", opt2.Required)
 	}
+	if opt2.Title != "value.intValue" {
+		t.Errorf("Option 2 Title = %q, want %q", opt2.Title, "value.intValue")
+	}
 }
 
-func TestGenerateOneOfSchemasMultipleGroups(t *testing.T) {
+func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 	// Create a generator with a registry that uses JSON names
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
@@ -650,23 +661,51 @@ func TestGenerateOneOfSchemasMultipleGroups(t *testing.T) {
 		},
 	}
 
-	oneOfSchemas := g.generateOneOfSchemas(parentSchema, groups)
+	oneOf, allOf := g.generateOneOfConstraints(parentSchema, groups)
 
-	// Should have 4 oneOf options (2 per group)
-	if len(oneOfSchemas) != 4 {
-		t.Fatalf("Expected 4 oneOf schemas, got %d", len(oneOfSchemas))
+	// Multiple groups should use allOf, not oneOf directly
+	if oneOf != nil {
+		t.Error("Multiple groups should not return direct oneOf")
 	}
 
-	// Check that titles identify the oneof group
-	titles := make(map[string]bool)
-	for _, schema := range oneOfSchemas {
-		titles[schema.Value.Title] = true
+	// Should have 2 allOf entries (one per group), each containing a oneOf
+	if len(allOf) != 2 {
+		t.Fatalf("Expected 2 allOf schemas (one per group), got %d", len(allOf))
 	}
 
-	expectedTitles := []string{"event.createEvent", "event.updateEvent", "result.error", "result.success"}
-	for _, title := range expectedTitles {
-		if !titles[title] {
-			t.Errorf("Missing expected oneOf option with title %q", title)
+	// Each allOf entry should wrap a oneOf with 2 options (one per field)
+	for groupIdx, allOfEntry := range allOf {
+		if allOfEntry.Value == nil {
+			t.Errorf("allOf[%d] should have value", groupIdx)
+			continue
+		}
+		groupOneOf := allOfEntry.Value.OneOf
+		if len(groupOneOf) != 2 {
+			t.Errorf("Group %d should have 2 oneOf options, got %d", groupIdx, len(groupOneOf))
+		}
+	}
+
+	// Verify group 1 (event) has correct options
+	group1OneOf := allOf[0].Value.OneOf
+	group1Titles := make(map[string]bool)
+	for _, schema := range group1OneOf {
+		group1Titles[schema.Value.Title] = true
+	}
+	for _, expected := range []string{"event.createEvent", "event.updateEvent"} {
+		if !group1Titles[expected] {
+			t.Errorf("Group 1 missing expected oneOf option with title %q", expected)
+		}
+	}
+
+	// Verify group 2 (result) has correct options
+	group2OneOf := allOf[1].Value.OneOf
+	group2Titles := make(map[string]bool)
+	for _, schema := range group2OneOf {
+		group2Titles[schema.Value.Title] = true
+	}
+	for _, expected := range []string{"result.error", "result.success"} {
+		if !group2Titles[expected] {
+			t.Errorf("Group 2 missing expected oneOf option with title %q", expected)
 		}
 	}
 }

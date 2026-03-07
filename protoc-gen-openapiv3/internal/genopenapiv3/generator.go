@@ -628,9 +628,15 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		}
 	}
 
-	// Generate oneOf constraint for each oneof group
+	// Generate oneOf constraints for oneof groups
 	if len(oneofGroups) > 0 {
-		schema.OneOf = g.generateOneOfSchemas(schema, oneofGroups)
+		oneOf, allOf := g.generateOneOfConstraints(schema, oneofGroups)
+		if oneOf != nil {
+			schema.OneOf = oneOf // Single group
+		}
+		if allOf != nil {
+			schema.AllOf = allOf // Multiple groups, each wrapped in oneOf
+		}
 	}
 
 	doc.Components.Schemas[schemaName] = &SchemaRef{Value: schema}
@@ -681,36 +687,60 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 	}
 }
 
-// generateOneOfSchemas generates oneOf schemas for oneof field groups.
-// Each oneof option becomes a schema requiring exactly that field.
-func (g *generator) generateOneOfSchemas(parentSchema *Schema, groups []oneofGroup) []*SchemaRef {
-	var oneOfSchemas []*SchemaRef
+// generateOneOfConstraints generates oneOf constraints for oneof groups.
+// For a single group: returns oneOf directly for use in schema.OneOf
+// For multiple groups: each group gets its own oneOf, combined via allOf
+// This ensures multiple oneof groups are independent (can set one field from each group).
+func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneofGroup) (oneOf []*SchemaRef, allOf []*SchemaRef) {
+	if len(groups) == 0 {
+		return nil, nil
+	}
 
+	// Generate oneOf constraint for each group
+	var groupConstraints []*SchemaRef
 	for _, group := range groups {
-		// For each field in the oneof, create a schema that requires only that field
-		for _, field := range group.fields {
-			if !isVisible(getFieldVisibilityOption(field), g.reg) {
-				continue
-			}
-			fieldName := g.fieldName(field)
-
-			// Create a schema that requires this specific field from the oneof
-			optionSchema := &Schema{
-				Type: "object",
-				Properties: map[string]*SchemaRef{
-					fieldName: parentSchema.Properties[fieldName],
-				},
-				Required: []string{fieldName},
-			}
-
-			// Add a title to identify which oneof option this is
-			optionSchema.Title = fmt.Sprintf("%s.%s", group.name, fieldName)
-
-			oneOfSchemas = append(oneOfSchemas, &SchemaRef{Value: optionSchema})
+		groupOneOf := g.generateSingleGroupOneOf(parentSchema, group)
+		if len(groupOneOf) > 0 {
+			groupConstraints = append(groupConstraints, &SchemaRef{
+				Value: &Schema{OneOf: groupOneOf},
+			})
 		}
 	}
 
-	return oneOfSchemas
+	// Single group: use oneOf directly
+	// Multiple groups: wrap each in allOf so they're independent
+	if len(groupConstraints) == 1 {
+		return groupConstraints[0].Value.OneOf, nil
+	}
+	return nil, groupConstraints
+}
+
+// generateSingleGroupOneOf generates oneOf options for a single oneof group.
+func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGroup) []*SchemaRef {
+	var options []*SchemaRef
+
+	for _, field := range group.fields {
+		if !isVisible(getFieldVisibilityOption(field), g.reg) {
+			continue
+		}
+		fieldName := g.fieldName(field)
+
+		// Create a schema that requires this specific field from the oneof
+		optionSchema := &Schema{
+			Type: "object",
+			Properties: map[string]*SchemaRef{
+				fieldName: parentSchema.Properties[fieldName],
+			},
+			Required: []string{fieldName},
+		}
+
+		// Add a title to identify which oneof option this is
+		optionSchema.Title = fmt.Sprintf("%s.%s", group.name, fieldName)
+
+		options = append(options, &SchemaRef{Value: optionSchema})
+	}
+
+	return options
 }
 
 // generateEnumSchema generates a schema definition for an enum.
