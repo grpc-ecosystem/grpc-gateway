@@ -613,12 +613,7 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		if !isVisible(getFieldVisibilityOption(field), g.reg) {
 			continue
 		}
-		isRequired := g.addFieldToSchema(doc, schema, field, visited)
-
-		// Track required fields based on field_behavior annotations
-		if isRequired {
-			schema.Required = append(schema.Required, g.fieldName(field))
-		}
+		g.addFieldToSchema(doc, schema, field, visited)
 	}
 
 	// Process oneof groups - add all oneof fields as properties too
@@ -629,7 +624,7 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 			if !isVisible(getFieldVisibilityOption(field), g.reg) {
 				continue
 			}
-			_ = g.addFieldToSchema(doc, schema, field, visited)
+			g.addFieldToSchema(doc, schema, field, visited)
 		}
 	}
 
@@ -642,8 +637,8 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 }
 
 // addFieldToSchema adds a single field to the schema's properties.
-// Returns whether the field should be marked as required.
-func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descriptor.Field, visited map[string]bool) bool {
+// It handles field annotations and field_behavior, mutating schema.Required directly.
+func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descriptor.Field, visited map[string]bool) {
 	fieldSchemaRef := g.fieldToSchemaRef(field, nil)
 	fieldName := g.fieldName(field)
 	schema.Properties[fieldName] = fieldSchemaRef
@@ -659,10 +654,9 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 		g.applyFieldAnnotation(fieldSchemaRef.Value, field)
 	}
 
-	// Apply field_behavior annotations and determine if required
-	isRequired := false
+	// Apply field_behavior annotations (mutates schema.Required directly)
 	if fieldSchemaRef.Value != nil {
-		isRequired = g.applyFieldBehaviorToSchema(fieldSchemaRef.Value, field)
+		g.applyFieldBehaviorToSchema(schema, fieldSchemaRef.Value, field)
 	}
 
 	// Apply proto3 optional nullable
@@ -685,8 +679,6 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 			g.generateEnumSchema(doc, refEnum)
 		}
 	}
-
-	return isRequired
 }
 
 // generateOneOfSchemas generates oneOf schemas for oneof field groups.
@@ -1092,9 +1084,9 @@ func getFieldBehavior(field *descriptor.Field) []annotations.FieldBehavior {
 }
 
 // applyFieldBehaviorToSchema applies field_behavior annotations to a schema.
-// Returns whether the field should be marked as required.
+// It mutates parentSchema.Required directly when the field should be required.
 // This matches the pattern from openapiv2's updateSwaggerObjectFromFieldBehavior.
-func (g *generator) applyFieldBehaviorToSchema(schema *Schema, field *descriptor.Field) bool {
+func (g *generator) applyFieldBehaviorToSchema(parentSchema, fieldSchema *Schema, field *descriptor.Field) {
 	// Start with proto3 semantics as default (if enabled)
 	required := false
 	if g.reg.GetUseProto3FieldSemantics() {
@@ -1108,11 +1100,11 @@ func (g *generator) applyFieldBehaviorToSchema(schema *Schema, field *descriptor
 		case annotations.FieldBehavior_REQUIRED:
 			required = true
 		case annotations.FieldBehavior_OUTPUT_ONLY:
-			schema.ReadOnly = true
+			fieldSchema.ReadOnly = true
 		case annotations.FieldBehavior_OPTIONAL:
 			required = false
 		case annotations.FieldBehavior_INPUT_ONLY:
-			schema.WriteOnly = true // OpenAPI v3 supports this!
+			fieldSchema.WriteOnly = true // OpenAPI v3 supports this!
 		case annotations.FieldBehavior_IMMUTABLE:
 			// No direct OpenAPI mapping
 		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
@@ -1120,7 +1112,10 @@ func (g *generator) applyFieldBehaviorToSchema(schema *Schema, field *descriptor
 		}
 	}
 
-	return required
+	// Set required on parent schema directly
+	if required {
+		parentSchema.Required = append(parentSchema.Required, g.fieldName(field))
+	}
 }
 
 // getFieldRequiredFromBehavior determines if a field should be required based on

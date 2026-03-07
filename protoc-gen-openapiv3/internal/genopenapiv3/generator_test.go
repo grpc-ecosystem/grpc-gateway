@@ -9,7 +9,9 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -754,35 +756,100 @@ func TestApplyFieldBehaviorToSchema(t *testing.T) {
 		useProto3Semantics bool
 		proto3Optional     bool
 		oneofIndex         *int32
+		fieldBehaviors     []annotations.FieldBehavior
 		wantRequired       bool
+		wantReadOnly       bool
+		wantWriteOnly      bool
 	}{
 		{
 			name:               "proto3 semantics disabled",
 			useProto3Semantics: false,
 			proto3Optional:     false,
 			oneofIndex:         nil,
+			fieldBehaviors:     nil,
 			wantRequired:       false,
+			wantReadOnly:       false,
+			wantWriteOnly:      false,
 		},
 		{
 			name:               "proto3 semantics enabled, regular field",
 			useProto3Semantics: true,
 			proto3Optional:     false,
 			oneofIndex:         nil,
+			fieldBehaviors:     nil,
 			wantRequired:       true,
+			wantReadOnly:       false,
+			wantWriteOnly:      false,
 		},
 		{
 			name:               "proto3 semantics enabled, optional field",
 			useProto3Semantics: true,
 			proto3Optional:     true,
 			oneofIndex:         nil,
+			fieldBehaviors:     nil,
 			wantRequired:       false,
+			wantReadOnly:       false,
+			wantWriteOnly:      false,
 		},
 		{
 			name:               "proto3 semantics enabled, oneof field",
 			useProto3Semantics: true,
 			proto3Optional:     false,
 			oneofIndex:         int32Ptr(0),
+			fieldBehaviors:     nil,
 			wantRequired:       false,
+			wantReadOnly:       false,
+			wantWriteOnly:      false,
+		},
+		{
+			name:               "REQUIRED field_behavior annotation",
+			useProto3Semantics: false,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			fieldBehaviors:     []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED},
+			wantRequired:       true,
+			wantReadOnly:       false,
+			wantWriteOnly:      false,
+		},
+		{
+			name:               "OUTPUT_ONLY field_behavior annotation",
+			useProto3Semantics: false,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			fieldBehaviors:     []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY},
+			wantRequired:       false,
+			wantReadOnly:       true,
+			wantWriteOnly:      false,
+		},
+		{
+			name:               "INPUT_ONLY field_behavior annotation",
+			useProto3Semantics: false,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			fieldBehaviors:     []annotations.FieldBehavior{annotations.FieldBehavior_INPUT_ONLY},
+			wantRequired:       false,
+			wantReadOnly:       false,
+			wantWriteOnly:      true,
+		},
+		{
+			name:               "OPTIONAL overrides proto3 semantics",
+			useProto3Semantics: true,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			fieldBehaviors:     []annotations.FieldBehavior{annotations.FieldBehavior_OPTIONAL},
+			wantRequired:       false,
+			wantReadOnly:       false,
+			wantWriteOnly:      false,
+		},
+		{
+			name:               "OUTPUT_ONLY with REQUIRED",
+			useProto3Semantics: false,
+			proto3Optional:     false,
+			oneofIndex:         nil,
+			fieldBehaviors:     []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY, annotations.FieldBehavior_REQUIRED},
+			wantRequired:       true,
+			wantReadOnly:       true,
+			wantWriteOnly:      false,
 		},
 	}
 
@@ -792,19 +859,40 @@ func TestApplyFieldBehaviorToSchema(t *testing.T) {
 			reg.SetUseProto3FieldSemantics(tt.useProto3Semantics)
 			g := &generator{reg: reg}
 
-			schema := &Schema{Type: "string"}
+			parentSchema := &Schema{Required: []string{}}
+			fieldSchema := &Schema{Type: "string"}
+
+			// Create field options with field_behavior extension if specified
+			var opts *descriptorpb.FieldOptions
+			if len(tt.fieldBehaviors) > 0 {
+				opts = &descriptorpb.FieldOptions{}
+				proto.SetExtension(opts, annotations.E_FieldBehavior, tt.fieldBehaviors)
+			}
+
 			field := &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 					Name:           stringPtr("test_field"),
+					JsonName:       stringPtr("testField"),
 					Proto3Optional: &tt.proto3Optional,
 					OneofIndex:     tt.oneofIndex,
-					Options:        nil,
+					Options:        opts,
 				},
 			}
 
-			gotRequired := g.applyFieldBehaviorToSchema(schema, field)
+			g.applyFieldBehaviorToSchema(parentSchema, fieldSchema, field)
+
+			// Check if field is marked as required in parent schema
+			// Note: fieldName() returns proto name by default (test_field), not JSON name (testField)
+			gotRequired := len(parentSchema.Required) > 0 && parentSchema.Required[0] == "test_field"
 			if gotRequired != tt.wantRequired {
-				t.Errorf("applyFieldBehaviorToSchema() returned required=%v, want %v", gotRequired, tt.wantRequired)
+				t.Errorf("applyFieldBehaviorToSchema() required=%v (parentSchema.Required=%v), want %v",
+					gotRequired, parentSchema.Required, tt.wantRequired)
+			}
+			if fieldSchema.ReadOnly != tt.wantReadOnly {
+				t.Errorf("applyFieldBehaviorToSchema() set fieldSchema.ReadOnly=%v, want %v", fieldSchema.ReadOnly, tt.wantReadOnly)
+			}
+			if fieldSchema.WriteOnly != tt.wantWriteOnly {
+				t.Errorf("applyFieldBehaviorToSchema() set fieldSchema.WriteOnly=%v, want %v", fieldSchema.WriteOnly, tt.wantWriteOnly)
 			}
 		})
 	}
