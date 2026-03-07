@@ -730,6 +730,11 @@ func (r *Registry) SetGenerateUnboundMethods(generate bool) {
 	r.generateUnboundMethods = generate
 }
 
+// GetGenerateUnboundMethods returns generateUnboundMethods
+func (r *Registry) GetGenerateUnboundMethods() bool {
+	return r.generateUnboundMethods
+}
+
 // SetOmitPackageDoc controls whether the generated code contains a package comment (if set to false, it will contain one)
 func (r *Registry) SetOmitPackageDoc(omit bool) {
 	r.omitPackageDoc = omit
