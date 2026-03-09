@@ -334,8 +334,8 @@ func splitSummaryDescription(comment string) (summary, description string) {
 	}
 
 	// Split on double newline (paragraph break)
-	const paragraphDeliminator = "\n\n"
-	parts := strings.SplitN(comment, paragraphDeliminator, 2)
+	const paragraphDelimiter = "\n\n"
+	parts := strings.SplitN(comment, paragraphDelimiter, 2)
 
 	summary = strings.TrimSpace(parts[0])
 	if len(parts) > 1 {
