@@ -6,22 +6,24 @@ import (
 	"strings"
 )
 
+// NamingStrategy is a function that takes a list of fully-qualified proto message names
+// and returns a mapping from fully-qualified name to OpenAPI name.
+type NamingStrategy func([]string) map[string]string
+
+// namingStrategies maps strategy names to their implementations.
+var namingStrategies = map[string]NamingStrategy{
+	"fqn":     resolveNamesFQN,
+	"legacy":  resolveNamesLegacy,
+	"simple":  resolveNamesSimple,
+	"package": resolveNamesPackage,
+}
+
 // LookupNamingStrategy looks up the given naming strategy and returns the naming
 // strategy function for it. The naming strategy function takes in the list of all
 // fully-qualified proto message names, and returns a mapping from fully-qualified
 // name to OpenAPI name.
-func LookupNamingStrategy(strategyName string) func([]string) map[string]string {
-	switch strings.ToLower(strategyName) {
-	case "fqn":
-		return resolveNamesFQN
-	case "legacy":
-		return resolveNamesLegacy
-	case "simple":
-		return resolveNamesSimple
-	case "package":
-		return resolveNamesPackage
-	}
-	return nil
+func LookupNamingStrategy(strategyName string) NamingStrategy {
+	return namingStrategies[strings.ToLower(strategyName)]
 }
 
 // resolveFullyQualifiedNameToOpenAPINames resolves all fully-qualified names
@@ -29,7 +31,6 @@ func LookupNamingStrategy(strategyName string) func([]string) map[string]string 
 func resolveFullyQualifiedNameToOpenAPINames(fqns []string, strategy string) map[string]string {
 	strategyFn := LookupNamingStrategy(strategy)
 	if strategyFn == nil {
-		// Default to FQN strategy
 		strategyFn = resolveNamesFQN
 	}
 	return strategyFn(fqns)
