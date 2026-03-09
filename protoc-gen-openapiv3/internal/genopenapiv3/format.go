@@ -18,45 +18,61 @@ const (
 	FormatYAML Format = "yaml"
 )
 
-// Validate checks if the format is valid.
-func (f Format) Validate() error {
-	switch f {
-	case FormatJSON, FormatYAML:
-		return nil
-	default:
-		return fmt.Errorf("invalid output format %q, must be %q or %q", f, FormatJSON, FormatYAML)
-	}
-}
-
 // Encoder is an interface for encoding OpenAPI documents.
 type Encoder interface {
-	Encode(v interface{}) error
+	Encode(v any) error
+}
+
+// formatHandler contains the encoding and marshaling functions for a format.
+type formatHandler struct {
+	newEncoder func(io.Writer) Encoder
+	marshal    func(any) ([]byte, error)
+}
+
+// formatHandlers maps formats to their handlers.
+var formatHandlers = map[Format]formatHandler{
+	FormatJSON: {
+		newEncoder: func(w io.Writer) Encoder {
+			enc := json.NewEncoder(w)
+			enc.SetIndent("", "  ")
+			return enc
+		},
+		marshal: func(v any) ([]byte, error) {
+			return json.MarshalIndent(v, "", "  ")
+		},
+	},
+	FormatYAML: {
+		newEncoder: func(w io.Writer) Encoder {
+			enc := yaml.NewEncoder(w)
+			enc.SetIndent(2)
+			return enc
+		},
+		marshal: yaml.Marshal,
+	},
+}
+
+// Validate checks if the format is valid.
+func (f Format) Validate() error {
+	if _, ok := formatHandlers[f]; ok {
+		return nil
+	}
+	return fmt.Errorf("invalid output format %q, must be %q or %q", f, FormatJSON, FormatYAML)
 }
 
 // NewEncoder creates an encoder for the given format.
 func (f Format) NewEncoder(w io.Writer) (Encoder, error) {
-	switch f {
-	case FormatJSON:
-		enc := json.NewEncoder(w)
-		enc.SetIndent("", "  ")
-		return enc, nil
-	case FormatYAML:
-		enc := yaml.NewEncoder(w)
-		enc.SetIndent(2)
-		return enc, nil
-	default:
+	handler, ok := formatHandlers[f]
+	if !ok {
 		return nil, fmt.Errorf("unknown format: %s", f)
 	}
+	return handler.newEncoder(w), nil
 }
 
 // Marshal serializes the given value to the format.
-func (f Format) Marshal(v interface{}) ([]byte, error) {
-	switch f {
-	case FormatJSON:
-		return json.MarshalIndent(v, "", "  ")
-	case FormatYAML:
-		return yaml.Marshal(v)
-	default:
+func (f Format) Marshal(v any) ([]byte, error) {
+	handler, ok := formatHandlers[f]
+	if !ok {
 		return nil, fmt.Errorf("unknown format: %s", f)
 	}
+	return handler.marshal(v)
 }
