@@ -6,6 +6,24 @@ import (
 	"sort"
 )
 
+// refMarshalJSON is a generic helper for marshaling Ref types to JSON.
+// All OpenAPI Ref types (SchemaRef, ParameterRef, etc.) follow the same pattern:
+// if ref is set, output {"$ref": ref}, otherwise output the value.
+func refMarshalJSON[T any](ref string, value *T) ([]byte, error) {
+	if ref != "" {
+		return json.Marshal(map[string]string{"$ref": ref})
+	}
+	return json.Marshal(value)
+}
+
+// refMarshalYAML is a generic helper for marshaling Ref types to YAML.
+func refMarshalYAML[T any](ref string, value *T) (any, error) {
+	if ref != "" {
+		return map[string]string{"$ref": ref}, nil
+	}
+	return value, nil
+}
+
 // OpenAPI is the root document structure for OpenAPI 3.x
 // See: https://spec.openapis.org/oas/v3.0.3#openapi-object
 type OpenAPI struct {
@@ -285,10 +303,7 @@ func (p *ParameterRef) MarshalJSON() ([]byte, error) {
 	if p == nil {
 		return []byte("null"), nil
 	}
-	if p.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": p.Ref})
-	}
-	return json.Marshal(p.Value)
+	return refMarshalJSON(p.Ref, p.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -296,10 +311,7 @@ func (p *ParameterRef) MarshalYAML() (any, error) {
 	if p == nil {
 		return nil, nil
 	}
-	if p.Ref != "" {
-		return map[string]string{"$ref": p.Ref}, nil
-	}
-	return p.Value, nil
+	return refMarshalYAML(p.Ref, p.Value)
 }
 
 // RequestBody describes a single request body.
@@ -331,10 +343,7 @@ func (r *RequestBodyRef) MarshalJSON() ([]byte, error) {
 	if r == nil {
 		return []byte("null"), nil
 	}
-	if r.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": r.Ref})
-	}
-	return json.Marshal(r.Value)
+	return refMarshalJSON(r.Ref, r.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -342,10 +351,7 @@ func (r *RequestBodyRef) MarshalYAML() (any, error) {
 	if r == nil {
 		return nil, nil
 	}
-	if r.Ref != "" {
-		return map[string]string{"$ref": r.Ref}, nil
-	}
-	return r.Value, nil
+	return refMarshalYAML(r.Ref, r.Value)
 }
 
 // MediaType provides schema and examples for a media type.
@@ -447,10 +453,7 @@ func (r *ResponseRef) MarshalJSON() ([]byte, error) {
 	if r == nil {
 		return []byte("null"), nil
 	}
-	if r.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": r.Ref})
-	}
-	return json.Marshal(r.Value)
+	return refMarshalJSON(r.Ref, r.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -458,10 +461,7 @@ func (r *ResponseRef) MarshalYAML() (any, error) {
 	if r == nil {
 		return nil, nil
 	}
-	if r.Ref != "" {
-		return map[string]string{"$ref": r.Ref}, nil
-	}
-	return r.Value, nil
+	return refMarshalYAML(r.Ref, r.Value)
 }
 
 // Schema represents a JSON Schema object.
@@ -540,10 +540,7 @@ func (s *SchemaRef) MarshalJSON() ([]byte, error) {
 	if s == nil {
 		return []byte("null"), nil
 	}
-	if s.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": s.Ref})
-	}
-	return json.Marshal(s.Value)
+	return refMarshalJSON(s.Ref, s.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -551,10 +548,7 @@ func (s *SchemaRef) MarshalYAML() (any, error) {
 	if s == nil {
 		return nil, nil
 	}
-	if s.Ref != "" {
-		return map[string]string{"$ref": s.Ref}, nil
-	}
-	return s.Value, nil
+	return refMarshalYAML(s.Ref, s.Value)
 }
 
 // NewSchemaRef creates a reference to a schema in components.
@@ -607,10 +601,7 @@ func (s *SecuritySchemeRef) MarshalJSON() ([]byte, error) {
 	if s == nil {
 		return []byte("null"), nil
 	}
-	if s.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": s.Ref})
-	}
-	return json.Marshal(s.Value)
+	return refMarshalJSON(s.Ref, s.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -618,10 +609,7 @@ func (s *SecuritySchemeRef) MarshalYAML() (any, error) {
 	if s == nil {
 		return nil, nil
 	}
-	if s.Ref != "" {
-		return map[string]string{"$ref": s.Ref}, nil
-	}
-	return s.Value, nil
+	return refMarshalYAML(s.Ref, s.Value)
 }
 
 // OAuthFlows allows configuration of OAuth flows.
@@ -684,10 +672,7 @@ func (h *HeaderRef) MarshalJSON() ([]byte, error) {
 	if h == nil {
 		return []byte("null"), nil
 	}
-	if h.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": h.Ref})
-	}
-	return json.Marshal(h.Value)
+	return refMarshalJSON(h.Ref, h.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -695,10 +680,7 @@ func (h *HeaderRef) MarshalYAML() (any, error) {
 	if h == nil {
 		return nil, nil
 	}
-	if h.Ref != "" {
-		return map[string]string{"$ref": h.Ref}, nil
-	}
-	return h.Value, nil
+	return refMarshalYAML(h.Ref, h.Value)
 }
 
 // Example object.
@@ -720,10 +702,7 @@ func (e *ExampleRef) MarshalJSON() ([]byte, error) {
 	if e == nil {
 		return []byte("null"), nil
 	}
-	if e.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": e.Ref})
-	}
-	return json.Marshal(e.Value)
+	return refMarshalJSON(e.Ref, e.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -731,10 +710,7 @@ func (e *ExampleRef) MarshalYAML() (any, error) {
 	if e == nil {
 		return nil, nil
 	}
-	if e.Ref != "" {
-		return map[string]string{"$ref": e.Ref}, nil
-	}
-	return e.Value, nil
+	return refMarshalYAML(e.Ref, e.Value)
 }
 
 // Link represents a possible design-time link for a response.
@@ -758,10 +734,7 @@ func (l *LinkRef) MarshalJSON() ([]byte, error) {
 	if l == nil {
 		return []byte("null"), nil
 	}
-	if l.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": l.Ref})
-	}
-	return json.Marshal(l.Value)
+	return refMarshalJSON(l.Ref, l.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -769,10 +742,7 @@ func (l *LinkRef) MarshalYAML() (any, error) {
 	if l == nil {
 		return nil, nil
 	}
-	if l.Ref != "" {
-		return map[string]string{"$ref": l.Ref}, nil
-	}
-	return l.Value, nil
+	return refMarshalYAML(l.Ref, l.Value)
 }
 
 // Callback is a map of runtime expressions to PathItems.
@@ -789,10 +759,7 @@ func (c *CallbackRef) MarshalJSON() ([]byte, error) {
 	if c == nil {
 		return []byte("null"), nil
 	}
-	if c.Ref != "" {
-		return json.Marshal(map[string]string{"$ref": c.Ref})
-	}
-	return json.Marshal(c.Value)
+	return refMarshalJSON(c.Ref, c.Value)
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -800,10 +767,7 @@ func (c *CallbackRef) MarshalYAML() (any, error) {
 	if c == nil {
 		return nil, nil
 	}
-	if c.Ref != "" {
-		return map[string]string{"$ref": c.Ref}, nil
-	}
-	return c.Value, nil
+	return refMarshalYAML(c.Ref, c.Value)
 }
 
 // Discriminator used when request bodies or response payloads may be one of several types.
