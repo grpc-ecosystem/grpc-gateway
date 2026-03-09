@@ -16,6 +16,62 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
+// GeneratorConfig groups all configuration flags for the OpenAPI v3 generator.
+// This improves organization, testability, and documentation of available options.
+type GeneratorConfig struct {
+	// Input/Output
+	ImportPrefix string
+	File         string
+	OutputFormat string
+
+	// HTTP Options
+	AllowDeleteBody bool
+
+	// Merge Options
+	AllowMerge    bool
+	MergeFileName string
+
+	// Naming Options
+	UseJSONNamesForFields     bool
+	IncludePackageInTags      bool
+	OpenAPINamingStrategy     string
+	SimpleOperationIDs        bool
+	ExpandSlashedPathPatterns bool
+
+	// Comment Options
+	IgnoreComments         bool
+	RemoveInternalComments bool
+
+	// Schema Options
+	EnumsAsInts             bool
+	OmitEnumDefaultValue    bool
+	Proto3OptionalNullable  bool
+	UseProto3FieldSemantics bool
+	RecursiveDepth          int
+
+	// Generation Control
+	GenerateUnboundMethods  bool
+	DisableDefaultErrors    bool
+	DisableServiceTags      bool
+	DisableDefaultResponses bool
+	PreserveRPCOrder        bool
+	EnableRPCDeprecation    bool
+	EnableFieldDeprecation  bool
+
+	// Visibility
+	VisibilityRestrictionSelectors []string
+
+	// Version
+	OpenAPIVersion string
+
+	// External Config
+	GrpcAPIConfiguration string
+}
+
+// flags holds the parsed command line flags
+var cfg = &GeneratorConfig{}
+
+// Command line flags
 var (
 	importPrefix                   = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
 	file                           = flag.String("file", "-", "where to load data from")
@@ -57,119 +113,184 @@ var (
 	date    = "unknown"
 )
 
+// populateConfig copies flag values to the config struct.
+func populateConfig() {
+	cfg.ImportPrefix = *importPrefix
+	cfg.File = *file
+	cfg.OutputFormat = *outputFormat
+	cfg.AllowDeleteBody = *allowDeleteBody
+	cfg.AllowMerge = *allowMerge
+	cfg.MergeFileName = *mergeFileName
+	cfg.UseJSONNamesForFields = *useJSONNamesForFields
+	cfg.IncludePackageInTags = *includePackageInTags
+	cfg.OpenAPINamingStrategy = *openAPINamingStrategy
+	cfg.SimpleOperationIDs = *simpleOperationIDs
+	cfg.ExpandSlashedPathPatterns = *expandSlashedPathPatterns
+	cfg.IgnoreComments = *ignoreComments
+	cfg.RemoveInternalComments = *removeInternalComments
+	cfg.EnumsAsInts = *enumsAsInts
+	cfg.OmitEnumDefaultValue = *omitEnumDefaultValue
+	cfg.Proto3OptionalNullable = *proto3OptionalNullable
+	cfg.UseProto3FieldSemantics = *useProto3FieldSemantics
+	cfg.RecursiveDepth = *recursiveDepth
+	cfg.GenerateUnboundMethods = *generateUnboundMethods
+	cfg.DisableDefaultErrors = *disableDefaultErrors
+	cfg.DisableServiceTags = *disableServiceTags
+	cfg.DisableDefaultResponses = *disableDefaultResponses
+	cfg.PreserveRPCOrder = *preserveRPCOrder
+	cfg.EnableRPCDeprecation = *enableRpcDeprecation
+	cfg.EnableFieldDeprecation = *enableFieldDeprecation
+	cfg.VisibilityRestrictionSelectors = *visibilityRestrictionSelectors
+	cfg.OpenAPIVersion = *openAPIVersion
+	cfg.GrpcAPIConfiguration = *grpcAPIConfiguration
+}
+
+// configureRegistry applies the configuration to a registry.
+func configureRegistry(reg *descriptor.Registry) {
+	reg.SetPrefix(cfg.ImportPrefix)
+	reg.SetAllowDeleteBody(cfg.AllowDeleteBody)
+	reg.SetAllowMerge(cfg.AllowMerge)
+	reg.SetMergeFileName(cfg.MergeFileName)
+	reg.SetUseJSONNamesForFields(cfg.UseJSONNamesForFields)
+	reg.SetIncludePackageInTags(cfg.IncludePackageInTags)
+	reg.SetOpenAPINamingStrategy(cfg.OpenAPINamingStrategy)
+	reg.SetIgnoreComments(cfg.IgnoreComments)
+	reg.SetRemoveInternalComments(cfg.RemoveInternalComments)
+	reg.SetEnumsAsInts(cfg.EnumsAsInts)
+	reg.SetDisableDefaultErrors(cfg.DisableDefaultErrors)
+	reg.SetSimpleOperationIDs(cfg.SimpleOperationIDs)
+	reg.SetGenerateUnboundMethods(cfg.GenerateUnboundMethods)
+	reg.SetRecursiveDepth(cfg.RecursiveDepth)
+	reg.SetOmitEnumDefaultValue(cfg.OmitEnumDefaultValue)
+	reg.SetVisibilityRestrictionSelectors(cfg.VisibilityRestrictionSelectors)
+	reg.SetDisableServiceTags(cfg.DisableServiceTags)
+	reg.SetDisableDefaultResponses(cfg.DisableDefaultResponses)
+	reg.SetPreserveRPCOrder(cfg.PreserveRPCOrder)
+	reg.SetEnableRpcDeprecation(cfg.EnableRPCDeprecation)
+	reg.SetEnableFieldDeprecation(cfg.EnableFieldDeprecation)
+	reg.SetExpandSlashedPathPatterns(cfg.ExpandSlashedPathPatterns)
+	reg.SetProto3OptionalNullable(cfg.Proto3OptionalNullable)
+	reg.SetUseProto3FieldSemantics(cfg.UseProto3FieldSemantics)
+}
+
 func main() {
 	flag.Parse()
 
 	if *versionFlag {
-		if commit == "unknown" {
-			buildInfo, ok := debug.ReadBuildInfo()
-			if ok {
-				version = buildInfo.Main.Version
-				for _, setting := range buildInfo.Settings {
-					if setting.Key == "vcs.revision" {
-						commit = setting.Value
-					}
-					if setting.Key == "vcs.time" {
-						date = setting.Value
-					}
-				}
-			}
-		}
-		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
+		printVersion()
 		os.Exit(0)
 	}
 
+	populateConfig()
+
+	if err := run(); err != nil {
+		emitError(err)
+	}
+}
+
+// printVersion prints version information from build info or goreleaser.
+func printVersion() {
+	if commit == "unknown" {
+		buildInfo, ok := debug.ReadBuildInfo()
+		if ok {
+			version = buildInfo.Main.Version
+			for _, setting := range buildInfo.Settings {
+				if setting.Key == "vcs.revision" {
+					commit = setting.Value
+				}
+				if setting.Key == "vcs.time" {
+					date = setting.Value
+				}
+			}
+		}
+	}
+	fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
+}
+
+// run contains the main generation logic.
+func run() error {
 	reg := descriptor.NewRegistry()
+
 	if grpclog.V(1) {
 		grpclog.Info("Processing code generator request")
 	}
+
+	// Read input
 	f := os.Stdin
-	if *file != "-" {
+	if cfg.File != "-" {
 		var err error
-		f, err = os.Open(*file)
+		f, err = os.Open(cfg.File)
 		if err != nil {
-			grpclog.Fatal(err)
+			return err
 		}
+		defer func() { _ = f.Close() }()
 	}
+
 	if grpclog.V(1) {
 		grpclog.Info("Parsing code generator request")
 	}
+
 	req, err := codegenerator.ParseRequest(f)
 	if err != nil {
-		grpclog.Fatal(err)
+		return err
 	}
+
 	if grpclog.V(1) {
 		grpclog.Info("Parsed code generator request")
 	}
+
+	// Parse request parameters
 	pkgMap := make(map[string]string)
 	if req.Parameter != nil {
 		if err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap); err != nil {
-			grpclog.Fatalf("Error parsing flags: %v", err)
+			return fmt.Errorf("error parsing flags: %w", err)
 		}
 	}
 
-	reg.SetPrefix(*importPrefix)
-	reg.SetAllowDeleteBody(*allowDeleteBody)
-	reg.SetAllowMerge(*allowMerge)
-	reg.SetMergeFileName(*mergeFileName)
-	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
-	reg.SetIncludePackageInTags(*includePackageInTags)
-	reg.SetOpenAPINamingStrategy(*openAPINamingStrategy)
-	reg.SetIgnoreComments(*ignoreComments)
-	reg.SetRemoveInternalComments(*removeInternalComments)
-	reg.SetEnumsAsInts(*enumsAsInts)
-	reg.SetDisableDefaultErrors(*disableDefaultErrors)
-	reg.SetSimpleOperationIDs(*simpleOperationIDs)
-	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
-	reg.SetRecursiveDepth(*recursiveDepth)
-	reg.SetOmitEnumDefaultValue(*omitEnumDefaultValue)
-	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
-	reg.SetDisableServiceTags(*disableServiceTags)
-	reg.SetDisableDefaultResponses(*disableDefaultResponses)
-	reg.SetPreserveRPCOrder(*preserveRPCOrder)
-	reg.SetEnableRpcDeprecation(*enableRpcDeprecation)
-	reg.SetEnableFieldDeprecation(*enableFieldDeprecation)
-	reg.SetExpandSlashedPathPatterns(*expandSlashedPathPatterns)
-	reg.SetProto3OptionalNullable(*proto3OptionalNullable)
-	reg.SetUseProto3FieldSemantics(*useProto3FieldSemantics)
+	// Re-populate config after potential parameter override
+	populateConfig()
+
+	// Configure registry
+	configureRegistry(reg)
 
 	for k, v := range pkgMap {
 		reg.AddPkgMap(k, v)
 	}
 
-	if *grpcAPIConfiguration != "" {
-		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {
-			emitError(err)
-			return
+	// Load gRPC API configuration if specified
+	if cfg.GrpcAPIConfiguration != "" {
+		if err := reg.LoadGrpcAPIServiceFromYAML(cfg.GrpcAPIConfiguration); err != nil {
+			return err
 		}
 	}
 
-	format := genopenapiv3.Format(*outputFormat)
+	// Validate format
+	format := genopenapiv3.Format(cfg.OutputFormat)
 	if err := format.Validate(); err != nil {
-		emitError(err)
-		return
+		return err
 	}
 
 	// Validate naming strategy
-	if *openAPINamingStrategy != "" {
-		if genopenapiv3.LookupNamingStrategy(*openAPINamingStrategy) == nil {
-			emitError(fmt.Errorf("invalid openapi_naming_strategy %q: allowed values are fqn, legacy, simple, package", *openAPINamingStrategy))
-			return
+	if cfg.OpenAPINamingStrategy != "" {
+		if genopenapiv3.LookupNamingStrategy(cfg.OpenAPINamingStrategy) == nil {
+			return fmt.Errorf("invalid openapi_naming_strategy %q: allowed values are fqn, legacy, simple, package", cfg.OpenAPINamingStrategy)
 		}
 	}
 
-	g := genopenapiv3.New(reg, format, *openAPIVersion)
+	// Create generator
+	g := genopenapiv3.New(reg, format, cfg.OpenAPIVersion)
 
+	// Add error definitions
 	if err := genopenapiv3.AddErrorDefs(reg); err != nil {
-		emitError(err)
-		return
+		return err
 	}
 
+	// Load proto files
 	if err := reg.Load(req); err != nil {
-		emitError(err)
-		return
+		return err
 	}
 
+	// Build target files
 	targets := make([]*descriptor.File, 0, len(req.FileToGenerate))
 	for _, target := range req.FileToGenerate {
 		f, err := reg.LookupFile(target)
@@ -179,15 +300,17 @@ func main() {
 		targets = append(targets, f)
 	}
 
+	// Generate output
 	out, err := g.Generate(targets)
 	if grpclog.V(1) {
 		grpclog.Info("Processed code generator request")
 	}
 	if err != nil {
-		emitError(err)
-		return
+		return err
 	}
+
 	emitFiles(out)
+	return nil
 }
 
 func emitFiles(out []*descriptor.ResponseFile) {
@@ -220,7 +343,7 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 	if param == "" {
 		return nil
 	}
-	for _, p := range strings.Split(param, ",") {
+	for p := range strings.SplitSeq(param, ",") {
 		spec := strings.SplitN(p, "=", 2)
 		if len(spec) == 1 {
 			switch spec[0] {
