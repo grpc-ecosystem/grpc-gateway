@@ -736,11 +736,13 @@ func convertSchema(schema *options.Schema) *SchemaRef {
 		multipleOf := schema.GetMultipleOf()
 		s.MultipleOf = &multipleOf
 	}
-	if schema.GetMinimum() != 0 {
+	// Use pointer checks to verify presence instead of value checks,
+	// so that explicitly setting minimum: 0 or maximum: 0 is preserved.
+	if schema.Minimum != nil {
 		min := schema.GetMinimum()
 		s.Minimum = &min
 	}
-	if schema.GetMaximum() != 0 {
+	if schema.Maximum != nil {
 		max := schema.GetMaximum()
 		s.Maximum = &max
 	}

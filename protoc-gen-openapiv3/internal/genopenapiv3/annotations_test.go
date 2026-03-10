@@ -366,6 +366,116 @@ func TestConvertSchema(t *testing.T) {
 	}
 }
 
+// TestConvertSchema_ZeroMinimumMaximum verifies that explicitly setting
+// minimum: 0 or maximum: 0 in a Schema annotation is correctly preserved.
+func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		input       *options.Schema
+		wantMinimum *float64
+		wantMaximum *float64
+	}{
+		{
+			name: "minimum 0, maximum 100",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(0),
+				Maximum: float64Ptr(100),
+			},
+			wantMinimum: float64Ptr(0),
+			wantMaximum: float64Ptr(100),
+		},
+		{
+			name: "minimum -10, maximum 0",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(-10),
+				Maximum: float64Ptr(0),
+			},
+			wantMinimum: float64Ptr(-10),
+			wantMaximum: float64Ptr(0),
+		},
+		{
+			name: "both zero",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(0),
+				Maximum: float64Ptr(0),
+			},
+			wantMinimum: float64Ptr(0),
+			wantMaximum: float64Ptr(0),
+		},
+		{
+			name: "non-zero values",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(1),
+				Maximum: float64Ptr(100),
+			},
+			wantMinimum: float64Ptr(1),
+			wantMaximum: float64Ptr(100),
+		},
+		{
+			name: "only minimum set to 0",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(0),
+			},
+			wantMinimum: float64Ptr(0),
+			wantMaximum: nil,
+		},
+		{
+			name: "only maximum set to 0",
+			input: &options.Schema{
+				Type:    "integer",
+				Maximum: float64Ptr(0),
+			},
+			wantMinimum: nil,
+			wantMaximum: float64Ptr(0),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := convertSchema(tt.input)
+
+			if result.Value == nil {
+				t.Fatal("Value should not be nil for inline schema")
+			}
+
+			// Check minimum
+			if tt.wantMinimum != nil {
+				if result.Value.Minimum == nil {
+					t.Errorf("minimum constraint is missing: expected minimum: %v to be set",
+						*tt.wantMinimum)
+				} else if *result.Value.Minimum != *tt.wantMinimum {
+					t.Errorf("minimum = %v, want %v", *result.Value.Minimum, *tt.wantMinimum)
+				}
+			} else {
+				if result.Value.Minimum != nil {
+					t.Errorf("minimum should be nil, got %v", *result.Value.Minimum)
+				}
+			}
+
+			// Check maximum
+			if tt.wantMaximum != nil {
+				if result.Value.Maximum == nil {
+					t.Errorf("maximum constraint is missing: expected maximum: %v to be set",
+						*tt.wantMaximum)
+				} else if *result.Value.Maximum != *tt.wantMaximum {
+					t.Errorf("maximum = %v, want %v", *result.Value.Maximum, *tt.wantMaximum)
+				}
+			} else {
+				if result.Value.Maximum != nil {
+					t.Errorf("maximum should be nil, got %v", *result.Value.Maximum)
+				}
+			}
+		})
+	}
+}
+
 func TestConvertParameter(t *testing.T) {
 	input := &options.Parameter{
 		Name:        "user_id",
@@ -656,15 +766,15 @@ func TestApplyInfoAnnotation(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name         string
-		opts         *options.Info
-		wantTitle    string
-		wantVersion  string
-		wantSummary  string
-		wantDesc     string
-		wantTerms    string
-		wantContact  bool
-		wantLicense  bool
+		name        string
+		opts        *options.Info
+		wantTitle   string
+		wantVersion string
+		wantSummary string
+		wantDesc    string
+		wantTerms   string
+		wantContact bool
+		wantLicense bool
 	}{
 		{
 			name: "apply all info fields",
@@ -745,19 +855,19 @@ func TestApplySchemaAnnotation(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name            string
-		opts            *options.Schema
-		wantTitle       string
-		wantDesc        string
-		wantExample     string
-		wantReadOnly    bool
-		wantWriteOnly   bool
-		wantNullable    bool
-		wantDeprecated  bool
-		wantRequired    []string
-		wantAllOf       int
-		wantAnyOf       int
-		wantOneOf       int
+		name           string
+		opts           *options.Schema
+		wantTitle      string
+		wantDesc       string
+		wantExample    string
+		wantReadOnly   bool
+		wantWriteOnly  bool
+		wantNullable   bool
+		wantDeprecated bool
+		wantRequired   []string
+		wantAllOf      int
+		wantAnyOf      int
+		wantOneOf      int
 	}{
 		{
 			name: "apply title and description",
@@ -1422,7 +1532,7 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 			name: "add responses",
 			opts: &options.Components{
 				Responses: map[string]*options.Response{
-					"NotFound": {Description: "Resource not found"},
+					"NotFound":   {Description: "Resource not found"},
 					"BadRequest": {Description: "Invalid request"},
 				},
 			},
