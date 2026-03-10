@@ -3216,3 +3216,104 @@ func TestMutualRecursion(t *testing.T) {
 		}
 	}
 }
+
+// TestFieldAnnotation_ZeroMinimumMaximum tests that minimum: 0 and maximum: 0
+// field annotations via openapiv3_field are correctly applied to OpenAPI schemas.
+//
+// This is an end-to-end test verifying that field-level annotations with
+// zero constraints work correctly. The field annotation code path uses
+// pointer checks (opts.Minimum != nil) which correctly handles zero values.
+func TestFieldAnnotation_ZeroMinimumMaximum(t *testing.T) {
+	t.Parallel()
+
+	// Proto with field annotation specifying minimum: 0, maximum: 100
+	// This is valid input - user wants to constrain field to [0, 100]
+	// Uses POST with body so that the Request message is included in schemas.
+	const protoText = `
+file_to_generate: "test/v1/zero_minimum.proto"
+proto_file: {
+	name: "test/v1/zero_minimum.proto"
+	package: "test.v1"
+	message_type: {
+		name: "CountRequest"
+		field: {
+			name: "count"
+			number: 1
+			type: TYPE_INT32
+			json_name: "count"
+			options: {
+				[grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+					minimum: 0
+					maximum: 100
+				}
+			}
+		}
+	}
+	message_type: { name: "CountResponse" }
+	service: {
+		name: "TestService"
+		method: {
+			name: "SetCount"
+			input_type: ".test.v1.CountRequest"
+			output_type: ".test.v1.CountResponse"
+			options: { [google.api.http]: { post: "/v1/count" body: "*" } }
+		}
+	}
+	options: { go_package: "test/v1;testv1" }
+	syntax: "proto3"
+}
+`
+	resp := requireGenerateInline(t, protoText, nil)
+	content := resp[0].GetContent()
+
+	// Parse the generated OpenAPI JSON
+	var doc map[string]any
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("Failed to parse OpenAPI JSON: %v", err)
+	}
+
+	// Navigate to the schema
+	components, ok := doc["components"].(map[string]any)
+	if !ok {
+		t.Fatalf("missing components in output: %s", content)
+	}
+	schemas, ok := components["schemas"].(map[string]any)
+	if !ok {
+		t.Fatalf("missing schemas in output: %s", content)
+	}
+
+	// Find the CountRequest schema (might have a prefix)
+	var request map[string]any
+	for name, s := range schemas {
+		if strings.Contains(name, "CountRequest") {
+			request, _ = s.(map[string]any)
+			break
+		}
+	}
+	if request == nil {
+		t.Fatalf("CountRequest schema not found in output: %s", content)
+	}
+
+	properties, ok := request["properties"].(map[string]any)
+	if !ok {
+		t.Fatalf("Request schema missing properties: %v", request)
+	}
+	countField, ok := properties["count"].(map[string]any)
+	if !ok {
+		t.Fatalf("count field not found in properties: %v", properties)
+	}
+
+	// Check if minimum: 0 is present
+	minVal, hasMin := countField["minimum"]
+	if !hasMin {
+		t.Errorf("BUG: minimum constraint is missing - explicitly set minimum: 0 was silently ignored")
+	} else if minVal.(float64) != 0 {
+		t.Errorf("BUG: minimum should be 0, got %v", minVal)
+	}
+
+	// Check if maximum: 100 is present (should work)
+	maxVal, hasMax := countField["maximum"]
+	if !hasMax || maxVal.(float64) != 100 {
+		t.Errorf("maximum constraint should be 100, got %v (present=%v)", maxVal, hasMax)
+	}
+}

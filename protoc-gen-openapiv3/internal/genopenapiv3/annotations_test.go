@@ -366,6 +366,120 @@ func TestConvertSchema(t *testing.T) {
 	}
 }
 
+// TestConvertSchema_ZeroMinimumMaximum verifies that explicitly setting
+// minimum: 0 or maximum: 0 in a Schema annotation is correctly preserved.
+//
+// BUG: The convertSchema function uses `schema.GetMinimum() != 0` which
+// fails to apply the constraint when the user explicitly sets minimum: 0.
+// The fix is to use `schema.HasMinimum()` to check presence instead of value.
+func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		input       *options.Schema
+		wantMinimum *float64
+		wantMaximum *float64
+	}{
+		{
+			name: "minimum 0, maximum 100",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(0),
+				Maximum: float64Ptr(100),
+			},
+			wantMinimum: float64Ptr(0),
+			wantMaximum: float64Ptr(100),
+		},
+		{
+			name: "minimum -10, maximum 0",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(-10),
+				Maximum: float64Ptr(0),
+			},
+			wantMinimum: float64Ptr(-10),
+			wantMaximum: float64Ptr(0),
+		},
+		{
+			name: "both zero",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(0),
+				Maximum: float64Ptr(0),
+			},
+			wantMinimum: float64Ptr(0),
+			wantMaximum: float64Ptr(0),
+		},
+		{
+			name: "non-zero values",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(1),
+				Maximum: float64Ptr(100),
+			},
+			wantMinimum: float64Ptr(1),
+			wantMaximum: float64Ptr(100),
+		},
+		{
+			name: "only minimum set to 0",
+			input: &options.Schema{
+				Type:    "integer",
+				Minimum: float64Ptr(0),
+			},
+			wantMinimum: float64Ptr(0),
+			wantMaximum: nil,
+		},
+		{
+			name: "only maximum set to 0",
+			input: &options.Schema{
+				Type:    "integer",
+				Maximum: float64Ptr(0),
+			},
+			wantMinimum: nil,
+			wantMaximum: float64Ptr(0),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := convertSchema(tt.input)
+
+			if result.Value == nil {
+				t.Fatal("Value should not be nil for inline schema")
+			}
+
+			// Check minimum
+			if tt.wantMinimum != nil {
+				if result.Value.Minimum == nil {
+					t.Errorf("BUG: minimum constraint is missing - explicitly set minimum: %v was silently ignored",
+						*tt.wantMinimum)
+				} else if *result.Value.Minimum != *tt.wantMinimum {
+					t.Errorf("minimum = %v, want %v", *result.Value.Minimum, *tt.wantMinimum)
+				}
+			} else {
+				if result.Value.Minimum != nil {
+					t.Errorf("minimum should be nil, got %v", *result.Value.Minimum)
+				}
+			}
+
+			// Check maximum
+			if tt.wantMaximum != nil {
+				if result.Value.Maximum == nil {
+					t.Errorf("BUG: maximum constraint is missing - explicitly set maximum: %v was silently ignored",
+						*tt.wantMaximum)
+				} else if *result.Value.Maximum != *tt.wantMaximum {
+					t.Errorf("maximum = %v, want %v", *result.Value.Maximum, *tt.wantMaximum)
+				}
+			} else {
+				if result.Value.Maximum != nil {
+					t.Errorf("maximum should be nil, got %v", *result.Value.Maximum)
+				}
+			}
+		})
+	}
+}
+
 func TestConvertParameter(t *testing.T) {
 	input := &options.Parameter{
 		Name:        "user_id",
