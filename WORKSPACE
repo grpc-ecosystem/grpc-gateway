@@ -5,9 +5,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "bazel_features",
-    sha256 = "5d7bd1c44051cca8a9e0842eda9a5c223f2cb7264202022ff20ee77dcb3fb275",
-    strip_prefix = "bazel_features-1.42.0",
-    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.42.0/bazel_features-v1.42.0.tar.gz",
+    sha256 = "8189bac9a6bf9cc155a854c4cbebfebf58b9ca7a2d0a67645f7d0c1f83c523ac",
+    strip_prefix = "bazel_features-1.42.1",
+    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.42.1/bazel_features-v1.42.1.tar.gz",
 )
 
 load("@bazel_features//:deps.bzl", "bazel_features_deps")
@@ -16,9 +16,9 @@ bazel_features_deps()
 
 http_archive(
     name = "rules_python",
-    sha256 = "8964aa1e7525fea5244ba737458694a057ada1be96a92998a41caa1983562d00",
-    strip_prefix = "rules_python-1.8.5",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/1.8.5/rules_python-1.8.5.tar.gz",
+    sha256 = "098ba13578e796c00c853a2161f382647f32eb9a77099e1c88bc5299333d0d6e",
+    strip_prefix = "rules_python-1.9.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/1.9.0/rules_python-1.9.0.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "py_repositories")
@@ -42,10 +42,10 @@ http_archive(
 
 http_archive(
     name = "googleapis",
-    sha256 = "c42c2a35e4e46100caf9f97b6920bd0ac2fc7881f92b0adabb673d4ac787a95b",
-    strip_prefix = "googleapis-e50da278bd78c6b3b3c10c8856d0de46e00d3fda",
+    sha256 = "8dc0711354cd02e3f939b9fa92231af601cbe6f0187e4a87550bf5e3957463b1",
+    strip_prefix = "googleapis-23ec7b6ee94a2fe364cdb5a212949f1cf37f85ad",
     urls = [
-        "https://github.com/googleapis/googleapis/archive/e50da278bd78c6b3b3c10c8856d0de46e00d3fda.zip",
+        "https://github.com/googleapis/googleapis/archive/23ec7b6ee94a2fe364cdb5a212949f1cf37f85ad.zip",
     ],
 )
 
