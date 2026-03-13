@@ -128,9 +128,9 @@ protobuf_deps()
 
 http_archive(
     name = "rules_shell",
-    sha256 = "e6b87c89bd0b27039e3af2c5da01147452f240f75d505f5b6880874f31036307",
-    strip_prefix = "rules_shell-0.6.1",
-    url = "https://github.com/bazelbuild/rules_shell/releases/download/v0.6.1/rules_shell-v0.6.1.tar.gz",
+    sha256 = "e17f72732618a6536559b3015dbe190ef592f7b9ba81969ff4bca766c451b3a5",
+    strip_prefix = "rules_shell-0.7.0",
+    url = "https://github.com/bazelbuild/rules_shell/releases/download/v0.7.0/rules_shell-v0.7.0.tar.gz",
 )
 
 load("@rules_shell//shell:repositories.bzl", "rules_shell_dependencies", "rules_shell_toolchains")
