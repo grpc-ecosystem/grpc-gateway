@@ -5,6 +5,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -937,57 +938,22 @@ func TestApplySchemaAnnotation(t *testing.T) {
 
 			schema := &Schema{Type: "object"}
 
+			// Create message options with the OpenAPI annotation
+			msgOpts := &descriptorpb.MessageOptions{}
+			proto.SetExtension(msgOpts, options.E_Openapiv3Schema, tt.opts)
+
 			// Create a mock message with the annotation
 			msg := &descriptor.Message{
 				DescriptorProto: &descriptorpb.DescriptorProto{
-					Name: stringPtr("TestMessage"),
+					Name:    stringPtr("TestMessage"),
+					Options: msgOpts,
 				},
 			}
 
-			// Since we can't easily set proto extensions in tests,
-			// we'll call the internal apply function directly with the opts
+			// Call the REAL function instead of duplicating logic
 			reg := &descriptor.Registry{}
 			gen := &generator{reg: reg}
-
-			// Apply the annotation manually (simulating what applySchemaAnnotation does)
-			if tt.opts.GetTitle() != "" {
-				schema.Title = tt.opts.GetTitle()
-			}
-			if tt.opts.GetDescription() != "" {
-				schema.Description = tt.opts.GetDescription()
-			}
-			if len(tt.opts.GetRequired()) > 0 {
-				schema.Required = tt.opts.GetRequired()
-			}
-			if tt.opts.GetExample() != "" {
-				schema.Example = tt.opts.GetExample()
-			}
-			if tt.opts.GetReadOnly() {
-				schema.ReadOnly = true
-			}
-			if tt.opts.GetWriteOnly() {
-				schema.WriteOnly = true
-			}
-			if tt.opts.GetNullable() {
-				schema.Nullable = true
-			}
-			if tt.opts.GetDeprecated() {
-				schema.Deprecated = true
-			}
-			for _, allOfSchema := range tt.opts.GetAllOf() {
-				schema.AllOf = append(schema.AllOf, convertSchema(allOfSchema))
-			}
-			for _, anyOfSchema := range tt.opts.GetAnyOf() {
-				schema.AnyOf = append(schema.AnyOf, convertSchema(anyOfSchema))
-			}
-			for _, oneOfSchema := range tt.opts.GetOneOf() {
-				schema.OneOf = append(schema.OneOf, convertSchema(oneOfSchema))
-			}
-
-			// Verify the generator exists (won't be nil)
-			if gen == nil || msg == nil {
-				t.Fatal("generator and message should exist")
-			}
+			gen.applySchemaAnnotation(schema, msg)
 
 			// Assertions
 			if tt.wantTitle != "" && schema.Title != tt.wantTitle {
@@ -1115,53 +1081,22 @@ func TestApplyFieldAnnotation(t *testing.T) {
 
 			schema := &Schema{Type: "string"}
 
-			// Apply the field annotation options manually
-			if tt.opts.GetTitle() != "" {
-				schema.Title = tt.opts.GetTitle()
+			// Create field options with the OpenAPI annotation
+			fieldOpts := &descriptorpb.FieldOptions{}
+			proto.SetExtension(fieldOpts, options.E_Openapiv3Field, tt.opts)
+
+			// Create a mock field with the annotation
+			field := &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    stringPtr("test_field"),
+					Options: fieldOpts,
+				},
 			}
-			if tt.opts.GetDescription() != "" {
-				schema.Description = tt.opts.GetDescription()
-			}
-			if tt.opts.GetDefault() != "" {
-				schema.Default = tt.opts.GetDefault()
-			}
-			if tt.opts.GetExample() != "" {
-				schema.Example = tt.opts.GetExample()
-			}
-			if tt.opts.GetFormat() != "" {
-				schema.Format = tt.opts.GetFormat()
-			}
-			if tt.opts.GetPattern() != "" {
-				schema.Pattern = tt.opts.GetPattern()
-			}
-			if tt.opts.GetMinLength() > 0 {
-				minLen := tt.opts.GetMinLength()
-				schema.MinLength = &minLen
-			}
-			if tt.opts.GetMaxLength() > 0 {
-				maxLen := tt.opts.GetMaxLength()
-				schema.MaxLength = &maxLen
-			}
-			if tt.opts.GetMinimum() != 0 {
-				min := tt.opts.GetMinimum()
-				schema.Minimum = &min
-			}
-			if tt.opts.GetMaximum() != 0 {
-				max := tt.opts.GetMaximum()
-				schema.Maximum = &max
-			}
-			if tt.opts.GetReadOnly() {
-				schema.ReadOnly = true
-			}
-			if tt.opts.GetWriteOnly() {
-				schema.WriteOnly = true
-			}
-			if tt.opts.GetNullable() {
-				schema.Nullable = true
-			}
-			if tt.opts.GetDeprecated() {
-				schema.Deprecated = true
-			}
+
+			// Call the REAL function instead of duplicating logic
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+			gen.applyFieldAnnotation(schema, field)
 
 			// Assertions
 			if tt.wantTitle != "" && schema.Title != tt.wantTitle {
@@ -1283,28 +1218,22 @@ func TestApplyOperationAnnotation(t *testing.T) {
 				Tags:        []string{"Original"},
 			}
 
-			// Apply the operation annotation options manually
-			if tt.opts.GetSummary() != "" {
-				op.Summary = tt.opts.GetSummary()
+			// Create method options with the OpenAPI annotation
+			methodOpts := &descriptorpb.MethodOptions{}
+			proto.SetExtension(methodOpts, options.E_Openapiv3Operation, tt.opts)
+
+			// Create a mock method with the annotation
+			method := &descriptor.Method{
+				MethodDescriptorProto: &descriptorpb.MethodDescriptorProto{
+					Name:    stringPtr("TestMethod"),
+					Options: methodOpts,
+				},
 			}
-			if tt.opts.GetDescription() != "" {
-				op.Description = tt.opts.GetDescription()
-			}
-			if tt.opts.GetOperationId() != "" {
-				op.OperationID = tt.opts.GetOperationId()
-			}
-			if len(tt.opts.GetTags()) > 0 {
-				op.Tags = tt.opts.GetTags()
-			}
-			if tt.opts.GetDeprecated() {
-				op.Deprecated = true
-			}
-			for _, sec := range tt.opts.GetSecurity() {
-				op.Security = append(op.Security, convertSecurityRequirement(sec))
-			}
-			for _, s := range tt.opts.GetServers() {
-				op.Servers = append(op.Servers, convertServer(s))
-			}
+
+			// Call the REAL function instead of duplicating logic
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+			gen.applyOperationAnnotation(op, method)
 
 			// Assertions
 			if tt.wantSummary != "" && op.Summary != tt.wantSummary {
@@ -1372,16 +1301,22 @@ func TestApplyServiceAnnotation(t *testing.T) {
 				Description: "Original description",
 			}
 
-			// Apply the service annotation options manually
-			if tt.opts.GetName() != "" {
-				tag.Name = tt.opts.GetName()
+			// Create service options with the OpenAPI annotation
+			svcOpts := &descriptorpb.ServiceOptions{}
+			proto.SetExtension(svcOpts, options.E_Openapiv3Tag, tt.opts)
+
+			// Create a mock service with the annotation
+			svc := &descriptor.Service{
+				ServiceDescriptorProto: &descriptorpb.ServiceDescriptorProto{
+					Name:    stringPtr("TestService"),
+					Options: svcOpts,
+				},
 			}
-			if tt.opts.GetDescription() != "" {
-				tag.Description = tt.opts.GetDescription()
-			}
-			if extDocs := tt.opts.GetExternalDocs(); extDocs != nil {
-				tag.ExternalDocs = convertExternalDocs(extDocs)
-			}
+
+			// Call the REAL function instead of duplicating logic
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+			gen.applyServiceAnnotation(tag, svc)
 
 			// Assertions
 			if tt.wantName != "" && tag.Name != tt.wantName {
@@ -1455,25 +1390,22 @@ func TestApplyEnumAnnotation(t *testing.T) {
 				Enum: []any{"PENDING", "COMPLETED", "FAILED"},
 			}
 
-			// Apply the enum annotation options manually
-			if tt.opts.GetTitle() != "" {
-				schema.Title = tt.opts.GetTitle()
+			// Create enum options with the OpenAPI annotation
+			enumOpts := &descriptorpb.EnumOptions{}
+			proto.SetExtension(enumOpts, options.E_Openapiv3Enum, tt.opts)
+
+			// Create a mock enum with the annotation
+			enum := &descriptor.Enum{
+				EnumDescriptorProto: &descriptorpb.EnumDescriptorProto{
+					Name:    stringPtr("TestEnum"),
+					Options: enumOpts,
+				},
 			}
-			if tt.opts.GetDescription() != "" {
-				schema.Description = tt.opts.GetDescription()
-			}
-			if tt.opts.GetDefault() != "" {
-				schema.Default = tt.opts.GetDefault()
-			}
-			if tt.opts.GetExample() != "" {
-				schema.Example = tt.opts.GetExample()
-			}
-			if tt.opts.GetDeprecated() {
-				schema.Deprecated = true
-			}
-			if extDocs := tt.opts.GetExternalDocs(); extDocs != nil {
-				schema.ExternalDocs = convertExternalDocs(extDocs)
-			}
+
+			// Call the REAL function instead of duplicating logic
+			reg := &descriptor.Registry{}
+			gen := &generator{reg: reg}
+			gen.applyEnumAnnotation(schema, enum)
 
 			// Assertions
 			if tt.wantTitle != "" && schema.Title != tt.wantTitle {
