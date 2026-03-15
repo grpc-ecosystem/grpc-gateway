@@ -950,7 +950,6 @@ func TestApplySchemaAnnotation(t *testing.T) {
 				},
 			}
 
-			// Call the REAL function instead of duplicating logic
 			reg := &descriptor.Registry{}
 			gen := &generator{reg: reg}
 			gen.applySchemaAnnotation(schema, msg)
@@ -1093,7 +1092,6 @@ func TestApplyFieldAnnotation(t *testing.T) {
 				},
 			}
 
-			// Call the REAL function instead of duplicating logic
 			reg := &descriptor.Registry{}
 			gen := &generator{reg: reg}
 			gen.applyFieldAnnotation(schema, field)
@@ -1230,7 +1228,6 @@ func TestApplyOperationAnnotation(t *testing.T) {
 				},
 			}
 
-			// Call the REAL function instead of duplicating logic
 			reg := &descriptor.Registry{}
 			gen := &generator{reg: reg}
 			gen.applyOperationAnnotation(op, method)
@@ -1313,7 +1310,6 @@ func TestApplyServiceAnnotation(t *testing.T) {
 				},
 			}
 
-			// Call the REAL function instead of duplicating logic
 			reg := &descriptor.Registry{}
 			gen := &generator{reg: reg}
 			gen.applyServiceAnnotation(tag, svc)
@@ -1402,7 +1398,6 @@ func TestApplyEnumAnnotation(t *testing.T) {
 				},
 			}
 
-			// Call the REAL function instead of duplicating logic
 			reg := &descriptor.Registry{}
 			gen := &generator{reg: reg}
 			gen.applyEnumAnnotation(schema, enum)
