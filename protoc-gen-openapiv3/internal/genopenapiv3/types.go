@@ -27,14 +27,14 @@ func refMarshalYAML[T any](ref string, value *T) (any, error) {
 // OpenAPI is the root document structure for OpenAPI 3.x
 // See: https://spec.openapis.org/oas/v3.0.3#openapi-object
 type OpenAPI struct {
-	OpenAPI      string                  `json:"openapi" yaml:"openapi"`                           // REQUIRED: "3.0.3" or "3.1.0"
-	Info         *Info                   `json:"info" yaml:"info"`                                 // REQUIRED
-	Servers      []*Server               `json:"servers,omitempty" yaml:"servers,omitempty"`
-	Paths        *Paths                  `json:"paths,omitempty" yaml:"paths,omitempty"`
-	Components   *Components             `json:"components,omitempty" yaml:"components,omitempty"`
-	Security     []SecurityRequirement   `json:"security,omitempty" yaml:"security,omitempty"`
-	Tags         []*Tag                  `json:"tags,omitempty" yaml:"tags,omitempty"`
-	ExternalDocs *ExternalDocumentation  `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+	OpenAPI      string                 `json:"openapi" yaml:"openapi"` // REQUIRED: "3.0.3" or "3.1.0"
+	Info         *Info                  `json:"info" yaml:"info"`       // REQUIRED
+	Servers      []*Server              `json:"servers,omitempty" yaml:"servers,omitempty"`
+	Paths        *Paths                 `json:"paths,omitempty" yaml:"paths,omitempty"`
+	Components   *Components            `json:"components,omitempty" yaml:"components,omitempty"`
+	Security     []SecurityRequirement  `json:"security,omitempty" yaml:"security,omitempty"`
+	Tags         []*Tag                 `json:"tags,omitempty" yaml:"tags,omitempty"`
+	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
 }
 
 // NewOpenAPI creates a new OpenAPI v3 document with required fields.
@@ -47,7 +47,7 @@ func NewOpenAPI(title, version, openapiVersion string) *OpenAPI {
 		},
 		Paths: NewPaths(),
 		Components: &Components{
-			Schemas: make(map[string]*SchemaRef),
+			Schemas: make(map[string]*SchemaOrReference),
 		},
 	}
 }
@@ -55,13 +55,13 @@ func NewOpenAPI(title, version, openapiVersion string) *OpenAPI {
 // Info provides metadata about the API.
 // See: https://spec.openapis.org/oas/v3.0.3#info-object
 type Info struct {
-	Title          string   `json:"title" yaml:"title"`                                     // REQUIRED
-	Summary        string   `json:"summary,omitempty" yaml:"summary,omitempty"`             // v3.1 only
+	Title          string   `json:"title" yaml:"title"`                         // REQUIRED
+	Summary        string   `json:"summary,omitempty" yaml:"summary,omitempty"` // v3.1 only
 	Description    string   `json:"description,omitempty" yaml:"description,omitempty"`
 	TermsOfService string   `json:"termsOfService,omitempty" yaml:"termsOfService,omitempty"`
 	Contact        *Contact `json:"contact,omitempty" yaml:"contact,omitempty"`
 	License        *License `json:"license,omitempty" yaml:"license,omitempty"`
-	Version        string   `json:"version" yaml:"version"`                                 // REQUIRED
+	Version        string   `json:"version" yaml:"version"` // REQUIRED
 }
 
 // Contact information for the exposed API.
@@ -73,7 +73,7 @@ type Contact struct {
 
 // License information for the exposed API.
 type License struct {
-	Name       string `json:"name" yaml:"name"` // REQUIRED
+	Name       string `json:"name" yaml:"name"`                                 // REQUIRED
 	Identifier string `json:"identifier,omitempty" yaml:"identifier,omitempty"` // v3.1 only, SPDX identifier
 	URL        string `json:"url,omitempty" yaml:"url,omitempty"`
 }
@@ -232,40 +232,40 @@ func (p *PathItem) SetOperation(method string, op *Operation) {
 // Operation describes a single API operation on a path.
 // See: https://spec.openapis.org/oas/v3.0.3#operation-object
 type Operation struct {
-	Tags         []string               `json:"tags,omitempty" yaml:"tags,omitempty"`
-	Summary      string                 `json:"summary,omitempty" yaml:"summary,omitempty"`
-	Description  string                 `json:"description,omitempty" yaml:"description,omitempty"`
-	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
-	OperationID  string                 `json:"operationId,omitempty" yaml:"operationId,omitempty"`
-	Parameters   []*ParameterRef        `json:"parameters,omitempty" yaml:"parameters,omitempty"`
-	RequestBody  *RequestBodyRef        `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
-	Responses    *Responses             `json:"responses,omitempty" yaml:"responses,omitempty"` // REQUIRED
+	Tags         []string                `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Summary      string                  `json:"summary,omitempty" yaml:"summary,omitempty"`
+	Description  string                  `json:"description,omitempty" yaml:"description,omitempty"`
+	ExternalDocs *ExternalDocumentation  `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+	OperationID  string                  `json:"operationId,omitempty" yaml:"operationId,omitempty"`
+	Parameters   []*ParameterRef         `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	RequestBody  *RequestBodyRef         `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
+	Responses    *Responses              `json:"responses,omitempty" yaml:"responses,omitempty"` // REQUIRED
 	Callbacks    map[string]*CallbackRef `json:"callbacks,omitempty" yaml:"callbacks,omitempty"`
-	Deprecated   bool                   `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
-	Security     []SecurityRequirement  `json:"security,omitempty" yaml:"security,omitempty"`
-	Servers      []*Server              `json:"servers,omitempty" yaml:"servers,omitempty"`
+	Deprecated   bool                    `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
+	Security     []SecurityRequirement   `json:"security,omitempty" yaml:"security,omitempty"`
+	Servers      []*Server               `json:"servers,omitempty" yaml:"servers,omitempty"`
 }
 
 // Parameter describes a single operation parameter.
 // See: https://spec.openapis.org/oas/v3.0.3#parameter-object
 type Parameter struct {
-	Name            string      `json:"name" yaml:"name"`       // REQUIRED
-	In              string      `json:"in" yaml:"in"`           // REQUIRED: query, header, path, cookie
-	Description     string      `json:"description,omitempty" yaml:"description,omitempty"`
-	Required        bool        `json:"required,omitempty" yaml:"required,omitempty"` // REQUIRED if in="path"
-	Deprecated      bool        `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
-	AllowEmptyValue bool        `json:"allowEmptyValue,omitempty" yaml:"allowEmptyValue,omitempty"`
-	Style           string      `json:"style,omitempty" yaml:"style,omitempty"`
-	Explode         *bool       `json:"explode,omitempty" yaml:"explode,omitempty"`
-	AllowReserved   bool        `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
-	Schema          *SchemaRef  `json:"schema,omitempty" yaml:"schema,omitempty"`
-	Example         any         `json:"example,omitempty" yaml:"example,omitempty"`
+	Name            string                 `json:"name" yaml:"name"` // REQUIRED
+	In              string                 `json:"in" yaml:"in"`     // REQUIRED: query, header, path, cookie
+	Description     string                 `json:"description,omitempty" yaml:"description,omitempty"`
+	Required        bool                   `json:"required,omitempty" yaml:"required,omitempty"` // REQUIRED if in="path"
+	Deprecated      bool                   `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
+	AllowEmptyValue bool                   `json:"allowEmptyValue,omitempty" yaml:"allowEmptyValue,omitempty"`
+	Style           string                 `json:"style,omitempty" yaml:"style,omitempty"`
+	Explode         *bool                  `json:"explode,omitempty" yaml:"explode,omitempty"`
+	AllowReserved   bool                   `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
+	Schema          *SchemaOrReference     `json:"schema,omitempty" yaml:"schema,omitempty"`
+	Example         any                    `json:"example,omitempty" yaml:"example,omitempty"`
 	Examples        map[string]*ExampleRef `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Content         map[string]*MediaType  `json:"content,omitempty" yaml:"content,omitempty"`
 }
 
 // NewPathParameter creates a path parameter (always required).
-func NewPathParameter(name string, schema *SchemaRef) *Parameter {
+func NewPathParameter(name string, schema *SchemaOrReference) *Parameter {
 	return &Parameter{
 		Name:     name,
 		In:       "path",
@@ -275,7 +275,7 @@ func NewPathParameter(name string, schema *SchemaRef) *Parameter {
 }
 
 // NewQueryParameter creates a query parameter.
-func NewQueryParameter(name string, schema *SchemaRef) *Parameter {
+func NewQueryParameter(name string, schema *SchemaOrReference) *Parameter {
 	return &Parameter{
 		Name:   name,
 		In:     "query",
@@ -284,7 +284,7 @@ func NewQueryParameter(name string, schema *SchemaRef) *Parameter {
 }
 
 // NewHeaderParameter creates a header parameter.
-func NewHeaderParameter(name string, schema *SchemaRef) *Parameter {
+func NewHeaderParameter(name string, schema *SchemaOrReference) *Parameter {
 	return &Parameter{
 		Name:   name,
 		In:     "header",
@@ -323,7 +323,7 @@ type RequestBody struct {
 }
 
 // NewJSONRequestBody creates a request body with JSON content.
-func NewJSONRequestBody(schema *SchemaRef, required bool) *RequestBody {
+func NewJSONRequestBody(schema *SchemaOrReference, required bool) *RequestBody {
 	return &RequestBody{
 		Content: map[string]*MediaType{
 			"application/json": {Schema: schema},
@@ -357,7 +357,7 @@ func (r *RequestBodyRef) MarshalYAML() (any, error) {
 // MediaType provides schema and examples for a media type.
 // See: https://spec.openapis.org/oas/v3.0.3#media-type-object
 type MediaType struct {
-	Schema   *SchemaRef             `json:"schema,omitempty" yaml:"schema,omitempty"`
+	Schema   *SchemaOrReference     `json:"schema,omitempty" yaml:"schema,omitempty"`
 	Example  any                    `json:"example,omitempty" yaml:"example,omitempty"`
 	Examples map[string]*ExampleRef `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Encoding map[string]*Encoding   `json:"encoding,omitempty" yaml:"encoding,omitempty"`
@@ -422,10 +422,10 @@ func (r *Responses) MarshalYAML() (any, error) {
 // See: https://spec.openapis.org/oas/v3.0.3#response-object
 // IMPORTANT: description is REQUIRED per OpenAPI spec!
 type Response struct {
-	Description string                 `json:"description" yaml:"description"` // REQUIRED - no omitempty!
-	Headers     map[string]*HeaderRef  `json:"headers,omitempty" yaml:"headers,omitempty"`
-	Content     map[string]*MediaType  `json:"content,omitempty" yaml:"content,omitempty"`
-	Links       map[string]*LinkRef    `json:"links,omitempty" yaml:"links,omitempty"`
+	Description string                `json:"description" yaml:"description"` // REQUIRED - no omitempty!
+	Headers     map[string]*HeaderRef `json:"headers,omitempty" yaml:"headers,omitempty"`
+	Content     map[string]*MediaType `json:"content,omitempty" yaml:"content,omitempty"`
+	Links       map[string]*LinkRef   `json:"links,omitempty" yaml:"links,omitempty"`
 }
 
 // NewResponse creates a response with required description.
@@ -434,7 +434,7 @@ func NewResponse(description string) *Response {
 }
 
 // WithJSONSchema adds JSON content with the given schema.
-func (r *Response) WithJSONSchema(schema *SchemaRef) *Response {
+func (r *Response) WithJSONSchema(schema *SchemaOrReference) *Response {
 	if r.Content == nil {
 		r.Content = make(map[string]*MediaType)
 	}
@@ -464,12 +464,48 @@ func (r *ResponseRef) MarshalYAML() (any, error) {
 	return refMarshalYAML(r.Ref, r.Value)
 }
 
+// SchemaType represents a JSON Schema type which can be a single string or an array of strings.
+// In OpenAPI 3.1.0, type can be ["string", "null"] to represent nullable types.
+type SchemaType []string
+
+// MarshalJSON outputs a single string if len==1, otherwise an array.
+func (t SchemaType) MarshalJSON() ([]byte, error) {
+	if len(t) == 0 {
+		return []byte("null"), nil
+	}
+	if len(t) == 1 {
+		return json.Marshal(t[0])
+	}
+	return json.Marshal([]string(t))
+}
+
+// MarshalYAML outputs a single string if len==1, otherwise an array.
+func (t SchemaType) MarshalYAML() (any, error) {
+	if len(t) == 0 {
+		return nil, nil
+	}
+	if len(t) == 1 {
+		return t[0], nil
+	}
+	return []string(t), nil
+}
+
+// stringToSchemaType converts a single string to SchemaType.
+// Returns nil if the string is empty.
+func stringToSchemaType(s string) SchemaType {
+	if s == "" {
+		return nil
+	}
+	return SchemaType{s}
+}
+
 // Schema represents a JSON Schema object.
-// See: https://spec.openapis.org/oas/v3.0.3#schema-object
+// See: https://spec.openapis.org/oas/v3.1.0#schema-object
 type Schema struct {
 	// Type information
-	Type   string `json:"type,omitempty" yaml:"type,omitempty"`     // object, array, string, number, integer, boolean
-	Format string `json:"format,omitempty" yaml:"format,omitempty"` // int32, int64, float, double, byte, date, date-time, etc.
+	// In 3.1.0, type can be an array: ["string", "null"] for nullable types
+	Type   SchemaType `json:"type,omitempty" yaml:"type,omitempty"`
+	Format string     `json:"format,omitempty" yaml:"format,omitempty"` // int32, int64, float, double, byte, date, date-time, etc.
 
 	// Documentation
 	Title       string `json:"title,omitempty" yaml:"title,omitempty"`
@@ -482,8 +518,8 @@ type Schema struct {
 	// Validation - numeric
 	Minimum          *float64 `json:"minimum,omitempty" yaml:"minimum,omitempty"`
 	Maximum          *float64 `json:"maximum,omitempty" yaml:"maximum,omitempty"`
-	ExclusiveMinimum *float64 `json:"exclusiveMinimum,omitempty" yaml:"exclusiveMinimum,omitempty"` // boolean in v3.0, number in v3.1
-	ExclusiveMaximum *float64 `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"`
+	ExclusiveMinimum *float64 `json:"exclusiveMinimum,omitempty" yaml:"exclusiveMinimum,omitempty"` // number in v3.1 (was boolean in v3.0)
+	ExclusiveMaximum *float64 `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"` // number in v3.1 (was boolean in v3.0)
 	MultipleOf       *float64 `json:"multipleOf,omitempty" yaml:"multipleOf,omitempty"`
 
 	// Validation - string
@@ -492,23 +528,29 @@ type Schema struct {
 	Pattern   string  `json:"pattern,omitempty" yaml:"pattern,omitempty"`
 
 	// Object properties
-	Properties           map[string]*SchemaRef `json:"properties,omitempty" yaml:"properties,omitempty"`
-	AdditionalProperties *SchemaRef            `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
-	Required             []string              `json:"required,omitempty" yaml:"required,omitempty"`
-	MinProperties        *uint64               `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
-	MaxProperties        *uint64               `json:"maxProperties,omitempty" yaml:"maxProperties,omitempty"`
+	Properties           map[string]*SchemaOrReference `json:"properties,omitempty" yaml:"properties,omitempty"`
+	AdditionalProperties *SchemaOrReference            `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
+	Required             []string                      `json:"required,omitempty" yaml:"required,omitempty"`
+	MinProperties        *uint64                       `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
+	MaxProperties        *uint64                       `json:"maxProperties,omitempty" yaml:"maxProperties,omitempty"`
+	PropertyNames        *SchemaOrReference            `json:"propertyNames,omitempty" yaml:"propertyNames,omitempty"`       // v3.1: schema for property names
+	PatternProperties    map[string]*SchemaOrReference `json:"patternProperties,omitempty" yaml:"patternProperties,omitempty"` // v3.1: regex-keyed schemas
 
 	// Array items
-	Items       *SchemaRef `json:"items,omitempty" yaml:"items,omitempty"`
-	MinItems    *uint64    `json:"minItems,omitempty" yaml:"minItems,omitempty"`
-	MaxItems    *uint64    `json:"maxItems,omitempty" yaml:"maxItems,omitempty"`
-	UniqueItems bool       `json:"uniqueItems,omitempty" yaml:"uniqueItems,omitempty"`
+	Items       *SchemaOrReference   `json:"items,omitempty" yaml:"items,omitempty"`
+	PrefixItems []*SchemaOrReference `json:"prefixItems,omitempty" yaml:"prefixItems,omitempty"` // v3.1: tuple validation
+	Contains    *SchemaOrReference   `json:"contains,omitempty" yaml:"contains,omitempty"`       // v3.1: array contains schema
+	MinContains *uint64              `json:"minContains,omitempty" yaml:"minContains,omitempty"` // v3.1: min items matching contains
+	MaxContains *uint64              `json:"maxContains,omitempty" yaml:"maxContains,omitempty"` // v3.1: max items matching contains
+	MinItems    *uint64              `json:"minItems,omitempty" yaml:"minItems,omitempty"`
+	MaxItems    *uint64              `json:"maxItems,omitempty" yaml:"maxItems,omitempty"`
+	UniqueItems bool                 `json:"uniqueItems,omitempty" yaml:"uniqueItems,omitempty"`
 
-	// Composition (v3 feature!)
-	OneOf []*SchemaRef `json:"oneOf,omitempty" yaml:"oneOf,omitempty"` // Exactly one must match
-	AnyOf []*SchemaRef `json:"anyOf,omitempty" yaml:"anyOf,omitempty"` // At least one must match
-	AllOf []*SchemaRef `json:"allOf,omitempty" yaml:"allOf,omitempty"` // All must match
-	Not   *SchemaRef   `json:"not,omitempty" yaml:"not,omitempty"`     // Must not match
+	// Composition
+	OneOf []*SchemaOrReference `json:"oneOf,omitempty" yaml:"oneOf,omitempty"` // Exactly one must match
+	AnyOf []*SchemaOrReference `json:"anyOf,omitempty" yaml:"anyOf,omitempty"` // At least one must match
+	AllOf []*SchemaOrReference `json:"allOf,omitempty" yaml:"allOf,omitempty"` // All must match
+	Not   *SchemaOrReference   `json:"not,omitempty" yaml:"not,omitempty"`     // Must not match
 
 	// Discriminator for polymorphism with oneOf/anyOf
 	Discriminator *Discriminator `json:"discriminator,omitempty" yaml:"discriminator,omitempty"`
@@ -516,7 +558,7 @@ type Schema struct {
 	// Access control
 	ReadOnly  bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 	WriteOnly bool `json:"writeOnly,omitempty" yaml:"writeOnly,omitempty"`
-	Nullable  bool `json:"nullable,omitempty" yaml:"nullable,omitempty"` // v3.0 feature, removed in v3.1 (use type: ["string", "null"])
+	Nullable  bool `json:"nullable,omitempty" yaml:"nullable,omitempty"` // v3.0 compat; in v3.1 use type: ["string", "null"]
 
 	// Deprecation
 	Deprecated bool `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
@@ -528,45 +570,75 @@ type Schema struct {
 	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
 }
 
-// SchemaRef can be either a reference or an inline schema.
-// This pattern allows: {"$ref": "#/..."} OR {"type": "string", ...}
-type SchemaRef struct {
-	Ref   string  `json:"-" yaml:"-"`
-	Value *Schema `json:"-" yaml:"-"`
+// Reference represents the OpenAPI Reference Object.
+// In OpenAPI 3.1.0, references can include summary and description overrides.
+// See: https://spec.openapis.org/oas/v3.1.0#reference-object
+type Reference struct {
+	Ref         string `json:"$ref" yaml:"$ref"`                                   // REQUIRED. The $ref URI reference
+	Summary     string `json:"summary,omitempty" yaml:"summary,omitempty"`         // v3.1.0: optional summary override
+	Description string `json:"description,omitempty" yaml:"description,omitempty"` // v3.1.0: optional description override
 }
 
+// SchemaOrReference can be either a reference or an inline schema.
+// This pattern allows: {"$ref": "#/...", "summary": "...", "description": "..."} OR {"type": "string", ...}
+// Uses Reference instead of plain string to support OpenAPI 3.1.0 reference overrides.
+type SchemaOrReference struct {
+	Reference *Reference `json:"-" yaml:"-"`
+	Schema    *Schema    `json:"-" yaml:"-"`
+}
+
+// SchemaRef is an alias for SchemaOrReference for backwards compatibility.
+type SchemaRef = SchemaOrReference
+
 // MarshalJSON implements json.Marshaler.
-func (s *SchemaRef) MarshalJSON() ([]byte, error) {
+func (s *SchemaOrReference) MarshalJSON() ([]byte, error) {
 	if s == nil {
 		return []byte("null"), nil
 	}
-	return refMarshalJSON(s.Ref, s.Value)
+	if s.Reference != nil {
+		return json.Marshal(s.Reference)
+	}
+	return json.Marshal(s.Schema)
 }
 
 // MarshalYAML implements yaml.Marshaler.
-func (s *SchemaRef) MarshalYAML() (any, error) {
+func (s *SchemaOrReference) MarshalYAML() (any, error) {
 	if s == nil {
 		return nil, nil
 	}
-	return refMarshalYAML(s.Ref, s.Value)
+	if s.Reference != nil {
+		return s.Reference, nil
+	}
+	return s.Schema, nil
 }
 
 // NewSchemaRef creates a reference to a schema in components.
-func NewSchemaRef(name string) *SchemaRef {
-	return &SchemaRef{
-		Ref: "#/components/schemas/" + name,
+func NewSchemaRef(name string) *SchemaOrReference {
+	return &SchemaOrReference{
+		Reference: &Reference{Ref: "#/components/schemas/" + name},
+	}
+}
+
+// NewSchemaRefWithOverrides creates a reference with v3.1.0 summary/description overrides.
+func NewSchemaRefWithOverrides(name, summary, description string) *SchemaOrReference {
+	return &SchemaOrReference{
+		Reference: &Reference{
+			Ref:         "#/components/schemas/" + name,
+			Summary:     summary,
+			Description: description,
+		},
 	}
 }
 
 // NewInlineSchema creates an inline schema (not a reference).
-func NewInlineSchema(schema *Schema) *SchemaRef {
-	return &SchemaRef{Value: schema}
+func NewInlineSchema(schema *Schema) *SchemaOrReference {
+	return &SchemaOrReference{Schema: schema}
 }
 
 // Components holds reusable objects.
 // See: https://spec.openapis.org/oas/v3.0.3#components-object
 type Components struct {
-	Schemas         map[string]*SchemaRef         `json:"schemas,omitempty" yaml:"schemas,omitempty"`
+	Schemas         map[string]*SchemaOrReference `json:"schemas,omitempty" yaml:"schemas,omitempty"`
 	Responses       map[string]*ResponseRef       `json:"responses,omitempty" yaml:"responses,omitempty"`
 	Parameters      map[string]*ParameterRef      `json:"parameters,omitempty" yaml:"parameters,omitempty"`
 	Examples        map[string]*ExampleRef        `json:"examples,omitempty" yaml:"examples,omitempty"`
@@ -580,13 +652,13 @@ type Components struct {
 // SecurityScheme defines a security scheme for operations.
 // See: https://spec.openapis.org/oas/v3.0.3#security-scheme-object
 type SecurityScheme struct {
-	Type             string      `json:"type" yaml:"type"`                                         // REQUIRED: apiKey, http, oauth2, openIdConnect
+	Type             string      `json:"type" yaml:"type"` // REQUIRED: apiKey, http, oauth2, openIdConnect
 	Description      string      `json:"description,omitempty" yaml:"description,omitempty"`
-	Name             string      `json:"name,omitempty" yaml:"name,omitempty"`                     // REQUIRED for apiKey
-	In               string      `json:"in,omitempty" yaml:"in,omitempty"`                         // REQUIRED for apiKey: query, header, cookie
-	Scheme           string      `json:"scheme,omitempty" yaml:"scheme,omitempty"`                 // REQUIRED for http: basic, bearer, etc.
+	Name             string      `json:"name,omitempty" yaml:"name,omitempty"`     // REQUIRED for apiKey
+	In               string      `json:"in,omitempty" yaml:"in,omitempty"`         // REQUIRED for apiKey: query, header, cookie
+	Scheme           string      `json:"scheme,omitempty" yaml:"scheme,omitempty"` // REQUIRED for http: basic, bearer, etc.
 	BearerFormat     string      `json:"bearerFormat,omitempty" yaml:"bearerFormat,omitempty"`
-	Flows            *OAuthFlows `json:"flows,omitempty" yaml:"flows,omitempty"`                   // REQUIRED for oauth2
+	Flows            *OAuthFlows `json:"flows,omitempty" yaml:"flows,omitempty"`                       // REQUIRED for oauth2
 	OpenIdConnectUrl string      `json:"openIdConnectUrl,omitempty" yaml:"openIdConnectUrl,omitempty"` // REQUIRED for openIdConnect
 }
 
@@ -648,15 +720,15 @@ type ExternalDocumentation struct {
 // Header describes a single header.
 // See: https://spec.openapis.org/oas/v3.0.3#header-object
 type Header struct {
-	Description     string     `json:"description,omitempty" yaml:"description,omitempty"`
-	Required        bool       `json:"required,omitempty" yaml:"required,omitempty"`
-	Deprecated      bool       `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
-	AllowEmptyValue bool       `json:"allowEmptyValue,omitempty" yaml:"allowEmptyValue,omitempty"`
-	Style           string     `json:"style,omitempty" yaml:"style,omitempty"`
-	Explode         *bool      `json:"explode,omitempty" yaml:"explode,omitempty"`
-	AllowReserved   bool       `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
-	Schema          *SchemaRef `json:"schema,omitempty" yaml:"schema,omitempty"`
-	Example         any        `json:"example,omitempty" yaml:"example,omitempty"`
+	Description     string                 `json:"description,omitempty" yaml:"description,omitempty"`
+	Required        bool                   `json:"required,omitempty" yaml:"required,omitempty"`
+	Deprecated      bool                   `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
+	AllowEmptyValue bool                   `json:"allowEmptyValue,omitempty" yaml:"allowEmptyValue,omitempty"`
+	Style           string                 `json:"style,omitempty" yaml:"style,omitempty"`
+	Explode         *bool                  `json:"explode,omitempty" yaml:"explode,omitempty"`
+	AllowReserved   bool                   `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
+	Schema          *SchemaOrReference     `json:"schema,omitempty" yaml:"schema,omitempty"`
+	Example         any                    `json:"example,omitempty" yaml:"example,omitempty"`
 	Examples        map[string]*ExampleRef `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Content         map[string]*MediaType  `json:"content,omitempty" yaml:"content,omitempty"`
 }
@@ -715,12 +787,12 @@ func (e *ExampleRef) MarshalYAML() (any, error) {
 
 // Link represents a possible design-time link for a response.
 type Link struct {
-	OperationRef string            `json:"operationRef,omitempty" yaml:"operationRef,omitempty"`
-	OperationId  string            `json:"operationId,omitempty" yaml:"operationId,omitempty"`
-	Parameters   map[string]any    `json:"parameters,omitempty" yaml:"parameters,omitempty"`
-	RequestBody  any               `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
-	Description  string            `json:"description,omitempty" yaml:"description,omitempty"`
-	Server       *Server           `json:"server,omitempty" yaml:"server,omitempty"`
+	OperationRef string         `json:"operationRef,omitempty" yaml:"operationRef,omitempty"`
+	OperationId  string         `json:"operationId,omitempty" yaml:"operationId,omitempty"`
+	Parameters   map[string]any `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	RequestBody  any            `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
+	Description  string         `json:"description,omitempty" yaml:"description,omitempty"`
+	Server       *Server        `json:"server,omitempty" yaml:"server,omitempty"`
 }
 
 // LinkRef can be a reference or inline link.
@@ -775,4 +847,3 @@ type Discriminator struct {
 	PropertyName string            `json:"propertyName" yaml:"propertyName"` // REQUIRED
 	Mapping      map[string]string `json:"mapping,omitempty" yaml:"mapping,omitempty"`
 }
-

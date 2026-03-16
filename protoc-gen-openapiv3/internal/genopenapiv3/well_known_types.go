@@ -14,76 +14,68 @@ func wellKnownTypeSchema(typeName string) *Schema {
 }
 
 // wktSchemas maps well-known type names to their OpenAPI schema representations.
+// Uses OpenAPI 3.1.0 style: type arrays for nullable (e.g., ["string", "null"]).
 var wktSchemas = map[string]*Schema{
 	// Timestamp -> RFC 3339 string
 	".google.protobuf.Timestamp": {
-		Type:   "string",
+		Type:   SchemaType{"string"},
 		Format: "date-time",
 	},
 
 	// Duration -> string like "3.5s"
 	".google.protobuf.Duration": {
-		Type: "string",
+		Type: SchemaType{"string"},
 	},
 
 	// FieldMask -> comma-separated string
 	".google.protobuf.FieldMask": {
-		Type: "string",
+		Type: SchemaType{"string"},
 	},
 
-	// Wrapper types - unwrap to primitives with nullable
+	// Wrapper types - unwrap to primitives, nullable via type array (3.1.0 style)
 	".google.protobuf.StringValue": {
-		Type:     "string",
-		Nullable: true,
+		Type: SchemaType{"string", "null"},
 	},
 	".google.protobuf.BytesValue": {
-		Type:     "string",
-		Format:   "byte",
-		Nullable: true,
+		Type:   SchemaType{"string", "null"},
+		Format: "byte",
 	},
 	".google.protobuf.Int32Value": {
-		Type:     "integer",
-		Format:   "int32",
-		Nullable: true,
+		Type:   SchemaType{"integer", "null"},
+		Format: "int32",
 	},
 	".google.protobuf.UInt32Value": {
-		Type:     "integer",
-		Format:   "int64",
-		Nullable: true,
+		Type:   SchemaType{"integer", "null"},
+		Format: "int64",
 	},
 	".google.protobuf.Int64Value": {
-		Type:     "string",
-		Format:   "int64",
-		Nullable: true,
+		Type:   SchemaType{"string", "null"},
+		Format: "int64",
 	},
 	".google.protobuf.UInt64Value": {
-		Type:     "string",
-		Format:   "uint64",
-		Nullable: true,
+		Type:   SchemaType{"string", "null"},
+		Format: "uint64",
 	},
 	".google.protobuf.FloatValue": {
-		Type:     "number",
-		Format:   "float",
-		Nullable: true,
+		Type:   SchemaType{"number", "null"},
+		Format: "float",
 	},
 	".google.protobuf.DoubleValue": {
-		Type:     "number",
-		Format:   "double",
-		Nullable: true,
+		Type:   SchemaType{"number", "null"},
+		Format: "double",
 	},
 	".google.protobuf.BoolValue": {
-		Type:     "boolean",
-		Nullable: true,
+		Type: SchemaType{"boolean", "null"},
 	},
 
 	// Empty -> empty object
 	".google.protobuf.Empty": {
-		Type: "object",
+		Type: SchemaType{"object"},
 	},
 
 	// Struct -> arbitrary JSON object
 	".google.protobuf.Struct": {
-		Type: "object",
+		Type: SchemaType{"object"},
 	},
 
 	// Value -> any JSON value (no type constraint)
@@ -93,9 +85,9 @@ var wktSchemas = map[string]*Schema{
 
 	// ListValue -> JSON array of any values
 	".google.protobuf.ListValue": {
-		Type: "array",
-		Items: &SchemaRef{
-			Value: &Schema{
+		Type: SchemaType{"array"},
+		Items: &SchemaOrReference{
+			Schema: &Schema{
 				// Empty schema for items allows any type
 			},
 		},
@@ -103,20 +95,20 @@ var wktSchemas = map[string]*Schema{
 
 	// NullValue -> represents JSON null
 	".google.protobuf.NullValue": {
-		Type: "string",
+		Type: SchemaType{"null"},
 	},
 
 	// Any -> object with @type field
 	".google.protobuf.Any": {
-		Type: "object",
-		Properties: map[string]*SchemaRef{
+		Type: SchemaType{"object"},
+		Properties: map[string]*SchemaOrReference{
 			"@type": {
-				Value: &Schema{
-					Type:        "string",
+				Schema: &Schema{
+					Type:        SchemaType{"string"},
 					Description: "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message.",
 				},
 			},
 		},
-		AdditionalProperties: &SchemaRef{Value: &Schema{}}, // Allow any additional properties
+		AdditionalProperties: &SchemaOrReference{Schema: &Schema{}}, // Allow any additional properties
 	},
 }
