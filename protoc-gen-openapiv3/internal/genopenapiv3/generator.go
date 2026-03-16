@@ -13,6 +13,7 @@ import (
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	openapioptions "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/genproto/googleapis/api/visibility"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
@@ -20,8 +21,6 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/pluginpb"
-
-	"google.golang.org/genproto/googleapis/api/visibility"
 )
 
 var errNoTargetService = errors.New("no target service defined in the file")
@@ -257,8 +256,8 @@ func (g *generator) generateMethodPaths(doc *OpenAPI, svc *descriptor.Service, m
 
 // generateBindingPath generates a single path for an HTTP binding.
 func (g *generator) generateBindingPath(doc *OpenAPI, svc *descriptor.Service, method *descriptor.Method,
-	binding *descriptor.Binding, bindingIdx int, referencedSchemas map[string]bool) {
-
+	binding *descriptor.Binding, bindingIdx int, referencedSchemas map[string]bool,
+) {
 	// Convert proto path template to OpenAPI path
 	path := convertPathTemplate(binding.PathTmpl.Template)
 
@@ -291,8 +290,8 @@ func (g *generator) generateUnboundMethodPath(doc *OpenAPI, svc *descriptor.Serv
 
 // buildOperation builds an Operation object from a method binding.
 func (g *generator) buildOperation(svc *descriptor.Service, method *descriptor.Method,
-	binding *descriptor.Binding, bindingIdx int, referencedSchemas map[string]bool) *Operation {
-
+	binding *descriptor.Binding, bindingIdx int, referencedSchemas map[string]bool,
+) *Operation {
 	// Extract comments
 	comment := methodComments(g.reg, method)
 	summary, description := splitSummaryDescription(comment)
@@ -591,7 +590,7 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 
 	// Handle well-known types
 	if wktSchema := wellKnownTypeSchema(msg.FQMN()); wktSchema != nil {
-		doc.Components.Schemas[schemaName] = &SchemaRef{Value: wktSchema}
+		doc.Components.Schemas[schemaName] = &SchemaOrReference{Schema: wktSchema}
 		return
 	}
 
@@ -600,8 +599,8 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 
 	// Build schema for this message
 	schema := &Schema{
-		Type:       "object",
-		Properties: make(map[string]*SchemaRef),
+		Type:       SchemaType{"object"},
+		Properties: make(map[string]*SchemaOrReference),
 	}
 
 	// Add description from comments
@@ -644,7 +643,7 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		}
 	}
 
-	doc.Components.Schemas[schemaName] = &SchemaRef{Value: schema}
+	doc.Components.Schemas[schemaName] = &SchemaOrReference{Schema: schema}
 }
 
 // addFieldToSchema adds a single field to the schema's properties.
@@ -656,24 +655,24 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 
 	// Add description from field comments
 	fieldComment := fieldComments(g.reg, field)
-	if fieldComment != "" && fieldSchemaRef.Value != nil {
-		fieldSchemaRef.Value.Description = fieldComment
+	if fieldComment != "" && fieldSchemaRef.Schema != nil {
+		fieldSchemaRef.Schema.Description = fieldComment
 	}
 
 	// Apply field-level annotations
-	if fieldSchemaRef.Value != nil {
-		g.applyFieldAnnotation(fieldSchemaRef.Value, field)
+	if fieldSchemaRef.Schema != nil {
+		g.applyFieldAnnotation(fieldSchemaRef.Schema, field)
 	}
 
 	// Apply field_behavior annotations (mutates schema.Required directly)
-	if fieldSchemaRef.Value != nil {
-		g.applyFieldBehaviorToSchema(schema, fieldSchemaRef.Value, field)
+	if fieldSchemaRef.Schema != nil {
+		g.applyFieldBehaviorToSchema(schema, fieldSchemaRef.Schema, field)
 	}
 
 	// Apply proto3 optional nullable
 	if g.reg.GetProto3OptionalNullable() && field.GetProto3Optional() {
-		if fieldSchemaRef.Value != nil {
-			fieldSchemaRef.Value.Nullable = true
+		if fieldSchemaRef.Schema != nil {
+			fieldSchemaRef.Schema.Nullable = true
 		}
 	}
 
@@ -696,18 +695,18 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 // For a single group: returns oneOf directly for use in schema.OneOf
 // For multiple groups: each group gets its own oneOf, combined via allOf
 // This ensures multiple oneof groups are independent (can set one field from each group).
-func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneofGroup) (oneOf []*SchemaRef, allOf []*SchemaRef) {
+func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneofGroup) (oneOf []*SchemaOrReference, allOf []*SchemaOrReference) {
 	if len(groups) == 0 {
 		return nil, nil
 	}
 
 	// Generate oneOf constraint for each group
-	var groupConstraints []*SchemaRef
+	var groupConstraints []*SchemaOrReference
 	for _, group := range groups {
 		groupOneOf := g.generateSingleGroupOneOf(parentSchema, group)
 		if len(groupOneOf) > 0 {
-			groupConstraints = append(groupConstraints, &SchemaRef{
-				Value: &Schema{OneOf: groupOneOf},
+			groupConstraints = append(groupConstraints, &SchemaOrReference{
+				Schema: &Schema{OneOf: groupOneOf},
 			})
 		}
 	}
@@ -719,7 +718,7 @@ func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneo
 	case 0:
 		return nil, nil
 	case 1:
-		return groupConstraints[0].Value.OneOf, nil
+		return groupConstraints[0].Schema.OneOf, nil
 	default:
 		return nil, groupConstraints
 	}
@@ -727,8 +726,8 @@ func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneo
 
 // generateSingleGroupOneOf generates oneOf options for a single oneof group.
 // Includes options for each field + a "neither" option since protobuf oneofs are optional.
-func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGroup) []*SchemaRef {
-	var options []*SchemaRef
+func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGroup) []*SchemaOrReference {
+	var options []*SchemaOrReference
 	var fieldNames []string
 
 	for _, field := range group.fields {
@@ -740,8 +739,8 @@ func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGr
 
 		// Create a schema that requires this specific field from the oneof
 		optionSchema := &Schema{
-			Type: "object",
-			Properties: map[string]*SchemaRef{
+			Type: SchemaType{"object"},
+			Properties: map[string]*SchemaOrReference{
 				fieldName: parentSchema.Properties[fieldName],
 			},
 			Required: []string{fieldName},
@@ -750,13 +749,13 @@ func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGr
 		// Add a title to identify which oneof option this is
 		optionSchema.Title = fmt.Sprintf("%s.%s", group.name, fieldName)
 
-		options = append(options, &SchemaRef{Value: optionSchema})
+		options = append(options, &SchemaOrReference{Schema: optionSchema})
 	}
 
 	// Add "neither" option - oneofs are optional in protobuf
 	if len(fieldNames) > 0 {
 		neitherSchema := g.buildNeitherSetSchema(group.name, fieldNames)
-		options = append(options, &SchemaRef{Value: neitherSchema})
+		options = append(options, &SchemaOrReference{Schema: neitherSchema})
 	}
 
 	return options
@@ -765,10 +764,10 @@ func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGr
 // buildNeitherSetSchema creates a schema that matches when none of the oneof fields are set.
 // Uses the pattern: { "not": { "anyOf": [{ "required": ["field1"] }, { "required": ["field2"] }] } }
 func (g *generator) buildNeitherSetSchema(groupName string, fieldNames []string) *Schema {
-	var anyOfSchemas []*SchemaRef
+	var anyOfSchemas []*SchemaOrReference
 	for _, fieldName := range fieldNames {
-		anyOfSchemas = append(anyOfSchemas, &SchemaRef{
-			Value: &Schema{
+		anyOfSchemas = append(anyOfSchemas, &SchemaOrReference{
+			Schema: &Schema{
 				Required: []string{fieldName},
 			},
 		})
@@ -776,8 +775,8 @@ func (g *generator) buildNeitherSetSchema(groupName string, fieldNames []string)
 
 	return &Schema{
 		Title: fmt.Sprintf("%s.none", groupName),
-		Not: &SchemaRef{
-			Value: &Schema{
+		Not: &SchemaOrReference{
+			Schema: &Schema{
 				AnyOf: anyOfSchemas,
 			},
 		},
@@ -812,12 +811,12 @@ func (g *generator) generateEnumSchema(doc *OpenAPI, enum *descriptor.Enum) {
 	}
 
 	schema := &Schema{
-		Type: "string",
+		Type: SchemaType{"string"},
 		Enum: enumValues,
 	}
 
 	if g.reg.GetEnumsAsInts() {
-		schema.Type = "integer"
+		schema.Type = SchemaType{"integer"}
 	}
 
 	// Add description from comments
@@ -829,43 +828,43 @@ func (g *generator) generateEnumSchema(doc *OpenAPI, enum *descriptor.Enum) {
 	// Apply enum-level annotations
 	g.applyEnumAnnotation(schema, enum)
 
-	doc.Components.Schemas[schemaName] = &SchemaRef{Value: schema}
+	doc.Components.Schemas[schemaName] = &SchemaOrReference{Schema: schema}
 }
 
 // addErrorSchema adds the google.rpc.Status schema for error responses.
 func (g *generator) addErrorSchema(doc *OpenAPI) {
 	// google.rpc.Status schema
 	statusSchema := &Schema{
-		Type: "object",
-		Properties: map[string]*SchemaRef{
+		Type: SchemaType{"object"},
+		Properties: map[string]*SchemaOrReference{
 			"code": {
-				Value: &Schema{
-					Type:        "integer",
+				Schema: &Schema{
+					Type:        SchemaType{"integer"},
 					Format:      "int32",
 					Description: "The status code, which should be an enum value of google.rpc.Code.",
 				},
 			},
 			"message": {
-				Value: &Schema{
-					Type:        "string",
+				Schema: &Schema{
+					Type:        SchemaType{"string"},
 					Description: "A developer-facing error message, which should be in English.",
 				},
 			},
 			"details": {
-				Value: &Schema{
-					Type: "array",
-					Items: &SchemaRef{
-						Value: &Schema{
-							Type: "object",
-							Properties: map[string]*SchemaRef{
+				Schema: &Schema{
+					Type: SchemaType{"array"},
+					Items: &SchemaOrReference{
+						Schema: &Schema{
+							Type: SchemaType{"object"},
+							Properties: map[string]*SchemaOrReference{
 								"@type": {
-									Value: &Schema{
-										Type:        "string",
+									Schema: &Schema{
+										Type:        SchemaType{"string"},
 										Description: "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message.",
 									},
 								},
 							},
-							AdditionalProperties: &SchemaRef{Value: &Schema{}},
+							AdditionalProperties: &SchemaOrReference{Schema: &Schema{}},
 						},
 					},
 					Description: "A list of messages that carry the error details.",
@@ -875,11 +874,11 @@ func (g *generator) addErrorSchema(doc *OpenAPI) {
 		Description: "The `Status` type defines a logical error model that is suitable for different programming environments.",
 	}
 
-	doc.Components.Schemas["google.rpc.Status"] = &SchemaRef{Value: statusSchema}
+	doc.Components.Schemas["google.rpc.Status"] = &SchemaOrReference{Schema: statusSchema}
 }
 
 // fieldToSchemaRef converts a proto field to a SchemaRef.
-func (g *generator) fieldToSchemaRef(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaRef {
+func (g *generator) fieldToSchemaRef(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaOrReference {
 	// Handle repeated fields (arrays or maps)
 	if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
 		// Check if this is a map field (repeated message with map_entry=true)
@@ -891,9 +890,9 @@ func (g *generator) fieldToSchemaRef(field *descriptor.Field, referencedSchemas 
 
 		// Regular array
 		itemSchema := g.fieldTypeToSchema(field, referencedSchemas)
-		return &SchemaRef{
-			Value: &Schema{
-				Type:  "array",
+		return &SchemaOrReference{
+			Schema: &Schema{
+				Type:  SchemaType{"array"},
 				Items: itemSchema,
 			},
 		}
@@ -905,7 +904,7 @@ func (g *generator) fieldToSchemaRef(field *descriptor.Field, referencedSchemas 
 // tryMapFieldSchema checks if a repeated message field is a map and returns
 // the appropriate object schema with additionalProperties. Returns nil if
 // the field is not a map.
-func (g *generator) tryMapFieldSchema(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaRef {
+func (g *generator) tryMapFieldSchema(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaOrReference {
 	// Look up the message type
 	msg, err := g.reg.LookupMsg("", field.GetTypeName())
 	if err != nil {
@@ -945,71 +944,71 @@ func (g *generator) tryMapFieldSchema(field *descriptor.Field, referencedSchemas
 	valueSchema := g.fieldTypeToSchema(valueDescField, referencedSchemas)
 
 	// Return object schema with additionalProperties
-	return &SchemaRef{
-		Value: &Schema{
-			Type:                 "object",
+	return &SchemaOrReference{
+		Schema: &Schema{
+			Type:                 SchemaType{"object"},
 			AdditionalProperties: valueSchema,
 		},
 	}
 }
 
 // fieldTypeToSchema converts a field type to a SchemaRef.
-func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaRef {
+func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas map[string]bool) *SchemaOrReference {
 	// Check for well-known types first
 	if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 		typeName := field.GetTypeName()
 		if wktSchema := wellKnownTypeSchema(typeName); wktSchema != nil {
-			return &SchemaRef{Value: wktSchema}
+			return &SchemaOrReference{Schema: wktSchema}
 		}
 	}
 
 	switch field.GetType() {
 	// String types
 	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
-		return &SchemaRef{Value: &Schema{Type: "string"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
 
 	// Integer types
 	case descriptorpb.FieldDescriptorProto_TYPE_INT32,
 		descriptorpb.FieldDescriptorProto_TYPE_SINT32,
 		descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
-		return &SchemaRef{Value: &Schema{Type: "integer", Format: "int32"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"integer"}, Format: "int32"}}
 
 	// 64-bit integers (represented as strings in JSON)
 	case descriptorpb.FieldDescriptorProto_TYPE_INT64,
 		descriptorpb.FieldDescriptorProto_TYPE_SINT64,
 		descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
-		return &SchemaRef{Value: &Schema{Type: "string", Format: "int64"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "int64"}}
 
 	// Unsigned integers
 	case descriptorpb.FieldDescriptorProto_TYPE_UINT32,
 		descriptorpb.FieldDescriptorProto_TYPE_FIXED32:
-		return &SchemaRef{Value: &Schema{Type: "integer", Format: "int64"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"integer"}, Format: "int64"}}
 
 	// 64-bit unsigned integers (represented as strings in JSON)
 	case descriptorpb.FieldDescriptorProto_TYPE_UINT64,
 		descriptorpb.FieldDescriptorProto_TYPE_FIXED64:
-		return &SchemaRef{Value: &Schema{Type: "string", Format: "uint64"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uint64"}}
 
 	// Floating point types
 	case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
-		return &SchemaRef{Value: &Schema{Type: "number", Format: "float"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"number"}, Format: "float"}}
 
 	case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
-		return &SchemaRef{Value: &Schema{Type: "number", Format: "double"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"number"}, Format: "double"}}
 
 	// Boolean type
 	case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
-		return &SchemaRef{Value: &Schema{Type: "boolean"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"boolean"}}}
 
 	// Bytes type
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
-		return &SchemaRef{Value: &Schema{Type: "string", Format: "byte"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "byte"}}
 
 	// Message type - create reference
 	case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
 		msg, err := g.reg.LookupMsg("", field.GetTypeName())
 		if err != nil {
-			return &SchemaRef{Value: &Schema{Type: "object"}}
+			return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"object"}}}
 		}
 		schemaName := g.messageSchemaName(msg)
 		if referencedSchemas != nil {
@@ -1021,7 +1020,7 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
 		enum, err := g.reg.LookupEnum("", field.GetTypeName())
 		if err != nil {
-			return &SchemaRef{Value: &Schema{Type: "string"}}
+			return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
 		}
 		schemaName := g.enumSchemaName(enum)
 		if referencedSchemas != nil {
@@ -1030,7 +1029,7 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 		return NewSchemaRef(schemaName)
 
 	default:
-		return &SchemaRef{Value: &Schema{Type: "string"}}
+		return &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
 	}
 }
 

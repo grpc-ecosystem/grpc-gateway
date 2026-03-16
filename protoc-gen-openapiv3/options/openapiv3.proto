@@ -8,7 +8,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openap
 
 // `OpenAPI` is a representation of OpenAPI v3 specification's OpenAPI object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#openapi-object
+// See: https://spec.openapis.org/oas/v3.1.0#openapi-object
 //
 // Example:
 //
@@ -34,7 +34,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openap
 //
 message OpenAPI {
   // Specifies the OpenAPI Specification version being used.
-  // The value MUST be "3.0.0", "3.0.1", "3.0.2", "3.0.3", or "3.1.0".
+  // The value MUST be "3.1.0" (recommended) or "3.0.x" for backwards compatibility.
   string openapi = 1;
   // Provides metadata about the API. The metadata MAY be used by
   // tooling as required.
@@ -59,7 +59,7 @@ message OpenAPI {
 
 // `Info` is a representation of OpenAPI v3 specification's Info object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#info-object
+// See: https://spec.openapis.org/oas/v3.1.0#info-object
 //
 message Info {
   // REQUIRED. The title of the API.
@@ -84,7 +84,7 @@ message Info {
 
 // `Contact` is a representation of OpenAPI v3 specification's Contact object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#contact-object
+// See: https://spec.openapis.org/oas/v3.1.0#contact-object
 //
 message Contact {
   // The identifying name of the contact person/organization.
@@ -99,7 +99,7 @@ message Contact {
 
 // `License` is a representation of OpenAPI v3 specification's License object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#license-object
+// See: https://spec.openapis.org/oas/v3.1.0#license-object
 //
 message License {
   // REQUIRED. The license name used for the API.
@@ -112,7 +112,7 @@ message License {
 
 // `Server` is a representation of OpenAPI v3 specification's Server object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#server-object
+// See: https://spec.openapis.org/oas/v3.1.0#server-object
 //
 message Server {
   // REQUIRED. A URL to the target host.
@@ -126,7 +126,7 @@ message Server {
 // `ServerVariable` is a representation of OpenAPI v3 specification's
 // Server Variable object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#server-variable-object
+// See: https://spec.openapis.org/oas/v3.1.0#server-variable-object
 //
 message ServerVariable {
   // An enumeration of string values to be used if the substitution options
@@ -140,26 +140,32 @@ message ServerVariable {
 
 // `Components` is a representation of OpenAPI v3 specification's Components object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#components-object
+// See: https://spec.openapis.org/oas/v3.1.0#components-object
 //
 message Components {
-  // An object to hold reusable Security Scheme Objects.
-  map<string, SecurityScheme> security_schemes = 1;
+  // An object to hold reusable Schema Objects.
+  map<string, SchemaOrReference> schemas = 1;
   // An object to hold reusable Response Objects.
   map<string, Response> responses = 2;
   // An object to hold reusable Parameter Objects.
   map<string, Parameter> parameters = 3;
+  // An object to hold reusable Example Objects.
+  map<string, Example> examples = 4;
   // An object to hold reusable Request Body Objects.
-  map<string, RequestBody> request_bodies = 4;
+  map<string, RequestBody> request_bodies = 5;
   // An object to hold reusable Header Objects.
-  map<string, Header> headers = 5;
+  map<string, Header> headers = 6;
+  // An object to hold reusable Security Scheme Objects.
+  map<string, SecurityScheme> security_schemes = 7;
+  // An object to hold reusable Link Objects.
+  map<string, Link> links = 8;
   // Custom properties that start with "x-" such as "x-foo".
-  map<string, google.protobuf.Value> extensions = 6;
+  map<string, google.protobuf.Value> extensions = 9;
 }
 
 // `Operation` is a representation of OpenAPI v3 specification's Operation object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#operation-object
+// See: https://spec.openapis.org/oas/v3.1.0#operation-object
 //
 // Example:
 //
@@ -213,7 +219,7 @@ message Operation {
 
 // `Response` is a representation of OpenAPI v3 specification's Response object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#response-object
+// See: https://spec.openapis.org/oas/v3.1.0#response-object
 //
 message Response {
   // REQUIRED. A description of the response. CommonMark syntax MAY be used
@@ -231,20 +237,25 @@ message Response {
 
 // `MediaType` is a representation of OpenAPI v3 specification's Media Type object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#media-type-object
+// See: https://spec.openapis.org/oas/v3.1.0#media-type-object
 //
 message MediaType {
   // The schema defining the content of the request, response, or parameter.
   Schema schema = 1;
   // Example of the media type.
   string example = 2;
+  // Examples of the media type. Each example SHOULD match the media type and
+  // specified schema if present.
+  map<string, Example> examples = 3;
+  // A map between a property name and its encoding information.
+  map<string, Encoding> encoding = 4;
   // Custom properties that start with "x-" such as "x-foo".
-  map<string, google.protobuf.Value> extensions = 3;
+  map<string, google.protobuf.Value> extensions = 5;
 }
 
 // `RequestBody` is a representation of OpenAPI v3 specification's Request Body object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#request-body-object
+// See: https://spec.openapis.org/oas/v3.1.0#request-body-object
 //
 message RequestBody {
   // A brief description of the request body.
@@ -259,7 +270,7 @@ message RequestBody {
 
 // `Parameter` is a representation of OpenAPI v3 specification's Parameter object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#parameter-object
+// See: https://spec.openapis.org/oas/v3.1.0#parameter-object
 //
 message Parameter {
   // REQUIRED. The name of the parameter.
@@ -286,13 +297,15 @@ message Parameter {
   Schema schema = 10;
   // Example of the parameter's potential value.
   string example = 11;
+  // Examples of the parameter's potential value.
+  map<string, Example> examples = 12;
   // Custom properties that start with "x-" such as "x-foo".
-  map<string, google.protobuf.Value> extensions = 12;
+  map<string, google.protobuf.Value> extensions = 13;
 }
 
 // `Header` is a representation of OpenAPI v3 specification's Header object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#header-object
+// See: https://spec.openapis.org/oas/v3.1.0#header-object
 //
 message Header {
   // A brief description of the header.
@@ -314,13 +327,54 @@ message Header {
   Schema schema = 8;
   // Example of the header's potential value.
   string example = 9;
+  // Examples of the header's potential value.
+  map<string, Example> examples = 10;
   // Custom properties that start with "x-" such as "x-foo".
-  map<string, google.protobuf.Value> extensions = 10;
+  map<string, google.protobuf.Value> extensions = 11;
+}
+
+// `Example` is a representation of OpenAPI v3 specification's Example object.
+//
+// See: https://spec.openapis.org/oas/v3.1.0#example-object
+//
+message Example {
+  // Short description for the example.
+  string summary = 1;
+  // Long description for the example. CommonMark syntax MAY be used for rich
+  // text representation.
+  string description = 2;
+  // Embedded literal example. The value field and externalValue field are
+  // mutually exclusive.
+  string value = 3;
+  // A URI that points to the literal example.
+  string external_value = 4;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 5;
+}
+
+// `Encoding` is a representation of OpenAPI v3 specification's Encoding object.
+//
+// See: https://spec.openapis.org/oas/v3.1.0#encoding-object
+//
+message Encoding {
+  // The Content-Type for encoding a specific property.
+  string content_type = 1;
+  // A map allowing additional information to be provided as headers.
+  map<string, Header> headers = 2;
+  // Describes how a specific property value will be serialized.
+  string style = 3;
+  // When this is true, property values of type array or object generate
+  // separate parameters for each value of the array, or key-value-pair of the map.
+  bool explode = 4;
+  // Determines whether the parameter value SHOULD allow reserved characters.
+  bool allow_reserved = 5;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 6;
 }
 
 // `Discriminator` is a representation of OpenAPI v3 specification's Discriminator object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#discriminator-object
+// See: https://spec.openapis.org/oas/v3.1.0#discriminator-object
 //
 // When request bodies or response payloads may be one of a number of different schemas,
 // a discriminator object can be used to aid in serialization, deserialization, and validation.
@@ -342,13 +396,49 @@ message AdditionalPropertiesItem {
     // Allows additional properties of any type.
     bool allows = 1;
     // Schema for additional properties.
-    Schema schema = 2;
+    SchemaOrReference schema_or_reference = 2;
   }
+}
+
+// `Reference` represents the OpenAPI Reference Object.
+// In OpenAPI 3.1.0, references can include summary and description overrides.
+// See: https://spec.openapis.org/oas/v3.1.0#reference-object
+// Aligned with gnostic-models pattern.
+message Reference {
+  // REQUIRED. The $ref URI reference.
+  // Uses underscore prefix per gnostic convention, serializes to "$ref" in JSON.
+  string _ref = 1;
+  // v3.1.0: Optional summary override for the referenced content.
+  string summary = 2;
+  // v3.1.0: Optional description override for the referenced content.
+  string description = 3;
+}
+
+// `SchemaOrReference` is a discriminated union that can be either an inline Schema
+// or a Reference. This provides compile-time type safety for schema composition
+// (allOf, anyOf, oneOf, etc.) and enables proper support for OpenAPI 3.1.0 reference overrides.
+// See: https://spec.openapis.org/oas/v3.1.0#schema-object
+// Aligned with gnostic-models pattern.
+message SchemaOrReference {
+  oneof oneof {
+    Schema schema = 1;
+    Reference reference = 2;
+  }
+}
+
+// `NamedSchemaOrReference` is a name-value pair for ordered schema maps.
+// Used for properties to preserve insertion order (important for JSON output consistency).
+// Aligned with gnostic-models pattern.
+message NamedSchemaOrReference {
+  // The property name.
+  string name = 1;
+  // The schema or reference value.
+  SchemaOrReference value = 2;
 }
 
 // `Link` is a representation of OpenAPI v3 specification's Link object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#link-object
+// See: https://spec.openapis.org/oas/v3.1.0#link-object
 //
 message Link {
   // A relative or absolute URI reference to an OAS operation.
@@ -369,7 +459,7 @@ message Link {
 
 // `Schema` is a representation of OpenAPI v3 specification's Schema object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#schema-object
+// See: https://spec.openapis.org/oas/v3.1.0#schema-object
 //
 // Example:
 //
@@ -391,97 +481,114 @@ message Link {
 //  }
 //
 message Schema {
-  // Allows referencing another schema.
-  string ref = 1;
   // The title of the schema.
-  string title = 2;
+  string title = 1;
   // A description of the schema. CommonMark syntax MAY be used for rich text
   // representation.
-  string description = 3;
+  string description = 2;
   // The default value represents what would be assumed by the consumer of the
   // input as the value of the schema if one is not provided.
-  string default = 4;
+  string default = 3;
   // Allows sending a null value for the defined schema. Default value is false.
-  bool nullable = 5;
+  bool nullable = 4;
   // Relevant only for Schema "properties" definitions. Declares the property as
   // "read only".
-  bool read_only = 6;
+  bool read_only = 5;
   // Relevant only for Schema "properties" definitions. Declares the property as
   // "write only".
-  bool write_only = 7;
+  bool write_only = 6;
   // Specifies that a schema is deprecated and SHOULD be transitioned out of
   // usage.
-  bool deprecated = 8;
+  bool deprecated = 7;
   // Additional external documentation for this schema.
-  ExternalDocumentation external_docs = 9;
+  ExternalDocumentation external_docs = 8;
   // A free-form property to include an example of an instance for this schema.
-  string example = 10;
+  string example = 9;
   // Custom properties that start with "x-" such as "x-foo".
-  map<string, google.protobuf.Value> extensions = 11;
+  map<string, google.protobuf.Value> extensions = 10;
 
   // JSON Schema validation keywords
   // Using optional to allow distinguishing "not set" from "set to 0"
-  optional double multiple_of = 20;
-  optional double maximum = 21;
-  bool exclusive_maximum = 22;
-  optional double minimum = 23;
-  bool exclusive_minimum = 24;
-  uint64 max_length = 25;
-  uint64 min_length = 26;
-  string pattern = 27;
-  uint64 max_items = 28;
-  uint64 min_items = 29;
-  bool unique_items = 30;
-  uint64 max_properties = 31;
-  uint64 min_properties = 32;
-  repeated string required = 33;
-  repeated string enum = 34;
-  string type = 35;
-  string format = 36;
+  optional double multiple_of = 11;
+  optional double maximum = 12;
+  // In OpenAPI 3.1.0 (JSON Schema), exclusiveMaximum is a number, not a boolean.
+  // The value is the exclusive upper bound.
+  optional double exclusive_maximum = 13;
+  optional double minimum = 14;
+  // In OpenAPI 3.1.0 (JSON Schema), exclusiveMinimum is a number, not a boolean.
+  // The value is the exclusive lower bound.
+  optional double exclusive_minimum = 15;
+  uint64 max_length = 16;
+  uint64 min_length = 17;
+  string pattern = 18;
+  uint64 max_items = 19;
+  uint64 min_items = 20;
+  bool unique_items = 21;
+  uint64 max_properties = 22;
+  uint64 min_properties = 23;
+  repeated string required = 24;
+  repeated string enum = 25;
+  // In OpenAPI 3.1.0, type can be an array to support nullable types.
+  // E.g., type: ["string", "null"] instead of type: string + nullable: true.
+  // For single types, use a single-element array or the generator will handle it.
+  repeated string type = 26;
+  string format = 27;
 
   // Schema composition keywords (OpenAPI v3 / JSON Schema)
 
   // An instance validates successfully against this keyword if it validates
   // successfully against all schemas defined by this keyword's value.
-  repeated Schema all_of = 40;
+  // Each item can be an inline schema or a reference.
+  repeated SchemaOrReference all_of = 28;
   // An instance validates successfully against this keyword if it validates
   // successfully against at least one schema defined by this keyword's value.
-  repeated Schema any_of = 41;
+  // Each item can be an inline schema or a reference.
+  repeated SchemaOrReference any_of = 29;
   // An instance validates successfully against this keyword if it validates
   // successfully against exactly one schema defined by this keyword's value.
-  repeated Schema one_of = 42;
+  // Each item can be an inline schema or a reference.
+  repeated SchemaOrReference one_of = 30;
   // An instance is valid against this keyword if it fails to validate
   // successfully against the schema defined by this keyword.
-  Schema not = 43;
+  // Can be an inline schema or a reference.
+  SchemaOrReference not = 31;
 
   // Adds support for polymorphism. The discriminator is used to determine which
   // of a set of schemas a payload is expected to satisfy.
-  Discriminator discriminator = 44;
+  Discriminator discriminator = 32;
 
   // Array-specific keywords
 
   // Value MUST be a valid JSON Schema. Used to validate all items in an array.
-  Schema items = 50;
+  // Can be an inline schema or a reference.
+  SchemaOrReference items = 33;
   // Value MUST be an array of valid JSON Schemas. Used to validate tuple-like arrays.
-  repeated Schema prefix_items = 51;
+  // Each item can be an inline schema or a reference.
+  repeated SchemaOrReference prefix_items = 34;
   // Used with prefixItems to control validation of additional items.
-  Schema contains = 52;
+  // Can be an inline schema or a reference.
+  SchemaOrReference contains = 35;
   // Minimum number of items that must match the contains schema.
-  uint64 min_contains = 53;
+  uint64 min_contains = 36;
   // Maximum number of items that must match the contains schema.
-  uint64 max_contains = 54;
+  uint64 max_contains = 37;
 
   // Object-specific keywords
 
   // Value MUST be an object. Each value of this object MUST be a valid JSON Schema.
-  map<string, Schema> properties = 60;
+  // Using repeated NamedSchemaOrReference preserves property ordering (important for JSON output).
+  // Each property value can be an inline schema or a reference.
+  repeated NamedSchemaOrReference properties = 38;
   // Controls handling of extra properties not covered by the properties keyword.
-  AdditionalPropertiesItem additional_properties = 61;
+  // Can be a boolean or a schema/reference.
+  AdditionalPropertiesItem additional_properties = 39;
   // Value MUST be a valid JSON Schema. Used to validate property names.
-  Schema property_names = 62;
+  // Can be an inline schema or a reference.
+  SchemaOrReference property_names = 40;
   // Value MUST be an object where each value is a valid JSON Schema.
   // Properties must match the regex key patterns.
-  map<string, Schema> pattern_properties = 63;
+  // Each pattern value can be an inline schema or a reference.
+  repeated NamedSchemaOrReference pattern_properties = 41;
 }
 
 // `EnumSchema` is a subset of Schema fields applicable to Enums.
@@ -511,15 +618,15 @@ message EnumSchema {
   ExternalDocumentation external_docs = 5;
   // A free-form property to include an example.
   string example = 6;
-  // Allows referencing another schema.
-  string ref = 7;
+  // Allows referencing another schema. Serializes to "$ref" in JSON.
+  string _ref = 7;
   // Custom properties that start with "x-" such as "x-foo".
   map<string, google.protobuf.Value> extensions = 8;
 }
 
 // `Tag` is a representation of OpenAPI v3 specification's Tag object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#tag-object
+// See: https://spec.openapis.org/oas/v3.1.0#tag-object
 //
 message Tag {
   // The name of the tag.
@@ -536,7 +643,7 @@ message Tag {
 // `ExternalDocumentation` is a representation of OpenAPI v3 specification's
 // External Documentation object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#external-documentation-object
+// See: https://spec.openapis.org/oas/v3.1.0#external-documentation-object
 //
 message ExternalDocumentation {
   // A description of the target documentation. CommonMark syntax MAY be used
@@ -549,7 +656,7 @@ message ExternalDocumentation {
 // `SecurityScheme` is a representation of OpenAPI v3 specification's
 // Security Scheme object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#security-scheme-object
+// See: https://spec.openapis.org/oas/v3.1.0#security-scheme-object
 //
 message SecurityScheme {
   // The type of the security scheme.
@@ -593,7 +700,7 @@ message SecurityScheme {
 
 // `OAuthFlows` is a representation of OpenAPI v3 specification's OAuth Flows object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#oauth-flows-object
+// See: https://spec.openapis.org/oas/v3.1.0#oauth-flows-object
 //
 message OAuthFlows {
   // Configuration for the OAuth Implicit flow.
@@ -610,7 +717,7 @@ message OAuthFlows {
 
 // `OAuthFlow` is a representation of OpenAPI v3 specification's OAuth Flow object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#oauth-flow-object
+// See: https://spec.openapis.org/oas/v3.1.0#oauth-flow-object
 //
 message OAuthFlow {
   // The authorization URL to be used for this flow.
@@ -628,7 +735,7 @@ message OAuthFlow {
 // `SecurityRequirement` is a representation of OpenAPI v3 specification's
 // Security Requirement object.
 //
-// See: https://spec.openapis.org/oas/v3.0.3#security-requirement-object
+// See: https://spec.openapis.org/oas/v3.1.0#security-requirement-object
 //
 message SecurityRequirement {
   // The list of scope names required for the execution.

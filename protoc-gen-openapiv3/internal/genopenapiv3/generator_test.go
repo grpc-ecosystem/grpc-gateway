@@ -98,7 +98,7 @@ func TestResponseHasDescription(t *testing.T) {
 func TestSchemaRefMarshal(t *testing.T) {
 	tests := []struct {
 		name     string
-		ref      *SchemaRef
+		ref      *SchemaOrReference
 		expected string
 	}{
 		{
@@ -108,16 +108,133 @@ func TestSchemaRefMarshal(t *testing.T) {
 		},
 		{
 			name:     "inline string schema",
-			ref:      &SchemaRef{Value: &Schema{Type: "string"}},
+			ref:      &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}},
 			expected: `{"type":"string"}`,
 		},
 		{
 			name:     "inline integer schema",
-			ref:      &SchemaRef{Value: &Schema{Type: "integer", Format: "int32"}},
+			ref:      &SchemaOrReference{Schema: &Schema{Type: SchemaType{"integer"}, Format: "int32"}},
 			expected: `{"type":"integer","format":"int32"}`,
 		},
 		{
 			name:     "nil schema",
+			ref:      nil,
+			expected: `null`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data, err := json.Marshal(tt.ref)
+			if err != nil {
+				t.Fatalf("Failed to marshal: %v", err)
+			}
+			if !jsonEqual(t, string(data), tt.expected) {
+				t.Errorf("got %s, want %s", string(data), tt.expected)
+			}
+		})
+	}
+}
+
+func TestReferenceMarshal(t *testing.T) {
+	tests := []struct {
+		name     string
+		ref      *Reference
+		expected string
+	}{
+		{
+			name:     "simple reference",
+			ref:      &Reference{Ref: "#/components/schemas/Pet"},
+			expected: `{"$ref":"#/components/schemas/Pet"}`,
+		},
+		{
+			name: "reference with summary (v3.1.0)",
+			ref: &Reference{
+				Ref:     "#/components/schemas/Pet",
+				Summary: "A pet in the store",
+			},
+			expected: `{"$ref":"#/components/schemas/Pet","summary":"A pet in the store"}`,
+		},
+		{
+			name: "reference with description (v3.1.0)",
+			ref: &Reference{
+				Ref:         "#/components/schemas/Pet",
+				Description: "Detailed description of a pet",
+			},
+			expected: `{"$ref":"#/components/schemas/Pet","description":"Detailed description of a pet"}`,
+		},
+		{
+			name: "reference with all fields (v3.1.0)",
+			ref: &Reference{
+				Ref:         "#/components/schemas/Pet",
+				Summary:     "A pet",
+				Description: "A detailed description",
+			},
+			expected: `{"$ref":"#/components/schemas/Pet","summary":"A pet","description":"A detailed description"}`,
+		},
+		{
+			name:     "nil reference",
+			ref:      nil,
+			expected: `null`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data, err := json.Marshal(tt.ref)
+			if err != nil {
+				t.Fatalf("Failed to marshal: %v", err)
+			}
+			if !jsonEqual(t, string(data), tt.expected) {
+				t.Errorf("got %s, want %s", string(data), tt.expected)
+			}
+		})
+	}
+}
+
+func TestSchemaRefWithReferenceMarshal(t *testing.T) {
+	tests := []struct {
+		name     string
+		ref      *SchemaOrReference
+		expected string
+	}{
+		{
+			name:     "inline schema",
+			ref:      NewInlineSchema(&Schema{Type: SchemaType{"string"}}),
+			expected: `{"type":"string"}`,
+		},
+		{
+			name:     "simple reference",
+			ref:      NewSchemaRef("Pet"),
+			expected: `{"$ref":"#/components/schemas/Pet"}`,
+		},
+		{
+			name: "reference with summary (v3.1.0)",
+			ref: &SchemaOrReference{
+				Reference: &Reference{
+					Ref:     "#/components/schemas/Pet",
+					Summary: "A pet summary",
+				},
+			},
+			expected: `{"$ref":"#/components/schemas/Pet","summary":"A pet summary"}`,
+		},
+		{
+			name: "reference with description (v3.1.0)",
+			ref: &SchemaOrReference{
+				Reference: &Reference{
+					Ref:         "#/components/schemas/Pet",
+					Description: "A detailed pet description",
+				},
+			},
+			expected: `{"$ref":"#/components/schemas/Pet","description":"A detailed pet description"}`,
+		},
+		{
+			name: "reference with all v3.1.0 overrides",
+			ref:  NewSchemaRefWithOverrides("Pet", "A pet summary", "A detailed description"),
+			expected: `{"$ref":"#/components/schemas/Pet","summary":"A pet summary","description":"A detailed description"}`,
+		},
+		{
+			name:     "nil",
 			ref:      nil,
 			expected: `null`,
 		},
@@ -323,14 +440,18 @@ func TestResponseWithJSONSchema(t *testing.T) {
 	if resp.Content["application/json"] == nil {
 		t.Fatal("Content[application/json] should not be nil")
 	}
-	if resp.Content["application/json"].Schema.Ref != "#/components/schemas/MyResponse" {
-		t.Errorf("Schema.Ref = %q, want %q", resp.Content["application/json"].Schema.Ref, "#/components/schemas/MyResponse")
+	if resp.Content["application/json"].Schema.Reference == nil || resp.Content["application/json"].Schema.Reference.Ref != "#/components/schemas/MyResponse" {
+		ref := ""
+		if resp.Content["application/json"].Schema.Reference != nil {
+			ref = resp.Content["application/json"].Schema.Reference.Ref
+		}
+		t.Errorf("Schema.Reference.Ref = %q, want %q", ref, "#/components/schemas/MyResponse")
 	}
 }
 
 func TestParameterCreation(t *testing.T) {
 	t.Run("path parameter", func(t *testing.T) {
-		param := NewPathParameter("user_id", &SchemaRef{Value: &Schema{Type: "string"}})
+		param := NewPathParameter("user_id", &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}})
 		if param.Name != "user_id" {
 			t.Errorf("Name = %q, want %q", param.Name, "user_id")
 		}
@@ -343,7 +464,7 @@ func TestParameterCreation(t *testing.T) {
 	})
 
 	t.Run("query parameter", func(t *testing.T) {
-		param := NewQueryParameter("limit", &SchemaRef{Value: &Schema{Type: "integer"}})
+		param := NewQueryParameter("limit", &SchemaOrReference{Schema: &Schema{Type: SchemaType{"integer"}}})
 		if param.Name != "limit" {
 			t.Errorf("Name = %q, want %q", param.Name, "limit")
 		}
@@ -356,7 +477,7 @@ func TestParameterCreation(t *testing.T) {
 	})
 
 	t.Run("header parameter", func(t *testing.T) {
-		param := NewHeaderParameter("X-Custom", &SchemaRef{Value: &Schema{Type: "string"}})
+		param := NewHeaderParameter("X-Custom", &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}})
 		if param.Name != "X-Custom" {
 			t.Errorf("Name = %q, want %q", param.Name, "X-Custom")
 		}
@@ -379,8 +500,12 @@ func TestRequestBodyCreation(t *testing.T) {
 	if body.Content["application/json"] == nil {
 		t.Fatal("Content[application/json] should not be nil")
 	}
-	if body.Content["application/json"].Schema.Ref != "#/components/schemas/MyRequest" {
-		t.Errorf("Schema.Ref = %q, want %q", body.Content["application/json"].Schema.Ref, "#/components/schemas/MyRequest")
+	if body.Content["application/json"].Schema.Reference == nil || body.Content["application/json"].Schema.Reference.Ref != "#/components/schemas/MyRequest" {
+		ref := ""
+		if body.Content["application/json"].Schema.Reference != nil {
+			ref = body.Content["application/json"].Schema.Reference.Ref
+		}
+		t.Errorf("Schema.Reference.Ref = %q, want %q", ref, "#/components/schemas/MyRequest")
 	}
 }
 
@@ -420,19 +545,20 @@ func TestResponsesObject(t *testing.T) {
 }
 
 func TestWellKnownTypeSchema(t *testing.T) {
+	// Uses OpenAPI 3.1.0 style: wrapper types use type arrays for nullable
 	tests := []struct {
 		typeName   string
-		expectType string
+		expectType SchemaType
 		expectFmt  string
 	}{
-		{".google.protobuf.Timestamp", "string", "date-time"},
-		{".google.protobuf.Duration", "string", ""},
-		{".google.protobuf.StringValue", "string", ""},
-		{".google.protobuf.Int32Value", "integer", "int32"},
-		{".google.protobuf.Int64Value", "string", "int64"},
-		{".google.protobuf.BoolValue", "boolean", ""},
-		{".google.protobuf.Empty", "object", ""},
-		{".google.protobuf.Struct", "object", ""},
+		{".google.protobuf.Timestamp", SchemaType{"string"}, "date-time"},
+		{".google.protobuf.Duration", SchemaType{"string"}, ""},
+		{".google.protobuf.StringValue", SchemaType{"string", "null"}, ""},
+		{".google.protobuf.Int32Value", SchemaType{"integer", "null"}, "int32"},
+		{".google.protobuf.Int64Value", SchemaType{"string", "null"}, "int64"},
+		{".google.protobuf.BoolValue", SchemaType{"boolean", "null"}, ""},
+		{".google.protobuf.Empty", SchemaType{"object"}, ""},
+		{".google.protobuf.Struct", SchemaType{"object"}, ""},
 	}
 
 	for _, tt := range tests {
@@ -441,8 +567,8 @@ func TestWellKnownTypeSchema(t *testing.T) {
 			if schema == nil {
 				t.Fatalf("schema should exist for %s", tt.typeName)
 			}
-			if schema.Type != tt.expectType {
-				t.Errorf("Type = %q, want %q", schema.Type, tt.expectType)
+			if !schemaTypeEqual(schema.Type, tt.expectType) {
+				t.Errorf("Type = %v, want %v", schema.Type, tt.expectType)
 			}
 			if tt.expectFmt != "" && schema.Format != tt.expectFmt {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFmt)
@@ -547,11 +673,11 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 
 	// Create a parent schema with properties (using JSON names)
 	parentSchema := &Schema{
-		Type: "object",
-		Properties: map[string]*SchemaRef{
-			"stringValue":  {Value: &Schema{Type: "string"}},
-			"intValue":     {Value: &Schema{Type: "integer"}},
-			"regularField": {Value: &Schema{Type: "boolean"}},
+		Type: SchemaType{"object"},
+		Properties: map[string]*SchemaOrReference{
+			"stringValue":  {Schema: &Schema{Type: SchemaType{"string"}}},
+			"intValue":     {Schema: &Schema{Type: SchemaType{"integer"}}},
+			"regularField": {Schema: &Schema{Type: SchemaType{"boolean"}}},
 		},
 	}
 
@@ -585,9 +711,9 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 	}
 
 	// First option should be for stringValue
-	opt1 := oneOf[0].Value
-	if opt1.Type != "object" {
-		t.Errorf("Option 1 Type = %q, want %q", opt1.Type, "object")
+	opt1 := oneOf[0].Schema
+	if !schemaTypeEqual(opt1.Type, SchemaType{"object"}) {
+		t.Errorf("Option 1 Type = %v, want %q", opt1.Type, "object")
 	}
 	if len(opt1.Properties) != 1 {
 		t.Errorf("Option 1 should have 1 property, got %d", len(opt1.Properties))
@@ -603,7 +729,7 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 	}
 
 	// Second option should be for intValue
-	opt2 := oneOf[1].Value
+	opt2 := oneOf[1].Schema
 	if _, ok := opt2.Properties["intValue"]; !ok {
 		t.Error("Option 2 should have 'intValue' property")
 	}
@@ -615,18 +741,18 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 	}
 
 	// Third option should be "neither" - allows none of the oneof fields to be set
-	neitherOpt := oneOf[2].Value
+	neitherOpt := oneOf[2].Schema
 	if neitherOpt.Title != "value.none" {
 		t.Errorf("Neither option Title = %q, want %q", neitherOpt.Title, "value.none")
 	}
 	if neitherOpt.Not == nil {
 		t.Fatal("Neither option should have 'not' schema")
 	}
-	if neitherOpt.Not.Value == nil {
+	if neitherOpt.Not.Schema == nil {
 		t.Fatal("Neither option 'not' should have value")
 	}
-	if neitherOpt.Not.Value.AnyOf == nil || len(neitherOpt.Not.Value.AnyOf) != 2 {
-		t.Fatalf("Neither option 'not.anyOf' should have 2 entries, got %v", neitherOpt.Not.Value.AnyOf)
+	if neitherOpt.Not.Schema.AnyOf == nil || len(neitherOpt.Not.Schema.AnyOf) != 2 {
+		t.Fatalf("Neither option 'not.anyOf' should have 2 entries, got %v", neitherOpt.Not.Schema.AnyOf)
 	}
 }
 
@@ -638,12 +764,12 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 
 	// Create a parent schema with properties for multiple oneofs
 	parentSchema := &Schema{
-		Type: "object",
-		Properties: map[string]*SchemaRef{
-			"createEvent": {Value: &Schema{Type: "object"}},
-			"updateEvent": {Value: &Schema{Type: "object"}},
-			"error":       {Value: &Schema{Type: "object"}},
-			"success":     {Value: &Schema{Type: "object"}},
+		Type: SchemaType{"object"},
+		Properties: map[string]*SchemaOrReference{
+			"createEvent": {Schema: &Schema{Type: SchemaType{"object"}}},
+			"updateEvent": {Schema: &Schema{Type: SchemaType{"object"}}},
+			"error":       {Schema: &Schema{Type: SchemaType{"object"}}},
+			"success":     {Schema: &Schema{Type: SchemaType{"object"}}},
 		},
 	}
 
@@ -691,21 +817,21 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 
 	// Each allOf entry should wrap a oneOf with 3 options (2 fields + neither)
 	for groupIdx, allOfEntry := range allOf {
-		if allOfEntry.Value == nil {
+		if allOfEntry.Schema == nil {
 			t.Errorf("allOf[%d] should have value", groupIdx)
 			continue
 		}
-		groupOneOf := allOfEntry.Value.OneOf
+		groupOneOf := allOfEntry.Schema.OneOf
 		if len(groupOneOf) != 3 {
 			t.Errorf("Group %d should have 3 oneOf options (2 fields + neither), got %d", groupIdx, len(groupOneOf))
 		}
 	}
 
 	// Verify group 1 (event) has correct options
-	group1OneOf := allOf[0].Value.OneOf
+	group1OneOf := allOf[0].Schema.OneOf
 	group1Titles := make(map[string]bool)
 	for _, schema := range group1OneOf {
-		group1Titles[schema.Value.Title] = true
+		group1Titles[schema.Schema.Title] = true
 	}
 	for _, expected := range []string{"event.createEvent", "event.updateEvent", "event.none"} {
 		if !group1Titles[expected] {
@@ -714,10 +840,10 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 	}
 
 	// Verify group 2 (result) has correct options
-	group2OneOf := allOf[1].Value.OneOf
+	group2OneOf := allOf[1].Schema.OneOf
 	group2Titles := make(map[string]bool)
 	for _, schema := range group2OneOf {
-		group2Titles[schema.Value.Title] = true
+		group2Titles[schema.Schema.Title] = true
 	}
 	for _, expected := range []string{"result.error", "result.success", "result.none"} {
 		if !group2Titles[expected] {
@@ -740,22 +866,22 @@ func TestBuildNeitherSetSchema(t *testing.T) {
 	if schema.Not == nil {
 		t.Fatal("Schema should have 'not'")
 	}
-	if schema.Not.Value == nil {
+	if schema.Not.Schema == nil {
 		t.Fatal("Not should have value")
 	}
-	if schema.Not.Value.AnyOf == nil {
+	if schema.Not.Schema.AnyOf == nil {
 		t.Fatal("Not should have anyOf")
 	}
 
 	// AnyOf should contain required entry for each field
-	if len(schema.Not.Value.AnyOf) != 3 {
-		t.Errorf("anyOf should have 3 entries, got %d", len(schema.Not.Value.AnyOf))
+	if len(schema.Not.Schema.AnyOf) != 3 {
+		t.Errorf("anyOf should have 3 entries, got %d", len(schema.Not.Schema.AnyOf))
 	}
 
 	requiredFields := make(map[string]bool)
-	for _, ref := range schema.Not.Value.AnyOf {
-		if ref.Value != nil && len(ref.Value.Required) == 1 {
-			requiredFields[ref.Value.Required[0]] = true
+	for _, ref := range schema.Not.Schema.AnyOf {
+		if ref.Schema != nil && len(ref.Schema.Required) == 1 {
+			requiredFields[ref.Schema.Required[0]] = true
 		}
 	}
 	for _, field := range []string{"field1", "field2", "field3"} {
@@ -771,8 +897,8 @@ func TestGenerateOneOfConstraintsEmptyGroups(t *testing.T) {
 	g := &generator{reg: reg}
 
 	parentSchema := &Schema{
-		Type:       "object",
-		Properties: map[string]*SchemaRef{},
+		Type:       SchemaType{"object"},
+		Properties: map[string]*SchemaOrReference{},
 	}
 
 	// Empty groups
@@ -975,7 +1101,7 @@ func TestApplyFieldBehaviorToSchema(t *testing.T) {
 			g := &generator{reg: reg}
 
 			parentSchema := &Schema{Required: []string{}}
-			fieldSchema := &Schema{Type: "string"}
+			fieldSchema := &Schema{Type: SchemaType{"string"}}
 
 			// Create field options with field_behavior extension if specified
 			var opts *descriptorpb.FieldOptions
@@ -1030,7 +1156,7 @@ func TestFieldBehaviorRequiredIntegration(t *testing.T) {
 			Options: opts1,
 		},
 	}
-	fieldSchema1 := &Schema{Type: "string"}
+	fieldSchema1 := &Schema{Type: SchemaType{"string"}}
 	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema1, field1)
 
 	// Field 2: OUTPUT_ONLY behavior - should NOT be in Required array
@@ -1042,7 +1168,7 @@ func TestFieldBehaviorRequiredIntegration(t *testing.T) {
 			Options: opts2,
 		},
 	}
-	fieldSchema2 := &Schema{Type: "string"}
+	fieldSchema2 := &Schema{Type: SchemaType{"string"}}
 	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema2, field2)
 
 	// Field 3: No behavior - should NOT be in Required array
@@ -1052,7 +1178,7 @@ func TestFieldBehaviorRequiredIntegration(t *testing.T) {
 			Options: nil,
 		},
 	}
-	fieldSchema3 := &Schema{Type: "string"}
+	fieldSchema3 := &Schema{Type: SchemaType{"string"}}
 	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema3, field3)
 
 	// Field 4: REQUIRED + OUTPUT_ONLY - should be in Required array
@@ -1067,7 +1193,7 @@ func TestFieldBehaviorRequiredIntegration(t *testing.T) {
 			Options: opts4,
 		},
 	}
-	fieldSchema4 := &Schema{Type: "string"}
+	fieldSchema4 := &Schema{Type: SchemaType{"string"}}
 	g.applyFieldBehaviorToSchema(parentSchema, fieldSchema4, field4)
 
 	// Verify Required array contains exactly the expected fields
@@ -1149,7 +1275,7 @@ func TestGetFieldRequiredFromBehavior(t *testing.T) {
 func TestSchemaReadOnlyWriteOnlyFields(t *testing.T) {
 	// Test that Schema can serialize readOnly and writeOnly properly
 	schema := &Schema{
-		Type:      "string",
+		Type:      SchemaType{"string"},
 		ReadOnly:  true,
 		WriteOnly: false,
 	}
@@ -1164,7 +1290,7 @@ func TestSchemaReadOnlyWriteOnlyFields(t *testing.T) {
 	}
 
 	schema2 := &Schema{
-		Type:      "string",
+		Type:      SchemaType{"string"},
 		WriteOnly: true,
 	}
 
@@ -1241,7 +1367,7 @@ func TestResolveOpenAPINameWithStrategy(t *testing.T) {
 func TestSchemaNullableField(t *testing.T) {
 	// Test that nullable field is correctly serialized
 	schema := &Schema{
-		Type:     "string",
+		Type:     SchemaType{"string"},
 		Nullable: true,
 	}
 
@@ -1256,7 +1382,7 @@ func TestSchemaNullableField(t *testing.T) {
 
 	// Test schema without nullable
 	schemaNonNullable := &Schema{
-		Type: "string",
+		Type: SchemaType{"string"},
 	}
 
 	data, err = json.Marshal(schemaNonNullable)
@@ -1906,7 +2032,7 @@ func TestWellKnownTypeSchema_Timestamp(t *testing.T) {
 		t.Fatal("expected schema for Timestamp")
 	}
 
-	if schema.Type != "string" {
+	if !schemaTypeEqual(schema.Type, SchemaType{"string"}) {
 		t.Errorf("Timestamp Type = %q, want %q", schema.Type, "string")
 	}
 	if schema.Format != "date-time" {
@@ -1922,7 +2048,7 @@ func TestWellKnownTypeSchema_Duration(t *testing.T) {
 		t.Fatal("expected schema for Duration")
 	}
 
-	if schema.Type != "string" {
+	if !schemaTypeEqual(schema.Type, SchemaType{"string"}) {
 		t.Errorf("Duration Type = %q, want %q", schema.Type, "string")
 	}
 }
@@ -1930,15 +2056,16 @@ func TestWellKnownTypeSchema_Duration(t *testing.T) {
 func TestWellKnownTypeSchema_Wrappers(t *testing.T) {
 	t.Parallel()
 
+	// OpenAPI 3.1.0 style: wrapper types use type arrays for nullable
 	tests := []struct {
 		typeName   string
-		expectType string
+		expectType SchemaType
 		expectFmt  string
 	}{
-		{".google.protobuf.StringValue", "string", ""},
-		{".google.protobuf.Int32Value", "integer", "int32"},
-		{".google.protobuf.Int64Value", "string", "int64"},
-		{".google.protobuf.BoolValue", "boolean", ""},
+		{".google.protobuf.StringValue", SchemaType{"string", "null"}, ""},
+		{".google.protobuf.Int32Value", SchemaType{"integer", "null"}, "int32"},
+		{".google.protobuf.Int64Value", SchemaType{"string", "null"}, "int64"},
+		{".google.protobuf.BoolValue", SchemaType{"boolean", "null"}, ""},
 	}
 
 	for _, tt := range tests {
@@ -1947,8 +2074,8 @@ func TestWellKnownTypeSchema_Wrappers(t *testing.T) {
 			if schema == nil {
 				t.Fatalf("expected schema for %s", tt.typeName)
 			}
-			if schema.Type != tt.expectType {
-				t.Errorf("Type = %q, want %q", schema.Type, tt.expectType)
+			if !schemaTypeEqual(schema.Type, tt.expectType) {
+				t.Errorf("Type = %v, want %v", schema.Type, tt.expectType)
 			}
 			if tt.expectFmt != "" && schema.Format != tt.expectFmt {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFmt)
@@ -1965,7 +2092,7 @@ func TestWellKnownTypeSchema_StructTypes(t *testing.T) {
 		if schema == nil {
 			t.Fatal("expected schema for Struct")
 		}
-		if schema.Type != "object" {
+		if !schemaTypeEqual(schema.Type, SchemaType{"object"}) {
 			t.Errorf("Type = %q, want %q", schema.Type, "object")
 		}
 	})
@@ -1975,7 +2102,7 @@ func TestWellKnownTypeSchema_StructTypes(t *testing.T) {
 		if schema == nil {
 			t.Fatal("expected schema for Empty")
 		}
-		if schema.Type != "object" {
+		if !schemaTypeEqual(schema.Type, SchemaType{"object"}) {
 			t.Errorf("Type = %q, want %q", schema.Type, "object")
 		}
 	})
@@ -1985,7 +2112,7 @@ func TestWellKnownTypeSchema_StructTypes(t *testing.T) {
 		if schema == nil {
 			t.Fatal("expected schema for Any")
 		}
-		if schema.Type != "object" {
+		if !schemaTypeEqual(schema.Type, SchemaType{"object"}) {
 			t.Errorf("Type = %q, want %q", schema.Type, "object")
 		}
 		if schema.Properties == nil || schema.Properties["@type"] == nil {
@@ -2261,7 +2388,7 @@ func TestNumericZeroConstraints(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			schema := &Schema{Type: "integer"}
+			schema := &Schema{Type: SchemaType{"integer"}}
 
 			// Use the actual logic from apply_annotations.go
 			// This now correctly uses pointer checks instead of value checks
@@ -2383,43 +2510,43 @@ func TestEmptyVisibilityRestriction(t *testing.T) {
 
 // TestAllWellKnownTypes tests that all protobuf well-known types are correctly
 // mapped to their OpenAPI schema representations.
+// Uses OpenAPI 3.1.0 style where nullable is expressed via type arrays (e.g., ["string", "null"]).
 func TestAllWellKnownTypes(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		typeName     string
-		expectType   string
+		expectType   SchemaType // Use SchemaType for 3.1.0 style type arrays
 		expectFormat string
 		expectProps  []string
-		nullable     bool
 	}{
 		// Timestamp and Duration
-		{".google.protobuf.Timestamp", "string", "date-time", nil, false},
-		{".google.protobuf.Duration", "string", "", nil, false},
+		{".google.protobuf.Timestamp", SchemaType{"string"}, "date-time", nil},
+		{".google.protobuf.Duration", SchemaType{"string"}, "", nil},
 
 		// FieldMask
-		{".google.protobuf.FieldMask", "string", "", nil, false},
+		{".google.protobuf.FieldMask", SchemaType{"string"}, "", nil},
 
-		// Wrapper types - all nullable
-		{".google.protobuf.StringValue", "string", "", nil, true},
-		{".google.protobuf.BytesValue", "string", "byte", nil, true},
-		{".google.protobuf.Int32Value", "integer", "int32", nil, true},
-		{".google.protobuf.UInt32Value", "integer", "int64", nil, true},
-		{".google.protobuf.Int64Value", "string", "int64", nil, true},
-		{".google.protobuf.UInt64Value", "string", "uint64", nil, true},
-		{".google.protobuf.FloatValue", "number", "float", nil, true},
-		{".google.protobuf.DoubleValue", "number", "double", nil, true},
-		{".google.protobuf.BoolValue", "boolean", "", nil, true},
+		// Wrapper types - nullable via type array (3.1.0 style)
+		{".google.protobuf.StringValue", SchemaType{"string", "null"}, "", nil},
+		{".google.protobuf.BytesValue", SchemaType{"string", "null"}, "byte", nil},
+		{".google.protobuf.Int32Value", SchemaType{"integer", "null"}, "int32", nil},
+		{".google.protobuf.UInt32Value", SchemaType{"integer", "null"}, "int64", nil},
+		{".google.protobuf.Int64Value", SchemaType{"string", "null"}, "int64", nil},
+		{".google.protobuf.UInt64Value", SchemaType{"string", "null"}, "uint64", nil},
+		{".google.protobuf.FloatValue", SchemaType{"number", "null"}, "float", nil},
+		{".google.protobuf.DoubleValue", SchemaType{"number", "null"}, "double", nil},
+		{".google.protobuf.BoolValue", SchemaType{"boolean", "null"}, "", nil},
 
 		// Struct types
-		{".google.protobuf.Empty", "object", "", nil, false},
-		{".google.protobuf.Struct", "object", "", nil, false},
-		{".google.protobuf.Value", "", "", nil, false}, // No type constraint
-		{".google.protobuf.ListValue", "array", "", nil, false},
-		{".google.protobuf.NullValue", "string", "", nil, false},
+		{".google.protobuf.Empty", SchemaType{"object"}, "", nil},
+		{".google.protobuf.Struct", SchemaType{"object"}, "", nil},
+		{".google.protobuf.Value", nil, "", nil}, // No type constraint (empty schema)
+		{".google.protobuf.ListValue", SchemaType{"array"}, "", nil},
+		{".google.protobuf.NullValue", SchemaType{"null"}, "", nil},
 
 		// Any type
-		{".google.protobuf.Any", "object", "", []string{"@type"}, false},
+		{".google.protobuf.Any", SchemaType{"object"}, "", []string{"@type"}},
 	}
 
 	for _, tt := range tests {
@@ -2429,16 +2556,12 @@ func TestAllWellKnownTypes(t *testing.T) {
 				t.Fatalf("expected schema for %s", tt.typeName)
 			}
 
-			if schema.Type != tt.expectType {
-				t.Errorf("Type = %q, want %q", schema.Type, tt.expectType)
+			if !schemaTypeEqual(schema.Type, tt.expectType) {
+				t.Errorf("Type = %v, want %v", schema.Type, tt.expectType)
 			}
 
 			if tt.expectFormat != "" && schema.Format != tt.expectFormat {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFormat)
-			}
-
-			if schema.Nullable != tt.nullable {
-				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.nullable)
 			}
 
 			for _, prop := range tt.expectProps {
@@ -2712,7 +2835,7 @@ func TestWriteOnlyFromInputOnly(t *testing.T) {
 
 	// Test schema serialization with writeOnly
 	schema := &Schema{
-		Type:      "string",
+		Type:      SchemaType{"string"},
 		WriteOnly: true,
 	}
 
@@ -2727,7 +2850,7 @@ func TestWriteOnlyFromInputOnly(t *testing.T) {
 
 	// Test that writeOnly is not present when false
 	schema2 := &Schema{
-		Type:      "string",
+		Type:      SchemaType{"string"},
 		WriteOnly: false,
 	}
 
@@ -3026,13 +3149,13 @@ func TestTypeLookupFailure(t *testing.T) {
 		t.Fatal("expected schema reference, got nil")
 	}
 
-	if schemaRef.Value == nil {
+	if schemaRef.Schema == nil {
 		t.Fatal("expected inline schema value")
 	}
 
 	// The fallback for unresolved message types should be type: object
-	if schemaRef.Value.Type != "object" {
-		t.Errorf("fallback schema type = %q, want 'object'", schemaRef.Value.Type)
+	if !schemaTypeEqual(schemaRef.Schema.Type, SchemaType{"object"}) {
+		t.Errorf("fallback schema type = %q, want 'object'", schemaRef.Schema.Type)
 	}
 }
 
@@ -3062,13 +3185,13 @@ func TestEnumTypeLookupFailure(t *testing.T) {
 		t.Fatal("expected schema reference, got nil")
 	}
 
-	if schemaRef.Value == nil {
+	if schemaRef.Schema == nil {
 		t.Fatal("expected inline schema value")
 	}
 
 	// The fallback for unresolved enum types should be type: string
-	if schemaRef.Value.Type != "string" {
-		t.Errorf("fallback schema type = %q, want 'string'", schemaRef.Value.Type)
+	if !schemaTypeEqual(schemaRef.Schema.Type, SchemaType{"string"}) {
+		t.Errorf("fallback schema type = %q, want 'string'", schemaRef.Schema.Type)
 	}
 }
 

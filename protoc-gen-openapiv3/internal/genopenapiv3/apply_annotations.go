@@ -242,27 +242,27 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 	// Apply allOf
 	if len(opts.GetAllOf()) > 0 {
 		for _, allOfSchema := range opts.GetAllOf() {
-			schema.AllOf = append(schema.AllOf, convertSchema(allOfSchema))
+			schema.AllOf = append(schema.AllOf, convertSchemaOrReference(allOfSchema))
 		}
 	}
 
 	// Apply anyOf
 	if len(opts.GetAnyOf()) > 0 {
 		for _, anyOfSchema := range opts.GetAnyOf() {
-			schema.AnyOf = append(schema.AnyOf, convertSchema(anyOfSchema))
+			schema.AnyOf = append(schema.AnyOf, convertSchemaOrReference(anyOfSchema))
 		}
 	}
 
 	// Apply oneOf (appends to auto-detected oneOf from proto oneof fields)
 	if len(opts.GetOneOf()) > 0 {
 		for _, oneOfSchema := range opts.GetOneOf() {
-			schema.OneOf = append(schema.OneOf, convertSchema(oneOfSchema))
+			schema.OneOf = append(schema.OneOf, convertSchemaOrReference(oneOfSchema))
 		}
 	}
 
 	// Apply not
 	if notSchema := opts.GetNot(); notSchema != nil {
-		schema.Not = convertSchema(notSchema)
+		schema.Not = convertSchemaOrReference(notSchema)
 	}
 
 	// Apply discriminator
@@ -405,27 +405,27 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 	// Apply allOf
 	if len(opts.GetAllOf()) > 0 {
 		for _, allOfSchema := range opts.GetAllOf() {
-			schema.AllOf = append(schema.AllOf, convertSchema(allOfSchema))
+			schema.AllOf = append(schema.AllOf, convertSchemaOrReference(allOfSchema))
 		}
 	}
 
 	// Apply anyOf
 	if len(opts.GetAnyOf()) > 0 {
 		for _, anyOfSchema := range opts.GetAnyOf() {
-			schema.AnyOf = append(schema.AnyOf, convertSchema(anyOfSchema))
+			schema.AnyOf = append(schema.AnyOf, convertSchemaOrReference(anyOfSchema))
 		}
 	}
 
 	// Apply oneOf
 	if len(opts.GetOneOf()) > 0 {
 		for _, oneOfSchema := range opts.GetOneOf() {
-			schema.OneOf = append(schema.OneOf, convertSchema(oneOfSchema))
+			schema.OneOf = append(schema.OneOf, convertSchemaOrReference(oneOfSchema))
 		}
 	}
 
 	// Apply not
 	if notSchema := opts.GetNot(); notSchema != nil {
-		schema.Not = convertSchema(notSchema)
+		schema.Not = convertSchemaOrReference(notSchema)
 	}
 
 	// Apply discriminator
@@ -694,14 +694,32 @@ func convertMediaType(mt *options.MediaType) *MediaType {
 	return result
 }
 
-func convertSchema(schema *options.Schema) *SchemaRef {
-	// If it's a reference, return a reference
-	if schema.GetRef() != "" {
-		return &SchemaRef{Ref: schema.GetRef()}
+// convertSchemaOrReference converts a proto SchemaOrReference to a Go SchemaRef.
+// This handles the discriminated union of inline schema vs reference.
+func convertSchemaOrReference(sor *options.SchemaOrReference) *SchemaOrReference {
+	if sor == nil {
+		return nil
 	}
 
+	switch v := sor.GetOneof().(type) {
+	case *options.SchemaOrReference_Reference:
+		return &SchemaOrReference{
+			Reference: &Reference{
+				Ref:         v.Reference.GetXRef(),
+				Summary:     v.Reference.GetSummary(),
+				Description: v.Reference.GetDescription(),
+			},
+		}
+	case *options.SchemaOrReference_Schema:
+		return convertSchema(v.Schema)
+	default:
+		return nil
+	}
+}
+
+func convertSchema(schema *options.Schema) *SchemaOrReference {
 	s := &Schema{
-		Type:        schema.GetType(),
+		Type:        stringToSchemaType(schema.GetType()),
 		Format:      schema.GetFormat(),
 		Title:       schema.GetTitle(),
 		Description: schema.GetDescription(),
@@ -787,27 +805,27 @@ func convertSchema(schema *options.Schema) *SchemaRef {
 	// Apply allOf
 	if len(schema.GetAllOf()) > 0 {
 		for _, allOfSchema := range schema.GetAllOf() {
-			s.AllOf = append(s.AllOf, convertSchema(allOfSchema))
+			s.AllOf = append(s.AllOf, convertSchemaOrReference(allOfSchema))
 		}
 	}
 
 	// Apply anyOf
 	if len(schema.GetAnyOf()) > 0 {
 		for _, anyOfSchema := range schema.GetAnyOf() {
-			s.AnyOf = append(s.AnyOf, convertSchema(anyOfSchema))
+			s.AnyOf = append(s.AnyOf, convertSchemaOrReference(anyOfSchema))
 		}
 	}
 
 	// Apply oneOf
 	if len(schema.GetOneOf()) > 0 {
 		for _, oneOfSchema := range schema.GetOneOf() {
-			s.OneOf = append(s.OneOf, convertSchema(oneOfSchema))
+			s.OneOf = append(s.OneOf, convertSchemaOrReference(oneOfSchema))
 		}
 	}
 
 	// Apply not
 	if notSchema := schema.GetNot(); notSchema != nil {
-		s.Not = convertSchema(notSchema)
+		s.Not = convertSchemaOrReference(notSchema)
 	}
 
 	// Apply discriminator
@@ -820,14 +838,14 @@ func convertSchema(schema *options.Schema) *SchemaRef {
 
 	// Apply items (for array schemas)
 	if items := schema.GetItems(); items != nil {
-		s.Items = convertSchema(items)
+		s.Items = convertSchemaOrReference(items)
 	}
 
-	// Apply properties (for object schemas)
+	// Apply properties (for object schemas) - now uses NamedSchemaOrReference for ordering
 	if len(schema.GetProperties()) > 0 {
-		s.Properties = make(map[string]*SchemaRef)
-		for name, propSchema := range schema.GetProperties() {
-			s.Properties[name] = convertSchema(propSchema)
+		s.Properties = make(map[string]*SchemaOrReference)
+		for _, namedProp := range schema.GetProperties() {
+			s.Properties[namedProp.GetName()] = convertSchemaOrReference(namedProp.GetValue())
 		}
 	}
 
@@ -837,11 +855,11 @@ func convertSchema(schema *options.Schema) *SchemaRef {
 		case *options.AdditionalPropertiesItem_Allows:
 			// Boolean true allows any additional properties
 			if kind.Allows {
-				s.AdditionalProperties = &SchemaRef{Value: &Schema{}}
+				s.AdditionalProperties = &SchemaOrReference{Schema: &Schema{}}
 			}
 			// Boolean false - we don't set anything (default is no additional properties)
-		case *options.AdditionalPropertiesItem_Schema:
-			s.AdditionalProperties = convertSchema(kind.Schema)
+		case *options.AdditionalPropertiesItem_SchemaOrReference:
+			s.AdditionalProperties = convertSchemaOrReference(kind.SchemaOrReference)
 		}
 	}
 
@@ -864,5 +882,5 @@ func convertSchema(schema *options.Schema) *SchemaRef {
 		// but is part of JSON Schema
 	}
 
-	return &SchemaRef{Value: s}
+	return &SchemaOrReference{Schema: s}
 }

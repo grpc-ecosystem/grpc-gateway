@@ -14,6 +14,122 @@ func float64Ptr(f float64) *float64 {
 	return &f
 }
 
+// uint64Ptr is a helper to create *uint64 for test cases
+func uint64Ptr(u uint64) *uint64 {
+	return &u
+}
+
+// ptrEqual compares two pointers for equality (both nil or same dereferenced value).
+func ptrEqual[T comparable](a, b *T) bool {
+	if a == nil && b == nil {
+		return true
+	}
+	if a == nil || b == nil {
+		return false
+	}
+	return *a == *b
+}
+
+// ptrVal returns the dereferenced value or zero value if nil.
+func ptrVal[T any](p *T) T {
+	if p == nil {
+		var zero T
+		return zero
+	}
+	return *p
+}
+
+// schemaTypeEqual compares two SchemaType slices for equality.
+func schemaTypeEqual(a, b SchemaType) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// schemaEqual compares two Schema structs for equality on commonly used fields.
+func schemaEqual(t *testing.T, got, want *Schema) {
+	t.Helper()
+	if !schemaTypeEqual(got.Type, want.Type) {
+		t.Errorf("Type = %v, want %v", got.Type, want.Type)
+	}
+	if got.Format != want.Format {
+		t.Errorf("Format = %q, want %q", got.Format, want.Format)
+	}
+	if got.Pattern != want.Pattern {
+		t.Errorf("Pattern = %q, want %q", got.Pattern, want.Pattern)
+	}
+	if !ptrEqual(got.MinLength, want.MinLength) {
+		t.Errorf("MinLength = %v, want %v", ptrVal(got.MinLength), ptrVal(want.MinLength))
+	}
+	if !ptrEqual(got.MaxLength, want.MaxLength) {
+		t.Errorf("MaxLength = %v, want %v", ptrVal(got.MaxLength), ptrVal(want.MaxLength))
+	}
+	if !ptrEqual(got.Minimum, want.Minimum) {
+		t.Errorf("Minimum = %v, want %v", ptrVal(got.Minimum), ptrVal(want.Minimum))
+	}
+	if !ptrEqual(got.Maximum, want.Maximum) {
+		t.Errorf("Maximum = %v, want %v", ptrVal(got.Maximum), ptrVal(want.Maximum))
+	}
+	if !ptrEqual(got.MultipleOf, want.MultipleOf) {
+		t.Errorf("MultipleOf = %v, want %v", ptrVal(got.MultipleOf), ptrVal(want.MultipleOf))
+	}
+}
+
+// referenceEqual compares two Reference structs for equality.
+func referenceEqual(t *testing.T, got, want *Reference) {
+	t.Helper()
+	if got.Ref != want.Ref {
+		t.Errorf("Ref = %q, want %q", got.Ref, want.Ref)
+	}
+	if got.Summary != want.Summary {
+		t.Errorf("Summary = %q, want %q", got.Summary, want.Summary)
+	}
+	if got.Description != want.Description {
+		t.Errorf("Description = %q, want %q", got.Description, want.Description)
+	}
+}
+
+// schemaRefEqual compares two SchemaRef structs for equality.
+// It handles both reference and inline schema cases.
+func schemaRefEqual(t *testing.T, got, want *SchemaOrReference) {
+	t.Helper()
+	if got == nil && want == nil {
+		return
+	}
+	if got == nil {
+		t.Error("got nil, want non-nil SchemaRef")
+		return
+	}
+	if want == nil {
+		t.Error("got non-nil SchemaRef, want nil")
+		return
+	}
+	if want.Reference != nil {
+		if got.Reference == nil {
+			t.Error("Reference should not be nil")
+			return
+		}
+		referenceEqual(t, got.Reference, want.Reference)
+		if got.Schema != nil {
+			t.Error("Value should be nil for reference")
+		}
+		return
+	}
+	if want.Schema != nil {
+		if got.Schema == nil {
+			t.Error("Value should not be nil for inline schema")
+			return
+		}
+		schemaEqual(t, got.Schema, want.Schema)
+	}
+}
+
 func TestConvertServer(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -308,17 +424,8 @@ func TestConvertSchema(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    *options.Schema
-		wantRef  bool
 		expected *Schema
 	}{
-		{
-			name: "reference schema",
-			input: &options.Schema{
-				Ref: "#/components/schemas/User",
-			},
-			wantRef:  true,
-			expected: nil,
-		},
 		{
 			name: "inline string schema",
 			input: &options.Schema{
@@ -327,10 +434,11 @@ func TestConvertSchema(t *testing.T) {
 				MaxLength: 100,
 				Pattern:   "^[a-z]+$",
 			},
-			wantRef: false,
 			expected: &Schema{
-				Type:    "string",
-				Pattern: "^[a-z]+$",
+				Type:      SchemaType{"string"},
+				MinLength: uint64Ptr(1),
+				MaxLength: uint64Ptr(100),
+				Pattern:   "^[a-z]+$",
 			},
 		},
 		{
@@ -341,9 +449,11 @@ func TestConvertSchema(t *testing.T) {
 				Maximum:    float64Ptr(100),
 				MultipleOf: float64Ptr(5),
 			},
-			wantRef: false,
 			expected: &Schema{
-				Type: "integer",
+				Type:       SchemaType{"integer"},
+				Minimum:    float64Ptr(0),
+				Maximum:    float64Ptr(100),
+				MultipleOf: float64Ptr(5),
 			},
 		},
 	}
@@ -351,17 +461,111 @@ func TestConvertSchema(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := convertSchema(tt.input)
-			if tt.wantRef {
-				if result.Ref != tt.input.Ref {
-					t.Errorf("Ref = %q, want %q", result.Ref, tt.input.Ref)
+			if result.Schema == nil {
+				t.Fatal("Value should not be nil for inline schema")
+			}
+			schemaEqual(t, result.Schema, tt.expected)
+		})
+	}
+}
+
+func TestConvertSchemaOrReference(t *testing.T) {
+	tests := []struct {
+		name       string
+		input      *options.SchemaOrReference
+		wantNil    bool
+		wantRef    *Reference
+		wantSchema *Schema
+	}{
+		{
+			name: "reference",
+			input: &options.SchemaOrReference{
+				Oneof: &options.SchemaOrReference_Reference{
+					Reference: &options.Reference{
+						XRef:        "#/components/schemas/User",
+						Summary:     "User reference",
+						Description: "Reference to User schema",
+					},
+				},
+			},
+			wantRef: &Reference{
+				Ref:         "#/components/schemas/User",
+				Summary:     "User reference",
+				Description: "Reference to User schema",
+			},
+		},
+		{
+			name: "inline string schema",
+			input: &options.SchemaOrReference{
+				Oneof: &options.SchemaOrReference_Schema{
+					Schema: &options.Schema{
+						Type:    "string",
+						Pattern: "^[a-z]+$",
+					},
+				},
+			},
+			wantSchema: &Schema{
+				Type:    SchemaType{"string"},
+				Pattern: "^[a-z]+$",
+			},
+		},
+		{
+			name: "inline integer schema with format",
+			input: &options.SchemaOrReference{
+				Oneof: &options.SchemaOrReference_Schema{
+					Schema: &options.Schema{
+						Type:    "integer",
+						Format:  "int64",
+						Minimum: float64Ptr(0),
+						Maximum: float64Ptr(100),
+					},
+				},
+			},
+			wantSchema: &Schema{
+				Type:    SchemaType{"integer"},
+				Format:  "int64",
+				Minimum: float64Ptr(0),
+				Maximum: float64Ptr(100),
+			},
+		},
+		{
+			name:    "nil input",
+			input:   nil,
+			wantNil: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := convertSchemaOrReference(tt.input)
+
+			if tt.wantNil {
+				if result != nil {
+					t.Error("Expected nil result for nil input")
 				}
-			} else {
-				if result.Value == nil {
+				return
+			}
+
+			if result == nil {
+				t.Fatal("Unexpected nil result")
+			}
+
+			if tt.wantRef != nil {
+				if result.Reference == nil {
+					t.Fatal("Reference should not be nil")
+				}
+				referenceEqual(t, result.Reference, tt.wantRef)
+				if result.Schema != nil {
+					t.Error("Value should be nil for reference")
+				}
+				return
+			}
+
+			if tt.wantSchema != nil {
+				if result.Schema == nil {
 					t.Fatal("Value should not be nil for inline schema")
 				}
-				if result.Value.Type != tt.expected.Type {
-					t.Errorf("Type = %q, want %q", result.Value.Type, tt.expected.Type)
-				}
+				schemaEqual(t, result.Schema, tt.wantSchema)
 			}
 		})
 	}
@@ -442,35 +646,35 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			result := convertSchema(tt.input)
 
-			if result.Value == nil {
+			if result.Schema == nil {
 				t.Fatal("Value should not be nil for inline schema")
 			}
 
 			// Check minimum
 			if tt.wantMinimum != nil {
-				if result.Value.Minimum == nil {
+				if result.Schema.Minimum == nil {
 					t.Errorf("minimum constraint is missing: expected minimum: %v to be set",
 						*tt.wantMinimum)
-				} else if *result.Value.Minimum != *tt.wantMinimum {
-					t.Errorf("minimum = %v, want %v", *result.Value.Minimum, *tt.wantMinimum)
+				} else if *result.Schema.Minimum != *tt.wantMinimum {
+					t.Errorf("minimum = %v, want %v", *result.Schema.Minimum, *tt.wantMinimum)
 				}
 			} else {
-				if result.Value.Minimum != nil {
-					t.Errorf("minimum should be nil, got %v", *result.Value.Minimum)
+				if result.Schema.Minimum != nil {
+					t.Errorf("minimum should be nil, got %v", *result.Schema.Minimum)
 				}
 			}
 
 			// Check maximum
 			if tt.wantMaximum != nil {
-				if result.Value.Maximum == nil {
+				if result.Schema.Maximum == nil {
 					t.Errorf("maximum constraint is missing: expected maximum: %v to be set",
 						*tt.wantMaximum)
-				} else if *result.Value.Maximum != *tt.wantMaximum {
-					t.Errorf("maximum = %v, want %v", *result.Value.Maximum, *tt.wantMaximum)
+				} else if *result.Schema.Maximum != *tt.wantMaximum {
+					t.Errorf("maximum = %v, want %v", *result.Schema.Maximum, *tt.wantMaximum)
 				}
 			} else {
-				if result.Value.Maximum != nil {
-					t.Errorf("maximum should be nil, got %v", *result.Value.Maximum)
+				if result.Schema.Maximum != nil {
+					t.Errorf("maximum should be nil, got %v", *result.Schema.Maximum)
 				}
 			}
 		})
@@ -562,91 +766,99 @@ func TestConvertHeader(t *testing.T) {
 func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("oneOf schema", func(t *testing.T) {
 		input := &options.Schema{
-			OneOf: []*options.Schema{
-				{Type: "string"},
-				{Type: "integer"},
+			OneOf: []*options.SchemaOrReference{
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Format: "email"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "integer", Format: "int64"}}},
 			},
+		}
+		wantOneOf := []*SchemaOrReference{
+			{Schema: &Schema{Type: SchemaType{"string"}, Format: "email"}},
+			{Schema: &Schema{Type: SchemaType{"integer"}, Format: "int64"}},
 		}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if len(result.Value.OneOf) != 2 {
-			t.Errorf("OneOf count = %d, want %d", len(result.Value.OneOf), 2)
+		if len(result.Schema.OneOf) != len(wantOneOf) {
+			t.Fatalf("OneOf count = %d, want %d", len(result.Schema.OneOf), len(wantOneOf))
 		}
-		if result.Value.OneOf[0].Value.Type != "string" {
-			t.Errorf("OneOf[0].Type = %q, want %q", result.Value.OneOf[0].Value.Type, "string")
-		}
-		if result.Value.OneOf[1].Value.Type != "integer" {
-			t.Errorf("OneOf[1].Type = %q, want %q", result.Value.OneOf[1].Value.Type, "integer")
+		for i, want := range wantOneOf {
+			schemaRefEqual(t, result.Schema.OneOf[i], want)
 		}
 	})
 
 	t.Run("anyOf schema", func(t *testing.T) {
 		input := &options.Schema{
-			AnyOf: []*options.Schema{
-				{Type: "string"},
-				{Type: "number"},
+			AnyOf: []*options.SchemaOrReference{
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Pattern: "^[a-z]+$"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "number", Format: "double"}}},
 			},
+		}
+		wantAnyOf := []*SchemaOrReference{
+			{Schema: &Schema{Type: SchemaType{"string"}, Pattern: "^[a-z]+$"}},
+			{Schema: &Schema{Type: SchemaType{"number"}, Format: "double"}},
 		}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if len(result.Value.AnyOf) != 2 {
-			t.Errorf("AnyOf count = %d, want %d", len(result.Value.AnyOf), 2)
+		if len(result.Schema.AnyOf) != len(wantAnyOf) {
+			t.Fatalf("AnyOf count = %d, want %d", len(result.Schema.AnyOf), len(wantAnyOf))
+		}
+		for i, want := range wantAnyOf {
+			schemaRefEqual(t, result.Schema.AnyOf[i], want)
 		}
 	})
 
-	t.Run("allOf schema", func(t *testing.T) {
+	t.Run("allOf schema with reference", func(t *testing.T) {
 		input := &options.Schema{
-			AllOf: []*options.Schema{
-				{Ref: "#/components/schemas/Base"},
-				{Type: "object", Required: []string{"extra_field"}},
+			AllOf: []*options.SchemaOrReference{
+				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Base"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "object"}}},
 			},
+		}
+		wantAllOf := []*SchemaOrReference{
+			{Reference: &Reference{Ref: "#/components/schemas/Base"}},
+			{Schema: &Schema{Type: SchemaType{"object"}}},
 		}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if len(result.Value.AllOf) != 2 {
-			t.Errorf("AllOf count = %d, want %d", len(result.Value.AllOf), 2)
+		if len(result.Schema.AllOf) != len(wantAllOf) {
+			t.Fatalf("AllOf count = %d, want %d", len(result.Schema.AllOf), len(wantAllOf))
 		}
-		if result.Value.AllOf[0].Ref != "#/components/schemas/Base" {
-			t.Errorf("AllOf[0].Ref = %q, want %q", result.Value.AllOf[0].Ref, "#/components/schemas/Base")
+		for i, want := range wantAllOf {
+			schemaRefEqual(t, result.Schema.AllOf[i], want)
 		}
 	})
 
 	t.Run("not schema", func(t *testing.T) {
 		input := &options.Schema{
 			Type: "string",
-			Not:  &options.Schema{Enum: []string{"forbidden"}},
+			Not:  &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Pattern: "^forbidden$"}}},
 		}
+		wantNot := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Pattern: "^forbidden$"}}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if result.Value.Not == nil {
-			t.Fatal("Not should not be nil")
-		}
-		if len(result.Value.Not.Value.Enum) != 1 {
-			t.Errorf("Not.Enum count = %d, want %d", len(result.Value.Not.Value.Enum), 1)
-		}
+		schemaRefEqual(t, result.Schema.Not, wantNot)
 	})
 
 	t.Run("discriminator", func(t *testing.T) {
 		input := &options.Schema{
-			OneOf: []*options.Schema{
-				{Ref: "#/components/schemas/Cat"},
-				{Ref: "#/components/schemas/Dog"},
+			OneOf: []*options.SchemaOrReference{
+				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Cat"}}},
+				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Dog"}}},
 			},
 			Discriminator: &options.Discriminator{
 				PropertyName: "petType",
@@ -656,64 +868,76 @@ func TestConvertSchemaComposition(t *testing.T) {
 				},
 			},
 		}
+		wantOneOf := []*SchemaOrReference{
+			{Reference: &Reference{Ref: "#/components/schemas/Cat"}},
+			{Reference: &Reference{Ref: "#/components/schemas/Dog"}},
+		}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if result.Value.Discriminator == nil {
+		if len(result.Schema.OneOf) != len(wantOneOf) {
+			t.Fatalf("OneOf count = %d, want %d", len(result.Schema.OneOf), len(wantOneOf))
+		}
+		for i, want := range wantOneOf {
+			schemaRefEqual(t, result.Schema.OneOf[i], want)
+		}
+		if result.Schema.Discriminator == nil {
 			t.Fatal("Discriminator should not be nil")
 		}
-		if result.Value.Discriminator.PropertyName != "petType" {
-			t.Errorf("Discriminator.PropertyName = %q, want %q", result.Value.Discriminator.PropertyName, "petType")
+		if result.Schema.Discriminator.PropertyName != "petType" {
+			t.Errorf("Discriminator.PropertyName = %q, want %q", result.Schema.Discriminator.PropertyName, "petType")
 		}
-		if len(result.Value.Discriminator.Mapping) != 2 {
-			t.Errorf("Discriminator.Mapping count = %d, want %d", len(result.Value.Discriminator.Mapping), 2)
+		if len(result.Schema.Discriminator.Mapping) != 2 {
+			t.Errorf("Discriminator.Mapping count = %d, want %d", len(result.Schema.Discriminator.Mapping), 2)
 		}
 	})
 
 	t.Run("items for array", func(t *testing.T) {
 		input := &options.Schema{
 			Type:  "array",
-			Items: &options.Schema{Type: "string"},
+			Items: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Format: "uuid"}}},
 		}
+		wantItems := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uuid"}}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if result.Value.Items == nil {
-			t.Fatal("Items should not be nil")
-		}
-		if result.Value.Items.Value.Type != "string" {
-			t.Errorf("Items.Type = %q, want %q", result.Value.Items.Value.Type, "string")
-		}
+		schemaRefEqual(t, result.Schema.Items, wantItems)
 	})
 
 	t.Run("properties for object", func(t *testing.T) {
 		input := &options.Schema{
 			Type: "object",
-			Properties: map[string]*options.Schema{
-				"name": {Type: "string"},
-				"age":  {Type: "integer"},
+			Properties: []*options.NamedSchemaOrReference{
+				{Name: "name", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", MinLength: 1}}}},
+				{Name: "age", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "integer", Format: "int32"}}}},
 			},
+		}
+		wantProperties := map[string]*SchemaOrReference{
+			"name": {Schema: &Schema{Type: SchemaType{"string"}, MinLength: uint64Ptr(1)}},
+			"age":  {Schema: &Schema{Type: SchemaType{"integer"}, Format: "int32"}},
 		}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if len(result.Value.Properties) != 2 {
-			t.Errorf("Properties count = %d, want %d", len(result.Value.Properties), 2)
+		if len(result.Schema.Properties) != len(wantProperties) {
+			t.Fatalf("Properties count = %d, want %d", len(result.Schema.Properties), len(wantProperties))
 		}
-		if result.Value.Properties["name"].Value.Type != "string" {
-			t.Errorf("Properties[name].Type = %q, want %q", result.Value.Properties["name"].Value.Type, "string")
-		}
-		if result.Value.Properties["age"].Value.Type != "integer" {
-			t.Errorf("Properties[age].Type = %q, want %q", result.Value.Properties["age"].Value.Type, "integer")
+		for name, want := range wantProperties {
+			got, ok := result.Schema.Properties[name]
+			if !ok {
+				t.Errorf("missing property %q", name)
+				continue
+			}
+			schemaRefEqual(t, got, want)
 		}
 	})
 
@@ -721,23 +945,21 @@ func TestConvertSchemaComposition(t *testing.T) {
 		input := &options.Schema{
 			Type: "object",
 			AdditionalProperties: &options.AdditionalPropertiesItem{
-				Kind: &options.AdditionalPropertiesItem_Schema{
-					Schema: &options.Schema{Type: "string"},
+				Kind: &options.AdditionalPropertiesItem_SchemaOrReference{
+					SchemaOrReference: &options.SchemaOrReference{
+						Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Format: "uri"}},
+					},
 				},
 			},
 		}
+		wantAdditionalProperties := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uri"}}
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if result.Value.AdditionalProperties == nil {
-			t.Fatal("AdditionalProperties should not be nil")
-		}
-		if result.Value.AdditionalProperties.Value.Type != "string" {
-			t.Errorf("AdditionalProperties.Type = %q, want %q", result.Value.AdditionalProperties.Value.Type, "string")
-		}
+		schemaRefEqual(t, result.Schema.AdditionalProperties, wantAdditionalProperties)
 	})
 
 	t.Run("additionalProperties allows", func(t *testing.T) {
@@ -750,10 +972,10 @@ func TestConvertSchemaComposition(t *testing.T) {
 
 		result := convertSchema(input)
 
-		if result.Value == nil {
+		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
 		}
-		if result.Value.AdditionalProperties == nil {
+		if result.Schema.AdditionalProperties == nil {
 			t.Fatal("AdditionalProperties should not be nil when allows=true")
 		}
 	})
@@ -914,16 +1136,16 @@ func TestApplySchemaAnnotation(t *testing.T) {
 		{
 			name: "apply composition types",
 			opts: &options.Schema{
-				AllOf: []*options.Schema{
-					{Ref: "#/components/schemas/Base"},
+				AllOf: []*options.SchemaOrReference{
+					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Base"}}},
 				},
-				AnyOf: []*options.Schema{
-					{Type: "string"},
-					{Type: "integer"},
+				AnyOf: []*options.SchemaOrReference{
+					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string"}}},
+					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "integer"}}},
 				},
-				OneOf: []*options.Schema{
-					{Ref: "#/components/schemas/Cat"},
-					{Ref: "#/components/schemas/Dog"},
+				OneOf: []*options.SchemaOrReference{
+					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Cat"}}},
+					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Dog"}}},
 				},
 			},
 			wantAllOf: 1,
@@ -936,7 +1158,7 @@ func TestApplySchemaAnnotation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			schema := &Schema{Type: "object"}
+			schema := &Schema{Type: SchemaType{"object"}}
 
 			// Create message options with the OpenAPI annotation
 			msgOpts := &descriptorpb.MessageOptions{}
@@ -1078,7 +1300,7 @@ func TestApplyFieldAnnotation(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			schema := &Schema{Type: "string"}
+			schema := &Schema{Type: SchemaType{"string"}}
 
 			// Create field options with the OpenAPI annotation
 			fieldOpts := &descriptorpb.FieldOptions{}
@@ -1382,7 +1604,7 @@ func TestApplyEnumAnnotation(t *testing.T) {
 			t.Parallel()
 
 			schema := &Schema{
-				Type: "string",
+				Type: SchemaType{"string"},
 				Enum: []any{"PENDING", "COMPLETED", "FAILED"},
 			}
 
@@ -1510,7 +1732,7 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 			t.Parallel()
 
 			comp := &Components{
-				Schemas: make(map[string]*SchemaRef),
+				Schemas: make(map[string]*SchemaOrReference),
 			}
 
 			reg := &descriptor.Registry{}
