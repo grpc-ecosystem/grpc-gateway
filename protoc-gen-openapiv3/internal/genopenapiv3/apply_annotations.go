@@ -1,9 +1,33 @@
 package genopenapiv3
 
 import (
+	"encoding/json"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 )
+
+// parseExampleValue attempts to parse a string as JSON.
+// If parsing succeeds, returns the parsed value (which could be a map, slice, number, bool, or null).
+// If parsing fails, returns the original string (for simple string examples like "hello").
+// This ensures examples are properly typed in the generated OpenAPI spec:
+//   - `"{\"id\": 123}"` becomes `{"id": 123}` (object)
+//   - `"[1, 2, 3]"` becomes `[1, 2, 3]` (array)
+//   - `"42"` becomes `42` (number)
+//   - `"true"` becomes `true` (boolean)
+//   - `"hello"` stays `"hello"` (string, since it's not valid JSON)
+func parseExampleValue(s string) any {
+	if s == "" {
+		return nil
+	}
+
+	var result any
+	if err := json.Unmarshal([]byte(s), &result); err != nil {
+		// Not valid JSON, return as string
+		return s
+	}
+	return result
+}
 
 // applyFileAnnotation applies file-level OpenAPI v3 annotations to the document.
 func (g *generator) applyFileAnnotation(doc *OpenAPI, file *descriptor.File) {
@@ -209,7 +233,7 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 
 	// Apply example
 	if opts.GetExample() != "" {
-		schema.Example = opts.GetExample()
+		schema.Example = parseExampleValue(opts.GetExample())
 	}
 
 	// Apply read only
@@ -298,7 +322,7 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 
 	// Apply example
 	if opts.GetExample() != "" {
-		schema.Example = opts.GetExample()
+		schema.Example = parseExampleValue(opts.GetExample())
 	}
 
 	// Apply format
@@ -484,7 +508,7 @@ func (g *generator) applyEnumAnnotation(schema *Schema, enum *descriptor.Enum) {
 
 	// Apply example
 	if opts.GetExample() != "" {
-		schema.Example = opts.GetExample()
+		schema.Example = parseExampleValue(opts.GetExample())
 	}
 
 	// Apply deprecated
@@ -639,7 +663,7 @@ func convertParameter(param *options.Parameter) *Parameter {
 		p.Explode = &explode
 	}
 	if param.GetExample() != "" {
-		p.Example = param.GetExample()
+		p.Example = parseExampleValue(param.GetExample())
 	}
 	if schema := param.GetSchema(); schema != nil {
 		p.Schema = convertSchema(schema)
@@ -675,7 +699,7 @@ func convertHeader(header *options.Header) *Header {
 		h.Explode = &explode
 	}
 	if header.GetExample() != "" {
-		h.Example = header.GetExample()
+		h.Example = parseExampleValue(header.GetExample())
 	}
 	if schema := header.GetSchema(); schema != nil {
 		h.Schema = convertSchema(schema)
@@ -686,7 +710,7 @@ func convertHeader(header *options.Header) *Header {
 func convertMediaType(mt *options.MediaType) *MediaType {
 	result := &MediaType{}
 	if mt.GetExample() != "" {
-		result.Example = mt.GetExample()
+		result.Example = parseExampleValue(mt.GetExample())
 	}
 	if schema := mt.GetSchema(); schema != nil {
 		result.Schema = convertSchema(schema)
@@ -739,7 +763,7 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 
 	// Apply example
 	if schema.GetExample() != "" {
-		s.Example = schema.GetExample()
+		s.Example = parseExampleValue(schema.GetExample())
 	}
 
 	// Apply enum values

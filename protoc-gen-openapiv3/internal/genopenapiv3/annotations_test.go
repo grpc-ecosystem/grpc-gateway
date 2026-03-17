@@ -1,6 +1,8 @@
 package genopenapiv3
 
 import (
+	"encoding/json"
+	"reflect"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -50,6 +52,135 @@ func schemaTypeEqual(a, b SchemaType) bool {
 		}
 	}
 	return true
+}
+
+// TestParseExampleValue tests the parseExampleValue function that converts
+// string examples from proto annotations into properly typed JSON values.
+func TestParseExampleValue(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected any
+	}{
+		{
+			name:     "empty string returns nil",
+			input:    "",
+			expected: nil,
+		},
+		{
+			name:     "JSON object",
+			input:    `{"id": 123, "name": "John"}`,
+			expected: map[string]any{"id": float64(123), "name": "John"},
+		},
+		{
+			name:     "JSON array",
+			input:    `[1, 2, 3]`,
+			expected: []any{float64(1), float64(2), float64(3)},
+		},
+		{
+			name:     "JSON number",
+			input:    `42`,
+			expected: float64(42),
+		},
+		{
+			name:     "JSON float",
+			input:    `3.14`,
+			expected: float64(3.14),
+		},
+		{
+			name:     "JSON boolean true",
+			input:    `true`,
+			expected: true,
+		},
+		{
+			name:     "JSON boolean false",
+			input:    `false`,
+			expected: false,
+		},
+		{
+			name:     "JSON null",
+			input:    `null`,
+			expected: nil,
+		},
+		{
+			name:     "JSON string",
+			input:    `"hello world"`,
+			expected: "hello world",
+		},
+		{
+			name:     "plain string (not valid JSON) stays as string",
+			input:    "hello",
+			expected: "hello",
+		},
+		{
+			name:     "nested JSON object",
+			input:    `{"user": {"id": 1, "tags": ["admin", "user"]}}`,
+			expected: map[string]any{"user": map[string]any{"id": float64(1), "tags": []any{"admin", "user"}}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := parseExampleValue(tt.input)
+			if !reflect.DeepEqual(result, tt.expected) {
+				t.Errorf("parseExampleValue(%q) = %v (%T), want %v (%T)",
+					tt.input, result, result, tt.expected, tt.expected)
+			}
+		})
+	}
+}
+
+// TestParseExampleValueJSONOutput verifies that parsed examples serialize correctly to JSON.
+func TestParseExampleValueJSONOutput(t *testing.T) {
+	tests := []struct {
+		name         string
+		input        string
+		expectedJSON string
+	}{
+		{
+			name:         "object example",
+			input:        `{"id": 123}`,
+			expectedJSON: `{"id":123}`,
+		},
+		{
+			name:         "array example",
+			input:        `[1, 2, 3]`,
+			expectedJSON: `[1,2,3]`,
+		},
+		{
+			name:         "number example",
+			input:        `42`,
+			expectedJSON: `42`,
+		},
+		{
+			name:         "boolean example",
+			input:        `true`,
+			expectedJSON: `true`,
+		},
+		{
+			name:         "string example from JSON",
+			input:        `"hello"`,
+			expectedJSON: `"hello"`,
+		},
+		{
+			name:         "plain string stays as string",
+			input:        `hello`,
+			expectedJSON: `"hello"`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := parseExampleValue(tt.input)
+			jsonBytes, err := json.Marshal(result)
+			if err != nil {
+				t.Fatalf("Failed to marshal result: %v", err)
+			}
+			if string(jsonBytes) != tt.expectedJSON {
+				t.Errorf("JSON output = %s, want %s", string(jsonBytes), tt.expectedJSON)
+			}
+		})
+	}
 }
 
 // schemaEqual compares two Schema structs for equality on commonly used fields.
@@ -1082,7 +1213,7 @@ func TestApplySchemaAnnotation(t *testing.T) {
 		opts           *options.Schema
 		wantTitle      string
 		wantDesc       string
-		wantExample    string
+		wantExample    any
 		wantReadOnly   bool
 		wantWriteOnly  bool
 		wantNullable   bool
@@ -1131,7 +1262,8 @@ func TestApplySchemaAnnotation(t *testing.T) {
 			opts: &options.Schema{
 				Example: `{"id": "123"}`,
 			},
-			wantExample: `{"id": "123"}`,
+			// Example is now parsed as JSON, so we expect a map, not a string
+			wantExample: map[string]any{"id": "123"},
 		},
 		{
 			name: "apply composition types",
@@ -1183,8 +1315,8 @@ func TestApplySchemaAnnotation(t *testing.T) {
 			if tt.wantDesc != "" && schema.Description != tt.wantDesc {
 				t.Errorf("Description = %q, want %q", schema.Description, tt.wantDesc)
 			}
-			if tt.wantExample != "" && schema.Example != tt.wantExample {
-				t.Errorf("Example = %q, want %q", schema.Example, tt.wantExample)
+			if tt.wantExample != nil && !reflect.DeepEqual(schema.Example, tt.wantExample) {
+				t.Errorf("Example = %v, want %v", schema.Example, tt.wantExample)
 			}
 			if schema.ReadOnly != tt.wantReadOnly {
 				t.Errorf("ReadOnly = %v, want %v", schema.ReadOnly, tt.wantReadOnly)
@@ -1223,7 +1355,7 @@ func TestApplyFieldAnnotation(t *testing.T) {
 		wantTitle      string
 		wantDesc       string
 		wantDefault    string
-		wantExample    string
+		wantExample    any
 		wantFormat     string
 		wantPattern    string
 		wantMinLength  uint64
@@ -1328,8 +1460,8 @@ func TestApplyFieldAnnotation(t *testing.T) {
 			if tt.wantDefault != "" && schema.Default != tt.wantDefault {
 				t.Errorf("Default = %q, want %q", schema.Default, tt.wantDefault)
 			}
-			if tt.wantExample != "" && schema.Example != tt.wantExample {
-				t.Errorf("Example = %q, want %q", schema.Example, tt.wantExample)
+			if tt.wantExample != nil && !reflect.DeepEqual(schema.Example, tt.wantExample) {
+				t.Errorf("Example = %v, want %v", schema.Example, tt.wantExample)
 			}
 			if tt.wantFormat != "" && schema.Format != tt.wantFormat {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.wantFormat)
@@ -1559,7 +1691,7 @@ func TestApplyEnumAnnotation(t *testing.T) {
 		wantTitle      string
 		wantDesc       string
 		wantDefault    string
-		wantExample    string
+		wantExample    any
 		wantDeprecated bool
 		wantExtDocs    bool
 	}{
@@ -1634,8 +1766,8 @@ func TestApplyEnumAnnotation(t *testing.T) {
 			if tt.wantDefault != "" && schema.Default != tt.wantDefault {
 				t.Errorf("Default = %q, want %q", schema.Default, tt.wantDefault)
 			}
-			if tt.wantExample != "" && schema.Example != tt.wantExample {
-				t.Errorf("Example = %q, want %q", schema.Example, tt.wantExample)
+			if tt.wantExample != nil && !reflect.DeepEqual(schema.Example, tt.wantExample) {
+				t.Errorf("Example = %v, want %v", schema.Example, tt.wantExample)
 			}
 			if schema.Deprecated != tt.wantDeprecated {
 				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)
