@@ -384,19 +384,13 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 		max := opts.GetMaximum()
 		schema.Maximum = &max
 	}
-	if opts.GetExclusiveMinimum() {
-		// In OpenAPI 3.0, exclusiveMinimum is boolean, but in 3.1 it's the actual value
-		// For now, we set it to minimum value if exclusiveMinimum is true
-		if schema.Minimum != nil {
-			schema.ExclusiveMinimum = schema.Minimum
-			schema.Minimum = nil
-		}
+	if opts.ExclusiveMinimum != nil {
+		exclusiveMin := opts.GetExclusiveMinimum()
+		schema.ExclusiveMinimum = &exclusiveMin
 	}
-	if opts.GetExclusiveMaximum() {
-		if schema.Maximum != nil {
-			schema.ExclusiveMaximum = schema.Maximum
-			schema.Maximum = nil
-		}
+	if opts.ExclusiveMaximum != nil {
+		exclusiveMax := opts.GetExclusiveMaximum()
+		schema.ExclusiveMaximum = &exclusiveMax
 	}
 
 	// Apply read only
@@ -729,7 +723,7 @@ func convertSchemaOrReference(sor *options.SchemaOrReference) *SchemaOrReference
 	case *options.SchemaOrReference_Reference:
 		return &SchemaOrReference{
 			Reference: &Reference{
-				Ref:         v.Reference.GetXRef(),
+				Ref:         v.Reference.GetRef(),
 				Summary:     v.Reference.GetSummary(),
 				Description: v.Reference.GetDescription(),
 			},
@@ -743,7 +737,7 @@ func convertSchemaOrReference(sor *options.SchemaOrReference) *SchemaOrReference
 
 func convertSchema(schema *options.Schema) *SchemaOrReference {
 	s := &Schema{
-		Type:        stringToSchemaType(schema.GetType()),
+		Type:        SchemaType(schema.GetType()),
 		Format:      schema.GetFormat(),
 		Title:       schema.GetTitle(),
 		Description: schema.GetDescription(),

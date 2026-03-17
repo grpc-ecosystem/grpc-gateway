@@ -532,7 +532,7 @@ func TestConvertResponse(t *testing.T) {
 			"X-Request-Id": {
 				Description: "Request ID",
 				Schema: &options.Schema{
-					Type: "string",
+					Type: []string{"string"},
 				},
 			},
 		},
@@ -560,7 +560,7 @@ func TestConvertSchema(t *testing.T) {
 		{
 			name: "inline string schema",
 			input: &options.Schema{
-				Type:      "string",
+				Type:      []string{"string"},
 				MinLength: 1,
 				MaxLength: 100,
 				Pattern:   "^[a-z]+$",
@@ -575,7 +575,7 @@ func TestConvertSchema(t *testing.T) {
 		{
 			name: "schema with validation",
 			input: &options.Schema{
-				Type:       "integer",
+				Type:       []string{"integer"},
 				Minimum:    float64Ptr(0),
 				Maximum:    float64Ptr(100),
 				MultipleOf: float64Ptr(5),
@@ -613,7 +613,7 @@ func TestConvertSchemaOrReference(t *testing.T) {
 			input: &options.SchemaOrReference{
 				Oneof: &options.SchemaOrReference_Reference{
 					Reference: &options.Reference{
-						XRef:        "#/components/schemas/User",
+						Ref:        "#/components/schemas/User",
 						Summary:     "User reference",
 						Description: "Reference to User schema",
 					},
@@ -630,7 +630,7 @@ func TestConvertSchemaOrReference(t *testing.T) {
 			input: &options.SchemaOrReference{
 				Oneof: &options.SchemaOrReference_Schema{
 					Schema: &options.Schema{
-						Type:    "string",
+						Type:    []string{"string"},
 						Pattern: "^[a-z]+$",
 					},
 				},
@@ -645,7 +645,7 @@ func TestConvertSchemaOrReference(t *testing.T) {
 			input: &options.SchemaOrReference{
 				Oneof: &options.SchemaOrReference_Schema{
 					Schema: &options.Schema{
-						Type:    "integer",
+						Type:    []string{"integer"},
 						Format:  "int64",
 						Minimum: float64Ptr(0),
 						Maximum: float64Ptr(100),
@@ -716,7 +716,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		{
 			name: "minimum 0, maximum 100",
 			input: &options.Schema{
-				Type:    "integer",
+				Type:    []string{"integer"},
 				Minimum: float64Ptr(0),
 				Maximum: float64Ptr(100),
 			},
@@ -726,7 +726,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		{
 			name: "minimum -10, maximum 0",
 			input: &options.Schema{
-				Type:    "integer",
+				Type:    []string{"integer"},
 				Minimum: float64Ptr(-10),
 				Maximum: float64Ptr(0),
 			},
@@ -736,7 +736,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		{
 			name: "both zero",
 			input: &options.Schema{
-				Type:    "integer",
+				Type:    []string{"integer"},
 				Minimum: float64Ptr(0),
 				Maximum: float64Ptr(0),
 			},
@@ -746,7 +746,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		{
 			name: "non-zero values",
 			input: &options.Schema{
-				Type:    "integer",
+				Type:    []string{"integer"},
 				Minimum: float64Ptr(1),
 				Maximum: float64Ptr(100),
 			},
@@ -756,7 +756,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		{
 			name: "only minimum set to 0",
 			input: &options.Schema{
-				Type:    "integer",
+				Type:    []string{"integer"},
 				Minimum: float64Ptr(0),
 			},
 			wantMinimum: float64Ptr(0),
@@ -765,7 +765,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 		{
 			name: "only maximum set to 0",
 			input: &options.Schema{
-				Type:    "integer",
+				Type:    []string{"integer"},
 				Maximum: float64Ptr(0),
 			},
 			wantMinimum: nil,
@@ -819,7 +819,7 @@ func TestConvertParameter(t *testing.T) {
 		Description: "User identifier",
 		Required:    true,
 		Schema: &options.Schema{
-			Type:   "string",
+			Type:   []string{"string"},
 			Format: "uuid",
 		},
 	}
@@ -850,7 +850,7 @@ func TestConvertRequestBody(t *testing.T) {
 		Content: map[string]*options.MediaType{
 			"application/json": {
 				Schema: &options.Schema{
-					Type: "object",
+					Type: []string{"object"},
 				},
 			},
 		},
@@ -877,7 +877,7 @@ func TestConvertHeader(t *testing.T) {
 		Description: "Request correlation ID",
 		Required:    true,
 		Schema: &options.Schema{
-			Type: "string",
+			Type: []string{"string"},
 		},
 	}
 
@@ -898,8 +898,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("oneOf schema", func(t *testing.T) {
 		input := &options.Schema{
 			OneOf: []*options.SchemaOrReference{
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Format: "email"}}},
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "integer", Format: "int64"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Format: "email"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"integer"}, Format: "int64"}}},
 			},
 		}
 		wantOneOf := []*SchemaOrReference{
@@ -923,8 +923,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("anyOf schema", func(t *testing.T) {
 		input := &options.Schema{
 			AnyOf: []*options.SchemaOrReference{
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Pattern: "^[a-z]+$"}}},
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "number", Format: "double"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Pattern: "^[a-z]+$"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"number"}, Format: "double"}}},
 			},
 		}
 		wantAnyOf := []*SchemaOrReference{
@@ -948,8 +948,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("allOf schema with reference", func(t *testing.T) {
 		input := &options.Schema{
 			AllOf: []*options.SchemaOrReference{
-				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Base"}}},
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "object"}}},
+				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Base"}}},
+				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"object"}}}},
 			},
 		}
 		wantAllOf := []*SchemaOrReference{
@@ -972,8 +972,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 
 	t.Run("not schema", func(t *testing.T) {
 		input := &options.Schema{
-			Type: "string",
-			Not:  &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Pattern: "^forbidden$"}}},
+			Type: []string{"string"},
+			Not:  &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Pattern: "^forbidden$"}}},
 		}
 		wantNot := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Pattern: "^forbidden$"}}
 
@@ -988,8 +988,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("discriminator", func(t *testing.T) {
 		input := &options.Schema{
 			OneOf: []*options.SchemaOrReference{
-				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Cat"}}},
-				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Dog"}}},
+				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Cat"}}},
+				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Dog"}}},
 			},
 			Discriminator: &options.Discriminator{
 				PropertyName: "petType",
@@ -1028,8 +1028,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 
 	t.Run("items for array", func(t *testing.T) {
 		input := &options.Schema{
-			Type:  "array",
-			Items: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Format: "uuid"}}},
+			Type:  []string{"array"},
+			Items: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Format: "uuid"}}},
 		}
 		wantItems := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uuid"}}
 
@@ -1043,10 +1043,10 @@ func TestConvertSchemaComposition(t *testing.T) {
 
 	t.Run("properties for object", func(t *testing.T) {
 		input := &options.Schema{
-			Type: "object",
+			Type: []string{"object"},
 			Properties: []*options.NamedSchemaOrReference{
-				{Name: "name", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", MinLength: 1}}}},
-				{Name: "age", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "integer", Format: "int32"}}}},
+				{Name: "name", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, MinLength: 1}}}},
+				{Name: "age", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"integer"}, Format: "int32"}}}},
 			},
 		}
 		wantProperties := map[string]*SchemaOrReference{
@@ -1074,11 +1074,11 @@ func TestConvertSchemaComposition(t *testing.T) {
 
 	t.Run("additionalProperties with schema", func(t *testing.T) {
 		input := &options.Schema{
-			Type: "object",
+			Type: []string{"object"},
 			AdditionalProperties: &options.AdditionalPropertiesItem{
 				Kind: &options.AdditionalPropertiesItem_SchemaOrReference{
 					SchemaOrReference: &options.SchemaOrReference{
-						Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string", Format: "uri"}},
+						Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Format: "uri"}},
 					},
 				},
 			},
@@ -1095,7 +1095,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 
 	t.Run("additionalProperties allows", func(t *testing.T) {
 		input := &options.Schema{
-			Type: "object",
+			Type: []string{"object"},
 			AdditionalProperties: &options.AdditionalPropertiesItem{
 				Kind: &options.AdditionalPropertiesItem_Allows{Allows: true},
 			},
@@ -1269,15 +1269,15 @@ func TestApplySchemaAnnotation(t *testing.T) {
 			name: "apply composition types",
 			opts: &options.Schema{
 				AllOf: []*options.SchemaOrReference{
-					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Base"}}},
+					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Base"}}},
 				},
 				AnyOf: []*options.SchemaOrReference{
-					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "string"}}},
-					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: "integer"}}},
+					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}}}},
+					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"integer"}}}},
 				},
 				OneOf: []*options.SchemaOrReference{
-					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Cat"}}},
-					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{XRef: "#/components/schemas/Dog"}}},
+					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Cat"}}},
+					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Dog"}}},
 				},
 			},
 			wantAllOf: 1,
@@ -1827,7 +1827,7 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 						Name:     "page_size",
 						In:       "query",
 						Required: false,
-						Schema:   &options.Schema{Type: "integer"},
+						Schema:   &options.Schema{Type: []string{"integer"}},
 					},
 				},
 			},
@@ -1851,7 +1851,7 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 				Headers: map[string]*options.Header{
 					"X-Request-Id": {
 						Description: "Request correlation ID",
-						Schema:      &options.Schema{Type: "string"},
+						Schema:      &options.Schema{Type: []string{"string"}},
 					},
 				},
 			},

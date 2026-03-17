@@ -406,8 +406,8 @@ message AdditionalPropertiesItem {
 // Aligned with gnostic-models pattern.
 message Reference {
   // REQUIRED. The $ref URI reference.
-  // Uses underscore prefix per gnostic convention, serializes to "$ref" in JSON.
-  string _ref = 1;
+  // Serializes to "$ref" in JSON via json_name option.
+  string ref = 1 [json_name = "$ref"];
   // v3.1.0: Optional summary override for the referenced content.
   string summary = 2;
   // v3.1.0: Optional description override for the referenced content.
@@ -619,7 +619,7 @@ message EnumSchema {
   // A free-form property to include an example.
   string example = 6;
   // Allows referencing another schema. Serializes to "$ref" in JSON.
-  string _ref = 7;
+  string ref = 7 [json_name = "$ref"];
   // Custom properties that start with "x-" such as "x-foo".
   map<string, google.protobuf.Value> extensions = 8;
 }
