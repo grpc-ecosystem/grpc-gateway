@@ -620,26 +620,36 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 		g.addFieldToSchema(doc, schema, field, visited)
 	}
 
-	// Process oneof groups - add all oneof fields as properties too
-	// (they need to be in properties for JSON serialization)
-	// Note: oneof fields are not required since only one can be set
-	for _, group := range oneofGroups {
-		for _, field := range group.fields {
-			if !isVisible(getFieldVisibilityOption(field), g.reg) {
-				continue
-			}
-			g.addFieldToSchema(doc, schema, field, visited)
-		}
-	}
-
 	// Generate oneOf constraints for oneof groups
+	// For messages with ONLY oneof fields, use pure oneOf without top-level properties
+	// For messages with both regular and oneof fields, add oneof fields to properties too
 	if len(oneofGroups) > 0 {
-		oneOf, allOf := g.generateOneOfConstraints(schema, oneofGroups)
+		hasRegularFields := len(schema.Properties) > 0
+
+		if hasRegularFields {
+			// Add oneof fields to properties when there are also regular fields
+			for _, group := range oneofGroups {
+				for _, field := range group.fields {
+					if !isVisible(getFieldVisibilityOption(field), g.reg) {
+						continue
+					}
+					g.addFieldToSchema(doc, schema, field, visited)
+				}
+			}
+		}
+
+		oneOf, allOf := g.generateOneOfConstraints(doc, schema, oneofGroups, hasRegularFields, visited)
 		if oneOf != nil {
 			schema.OneOf = oneOf // Single group
 		}
 		if allOf != nil {
 			schema.AllOf = allOf // Multiple groups, each wrapped in oneOf
+		}
+
+		// For pure oneof messages, clear type and properties
+		if !hasRegularFields && len(oneofGroups) == 1 {
+			schema.Type = nil
+			schema.Properties = nil
 		}
 	}
 
@@ -695,7 +705,8 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 // For a single group: returns oneOf directly for use in schema.OneOf
 // For multiple groups: each group gets its own oneOf, combined via allOf
 // This ensures multiple oneof groups are independent (can set one field from each group).
-func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneofGroup) (oneOf []*SchemaOrReference, allOf []*SchemaOrReference) {
+// When hasRegularFields is false (pure oneof message), generates complete field schemas inline.
+func (g *generator) generateOneOfConstraints(doc *OpenAPI, parentSchema *Schema, groups []oneofGroup, hasRegularFields bool, visited map[string]bool) (oneOf []*SchemaOrReference, allOf []*SchemaOrReference) {
 	if len(groups) == 0 {
 		return nil, nil
 	}
@@ -703,7 +714,7 @@ func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneo
 	// Generate oneOf constraint for each group
 	var groupConstraints []*SchemaOrReference
 	for _, group := range groups {
-		groupOneOf := g.generateSingleGroupOneOf(parentSchema, group)
+		groupOneOf := g.generateSingleGroupOneOf(doc, parentSchema, group, hasRegularFields, visited)
 		if len(groupOneOf) > 0 {
 			groupConstraints = append(groupConstraints, &SchemaOrReference{
 				Schema: &Schema{OneOf: groupOneOf},
@@ -725,8 +736,10 @@ func (g *generator) generateOneOfConstraints(parentSchema *Schema, groups []oneo
 }
 
 // generateSingleGroupOneOf generates oneOf options for a single oneof group.
-// Includes options for each field + a "neither" option since protobuf oneofs are optional.
-func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGroup) []*SchemaOrReference {
+// When hasRegularFields is true, references properties from parentSchema.
+// When hasRegularFields is false, generates complete field schemas inline.
+// Includes a "none" option since protobuf oneofs are optional.
+func (g *generator) generateSingleGroupOneOf(doc *OpenAPI, parentSchema *Schema, group oneofGroup, hasRegularFields bool, visited map[string]bool) []*SchemaOrReference {
 	var options []*SchemaOrReference
 	var fieldNames []string
 
@@ -737,11 +750,43 @@ func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGr
 		fieldName := g.fieldName(field)
 		fieldNames = append(fieldNames, fieldName)
 
+		var fieldSchemaRef *SchemaOrReference
+		if hasRegularFields {
+			// Use existing property from parent schema
+			fieldSchemaRef = parentSchema.Properties[fieldName]
+		} else {
+			// Generate field schema directly for pure oneof messages
+			fieldSchemaRef = g.fieldToSchemaRef(field, nil)
+
+			// Add description from field comments
+			fieldComment := fieldComments(g.reg, field)
+			if fieldComment != "" && fieldSchemaRef.Schema != nil {
+				fieldSchemaRef.Schema.Description = fieldComment
+			}
+
+			// Apply field-level annotations
+			if fieldSchemaRef.Schema != nil {
+				g.applyFieldAnnotation(fieldSchemaRef.Schema, field)
+			}
+
+			// Generate referenced message/enum schemas
+			if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+				if refMsg, err := g.reg.LookupMsg("", field.GetTypeName()); err == nil {
+					g.generateMessageSchema(doc, refMsg, visited)
+				}
+			}
+			if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM {
+				if refEnum, err := g.reg.LookupEnum("", field.GetTypeName()); err == nil {
+					g.generateEnumSchema(doc, refEnum)
+				}
+			}
+		}
+
 		// Create a schema that requires this specific field from the oneof
 		optionSchema := &Schema{
 			Type: SchemaType{"object"},
 			Properties: map[string]*SchemaOrReference{
-				fieldName: parentSchema.Properties[fieldName],
+				fieldName: fieldSchemaRef,
 			},
 			Required: []string{fieldName},
 		}
@@ -752,7 +797,7 @@ func (g *generator) generateSingleGroupOneOf(parentSchema *Schema, group oneofGr
 		options = append(options, &SchemaOrReference{Schema: optionSchema})
 	}
 
-	// Add "neither" option - oneofs are optional in protobuf
+	// Add "none" option - oneofs are optional in protobuf
 	if len(fieldNames) > 0 {
 		neitherSchema := g.buildNeitherSetSchema(group.name, fieldNames)
 		options = append(options, &SchemaOrReference{Schema: neitherSchema})

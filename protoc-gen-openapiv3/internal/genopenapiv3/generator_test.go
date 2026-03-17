@@ -698,7 +698,10 @@ func TestGenerateOneOfConstraintsSingleGroup(t *testing.T) {
 		},
 	}
 
-	oneOf, allOf := g.generateOneOfConstraints(parentSchema, groups)
+	// hasRegularFields=true because we have properties in parentSchema
+	doc := NewOpenAPI("Test", "1.0.0", "3.1.0")
+	visited := make(map[string]bool)
+	oneOf, allOf := g.generateOneOfConstraints(doc, parentSchema, groups, true, visited)
 
 	// Single group should use oneOf directly, not allOf
 	if allOf != nil {
@@ -803,7 +806,9 @@ func TestGenerateOneOfConstraintsMultipleGroups(t *testing.T) {
 		},
 	}
 
-	oneOf, allOf := g.generateOneOfConstraints(parentSchema, groups)
+	doc := NewOpenAPI("Test", "1.0.0", "3.1.0")
+	visited := make(map[string]bool)
+	oneOf, allOf := g.generateOneOfConstraints(doc, parentSchema, groups, true, visited)
 
 	// Multiple groups should use allOf, not oneOf directly
 	if oneOf != nil {
@@ -902,7 +907,9 @@ func TestGenerateOneOfConstraintsEmptyGroups(t *testing.T) {
 	}
 
 	// Empty groups
-	oneOf, allOf := g.generateOneOfConstraints(parentSchema, []oneofGroup{})
+	doc := NewOpenAPI("Test", "1.0.0", "3.1.0")
+	visited := make(map[string]bool)
+	oneOf, allOf := g.generateOneOfConstraints(doc, parentSchema, []oneofGroup{}, false, visited)
 
 	if oneOf != nil {
 		t.Errorf("Expected oneOf to be nil for empty groups, got %v", oneOf)
@@ -2696,9 +2703,17 @@ func TestOneOfNestedMessages(t *testing.T) {
 	} else {
 		// Verify oneOf has the expected number of options
 		// Note: oneOf includes 2 actual options + 1 "neither" option = 3
-		if len(oneOf) < 2 {
-			t.Errorf("OuterChoice oneOf has %d options, want at least 2", len(oneOf))
+		if len(oneOf) != 3 {
+			t.Errorf("OuterChoice oneOf has %d options, want 3 (2 fields + none)", len(oneOf))
 		}
+	}
+
+	// Pure oneof messages should NOT have redundant top-level type and properties
+	if _, hasType := outerSchema["type"]; hasType {
+		t.Error("Pure oneof message OuterChoice should NOT have top-level 'type' field")
+	}
+	if _, hasProps := outerSchema["properties"]; hasProps {
+		t.Error("Pure oneof message OuterChoice should NOT have top-level 'properties' field")
 	}
 
 	// Find the InnerChoice schema
@@ -2720,8 +2735,162 @@ func TestOneOfNestedMessages(t *testing.T) {
 		t.Error("InnerChoice should have oneOf for the oneof_decl")
 	} else {
 		// Note: oneOf includes 2 actual options + 1 "neither" option = 3
-		if len(innerOneOf) < 2 {
-			t.Errorf("InnerChoice oneOf has %d options, want at least 2", len(innerOneOf))
+		if len(innerOneOf) != 3 {
+			t.Errorf("InnerChoice oneOf has %d options, want 3 (2 fields + none)", len(innerOneOf))
+		}
+	}
+
+	// Pure oneof messages should NOT have redundant top-level type and properties
+	if _, hasType := innerSchema["type"]; hasType {
+		t.Error("Pure oneof message InnerChoice should NOT have top-level 'type' field")
+	}
+	if _, hasProps := innerSchema["properties"]; hasProps {
+		t.Error("Pure oneof message InnerChoice should NOT have top-level 'properties' field")
+	}
+}
+
+// TestOneOfWithRegularFields tests messages that have both regular fields and oneof.
+// These should have top-level type/properties for regular fields + oneOf constraint.
+const mixedOneOfProtoInline = `
+file_to_generate: "test/v1/mixed_oneof.proto"
+proto_file: {
+	name: "test/v1/mixed_oneof.proto"
+	package: "test.v1"
+	message_type: {
+		name: "MixedMessage"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "name"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "name"
+		}
+		field: {
+			name: "text_value"
+			number: 3
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "textValue"
+			oneof_index: 0
+		}
+		field: {
+			name: "int_value"
+			number: 4
+			label: LABEL_OPTIONAL
+			type: TYPE_INT32
+			json_name: "intValue"
+			oneof_index: 0
+		}
+		oneof_decl: {
+			name: "value"
+		}
+	}
+	message_type: {
+		name: "GetMixedRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	service: {
+		name: "MixedService"
+		method: {
+			name: "Get"
+			input_type: ".test.v1.GetMixedRequest"
+			output_type: ".test.v1.MixedMessage"
+			options: {
+				[google.api.http]: {
+					get: "/v1/mixed/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
+`
+
+func TestOneOfWithRegularFields(t *testing.T) {
+	t.Parallel()
+
+	resp := requireGenerateInline(t, mixedOneOfProtoInline, nil)
+	content := resp[0].GetContent()
+
+	var doc map[string]interface{}
+	if err := json.Unmarshal([]byte(content), &doc); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	components, ok := doc["components"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing components")
+	}
+	schemas, ok := components["schemas"].(map[string]interface{})
+	if !ok {
+		t.Fatal("missing schemas")
+	}
+
+	// Find the MixedMessage schema
+	var mixedSchema map[string]interface{}
+	for name, s := range schemas {
+		if strings.Contains(name, "MixedMessage") {
+			mixedSchema, _ = s.(map[string]interface{})
+			break
+		}
+	}
+
+	if mixedSchema == nil {
+		t.Fatal("MixedMessage schema not found")
+	}
+
+	// Mixed messages SHOULD have top-level type and properties (for regular fields)
+	if _, hasType := mixedSchema["type"]; !hasType {
+		t.Error("Mixed message should have top-level 'type' field")
+	}
+	props, hasProps := mixedSchema["properties"].(map[string]interface{})
+	if !hasProps {
+		t.Fatal("Mixed message should have top-level 'properties' field")
+	}
+
+	// Should have regular fields in properties
+	if _, hasId := props["id"]; !hasId {
+		t.Error("Mixed message properties should include 'id'")
+	}
+	if _, hasName := props["name"]; !hasName {
+		t.Error("Mixed message properties should include 'name'")
+	}
+
+	// Should also have oneof fields in properties (for JSON serialization)
+	// Note: field names may be snake_case or camelCase depending on registry settings
+	hasTextValue := props["textValue"] != nil || props["text_value"] != nil
+	if !hasTextValue {
+		t.Error("Mixed message properties should include oneof field 'textValue' or 'text_value'")
+	}
+	hasIntValue := props["intValue"] != nil || props["int_value"] != nil
+	if !hasIntValue {
+		t.Error("Mixed message properties should include oneof field 'intValue' or 'int_value'")
+	}
+
+	// Should also have oneOf constraint
+	oneOf, hasOneOf := mixedSchema["oneOf"].([]interface{})
+	if !hasOneOf {
+		t.Error("Mixed message should have oneOf constraint")
+	} else {
+		// Should have 3 options (2 fields + none)
+		if len(oneOf) != 3 {
+			t.Errorf("Mixed message oneOf has %d options, want 3 (2 fields + none)", len(oneOf))
 		}
 	}
 }
