@@ -229,8 +229,8 @@ func TestSchemaRefWithReferenceMarshal(t *testing.T) {
 			expected: `{"$ref":"#/components/schemas/Pet","description":"A detailed pet description"}`,
 		},
 		{
-			name: "reference with all v3.1.0 overrides",
-			ref:  NewSchemaRefWithOverrides("Pet", "A pet summary", "A detailed description"),
+			name:     "reference with all v3.1.0 overrides",
+			ref:      NewSchemaRefWithOverrides("Pet", "A pet summary", "A detailed description"),
 			expected: `{"$ref":"#/components/schemas/Pet","summary":"A pet summary","description":"A detailed description"}`,
 		},
 		{
@@ -1505,6 +1505,30 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			name:           "oneof multiple groups - one group becomes empty after visibility filter",
 			inputProtoText: "testdata/generator/oneof_multiple_groups.prototext",
 			wantJSON:       "testdata/generator/oneof_multiple_groups_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
+		{
+			name:           "oneof with enum fields - enum types in oneOf should use $ref",
+			inputProtoText: "testdata/generator/oneof_enum.prototext",
+			wantJSON:       "testdata/generator/oneof_enum_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
+		{
+			name:           "oneof with message references - message types in oneOf should use $ref",
+			inputProtoText: "testdata/generator/oneof_wkt.prototext",
+			wantJSON:       "testdata/generator/oneof_wkt_none.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+			},
+		},
+		{
+			name:           "oneof in nested message definition - nested messages with oneOf",
+			inputProtoText: "testdata/generator/oneof_nested_definition.prototext",
+			wantJSON:       "testdata/generator/oneof_nested_definition_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
 			},

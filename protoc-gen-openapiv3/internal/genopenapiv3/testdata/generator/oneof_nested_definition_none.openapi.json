@@ -1,0 +1,160 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OneOf in Nested Message Test",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/nested-oneof": {
+            "get": {
+                "tags": [
+                    "NestedOneofService"
+                ],
+                "operationId": "NestedOneofService_GetNested",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testOuter"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "OuterInner": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "choice.option_a",
+                        "properties": {
+                            "option_a": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "option_a"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.option_b",
+                        "properties": {
+                            "option_b": {
+                                "type": "integer",
+                                "format": "int32"
+                            }
+                        },
+                        "required": [
+                            "option_b"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.option_c",
+                        "properties": {
+                            "option_c": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "option_c"
+                        ]
+                    },
+                    {
+                        "title": "choice.none",
+                        "not": {
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "option_a"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "option_b"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "option_c"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            },
+            "testOuter": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "nested": {
+                        "$ref": "#/components/schemas/OuterInner"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "NestedOneofService"
+        }
+    ]
+}

@@ -1,0 +1,172 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OneOf with Message References Test",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/oneof-message-ref": {
+            "get": {
+                "tags": [
+                    "MessageRefService"
+                ],
+                "operationId": "MessageRefService_GetOneofWithMessageRef",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testOneofWithMessageRef"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            },
+            "testNumberConfig": {
+                "type": "object",
+                "properties": {
+                    "precision": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "value": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                }
+            },
+            "testOneofWithMessageRef": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "config.text_config",
+                        "properties": {
+                            "text_config": {
+                                "$ref": "#/components/schemas/testTextConfig"
+                            }
+                        },
+                        "required": [
+                            "text_config"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "config.number_config",
+                        "properties": {
+                            "number_config": {
+                                "$ref": "#/components/schemas/testNumberConfig"
+                            }
+                        },
+                        "required": [
+                            "number_config"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "config.raw_value",
+                        "properties": {
+                            "raw_value": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "raw_value"
+                        ]
+                    },
+                    {
+                        "title": "config.none",
+                        "not": {
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "text_config"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "number_config"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "raw_value"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "testTextConfig": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "format": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "MessageRefService"
+        }
+    ]
+}

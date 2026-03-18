@@ -1,0 +1,86 @@
+file_to_generate: "test/oneof_nested_definition.proto"
+proto_file: {
+  name: "test/oneof_nested_definition.proto"
+  package: "test"
+  message_type: {
+    name: "Request"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "Outer"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+    field: {
+      name: "nested"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".test.Outer.Inner"
+      json_name: "nested"
+    }
+    nested_type: {
+      name: "Inner"
+      field: {
+        name: "option_a"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "optionA"
+        oneof_index: 0
+      }
+      field: {
+        name: "option_b"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_INT32
+        json_name: "optionB"
+        oneof_index: 0
+      }
+      field: {
+        name: "option_c"
+        number: 3
+        label: LABEL_OPTIONAL
+        type: TYPE_BOOL
+        json_name: "optionC"
+        oneof_index: 0
+      }
+      oneof_decl: {
+        name: "choice"
+      }
+    }
+  }
+  service: {
+    name: "NestedOneofService"
+    method: {
+      name: "GetNested"
+      input_type: ".test.Request"
+      output_type: ".test.Outer"
+      options: {
+        [google.api.http]: {
+          get: "/v1/nested-oneof"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/oneof_nested;test"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "OneOf in Nested Message Test"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}
