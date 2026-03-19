@@ -97,11 +97,17 @@ func (g *generator) applyInfoAnnotation(info *Info, opts *options.Info) {
 		}
 	}
 	if l := opts.GetLicense(); l != nil {
-		info.License = &License{
-			Name:       l.GetName(),
-			Identifier: l.GetIdentifier(),
-			URL:        l.GetUrl(),
+		license := &License{
+			Name: l.GetName(),
 		}
+		// In OpenAPI 3.1.0, identifier and url are mutually exclusive.
+		// Prefer identifier if both are set.
+		if l.GetIdentifier() != "" {
+			license.Identifier = l.GetIdentifier()
+		} else if l.GetUrl() != "" {
+			license.URL = l.GetUrl()
+		}
+		info.License = license
 	}
 }
 
