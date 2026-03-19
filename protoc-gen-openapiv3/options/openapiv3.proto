@@ -242,11 +242,12 @@ message Response {
 message MediaType {
   // The schema defining the content of the request, response, or parameter.
   Schema schema = 1;
-  // Example of the media type.
+  // Example of the media type. Deprecated in OpenAPI 3.1.0, use examples instead.
   string example = 2;
   // Examples of the media type. Each example SHOULD match the media type and
-  // specified schema if present.
-  map<string, Example> examples = 3;
+  // specified schema if present. Values can be inline examples or references
+  // to examples defined in components/examples.
+  map<string, ExampleOrReference> examples = 3;
   // A map between a property name and its encoding information.
   map<string, Encoding> encoding = 4;
   // Custom properties that start with "x-" such as "x-foo".
@@ -295,10 +296,11 @@ message Parameter {
   bool allow_reserved = 9;
   // The schema defining the type used for the parameter.
   Schema schema = 10;
-  // Example of the parameter's potential value.
+  // Example of the parameter's potential value. Deprecated in OpenAPI 3.1.0, use examples instead.
   string example = 11;
-  // Examples of the parameter's potential value.
-  map<string, Example> examples = 12;
+  // Examples of the parameter's potential value. Values can be inline examples
+  // or references to examples defined in components/examples.
+  map<string, ExampleOrReference> examples = 12;
   // Custom properties that start with "x-" such as "x-foo".
   map<string, google.protobuf.Value> extensions = 13;
 }
@@ -325,10 +327,11 @@ message Header {
   bool allow_reserved = 7;
   // The schema defining the type used for the header.
   Schema schema = 8;
-  // Example of the header's potential value.
+  // Example of the header's potential value. Deprecated in OpenAPI 3.1.0, use examples instead.
   string example = 9;
-  // Examples of the header's potential value.
-  map<string, Example> examples = 10;
+  // Examples of the header's potential value. Values can be inline examples
+  // or references to examples defined in components/examples.
+  map<string, ExampleOrReference> examples = 10;
   // Custom properties that start with "x-" such as "x-foo".
   map<string, google.protobuf.Value> extensions = 11;
 }
@@ -350,6 +353,27 @@ message Example {
   string external_value = 4;
   // Custom properties that start with "x-" such as "x-foo".
   map<string, google.protobuf.Value> extensions = 5;
+}
+
+// `ExampleOrReference` is a discriminated union that can be either an inline Example
+// or a Reference. This allows examples to reference reusable examples defined in
+// components/examples.
+// Aligned with gnostic-models pattern.
+message ExampleOrReference {
+  oneof oneof {
+    Example example = 1;
+    Reference reference = 2;
+  }
+}
+
+// `NamedExampleOrReference` is a name-value pair for ordered example maps.
+// Used for examples fields to preserve insertion order.
+// Aligned with gnostic-models pattern.
+message NamedExampleOrReference {
+  // The example name (key in the examples map).
+  string name = 1;
+  // The example or reference value.
+  ExampleOrReference value = 2;
 }
 
 // `Encoding` is a representation of OpenAPI v3 specification's Encoding object.

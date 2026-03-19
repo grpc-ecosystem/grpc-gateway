@@ -563,8 +563,8 @@ type Schema struct {
 	// Deprecation
 	Deprecated bool `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 
-	// Example
-	Example any `json:"example,omitempty" yaml:"example,omitempty"`
+	// Examples (OpenAPI 3.1.0 uses examples map instead of singular example)
+	Examples map[string]*ExampleRef `json:"examples,omitempty" yaml:"examples,omitempty"`
 
 	// External docs
 	ExternalDocs *ExternalDocumentation `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`

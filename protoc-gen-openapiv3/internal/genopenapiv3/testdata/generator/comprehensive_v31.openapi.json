@@ -830,9 +830,13 @@
                     "id",
                     "name"
                 ],
-                "example": {
-                    "id": "item-123",
-                    "name": "Example Item"
+                "examples": {
+                    "example": {
+                        "value": {
+                            "id": "item-123",
+                            "name": "Example Item"
+                        }
+                    }
                 }
             },
             "comprehensiveListItemsResponse": {
@@ -1030,7 +1034,11 @@
                         "minLength": 3,
                         "maxLength": 50,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
-                        "example": "johndoe"
+                        "examples": {
+                            "example": {
+                                "value": "johndoe"
+                            }
+                        }
                     },
                     "uuid": {
                         "type": "string",

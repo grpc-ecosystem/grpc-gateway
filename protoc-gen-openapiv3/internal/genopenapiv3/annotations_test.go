@@ -54,6 +54,18 @@ func schemaTypeEqual(a, b SchemaType) bool {
 	return true
 }
 
+// getExampleValue extracts the example value from an examples map.
+// Returns nil if the map is empty or the "example" key doesn't exist.
+func getExampleValue(examples map[string]*ExampleRef) any {
+	if examples == nil {
+		return nil
+	}
+	if ex, ok := examples["example"]; ok && ex != nil && ex.Value != nil {
+		return ex.Value.Value
+	}
+	return nil
+}
+
 // TestParseExampleValue tests the parseExampleValue function that converts
 // string examples from proto annotations into properly typed JSON values.
 func TestParseExampleValue(t *testing.T) {
@@ -180,6 +192,160 @@ func TestParseExampleValueJSONOutput(t *testing.T) {
 				t.Errorf("JSON output = %s, want %s", string(jsonBytes), tt.expectedJSON)
 			}
 		})
+	}
+}
+
+// TestConvertExampleOrReference tests conversion of ExampleOrReference proto to ExampleRef.
+func TestConvertExampleOrReference(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   *options.ExampleOrReference
+		wantRef string
+		wantVal *Example
+	}{
+		{
+			name:    "nil input",
+			input:   nil,
+			wantRef: "",
+			wantVal: nil,
+		},
+		{
+			name: "inline example",
+			input: &options.ExampleOrReference{
+				Oneof: &options.ExampleOrReference_Example{
+					Example: &options.Example{
+						Summary:     "Example summary",
+						Description: "Example description",
+						Value:       `{"id": 123}`,
+					},
+				},
+			},
+			wantRef: "",
+			wantVal: &Example{
+				Summary:     "Example summary",
+				Description: "Example description",
+				Value:       map[string]any{"id": float64(123)},
+			},
+		},
+		{
+			name: "reference to component example",
+			input: &options.ExampleOrReference{
+				Oneof: &options.ExampleOrReference_Reference{
+					Reference: &options.Reference{
+						Ref: "#/components/examples/MyExample",
+					},
+				},
+			},
+			wantRef: "#/components/examples/MyExample",
+			wantVal: nil,
+		},
+		{
+			name: "example with external value",
+			input: &options.ExampleOrReference{
+				Oneof: &options.ExampleOrReference_Example{
+					Example: &options.Example{
+						Summary:       "External example",
+						ExternalValue: "https://example.com/example.json",
+					},
+				},
+			},
+			wantRef: "",
+			wantVal: &Example{
+				Summary:       "External example",
+				ExternalValue: "https://example.com/example.json",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := convertExampleOrReference(tt.input)
+
+			if tt.input == nil {
+				if got != nil {
+					t.Errorf("Expected nil, got %+v", got)
+				}
+				return
+			}
+
+			if got.Ref != tt.wantRef {
+				t.Errorf("Ref = %q, want %q", got.Ref, tt.wantRef)
+			}
+
+			if tt.wantVal == nil {
+				if got.Value != nil {
+					t.Errorf("Expected Value to be nil, got %+v", got.Value)
+				}
+			} else {
+				if got.Value == nil {
+					t.Errorf("Expected Value to be non-nil")
+					return
+				}
+				if got.Value.Summary != tt.wantVal.Summary {
+					t.Errorf("Summary = %q, want %q", got.Value.Summary, tt.wantVal.Summary)
+				}
+				if got.Value.Description != tt.wantVal.Description {
+					t.Errorf("Description = %q, want %q", got.Value.Description, tt.wantVal.Description)
+				}
+				if got.Value.ExternalValue != tt.wantVal.ExternalValue {
+					t.Errorf("ExternalValue = %q, want %q", got.Value.ExternalValue, tt.wantVal.ExternalValue)
+				}
+				if !reflect.DeepEqual(got.Value.Value, tt.wantVal.Value) {
+					t.Errorf("Value = %v, want %v", got.Value.Value, tt.wantVal.Value)
+				}
+			}
+		})
+	}
+}
+
+// TestConvertExamplesMap tests conversion of examples map with mixed inline and reference entries.
+func TestConvertExamplesMap(t *testing.T) {
+	input := map[string]*options.ExampleOrReference{
+		"inline": {
+			Oneof: &options.ExampleOrReference_Example{
+				Example: &options.Example{
+					Summary: "Inline example",
+					Value:   `"test"`,
+				},
+			},
+		},
+		"referenced": {
+			Oneof: &options.ExampleOrReference_Reference{
+				Reference: &options.Reference{
+					Ref: "#/components/examples/SharedExample",
+				},
+			},
+		},
+	}
+
+	got := convertExamplesMap(input)
+
+	if len(got) != 2 {
+		t.Fatalf("Expected 2 examples, got %d", len(got))
+	}
+
+	// Check inline example
+	if inline, ok := got["inline"]; !ok {
+		t.Error("Missing 'inline' example")
+	} else {
+		if inline.Ref != "" {
+			t.Errorf("inline.Ref = %q, want empty", inline.Ref)
+		}
+		if inline.Value == nil || inline.Value.Summary != "Inline example" {
+			t.Errorf("inline.Value.Summary = %v, want 'Inline example'", inline.Value)
+		}
+	}
+
+	// Check referenced example
+	if ref, ok := got["referenced"]; !ok {
+		t.Error("Missing 'referenced' example")
+	} else {
+		if ref.Ref != "#/components/examples/SharedExample" {
+			t.Errorf("referenced.Ref = %q, want '#/components/examples/SharedExample'", ref.Ref)
+		}
+		if ref.Value != nil {
+			t.Errorf("referenced.Value should be nil for reference, got %+v", ref.Value)
+		}
 	}
 }
 
@@ -1315,8 +1481,11 @@ func TestApplySchemaAnnotation(t *testing.T) {
 			if tt.wantDesc != "" && schema.Description != tt.wantDesc {
 				t.Errorf("Description = %q, want %q", schema.Description, tt.wantDesc)
 			}
-			if tt.wantExample != nil && !reflect.DeepEqual(schema.Example, tt.wantExample) {
-				t.Errorf("Example = %v, want %v", schema.Example, tt.wantExample)
+			if tt.wantExample != nil {
+				gotExample := getExampleValue(schema.Examples)
+				if !reflect.DeepEqual(gotExample, tt.wantExample) {
+					t.Errorf("Example = %v, want %v", gotExample, tt.wantExample)
+				}
 			}
 			if schema.ReadOnly != tt.wantReadOnly {
 				t.Errorf("ReadOnly = %v, want %v", schema.ReadOnly, tt.wantReadOnly)
@@ -1460,8 +1629,11 @@ func TestApplyFieldAnnotation(t *testing.T) {
 			if tt.wantDefault != "" && schema.Default != tt.wantDefault {
 				t.Errorf("Default = %q, want %q", schema.Default, tt.wantDefault)
 			}
-			if tt.wantExample != nil && !reflect.DeepEqual(schema.Example, tt.wantExample) {
-				t.Errorf("Example = %v, want %v", schema.Example, tt.wantExample)
+			if tt.wantExample != nil {
+				gotExample := getExampleValue(schema.Examples)
+				if !reflect.DeepEqual(gotExample, tt.wantExample) {
+					t.Errorf("Example = %v, want %v", gotExample, tt.wantExample)
+				}
 			}
 			if tt.wantFormat != "" && schema.Format != tt.wantFormat {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.wantFormat)
@@ -1766,8 +1938,11 @@ func TestApplyEnumAnnotation(t *testing.T) {
 			if tt.wantDefault != "" && schema.Default != tt.wantDefault {
 				t.Errorf("Default = %q, want %q", schema.Default, tt.wantDefault)
 			}
-			if tt.wantExample != nil && !reflect.DeepEqual(schema.Example, tt.wantExample) {
-				t.Errorf("Example = %v, want %v", schema.Example, tt.wantExample)
+			if tt.wantExample != nil {
+				gotExample := getExampleValue(schema.Examples)
+				if !reflect.DeepEqual(gotExample, tt.wantExample) {
+					t.Errorf("Example = %v, want %v", gotExample, tt.wantExample)
+				}
 			}
 			if schema.Deprecated != tt.wantDeprecated {
 				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)

@@ -29,6 +29,61 @@ func parseExampleValue(s string) any {
 	return result
 }
 
+// makeExamplesMap converts a single example value to the OpenAPI 3.1.0 examples map format.
+// In OpenAPI 3.1.0, the singular `example` field is deprecated in favor of `examples` (a map of named Example objects).
+func makeExamplesMap(value any) map[string]*ExampleRef {
+	if value == nil {
+		return nil
+	}
+	return map[string]*ExampleRef{
+		"example": {
+			Value: &Example{
+				Value: value,
+			},
+		},
+	}
+}
+
+// convertExamplesMap converts a proto examples map to OpenAPI examples map.
+// This handles the plural `examples` field from proto options.
+// Supports both inline examples and references (ExampleOrReference).
+func convertExamplesMap(protoExamples map[string]*options.ExampleOrReference) map[string]*ExampleRef {
+	if len(protoExamples) == 0 {
+		return nil
+	}
+	result := make(map[string]*ExampleRef, len(protoExamples))
+	for name, exOrRef := range protoExamples {
+		result[name] = convertExampleOrReference(exOrRef)
+	}
+	return result
+}
+
+// convertExampleOrReference converts a proto ExampleOrReference to an ExampleRef.
+func convertExampleOrReference(exOrRef *options.ExampleOrReference) *ExampleRef {
+	if exOrRef == nil {
+		return nil
+	}
+
+	switch v := exOrRef.GetOneof().(type) {
+	case *options.ExampleOrReference_Reference:
+		return &ExampleRef{
+			Ref: v.Reference.GetRef(),
+		}
+	case *options.ExampleOrReference_Example:
+		ex := v.Example
+		return &ExampleRef{
+			Value: &Example{
+				Summary:       ex.GetSummary(),
+				Description:   ex.GetDescription(),
+				Value:         parseExampleValue(ex.GetValue()),
+				ExternalValue: ex.GetExternalValue(),
+			},
+		}
+	default:
+		return nil
+	}
+}
+
 // applyFileAnnotation applies file-level OpenAPI v3 annotations to the document.
 func (g *generator) applyFileAnnotation(doc *OpenAPI, file *descriptor.File) {
 	opts := getFileAnnotation(file)
@@ -237,9 +292,9 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 		schema.Required = opts.GetRequired()
 	}
 
-	// Apply example
+	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if opts.GetExample() != "" {
-		schema.Example = parseExampleValue(opts.GetExample())
+		schema.Examples = makeExamplesMap(parseExampleValue(opts.GetExample()))
 	}
 
 	// Apply read only
@@ -326,9 +381,9 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 		schema.Default = opts.GetDefault()
 	}
 
-	// Apply example
+	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if opts.GetExample() != "" {
-		schema.Example = parseExampleValue(opts.GetExample())
+		schema.Examples = makeExamplesMap(parseExampleValue(opts.GetExample()))
 	}
 
 	// Apply format
@@ -506,9 +561,9 @@ func (g *generator) applyEnumAnnotation(schema *Schema, enum *descriptor.Enum) {
 		schema.Default = opts.GetDefault()
 	}
 
-	// Apply example
+	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if opts.GetExample() != "" {
-		schema.Example = parseExampleValue(opts.GetExample())
+		schema.Examples = makeExamplesMap(parseExampleValue(opts.GetExample()))
 	}
 
 	// Apply deprecated
@@ -662,8 +717,11 @@ func convertParameter(param *options.Parameter) *Parameter {
 		explode := true
 		p.Explode = &explode
 	}
-	if param.GetExample() != "" {
-		p.Example = parseExampleValue(param.GetExample())
+	// Prefer plural examples map over singular example field (OpenAPI 3.1.0 compliance)
+	if len(param.GetExamples()) > 0 {
+		p.Examples = convertExamplesMap(param.GetExamples())
+	} else if param.GetExample() != "" {
+		p.Examples = makeExamplesMap(parseExampleValue(param.GetExample()))
 	}
 	if schema := param.GetSchema(); schema != nil {
 		p.Schema = convertSchema(schema)
@@ -698,8 +756,11 @@ func convertHeader(header *options.Header) *Header {
 		explode := true
 		h.Explode = &explode
 	}
-	if header.GetExample() != "" {
-		h.Example = parseExampleValue(header.GetExample())
+	// Prefer plural examples map over singular example field (OpenAPI 3.1.0 compliance)
+	if len(header.GetExamples()) > 0 {
+		h.Examples = convertExamplesMap(header.GetExamples())
+	} else if header.GetExample() != "" {
+		h.Examples = makeExamplesMap(parseExampleValue(header.GetExample()))
 	}
 	if schema := header.GetSchema(); schema != nil {
 		h.Schema = convertSchema(schema)
@@ -709,8 +770,11 @@ func convertHeader(header *options.Header) *Header {
 
 func convertMediaType(mt *options.MediaType) *MediaType {
 	result := &MediaType{}
-	if mt.GetExample() != "" {
-		result.Example = parseExampleValue(mt.GetExample())
+	// Prefer plural examples map over singular example field (OpenAPI 3.1.0 compliance)
+	if len(mt.GetExamples()) > 0 {
+		result.Examples = convertExamplesMap(mt.GetExamples())
+	} else if mt.GetExample() != "" {
+		result.Examples = makeExamplesMap(parseExampleValue(mt.GetExample()))
 	}
 	if schema := mt.GetSchema(); schema != nil {
 		result.Schema = convertSchema(schema)
@@ -761,9 +825,9 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 		s.Default = schema.GetDefault()
 	}
 
-	// Apply example
+	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if schema.GetExample() != "" {
-		s.Example = parseExampleValue(schema.GetExample())
+		s.Examples = makeExamplesMap(parseExampleValue(schema.GetExample()))
 	}
 
 	// Apply enum values
