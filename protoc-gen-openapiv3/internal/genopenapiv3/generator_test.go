@@ -1533,6 +1533,16 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
 			},
 		},
+		{
+			name:           "comprehensive v3.1.0 features",
+			inputProtoText: "testdata/generator/comprehensive_v31.prototext",
+			wantJSON:       "testdata/generator/comprehensive_v31.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetPreserveRPCOrder(true)
+				reg.SetEnableRpcDeprecation(true)
+			},
+		},
 	}
 
 	for _, tt := range tests {
