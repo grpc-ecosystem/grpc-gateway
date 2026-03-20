@@ -417,7 +417,7 @@ func (g *generator) buildParameters(method *descriptor.Method, binding *descript
 			continue
 		}
 		schema := g.fieldToSchemaRef(pathParam.Target, referencedSchemas)
-		param := NewPathParameter(pathParam.FieldPath.String(), schema)
+		param := NewPathParameter(pathParam.String(), schema)
 
 		// Add description from field comments
 		comment := fieldComments(g.reg, pathParam.Target)

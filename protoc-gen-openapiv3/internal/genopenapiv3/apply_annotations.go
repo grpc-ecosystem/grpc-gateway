@@ -951,24 +951,9 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 		}
 	}
 
-	// Apply prefixItems (tuple validation)
-	if len(schema.GetPrefixItems()) > 0 {
-		// Note: prefixItems is a JSON Schema draft 2020-12 feature
-		// For OpenAPI 3.0.x, this is represented differently
-		// We'll store as items for now since OpenAPI 3.0 doesn't support prefixItems
-	}
-
-	// Apply propertyNames
-	if propNames := schema.GetPropertyNames(); propNames != nil {
-		// Note: propertyNames is not directly supported in OpenAPI 3.0.x
-		// but is part of JSON Schema
-	}
-
-	// Apply patternProperties
-	if len(schema.GetPatternProperties()) > 0 {
-		// Note: patternProperties is not directly supported in OpenAPI 3.0.x
-		// but is part of JSON Schema
-	}
+	// Note: prefixItems, propertyNames, and patternProperties are JSON Schema
+	// draft 2020-12 features not directly supported in OpenAPI 3.0.x.
+	// They are defined in the proto but not converted here.
 
 	return &SchemaOrReference{Schema: s}
 }

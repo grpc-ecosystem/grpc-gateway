@@ -490,15 +490,6 @@ func (t SchemaType) MarshalYAML() (any, error) {
 	return []string(t), nil
 }
 
-// stringToSchemaType converts a single string to SchemaType.
-// Returns nil if the string is empty.
-func stringToSchemaType(s string) SchemaType {
-	if s == "" {
-		return nil
-	}
-	return SchemaType{s}
-}
-
 // Schema represents a JSON Schema object.
 // See: https://spec.openapis.org/oas/v3.1.0#schema-object
 type Schema struct {
