@@ -201,11 +201,11 @@ func (g *generator) applyComponentsAnnotation(comp *Components, opts *options.Co
 	}
 
 	// Apply Headers
-	for name, header := range opts.GetHeaders() {
+	for name, headerOrRef := range opts.GetHeaders() {
 		if comp.Headers == nil {
 			comp.Headers = make(map[string]*HeaderRef)
 		}
-		comp.Headers[name] = &HeaderRef{Value: convertHeader(header)}
+		comp.Headers[name] = convertHeaderOrReference(headerOrRef)
 	}
 }
 
@@ -267,6 +267,22 @@ func (g *generator) applyOperationAnnotation(op *Operation, method *descriptor.M
 	// Apply request body override if provided
 	if reqBody := opts.GetRequestBody(); reqBody != nil {
 		op.RequestBody = &RequestBodyRef{Value: convertRequestBody(reqBody)}
+	}
+
+	// Apply custom parameters (headers and cookies)
+	if params := opts.GetParameters(); params != nil {
+		// Add header parameters
+		for _, namedHeader := range params.GetHeaders() {
+			if paramRef := convertNamedHeaderOrReference(namedHeader); paramRef != nil {
+				op.Parameters = append(op.Parameters, paramRef)
+			}
+		}
+		// Add cookie parameters
+		for _, namedCookie := range params.GetCookies() {
+			if paramRef := convertNamedCookieOrReference(namedCookie); paramRef != nil {
+				op.Parameters = append(op.Parameters, paramRef)
+			}
+		}
 	}
 }
 
@@ -766,6 +782,132 @@ func convertHeader(header *options.Header) *Header {
 		h.Schema = convertSchema(schema)
 	}
 	return h
+}
+
+// convertHeaderOrReference converts a proto HeaderOrReference to a HeaderRef.
+func convertHeaderOrReference(hor *options.HeaderOrReference) *HeaderRef {
+	if hor == nil {
+		return nil
+	}
+
+	switch v := hor.GetOneof().(type) {
+	case *options.HeaderOrReference_Reference:
+		return &HeaderRef{
+			Ref: v.Reference.GetRef(),
+		}
+	case *options.HeaderOrReference_Header:
+		return &HeaderRef{
+			Value: convertHeader(v.Header),
+		}
+	default:
+		return nil
+	}
+}
+
+// convertCookie converts a proto Cookie to a Parameter with in="cookie".
+func convertCookie(name string, cookie *options.Cookie) *Parameter {
+	if cookie == nil {
+		return nil
+	}
+	p := &Parameter{
+		Name:        name,
+		In:          "cookie",
+		Description: cookie.GetDescription(),
+		Required:    cookie.GetRequired(),
+		Deprecated:  cookie.GetDeprecated(),
+	}
+	// Prefer plural examples map over singular example field (OpenAPI 3.1.0 compliance)
+	if len(cookie.GetExamples()) > 0 {
+		p.Examples = convertExamplesMap(cookie.GetExamples())
+	} else if cookie.GetExample() != "" {
+		p.Examples = makeExamplesMap(parseExampleValue(cookie.GetExample()))
+	}
+	// Convert schema or default to string type
+	if schema := cookie.GetSchema(); schema != nil {
+		p.Schema = convertSchemaOrReference(schema)
+	} else {
+		// Default to string type if no schema specified
+		p.Schema = &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
+	}
+	return p
+}
+
+// convertHeaderToParameter converts a proto Header to a Parameter with in="header".
+// This is used when adding header parameters to operations.
+func convertHeaderToParameter(name string, header *options.Header) *Parameter {
+	if header == nil {
+		return nil
+	}
+	p := &Parameter{
+		Name:            name,
+		In:              "header",
+		Description:     header.GetDescription(),
+		Required:        header.GetRequired(),
+		Deprecated:      header.GetDeprecated(),
+		AllowEmptyValue: header.GetAllowEmptyValue(),
+		Style:           header.GetStyle(),
+		AllowReserved:   header.GetAllowReserved(),
+	}
+	if header.GetExplode() {
+		explode := true
+		p.Explode = &explode
+	}
+	// Prefer plural examples map over singular example field (OpenAPI 3.1.0 compliance)
+	if len(header.GetExamples()) > 0 {
+		p.Examples = convertExamplesMap(header.GetExamples())
+	} else if header.GetExample() != "" {
+		p.Examples = makeExamplesMap(parseExampleValue(header.GetExample()))
+	}
+	// Convert schema or default to string type
+	if schema := header.GetSchema(); schema != nil {
+		p.Schema = convertSchema(schema)
+	} else {
+		// Default to string type if no schema specified
+		p.Schema = &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
+	}
+	return p
+}
+
+// convertNamedHeaderOrReference converts a NamedHeaderOrReference to a ParameterRef.
+// Headers are converted to parameters with in="header".
+func convertNamedHeaderOrReference(named *options.NamedHeaderOrReference) *ParameterRef {
+	if named == nil || named.GetValue() == nil {
+		return nil
+	}
+	name := named.GetName()
+	switch v := named.GetValue().GetOneof().(type) {
+	case *options.HeaderOrReference_Reference:
+		return &ParameterRef{
+			Ref: v.Reference.GetRef(),
+		}
+	case *options.HeaderOrReference_Header:
+		return &ParameterRef{
+			Value: convertHeaderToParameter(name, v.Header),
+		}
+	default:
+		return nil
+	}
+}
+
+// convertNamedCookieOrReference converts a NamedCookieOrReference to a ParameterRef.
+// Cookies are converted to parameters with in="cookie".
+func convertNamedCookieOrReference(named *options.NamedCookieOrReference) *ParameterRef {
+	if named == nil || named.GetValue() == nil {
+		return nil
+	}
+	name := named.GetName()
+	switch v := named.GetValue().GetOneof().(type) {
+	case *options.CookieOrReference_Reference:
+		return &ParameterRef{
+			Ref: v.Reference.GetRef(),
+		}
+	case *options.CookieOrReference_Cookie:
+		return &ParameterRef{
+			Value: convertCookie(name, v.Cookie),
+		}
+	default:
+		return nil
+	}
 }
 
 func convertMediaType(mt *options.MediaType) *MediaType {

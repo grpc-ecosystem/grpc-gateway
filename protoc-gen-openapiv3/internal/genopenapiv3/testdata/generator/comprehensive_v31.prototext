@@ -897,9 +897,11 @@ proto_file: {
         headers: {
           key: "X-Request-Id"
           value: {
-            description: "Unique request identifier"
-            schema: {
-              type: ["string"]
+            header: {
+              description: "Unique request identifier"
+              schema: {
+                type: ["string"]
+              }
             }
           }
         }

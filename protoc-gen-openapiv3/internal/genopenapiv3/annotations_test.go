@@ -66,6 +66,28 @@ func getExampleValue(examples map[string]*ExampleRef) any {
 	return nil
 }
 
+// findParamByName finds a parameter by name in a slice of ParameterRef.
+// Returns nil if not found.
+func findParamByName(params []*ParameterRef, name string) *ParameterRef {
+	for _, p := range params {
+		if p.Value != nil && p.Value.Name == name {
+			return p
+		}
+	}
+	return nil
+}
+
+// findParamByRef finds a parameter by $ref in a slice of ParameterRef.
+// Returns nil if not found.
+func findParamByRef(params []*ParameterRef, ref string) *ParameterRef {
+	for _, p := range params {
+		if p.Ref == ref {
+			return p
+		}
+	}
+	return nil
+}
+
 // TestParseExampleValue tests the parseExampleValue function that converts
 // string examples from proto annotations into properly typed JSON values.
 func TestParseExampleValue(t *testing.T) {
@@ -1667,15 +1689,18 @@ func TestApplyOperationAnnotation(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name           string
-		opts           *options.Operation
-		wantSummary    string
-		wantDesc       string
-		wantOpID       string
-		wantTags       []string
-		wantDeprecated bool
-		wantSecurity   int
-		wantServers    int
+		name              string
+		opts              *options.Operation
+		wantSummary       string
+		wantDesc          string
+		wantOpID          string
+		wantTags          []string
+		wantDeprecated    bool
+		wantSecurity      int
+		wantServers       int
+		wantHeaderParams  int
+		wantCookieParams  int
+		verifyParams      func(t *testing.T, params []*ParameterRef)
 	}{
 		{
 			name: "override summary and description",
@@ -1729,6 +1754,187 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			},
 			wantServers: 1,
 		},
+		{
+			name: "add header parameters",
+			opts: &options.Operation{
+				Parameters: &options.OperationParameters{
+					Headers: []*options.NamedHeaderOrReference{
+						{
+							Name: "X-Request-ID",
+							Value: &options.HeaderOrReference{
+								Oneof: &options.HeaderOrReference_Header{
+									Header: &options.Header{
+										Description: "Request tracking ID",
+										Required:    true,
+									},
+								},
+							},
+						},
+						{
+							Name: "X-Api-Version",
+							Value: &options.HeaderOrReference{
+								Oneof: &options.HeaderOrReference_Header{
+									Header: &options.Header{
+										Description: "API version header",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantHeaderParams: 2,
+			verifyParams: func(t *testing.T, params []*ParameterRef) {
+				t.Helper()
+				// Find X-Request-ID header
+				p1 := findParamByName(params, "X-Request-ID")
+				if p1 == nil {
+					t.Fatal("X-Request-ID header not found")
+				}
+				if p1.Value.In != "header" {
+					t.Errorf("X-Request-ID in = %q, want header", p1.Value.In)
+				}
+				if !p1.Value.Required {
+					t.Error("X-Request-ID should be required")
+				}
+				if p1.Value.Description != "Request tracking ID" {
+					t.Errorf("X-Request-ID description = %q, want %q", p1.Value.Description, "Request tracking ID")
+				}
+				// Find X-Api-Version header
+				p2 := findParamByName(params, "X-Api-Version")
+				if p2 == nil {
+					t.Fatal("X-Api-Version header not found")
+				}
+				if p2.Value.In != "header" {
+					t.Errorf("X-Api-Version in = %q, want header", p2.Value.In)
+				}
+				if p2.Value.Description != "API version header" {
+					t.Errorf("X-Api-Version description = %q, want %q", p2.Value.Description, "API version header")
+				}
+			},
+		},
+		{
+			name: "add cookie parameters",
+			opts: &options.Operation{
+				Parameters: &options.OperationParameters{
+					Cookies: []*options.NamedCookieOrReference{
+						{
+							Name: "session_id",
+							Value: &options.CookieOrReference{
+								Oneof: &options.CookieOrReference_Cookie{
+									Cookie: &options.Cookie{
+										Description: "Session identifier",
+										Required:    true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantCookieParams: 1,
+			verifyParams: func(t *testing.T, params []*ParameterRef) {
+				t.Helper()
+				p := findParamByName(params, "session_id")
+				if p == nil {
+					t.Fatal("session_id cookie not found")
+				}
+				if p.Value.In != "cookie" {
+					t.Errorf("session_id in = %q, want cookie", p.Value.In)
+				}
+				if !p.Value.Required {
+					t.Error("session_id should be required")
+				}
+				if p.Value.Description != "Session identifier" {
+					t.Errorf("session_id description = %q, want %q", p.Value.Description, "Session identifier")
+				}
+			},
+		},
+		{
+			name: "add header parameter with reference",
+			opts: &options.Operation{
+				Parameters: &options.OperationParameters{
+					Headers: []*options.NamedHeaderOrReference{
+						{
+							Name: "X-Auth-Token",
+							Value: &options.HeaderOrReference{
+								Oneof: &options.HeaderOrReference_Reference{
+									Reference: &options.Reference{
+										Ref: "#/components/parameters/AuthToken",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantHeaderParams: 1,
+			verifyParams: func(t *testing.T, params []*ParameterRef) {
+				t.Helper()
+				p := findParamByRef(params, "#/components/parameters/AuthToken")
+				if p == nil {
+					t.Fatal("parameter with ref #/components/parameters/AuthToken not found")
+				}
+			},
+		},
+		{
+			name: "add mixed header and cookie parameters",
+			opts: &options.Operation{
+				Parameters: &options.OperationParameters{
+					Headers: []*options.NamedHeaderOrReference{
+						{
+							Name: "X-Request-ID",
+							Value: &options.HeaderOrReference{
+								Oneof: &options.HeaderOrReference_Header{
+									Header: &options.Header{
+										Description: "Request ID",
+									},
+								},
+							},
+						},
+					},
+					Cookies: []*options.NamedCookieOrReference{
+						{
+							Name: "session",
+							Value: &options.CookieOrReference{
+								Oneof: &options.CookieOrReference_Cookie{
+									Cookie: &options.Cookie{
+										Description: "Session cookie",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantHeaderParams: 1,
+			wantCookieParams: 1,
+			verifyParams: func(t *testing.T, params []*ParameterRef) {
+				t.Helper()
+				// Find header by name
+				header := findParamByName(params, "X-Request-ID")
+				if header == nil {
+					t.Fatal("X-Request-ID header not found")
+				}
+				if header.Value.In != "header" {
+					t.Errorf("X-Request-ID in = %q, want header", header.Value.In)
+				}
+				if header.Value.Description != "Request ID" {
+					t.Errorf("X-Request-ID description = %q, want %q", header.Value.Description, "Request ID")
+				}
+				// Find cookie by name
+				cookie := findParamByName(params, "session")
+				if cookie == nil {
+					t.Fatal("session cookie not found")
+				}
+				if cookie.Value.In != "cookie" {
+					t.Errorf("session in = %q, want cookie", cookie.Value.In)
+				}
+				if cookie.Value.Description != "Session cookie" {
+					t.Errorf("session description = %q, want %q", cookie.Value.Description, "Session cookie")
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -1779,6 +1985,17 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			}
 			if tt.wantServers > 0 && len(op.Servers) != tt.wantServers {
 				t.Errorf("Servers count = %d, want %d", len(op.Servers), tt.wantServers)
+			}
+			// Verify header params count
+			if tt.wantHeaderParams > 0 || tt.wantCookieParams > 0 {
+				expectedTotal := tt.wantHeaderParams + tt.wantCookieParams
+				if len(op.Parameters) != expectedTotal {
+					t.Errorf("Parameters count = %d, want %d", len(op.Parameters), expectedTotal)
+				}
+			}
+			// Run custom param verification if provided
+			if tt.verifyParams != nil {
+				tt.verifyParams(t, op.Parameters)
 			}
 		})
 	}
@@ -2023,10 +2240,14 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 		{
 			name: "add headers",
 			opts: &options.Components{
-				Headers: map[string]*options.Header{
+				Headers: map[string]*options.HeaderOrReference{
 					"X-Request-Id": {
-						Description: "Request correlation ID",
-						Schema:      &options.Schema{Type: []string{"string"}},
+						Oneof: &options.HeaderOrReference_Header{
+							Header: &options.Header{
+								Description: "Request correlation ID",
+								Schema:      &options.Schema{Type: []string{"string"}},
+							},
+						},
 					},
 				},
 			},
