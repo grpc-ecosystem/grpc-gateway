@@ -24,9 +24,9 @@ extend google.protobuf.FileOptions {
   //    ];
   //  };
   //
-  // Using 1043 temporarily. For production use, register with
-  // protobuf-global-extension-registry@google.com
-  OpenAPI openapiv3_document = 1043;
+  // Registered extension number 1285 in protobuf global extension registry.
+  // See: https://github.com/protocolbuffers/protobuf/blob/main/docs/options.md
+  OpenAPI openapiv3_document = 1285;
 }
 
 extend google.protobuf.MethodOptions {
@@ -49,8 +49,8 @@ extend google.protobuf.MethodOptions {
   //    };
   //  }
   //
-  // Using 1043 temporarily.
-  Operation openapiv3_operation = 1043;
+  // Registered extension number 1285.
+  Operation openapiv3_operation = 1285;
 }
 
 extend google.protobuf.MessageOptions {
@@ -71,8 +71,8 @@ extend google.protobuf.MessageOptions {
   //    string email = 2;
   //  }
   //
-  // Using 1043 temporarily.
-  Schema openapiv3_schema = 1043;
+  // Registered extension number 1285.
+  Schema openapiv3_schema = 1285;
 }
 
 extend google.protobuf.FieldOptions {
@@ -92,8 +92,8 @@ extend google.protobuf.FieldOptions {
   //    ];
   //  }
   //
-  // Using 1043 temporarily.
-  Schema openapiv3_field = 1043;
+  // Registered extension number 1285.
+  Schema openapiv3_field = 1285;
 }
 
 extend google.protobuf.ServiceOptions {
@@ -113,8 +113,8 @@ extend google.protobuf.ServiceOptions {
   //    };
   //  }
   //
-  // Using 1043 temporarily.
-  Tag openapiv3_tag = 1043;
+  // Registered extension number 1285.
+  Tag openapiv3_tag = 1285;
 }
 
 extend google.protobuf.EnumOptions {
@@ -133,6 +133,6 @@ extend google.protobuf.EnumOptions {
   //    STATUS_INACTIVE = 2;
   //  }
   //
-  // Using 1043 temporarily.
-  EnumSchema openapiv3_enum = 1043;
+  // Registered extension number 1285.
+  EnumSchema openapiv3_enum = 1285;
 }
