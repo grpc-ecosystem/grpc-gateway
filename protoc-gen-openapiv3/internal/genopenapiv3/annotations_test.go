@@ -11,6 +11,27 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
+// testGenerator creates a generator instance for testing convert methods.
+func testGenerator() *generator {
+	registry := NewAdapterRegistry()
+	adapter, _ := registry.Get("3.1.0")
+	return &generator{
+		openapiVersion: "3.1.0",
+		adapter:        adapter,
+	}
+}
+
+// testGeneratorWithReg creates a generator instance with a registry for testing.
+func testGeneratorWithReg(reg *descriptor.Registry) *generator {
+	registry := NewAdapterRegistry()
+	adapter, _ := registry.Get("3.1.0")
+	return &generator{
+		reg:            reg,
+		openapiVersion: "3.1.0",
+		adapter:        adapter,
+	}
+}
+
 // float64Ptr is a helper to create *float64 for test cases
 func float64Ptr(f float64) *float64 {
 	return &f
@@ -54,18 +75,13 @@ func schemaTypeEqual(a, b SchemaType) bool {
 	return true
 }
 
-// isNullable checks if a schema is nullable by checking for "null" in the type array.
-// This is the OpenAPI 3.1.0 compliant way to check for nullability.
+// isNullable checks if a schema is nullable by checking the Nullable field.
+// The adapter handles converting this to type arrays for OpenAPI 3.1.0 output.
 func isNullable(schema *Schema) bool {
 	if schema == nil {
 		return false
 	}
-	for _, t := range schema.Type {
-		if t == "null" {
-			return true
-		}
-	}
-	return false
+	return schema.Nullable
 }
 
 // getExampleValue extracts the example value from an examples map.
@@ -740,7 +756,7 @@ func TestConvertResponse(t *testing.T) {
 		},
 	}
 
-	result := convertResponse(input)
+	result := testGenerator().convertResponse(input)
 
 	if result.Description != "User not found" {
 		t.Errorf("Description = %q, want %q", result.Description, "User not found")
@@ -793,7 +809,7 @@ func TestConvertSchema(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := convertSchema(tt.input)
+			result := testGenerator().convertSchema(tt.input)
 			if result.Schema == nil {
 				t.Fatal("Value should not be nil for inline schema")
 			}
@@ -870,7 +886,7 @@ func TestConvertSchemaOrReference(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := convertSchemaOrReference(tt.input)
+			result := testGenerator().convertSchemaOrReference(tt.input)
 
 			if tt.wantNil {
 				if result != nil {
@@ -977,7 +993,7 @@ func TestConvertSchema_ZeroMinimumMaximum(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := convertSchema(tt.input)
+			result := testGenerator().convertSchema(tt.input)
 
 			if result.Schema == nil {
 				t.Fatal("Value should not be nil for inline schema")
@@ -1026,7 +1042,7 @@ func TestConvertParameter(t *testing.T) {
 		},
 	}
 
-	result := convertParameter(input)
+	result := testGenerator().convertParameter(input)
 
 	if result.Name != "user_id" {
 		t.Errorf("Name = %q, want %q", result.Name, "user_id")
@@ -1058,7 +1074,7 @@ func TestConvertRequestBody(t *testing.T) {
 		},
 	}
 
-	result := convertRequestBody(input)
+	result := testGenerator().convertRequestBody(input)
 
 	if result.Description != "User data" {
 		t.Errorf("Description = %q, want %q", result.Description, "User data")
@@ -1083,7 +1099,7 @@ func TestConvertHeader(t *testing.T) {
 		},
 	}
 
-	result := convertHeader(input)
+	result := testGenerator().convertHeader(input)
 
 	if result.Description != "Request correlation ID" {
 		t.Errorf("Description = %q, want %q", result.Description, "Request correlation ID")
@@ -1109,7 +1125,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			{Schema: &Schema{Type: SchemaType{"integer"}, Format: "int64"}},
 		}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1134,7 +1150,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			{Schema: &Schema{Type: SchemaType{"number"}, Format: "double"}},
 		}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1159,7 +1175,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			{Schema: &Schema{Type: SchemaType{"object"}}},
 		}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1179,7 +1195,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 		}
 		wantNot := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Pattern: "^forbidden$"}}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1206,7 +1222,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			{Reference: &Reference{Ref: "#/components/schemas/Dog"}},
 		}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1235,7 +1251,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 		}
 		wantItems := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uuid"}}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1256,7 +1272,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			"age":  {Schema: &Schema{Type: SchemaType{"integer"}, Format: "int32"}},
 		}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1287,7 +1303,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 		}
 		wantAdditionalProperties := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uri"}}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1303,7 +1319,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			},
 		}
 
-		result := convertSchema(input)
+		result := testGenerator().convertSchema(input)
 
 		if result.Schema == nil {
 			t.Fatal("Value should not be nil")
@@ -1379,7 +1395,7 @@ func TestApplyInfoAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applyInfoAnnotation(info, tt.opts)
 
 			if tt.wantTitle != "" && info.Title != tt.wantTitle {
@@ -1507,7 +1523,7 @@ func TestApplySchemaAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applySchemaAnnotation(schema, msg)
 
 			// Assertions
@@ -1653,7 +1669,7 @@ func TestApplyFieldAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applyFieldAnnotation(schema, field)
 
 			// Assertions
@@ -1977,7 +1993,7 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applyOperationAnnotation(op, method)
 
 			// Assertions
@@ -2070,7 +2086,7 @@ func TestApplyServiceAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applyServiceAnnotation(tag, svc)
 
 			// Assertions
@@ -2158,7 +2174,7 @@ func TestApplyEnumAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applyEnumAnnotation(schema, enum)
 
 			// Assertions
@@ -2280,7 +2296,7 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 			}
 
 			reg := &descriptor.Registry{}
-			gen := &generator{reg: reg}
+			gen := testGeneratorWithReg(reg)
 			gen.applyComponentsAnnotation(comp, tt.opts)
 
 			if tt.wantSecuritySchemes > 0 && len(comp.SecuritySchemes) != tt.wantSecuritySchemes {

@@ -1,7 +1,6 @@
 package genopenapiv3
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -30,6 +29,7 @@ type generator struct {
 	reg            *descriptor.Registry
 	format         Format
 	openapiVersion string
+	adapter        Adapter
 }
 
 // wrapper wraps the OpenAPI document with its source file name.
@@ -39,27 +39,29 @@ type wrapper struct {
 }
 
 // New returns a new generator which generates OpenAPI v3 files.
-func New(reg *descriptor.Registry, format Format, openapiVersion string) gen.Generator {
+// Returns an error if the requested OpenAPI version is not supported.
+func New(reg *descriptor.Registry, format Format, openapiVersion string) (gen.Generator, error) {
+	registry := NewAdapterRegistry()
+	adapter, err := registry.Get(openapiVersion)
+	if err != nil {
+		return nil, fmt.Errorf("unsupported OpenAPI version %q: %w (supported: %v)", openapiVersion, err, registry.SupportedVersions())
+	}
 	return &generator{
 		reg:            reg,
 		format:         format,
-		openapiVersion: openapiVersion,
-	}
+		openapiVersion: adapter.Version(),
+		adapter:        adapter,
+	}, nil
 }
 
-// applyNullable makes a schema nullable by adding "null" to the type array.
-// This is the OpenAPI 3.1.0 / JSON Schema Draft 2020-12 compliant approach.
-func applyNullable(schema *Schema) {
+// applyNullable marks a schema as nullable.
+// The actual output format (type array vs nullable boolean) is handled by the adapter.
+func (g *generator) applyNullable(schema *Schema) {
 	if schema == nil {
 		return
 	}
-	// Check if already nullable
-	for _, t := range schema.Type {
-		if t == "null" {
-			return
-		}
-	}
-	schema.Type = append(schema.Type, "null")
+	// Just set the nullable flag - the converter and adapter handle version-specific output
+	schema.Nullable = true
 }
 
 // Generate implements gen.Generator.
@@ -694,10 +696,10 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 		g.applyFieldBehaviorToSchema(schema, fieldSchemaRef.Schema, field)
 	}
 
-	// Apply proto3 optional nullable (OpenAPI 3.1.0 style: add "null" to type array)
+	// Apply proto3 optional nullable using version-appropriate method
 	if g.reg.GetProto3OptionalNullable() && field.GetProto3Optional() {
 		if fieldSchemaRef.Schema != nil {
-			applyNullable(fieldSchemaRef.Schema)
+			g.applyNullable(fieldSchemaRef.Schema)
 		}
 	}
 
@@ -1169,16 +1171,15 @@ func (g *generator) mergeTargetFile(targets []*wrapper, mergeFileName string) *w
 	return mergedTarget
 }
 
-// encodeOpenAPI converts OpenAPI file obj to ResponseFile.
+// encodeOpenAPI converts OpenAPI file obj to ResponseFile using the adapter.
 func (g *generator) encodeOpenAPI(file *wrapper) (*descriptor.ResponseFile, error) {
-	var contentBuf bytes.Buffer
-	enc, err := g.format.NewEncoder(&contentBuf)
-	if err != nil {
-		return nil, err
-	}
+	// Convert to canonical model
+	canonicalDoc := file.openapi.ToCanonical()
 
-	if err := enc.Encode(file.openapi); err != nil {
-		return nil, err
+	// Use adapter to serialize
+	content, err := g.adapter.Adapt(canonicalDoc, g.format)
+	if err != nil {
+		return nil, fmt.Errorf("adapter serialization failed: %w", err)
 	}
 
 	name := file.fileName
@@ -1189,7 +1190,7 @@ func (g *generator) encodeOpenAPI(file *wrapper) (*descriptor.ResponseFile, erro
 	return &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
-			Content: proto.String(contentBuf.String()),
+			Content: proto.String(string(content)),
 		},
 	}, nil
 }

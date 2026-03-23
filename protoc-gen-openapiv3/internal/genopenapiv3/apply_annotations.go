@@ -181,7 +181,7 @@ func (g *generator) applyComponentsAnnotation(comp *Components, opts *options.Co
 		if comp.Responses == nil {
 			comp.Responses = make(map[string]*ResponseRef)
 		}
-		comp.Responses[name] = &ResponseRef{Value: convertResponse(resp)}
+		comp.Responses[name] = &ResponseRef{Value: g.convertResponse(resp)}
 	}
 
 	// Apply Parameters
@@ -189,7 +189,7 @@ func (g *generator) applyComponentsAnnotation(comp *Components, opts *options.Co
 		if comp.Parameters == nil {
 			comp.Parameters = make(map[string]*ParameterRef)
 		}
-		comp.Parameters[name] = &ParameterRef{Value: convertParameter(param)}
+		comp.Parameters[name] = &ParameterRef{Value: g.convertParameter(param)}
 	}
 
 	// Apply Request Bodies
@@ -197,7 +197,7 @@ func (g *generator) applyComponentsAnnotation(comp *Components, opts *options.Co
 		if comp.RequestBodies == nil {
 			comp.RequestBodies = make(map[string]*RequestBodyRef)
 		}
-		comp.RequestBodies[name] = &RequestBodyRef{Value: convertRequestBody(body)}
+		comp.RequestBodies[name] = &RequestBodyRef{Value: g.convertRequestBody(body)}
 	}
 
 	// Apply Headers
@@ -205,7 +205,7 @@ func (g *generator) applyComponentsAnnotation(comp *Components, opts *options.Co
 		if comp.Headers == nil {
 			comp.Headers = make(map[string]*HeaderRef)
 		}
-		comp.Headers[name] = convertHeaderOrReference(headerOrRef)
+		comp.Headers[name] = g.convertHeaderOrReference(headerOrRef)
 	}
 }
 
@@ -261,25 +261,25 @@ func (g *generator) applyOperationAnnotation(op *Operation, method *descriptor.M
 		if op.Responses == nil {
 			op.Responses = NewResponses()
 		}
-		op.Responses.Codes[code] = &ResponseRef{Value: convertResponse(resp)}
+		op.Responses.Codes[code] = &ResponseRef{Value: g.convertResponse(resp)}
 	}
 
 	// Apply request body override if provided
 	if reqBody := opts.GetRequestBody(); reqBody != nil {
-		op.RequestBody = &RequestBodyRef{Value: convertRequestBody(reqBody)}
+		op.RequestBody = &RequestBodyRef{Value: g.convertRequestBody(reqBody)}
 	}
 
 	// Apply custom parameters (headers and cookies)
 	if params := opts.GetParameters(); params != nil {
 		// Add header parameters
 		for _, namedHeader := range params.GetHeaders() {
-			if paramRef := convertNamedHeaderOrReference(namedHeader); paramRef != nil {
+			if paramRef := g.convertNamedHeaderOrReference(namedHeader); paramRef != nil {
 				op.Parameters = append(op.Parameters, paramRef)
 			}
 		}
 		// Add cookie parameters
 		for _, namedCookie := range params.GetCookies() {
-			if paramRef := convertNamedCookieOrReference(namedCookie); paramRef != nil {
+			if paramRef := g.convertNamedCookieOrReference(namedCookie); paramRef != nil {
 				op.Parameters = append(op.Parameters, paramRef)
 			}
 		}
@@ -323,9 +323,9 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 		schema.WriteOnly = true
 	}
 
-	// Apply nullable (OpenAPI 3.1.0 style: add "null" to type array)
+	// Apply nullable using version-appropriate method
 	if opts.GetNullable() {
-		applyNullable(schema)
+		g.applyNullable(schema)
 	}
 
 	// Apply deprecated
@@ -343,27 +343,27 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 	// Apply allOf
 	if len(opts.GetAllOf()) > 0 {
 		for _, allOfSchema := range opts.GetAllOf() {
-			schema.AllOf = append(schema.AllOf, convertSchemaOrReference(allOfSchema))
+			schema.AllOf = append(schema.AllOf, g.convertSchemaOrReference(allOfSchema))
 		}
 	}
 
 	// Apply anyOf
 	if len(opts.GetAnyOf()) > 0 {
 		for _, anyOfSchema := range opts.GetAnyOf() {
-			schema.AnyOf = append(schema.AnyOf, convertSchemaOrReference(anyOfSchema))
+			schema.AnyOf = append(schema.AnyOf, g.convertSchemaOrReference(anyOfSchema))
 		}
 	}
 
 	// Apply oneOf (appends to auto-detected oneOf from proto oneof fields)
 	if len(opts.GetOneOf()) > 0 {
 		for _, oneOfSchema := range opts.GetOneOf() {
-			schema.OneOf = append(schema.OneOf, convertSchemaOrReference(oneOfSchema))
+			schema.OneOf = append(schema.OneOf, g.convertSchemaOrReference(oneOfSchema))
 		}
 	}
 
 	// Apply not
 	if notSchema := opts.GetNot(); notSchema != nil {
-		schema.Not = convertSchemaOrReference(notSchema)
+		schema.Not = g.convertSchemaOrReference(notSchema)
 	}
 
 	// Apply discriminator
@@ -480,9 +480,9 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 		schema.WriteOnly = true
 	}
 
-	// Apply nullable (OpenAPI 3.1.0 style: add "null" to type array)
+	// Apply nullable using version-appropriate method
 	if opts.GetNullable() {
-		applyNullable(schema)
+		g.applyNullable(schema)
 	}
 
 	// Apply deprecated
@@ -500,27 +500,27 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 	// Apply allOf
 	if len(opts.GetAllOf()) > 0 {
 		for _, allOfSchema := range opts.GetAllOf() {
-			schema.AllOf = append(schema.AllOf, convertSchemaOrReference(allOfSchema))
+			schema.AllOf = append(schema.AllOf, g.convertSchemaOrReference(allOfSchema))
 		}
 	}
 
 	// Apply anyOf
 	if len(opts.GetAnyOf()) > 0 {
 		for _, anyOfSchema := range opts.GetAnyOf() {
-			schema.AnyOf = append(schema.AnyOf, convertSchemaOrReference(anyOfSchema))
+			schema.AnyOf = append(schema.AnyOf, g.convertSchemaOrReference(anyOfSchema))
 		}
 	}
 
 	// Apply oneOf
 	if len(opts.GetOneOf()) > 0 {
 		for _, oneOfSchema := range opts.GetOneOf() {
-			schema.OneOf = append(schema.OneOf, convertSchemaOrReference(oneOfSchema))
+			schema.OneOf = append(schema.OneOf, g.convertSchemaOrReference(oneOfSchema))
 		}
 	}
 
 	// Apply not
 	if notSchema := opts.GetNot(); notSchema != nil {
-		schema.Not = convertSchemaOrReference(notSchema)
+		schema.Not = g.convertSchemaOrReference(notSchema)
 	}
 
 	// Apply discriminator
@@ -699,26 +699,26 @@ func convertOAuthFlow(flow *options.OAuthFlow) *OAuthFlow {
 	}
 }
 
-func convertResponse(resp *options.Response) *Response {
+func (g *generator) convertResponse(resp *options.Response) *Response {
 	r := &Response{
 		Description: resp.GetDescription(),
 	}
 	if len(resp.GetHeaders()) > 0 {
 		r.Headers = make(map[string]*HeaderRef)
 		for name, h := range resp.GetHeaders() {
-			r.Headers[name] = &HeaderRef{Value: convertHeader(h)}
+			r.Headers[name] = &HeaderRef{Value: g.convertHeader(h)}
 		}
 	}
 	if len(resp.GetContent()) > 0 {
 		r.Content = make(map[string]*MediaType)
 		for mediaType, mt := range resp.GetContent() {
-			r.Content[mediaType] = convertMediaType(mt)
+			r.Content[mediaType] = g.convertMediaType(mt)
 		}
 	}
 	return r
 }
 
-func convertParameter(param *options.Parameter) *Parameter {
+func (g *generator) convertParameter(param *options.Parameter) *Parameter {
 	p := &Parameter{
 		Name:            param.GetName(),
 		In:              param.GetIn(),
@@ -740,12 +740,12 @@ func convertParameter(param *options.Parameter) *Parameter {
 		p.Examples = makeExamplesMap(parseExampleValue(param.GetExample()))
 	}
 	if schema := param.GetSchema(); schema != nil {
-		p.Schema = convertSchema(schema)
+		p.Schema = g.convertSchema(schema)
 	}
 	return p
 }
 
-func convertRequestBody(body *options.RequestBody) *RequestBody {
+func (g *generator) convertRequestBody(body *options.RequestBody) *RequestBody {
 	rb := &RequestBody{
 		Description: body.GetDescription(),
 		Required:    body.GetRequired(),
@@ -753,13 +753,13 @@ func convertRequestBody(body *options.RequestBody) *RequestBody {
 	if len(body.GetContent()) > 0 {
 		rb.Content = make(map[string]*MediaType)
 		for mediaType, mt := range body.GetContent() {
-			rb.Content[mediaType] = convertMediaType(mt)
+			rb.Content[mediaType] = g.convertMediaType(mt)
 		}
 	}
 	return rb
 }
 
-func convertHeader(header *options.Header) *Header {
+func (g *generator) convertHeader(header *options.Header) *Header {
 	h := &Header{
 		Description:     header.GetDescription(),
 		Required:        header.GetRequired(),
@@ -779,13 +779,13 @@ func convertHeader(header *options.Header) *Header {
 		h.Examples = makeExamplesMap(parseExampleValue(header.GetExample()))
 	}
 	if schema := header.GetSchema(); schema != nil {
-		h.Schema = convertSchema(schema)
+		h.Schema = g.convertSchema(schema)
 	}
 	return h
 }
 
 // convertHeaderOrReference converts a proto HeaderOrReference to a HeaderRef.
-func convertHeaderOrReference(hor *options.HeaderOrReference) *HeaderRef {
+func (g *generator) convertHeaderOrReference(hor *options.HeaderOrReference) *HeaderRef {
 	if hor == nil {
 		return nil
 	}
@@ -797,7 +797,7 @@ func convertHeaderOrReference(hor *options.HeaderOrReference) *HeaderRef {
 		}
 	case *options.HeaderOrReference_Header:
 		return &HeaderRef{
-			Value: convertHeader(v.Header),
+			Value: g.convertHeader(v.Header),
 		}
 	default:
 		return nil
@@ -805,7 +805,7 @@ func convertHeaderOrReference(hor *options.HeaderOrReference) *HeaderRef {
 }
 
 // convertCookie converts a proto Cookie to a Parameter with in="cookie".
-func convertCookie(name string, cookie *options.Cookie) *Parameter {
+func (g *generator) convertCookie(name string, cookie *options.Cookie) *Parameter {
 	if cookie == nil {
 		return nil
 	}
@@ -824,7 +824,7 @@ func convertCookie(name string, cookie *options.Cookie) *Parameter {
 	}
 	// Convert schema or default to string type
 	if schema := cookie.GetSchema(); schema != nil {
-		p.Schema = convertSchemaOrReference(schema)
+		p.Schema = g.convertSchemaOrReference(schema)
 	} else {
 		// Default to string type if no schema specified
 		p.Schema = &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
@@ -834,7 +834,7 @@ func convertCookie(name string, cookie *options.Cookie) *Parameter {
 
 // convertHeaderToParameter converts a proto Header to a Parameter with in="header".
 // This is used when adding header parameters to operations.
-func convertHeaderToParameter(name string, header *options.Header) *Parameter {
+func (g *generator) convertHeaderToParameter(name string, header *options.Header) *Parameter {
 	if header == nil {
 		return nil
 	}
@@ -860,7 +860,7 @@ func convertHeaderToParameter(name string, header *options.Header) *Parameter {
 	}
 	// Convert schema or default to string type
 	if schema := header.GetSchema(); schema != nil {
-		p.Schema = convertSchema(schema)
+		p.Schema = g.convertSchema(schema)
 	} else {
 		// Default to string type if no schema specified
 		p.Schema = &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}
@@ -870,7 +870,7 @@ func convertHeaderToParameter(name string, header *options.Header) *Parameter {
 
 // convertNamedHeaderOrReference converts a NamedHeaderOrReference to a ParameterRef.
 // Headers are converted to parameters with in="header".
-func convertNamedHeaderOrReference(named *options.NamedHeaderOrReference) *ParameterRef {
+func (g *generator) convertNamedHeaderOrReference(named *options.NamedHeaderOrReference) *ParameterRef {
 	if named == nil || named.GetValue() == nil {
 		return nil
 	}
@@ -882,7 +882,7 @@ func convertNamedHeaderOrReference(named *options.NamedHeaderOrReference) *Param
 		}
 	case *options.HeaderOrReference_Header:
 		return &ParameterRef{
-			Value: convertHeaderToParameter(name, v.Header),
+			Value: g.convertHeaderToParameter(name, v.Header),
 		}
 	default:
 		return nil
@@ -891,7 +891,7 @@ func convertNamedHeaderOrReference(named *options.NamedHeaderOrReference) *Param
 
 // convertNamedCookieOrReference converts a NamedCookieOrReference to a ParameterRef.
 // Cookies are converted to parameters with in="cookie".
-func convertNamedCookieOrReference(named *options.NamedCookieOrReference) *ParameterRef {
+func (g *generator) convertNamedCookieOrReference(named *options.NamedCookieOrReference) *ParameterRef {
 	if named == nil || named.GetValue() == nil {
 		return nil
 	}
@@ -903,14 +903,14 @@ func convertNamedCookieOrReference(named *options.NamedCookieOrReference) *Param
 		}
 	case *options.CookieOrReference_Cookie:
 		return &ParameterRef{
-			Value: convertCookie(name, v.Cookie),
+			Value: g.convertCookie(name, v.Cookie),
 		}
 	default:
 		return nil
 	}
 }
 
-func convertMediaType(mt *options.MediaType) *MediaType {
+func (g *generator) convertMediaType(mt *options.MediaType) *MediaType {
 	result := &MediaType{}
 	// Prefer plural examples map over singular example field (OpenAPI 3.1.0 compliance)
 	if len(mt.GetExamples()) > 0 {
@@ -919,14 +919,14 @@ func convertMediaType(mt *options.MediaType) *MediaType {
 		result.Examples = makeExamplesMap(parseExampleValue(mt.GetExample()))
 	}
 	if schema := mt.GetSchema(); schema != nil {
-		result.Schema = convertSchema(schema)
+		result.Schema = g.convertSchema(schema)
 	}
 	return result
 }
 
 // convertSchemaOrReference converts a proto SchemaOrReference to a Go SchemaRef.
 // This handles the discriminated union of inline schema vs reference.
-func convertSchemaOrReference(sor *options.SchemaOrReference) *SchemaOrReference {
+func (g *generator) convertSchemaOrReference(sor *options.SchemaOrReference) *SchemaOrReference {
 	if sor == nil {
 		return nil
 	}
@@ -941,13 +941,13 @@ func convertSchemaOrReference(sor *options.SchemaOrReference) *SchemaOrReference
 			},
 		}
 	case *options.SchemaOrReference_Schema:
-		return convertSchema(v.Schema)
+		return g.convertSchema(v.Schema)
 	default:
 		return nil
 	}
 }
 
-func convertSchema(schema *options.Schema) *SchemaOrReference {
+func (g *generator) convertSchema(schema *options.Schema) *SchemaOrReference {
 	s := &Schema{
 		Type:        SchemaType(schema.GetType()),
 		Format:      schema.GetFormat(),
@@ -961,9 +961,9 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 		UniqueItems: schema.GetUniqueItems(),
 	}
 
-	// Apply nullable via type array (OpenAPI 3.1.0 style)
+	// Apply nullable - version-specific output is handled by the adapter
 	if schema.GetNullable() {
-		applyNullable(s)
+		s.Nullable = true
 	}
 
 	// Apply default
@@ -1039,27 +1039,27 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 	// Apply allOf
 	if len(schema.GetAllOf()) > 0 {
 		for _, allOfSchema := range schema.GetAllOf() {
-			s.AllOf = append(s.AllOf, convertSchemaOrReference(allOfSchema))
+			s.AllOf = append(s.AllOf, g.convertSchemaOrReference(allOfSchema))
 		}
 	}
 
 	// Apply anyOf
 	if len(schema.GetAnyOf()) > 0 {
 		for _, anyOfSchema := range schema.GetAnyOf() {
-			s.AnyOf = append(s.AnyOf, convertSchemaOrReference(anyOfSchema))
+			s.AnyOf = append(s.AnyOf, g.convertSchemaOrReference(anyOfSchema))
 		}
 	}
 
 	// Apply oneOf
 	if len(schema.GetOneOf()) > 0 {
 		for _, oneOfSchema := range schema.GetOneOf() {
-			s.OneOf = append(s.OneOf, convertSchemaOrReference(oneOfSchema))
+			s.OneOf = append(s.OneOf, g.convertSchemaOrReference(oneOfSchema))
 		}
 	}
 
 	// Apply not
 	if notSchema := schema.GetNot(); notSchema != nil {
-		s.Not = convertSchemaOrReference(notSchema)
+		s.Not = g.convertSchemaOrReference(notSchema)
 	}
 
 	// Apply discriminator
@@ -1072,14 +1072,14 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 
 	// Apply items (for array schemas)
 	if items := schema.GetItems(); items != nil {
-		s.Items = convertSchemaOrReference(items)
+		s.Items = g.convertSchemaOrReference(items)
 	}
 
 	// Apply properties (for object schemas) - now uses NamedSchemaOrReference for ordering
 	if len(schema.GetProperties()) > 0 {
 		s.Properties = make(map[string]*SchemaOrReference)
 		for _, namedProp := range schema.GetProperties() {
-			s.Properties[namedProp.GetName()] = convertSchemaOrReference(namedProp.GetValue())
+			s.Properties[namedProp.GetName()] = g.convertSchemaOrReference(namedProp.GetValue())
 		}
 	}
 
@@ -1093,7 +1093,7 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 			}
 			// Boolean false - we don't set anything (default is no additional properties)
 		case *options.AdditionalPropertiesItem_SchemaOrReference:
-			s.AdditionalProperties = convertSchemaOrReference(kind.SchemaOrReference)
+			s.AdditionalProperties = g.convertSchemaOrReference(kind.SchemaOrReference)
 		}
 	}
 

@@ -278,7 +278,10 @@ func run() error {
 	}
 
 	// Create generator
-	g := genopenapiv3.New(reg, format, cfg.OpenAPIVersion)
+	g, err := genopenapiv3.New(reg, format, cfg.OpenAPIVersion)
+	if err != nil {
+		return fmt.Errorf("failed to create generator: %w", err)
+	}
 
 	// Add error definitions
 	if err := genopenapiv3.AddErrorDefs(reg); err != nil {

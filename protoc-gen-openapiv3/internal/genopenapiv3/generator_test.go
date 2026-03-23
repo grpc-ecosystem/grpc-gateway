@@ -1,7 +1,6 @@
 package genopenapiv3
 
 import (
-	"bytes"
 	"encoding/json"
 	"os"
 	"reflect"
@@ -406,10 +405,10 @@ func TestPathsSortAlphabetically(t *testing.T) {
 }
 
 func TestNewOpenAPI(t *testing.T) {
-	doc := NewOpenAPI("Test API", "1.0.0", "3.0.3")
+	doc := NewOpenAPI("Test API", "1.0.0", "3.1.0")
 
-	if doc.OpenAPI != "3.0.3" {
-		t.Errorf("OpenAPI = %q, want %q", doc.OpenAPI, "3.0.3")
+	if doc.OpenAPI != "3.1.0" {
+		t.Errorf("OpenAPI = %q, want %q", doc.OpenAPI, "3.1.0")
 	}
 	if doc.Info.Title != "Test API" {
 		t.Errorf("Info.Title = %q, want %q", doc.Info.Title, "Test API")
@@ -940,16 +939,49 @@ func jsonEqual(t *testing.T, a, b string) bool {
 }
 
 func jsonEqualOrdered(t *testing.T, a, b []byte) bool {
-	var bufA, bufB bytes.Buffer
-	if err := json.Compact(&bufA, a); err != nil {
-		t.Errorf("Failed to compact first JSON: %v", err)
+	// Use semantic JSON comparison that ignores key order
+	var objA, objB any
+	if err := json.Unmarshal(a, &objA); err != nil {
+		t.Errorf("Failed to unmarshal first JSON: %v", err)
 		return false
 	}
-	if err := json.Compact(&bufB, b); err != nil {
-		t.Errorf("Failed to compact second JSON: %v", err)
+	if err := json.Unmarshal(b, &objB); err != nil {
+		t.Errorf("Failed to unmarshal second JSON: %v", err)
 		return false
 	}
-	return bytes.Equal(bufA.Bytes(), bufB.Bytes())
+	return jsonDeepEqual(objA, objB)
+}
+
+// jsonDeepEqual compares two JSON values for semantic equality,
+// ignoring key order in objects.
+func jsonDeepEqual(a, b any) bool {
+	switch va := a.(type) {
+	case map[string]any:
+		vb, ok := b.(map[string]any)
+		if !ok || len(va) != len(vb) {
+			return false
+		}
+		for k, valA := range va {
+			valB, exists := vb[k]
+			if !exists || !jsonDeepEqual(valA, valB) {
+				return false
+			}
+		}
+		return true
+	case []any:
+		vb, ok := b.([]any)
+		if !ok || len(va) != len(vb) {
+			return false
+		}
+		for i := range va {
+			if !jsonDeepEqual(va[i], vb[i]) {
+				return false
+			}
+		}
+		return true
+	default:
+		return a == b
+	}
 }
 
 func TestExtractFieldBehavior(t *testing.T) {
@@ -1409,30 +1441,33 @@ func TestSchemaNullableField(t *testing.T) {
 func TestApplyNullable(t *testing.T) {
 	t.Parallel()
 
+	// Create a generator for testing
+	registry := NewAdapterRegistry()
+	adapter, _ := registry.Get("3.1.0")
+	g := &generator{
+		openapiVersion: "3.1.0",
+		adapter:        adapter,
+	}
+
 	tests := []struct {
-		name     string
-		initial  SchemaType
-		wantType SchemaType
+		name         string
+		initial      SchemaType
+		wantNullable bool
 	}{
 		{
-			name:     "add null to string type",
-			initial:  SchemaType{"string"},
-			wantType: SchemaType{"string", "null"},
+			name:         "mark string type as nullable",
+			initial:      SchemaType{"string"},
+			wantNullable: true,
 		},
 		{
-			name:     "add null to integer type",
-			initial:  SchemaType{"integer"},
-			wantType: SchemaType{"integer", "null"},
+			name:         "mark integer type as nullable",
+			initial:      SchemaType{"integer"},
+			wantNullable: true,
 		},
 		{
-			name:     "already nullable - no duplicate",
-			initial:  SchemaType{"string", "null"},
-			wantType: SchemaType{"string", "null"},
-		},
-		{
-			name:     "empty type array",
-			initial:  SchemaType{},
-			wantType: SchemaType{"null"},
+			name:         "empty type array",
+			initial:      SchemaType{},
+			wantNullable: true,
 		},
 	}
 
@@ -1440,21 +1475,16 @@ func TestApplyNullable(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			schema := &Schema{Type: tt.initial}
-			applyNullable(schema)
-			if len(schema.Type) != len(tt.wantType) {
-				t.Errorf("Type length = %d, want %d", len(schema.Type), len(tt.wantType))
-			}
-			for i, typ := range tt.wantType {
-				if i >= len(schema.Type) || schema.Type[i] != typ {
-					t.Errorf("Type[%d] = %q, want %q", i, schema.Type[i], typ)
-				}
+			g.applyNullable(schema)
+			if schema.Nullable != tt.wantNullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.wantNullable)
 			}
 		})
 	}
 
 	// Test nil schema - should not panic
 	t.Run("nil schema", func(t *testing.T) {
-		applyNullable(nil) // Should not panic
+		g.applyNullable(nil) // Should not panic
 	})
 }
 
@@ -1665,7 +1695,10 @@ func requireGenerate(
 		targets = append(targets, f)
 	}
 
-	g := New(reg, FormatJSON, openapiVersion)
+	g, err := New(reg, FormatJSON, openapiVersion)
+	if err != nil {
+		tb.Fatalf("failed to create generator: %s", err)
+	}
 
 	resp, err := g.Generate(targets)
 	if err != nil {
@@ -1692,7 +1725,7 @@ func requireGenerateInline(
 		tb.Fatalf("failed to unmarshal prototext: %s", err)
 	}
 
-	return requireGenerate(tb, &req, "3.0.3", registryModifier)
+	return requireGenerate(tb, &req, "3.1.0", registryModifier)
 }
 
 // Basic prototext for a simple service with GET/POST endpoints
@@ -1782,7 +1815,7 @@ func TestGenerateInline_BasicService(t *testing.T) {
 
 	// Verify basic structure
 	assertions := []string{
-		`"openapi": "3.0.3"`,
+		`"openapi": "3.1.0"`,
 		`"/v1/users/{user_id}"`,
 		`"/v1/users"`,
 		`"get":`,

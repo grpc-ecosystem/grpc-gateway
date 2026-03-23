@@ -550,6 +550,9 @@ type Schema struct {
 	ReadOnly  bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 	WriteOnly bool `json:"writeOnly,omitempty" yaml:"writeOnly,omitempty"`
 
+	// Nullable (OpenAPI 3.0.x only; in 3.1.0 use type array like ["string", "null"])
+	Nullable bool `json:"nullable,omitempty" yaml:"nullable,omitempty"`
+
 	// Deprecation
 	Deprecated bool `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 
