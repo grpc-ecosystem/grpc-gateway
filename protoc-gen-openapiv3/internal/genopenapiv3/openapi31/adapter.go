@@ -1,4 +1,4 @@
-package v31
+package openapi31
 
 import (
 	"encoding/json"
