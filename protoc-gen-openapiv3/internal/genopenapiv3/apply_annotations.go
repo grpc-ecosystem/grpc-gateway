@@ -323,9 +323,9 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 		schema.WriteOnly = true
 	}
 
-	// Apply nullable
+	// Apply nullable (OpenAPI 3.1.0 style: add "null" to type array)
 	if opts.GetNullable() {
-		schema.Nullable = true
+		applyNullable(schema)
 	}
 
 	// Apply deprecated
@@ -480,9 +480,9 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 		schema.WriteOnly = true
 	}
 
-	// Apply nullable
+	// Apply nullable (OpenAPI 3.1.0 style: add "null" to type array)
 	if opts.GetNullable() {
-		schema.Nullable = true
+		applyNullable(schema)
 	}
 
 	// Apply deprecated
@@ -955,11 +955,15 @@ func convertSchema(schema *options.Schema) *SchemaOrReference {
 		Description: schema.GetDescription(),
 		ReadOnly:    schema.GetReadOnly(),
 		WriteOnly:   schema.GetWriteOnly(),
-		Nullable:    schema.GetNullable(),
 		Deprecated:  schema.GetDeprecated(),
 		Pattern:     schema.GetPattern(),
 		Required:    schema.GetRequired(),
 		UniqueItems: schema.GetUniqueItems(),
+	}
+
+	// Apply nullable via type array (OpenAPI 3.1.0 style)
+	if schema.GetNullable() {
+		applyNullable(s)
 	}
 
 	// Apply default

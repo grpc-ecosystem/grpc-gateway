@@ -1372,10 +1372,9 @@ func TestResolveOpenAPINameWithStrategy(t *testing.T) {
 }
 
 func TestSchemaNullableField(t *testing.T) {
-	// Test that nullable field is correctly serialized
+	// Test that nullable is expressed via type array (OpenAPI 3.1.0 style)
 	schema := &Schema{
-		Type:     SchemaType{"string"},
-		Nullable: true,
+		Type: SchemaType{"string", "null"},
 	}
 
 	data, err := json.Marshal(schema)
@@ -1383,11 +1382,12 @@ func TestSchemaNullableField(t *testing.T) {
 		t.Fatalf("Failed to marshal schema: %v", err)
 	}
 
-	if !strings.Contains(string(data), `"nullable":true`) {
-		t.Errorf("Expected nullable:true in output, got: %s", string(data))
+	// Verify that type is a JSON array containing "string" and "null"
+	if !strings.Contains(string(data), `"type":["string","null"]`) {
+		t.Errorf("Expected type array with null in output, got: %s", string(data))
 	}
 
-	// Test schema without nullable
+	// Test schema without nullable (single type, not array)
 	schemaNonNullable := &Schema{
 		Type: SchemaType{"string"},
 	}
@@ -1397,9 +1397,65 @@ func TestSchemaNullableField(t *testing.T) {
 		t.Fatalf("Failed to marshal schema: %v", err)
 	}
 
-	if strings.Contains(string(data), `"nullable"`) {
-		t.Errorf("Expected no nullable field in output, got: %s", string(data))
+	// Single type should serialize as string, not array
+	if !strings.Contains(string(data), `"type":"string"`) {
+		t.Errorf("Expected type as single string in output, got: %s", string(data))
 	}
+	if strings.Contains(string(data), `"null"`) {
+		t.Errorf("Expected no null in type, got: %s", string(data))
+	}
+}
+
+func TestApplyNullable(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		initial  SchemaType
+		wantType SchemaType
+	}{
+		{
+			name:     "add null to string type",
+			initial:  SchemaType{"string"},
+			wantType: SchemaType{"string", "null"},
+		},
+		{
+			name:     "add null to integer type",
+			initial:  SchemaType{"integer"},
+			wantType: SchemaType{"integer", "null"},
+		},
+		{
+			name:     "already nullable - no duplicate",
+			initial:  SchemaType{"string", "null"},
+			wantType: SchemaType{"string", "null"},
+		},
+		{
+			name:     "empty type array",
+			initial:  SchemaType{},
+			wantType: SchemaType{"null"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			schema := &Schema{Type: tt.initial}
+			applyNullable(schema)
+			if len(schema.Type) != len(tt.wantType) {
+				t.Errorf("Type length = %d, want %d", len(schema.Type), len(tt.wantType))
+			}
+			for i, typ := range tt.wantType {
+				if i >= len(schema.Type) || schema.Type[i] != typ {
+					t.Errorf("Type[%d] = %q, want %q", i, schema.Type[i], typ)
+				}
+			}
+		})
+	}
+
+	// Test nil schema - should not panic
+	t.Run("nil schema", func(t *testing.T) {
+		applyNullable(nil) // Should not panic
+	})
 }
 
 func TestGenerateFromProtoDescriptor(t *testing.T) {

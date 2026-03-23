@@ -47,6 +47,21 @@ func New(reg *descriptor.Registry, format Format, openapiVersion string) gen.Gen
 	}
 }
 
+// applyNullable makes a schema nullable by adding "null" to the type array.
+// This is the OpenAPI 3.1.0 / JSON Schema Draft 2020-12 compliant approach.
+func applyNullable(schema *Schema) {
+	if schema == nil {
+		return
+	}
+	// Check if already nullable
+	for _, t := range schema.Type {
+		if t == "null" {
+			return
+		}
+	}
+	schema.Type = append(schema.Type, "null")
+}
+
 // Generate implements gen.Generator.
 func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
 	var files []*descriptor.ResponseFile
@@ -679,10 +694,10 @@ func (g *generator) addFieldToSchema(doc *OpenAPI, schema *Schema, field *descri
 		g.applyFieldBehaviorToSchema(schema, fieldSchemaRef.Schema, field)
 	}
 
-	// Apply proto3 optional nullable
+	// Apply proto3 optional nullable (OpenAPI 3.1.0 style: add "null" to type array)
 	if g.reg.GetProto3OptionalNullable() && field.GetProto3Optional() {
 		if fieldSchemaRef.Schema != nil {
-			fieldSchemaRef.Schema.Nullable = true
+			applyNullable(fieldSchemaRef.Schema)
 		}
 	}
 

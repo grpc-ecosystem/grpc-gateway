@@ -54,6 +54,20 @@ func schemaTypeEqual(a, b SchemaType) bool {
 	return true
 }
 
+// isNullable checks if a schema is nullable by checking for "null" in the type array.
+// This is the OpenAPI 3.1.0 compliant way to check for nullability.
+func isNullable(schema *Schema) bool {
+	if schema == nil {
+		return false
+	}
+	for _, t := range schema.Type {
+		if t == "null" {
+			return true
+		}
+	}
+	return false
+}
+
 // getExampleValue extracts the example value from an examples map.
 // Returns nil if the map is empty or the "example" key doesn't exist.
 func getExampleValue(examples map[string]*ExampleRef) any {
@@ -801,7 +815,7 @@ func TestConvertSchemaOrReference(t *testing.T) {
 			input: &options.SchemaOrReference{
 				Oneof: &options.SchemaOrReference_Reference{
 					Reference: &options.Reference{
-						Ref:        "#/components/schemas/User",
+						Ref:         "#/components/schemas/User",
 						Summary:     "User reference",
 						Description: "Reference to User schema",
 					},
@@ -1515,8 +1529,9 @@ func TestApplySchemaAnnotation(t *testing.T) {
 			if schema.WriteOnly != tt.wantWriteOnly {
 				t.Errorf("WriteOnly = %v, want %v", schema.WriteOnly, tt.wantWriteOnly)
 			}
-			if schema.Nullable != tt.wantNullable {
-				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.wantNullable)
+			// Check nullable via type array (OpenAPI 3.1.0 style)
+			if isNullable(schema) != tt.wantNullable {
+				t.Errorf("Nullable (via type array) = %v, want %v", isNullable(schema), tt.wantNullable)
 			}
 			if schema.Deprecated != tt.wantDeprecated {
 				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)
@@ -1675,8 +1690,9 @@ func TestApplyFieldAnnotation(t *testing.T) {
 			if schema.WriteOnly != tt.wantWriteOnly {
 				t.Errorf("WriteOnly = %v, want %v", schema.WriteOnly, tt.wantWriteOnly)
 			}
-			if schema.Nullable != tt.wantNullable {
-				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.wantNullable)
+			// Check nullable via type array (OpenAPI 3.1.0 style)
+			if isNullable(schema) != tt.wantNullable {
+				t.Errorf("Nullable (via type array) = %v, want %v", isNullable(schema), tt.wantNullable)
 			}
 			if schema.Deprecated != tt.wantDeprecated {
 				t.Errorf("Deprecated = %v, want %v", schema.Deprecated, tt.wantDeprecated)
@@ -1689,18 +1705,18 @@ func TestApplyOperationAnnotation(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name              string
-		opts              *options.Operation
-		wantSummary       string
-		wantDesc          string
-		wantOpID          string
-		wantTags          []string
-		wantDeprecated    bool
-		wantSecurity      int
-		wantServers       int
-		wantHeaderParams  int
-		wantCookieParams  int
-		verifyParams      func(t *testing.T, params []*ParameterRef)
+		name             string
+		opts             *options.Operation
+		wantSummary      string
+		wantDesc         string
+		wantOpID         string
+		wantTags         []string
+		wantDeprecated   bool
+		wantSecurity     int
+		wantServers      int
+		wantHeaderParams int
+		wantCookieParams int
+		verifyParams     func(t *testing.T, params []*ParameterRef)
 	}{
 		{
 			name: "override summary and description",

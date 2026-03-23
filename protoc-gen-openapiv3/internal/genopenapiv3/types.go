@@ -549,7 +549,6 @@ type Schema struct {
 	// Access control
 	ReadOnly  bool `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 	WriteOnly bool `json:"writeOnly,omitempty" yaml:"writeOnly,omitempty"`
-	Nullable  bool `json:"nullable,omitempty" yaml:"nullable,omitempty"` // v3.0 compat; in v3.1 use type: ["string", "null"]
 
 	// Deprecation
 	Deprecated bool `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
