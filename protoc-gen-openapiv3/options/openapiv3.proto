@@ -243,7 +243,7 @@ message Response {
 //
 message MediaType {
   // The schema defining the content of the request, response, or parameter.
-  Schema schema = 1;
+  SchemaOrReference schema = 1;
   // Example of the media type. Deprecated in OpenAPI 3.1.0, use examples instead.
   string example = 2;
   // Examples of the media type. Each example SHOULD match the media type and

@@ -1067,8 +1067,12 @@ func TestConvertRequestBody(t *testing.T) {
 		Required:    true,
 		Content: map[string]*options.MediaType{
 			"application/json": {
-				Schema: &options.Schema{
-					Type: []string{"object"},
+				Schema: &options.SchemaOrReference{
+					Oneof: &options.SchemaOrReference_Schema{
+						Schema: &options.Schema{
+							Type: []string{"object"},
+						},
+					},
 				},
 			},
 		},

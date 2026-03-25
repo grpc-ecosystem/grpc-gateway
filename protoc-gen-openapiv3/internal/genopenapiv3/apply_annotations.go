@@ -919,7 +919,7 @@ func (g *generator) convertMediaType(mt *options.MediaType) *MediaType {
 		result.Examples = makeExamplesMap(parseExampleValue(mt.GetExample()))
 	}
 	if schema := mt.GetSchema(); schema != nil {
-		result.Schema = g.convertSchema(schema)
+		result.Schema = g.convertSchemaOrReference(schema)
 	}
 	return result
 }
