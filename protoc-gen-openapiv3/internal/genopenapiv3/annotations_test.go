@@ -1794,25 +1794,21 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			name: "add header parameters",
 			opts: &options.Operation{
 				Parameters: &options.OperationParameters{
-					Headers: []*options.NamedHeaderOrReference{
+					Headers: []*options.HeaderParameterOrReference{
 						{
-							Name: "X-Request-ID",
-							Value: &options.HeaderOrReference{
-								Oneof: &options.HeaderOrReference_Header{
-									Header: &options.Header{
-										Description: "Request tracking ID",
-										Required:    true,
-									},
+							Oneof: &options.HeaderParameterOrReference_Header{
+								Header: &options.HeaderParameter{
+									Name:        "X-Request-ID",
+									Description: "Request tracking ID",
+									Required:    true,
 								},
 							},
 						},
 						{
-							Name: "X-Api-Version",
-							Value: &options.HeaderOrReference{
-								Oneof: &options.HeaderOrReference_Header{
-									Header: &options.Header{
-										Description: "API version header",
-									},
+							Oneof: &options.HeaderParameterOrReference_Header{
+								Header: &options.HeaderParameter{
+									Name:        "X-Api-Version",
+									Description: "API version header",
 								},
 							},
 						},
@@ -1853,15 +1849,13 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			name: "add cookie parameters",
 			opts: &options.Operation{
 				Parameters: &options.OperationParameters{
-					Cookies: []*options.NamedCookieOrReference{
+					Cookies: []*options.CookieParameterOrReference{
 						{
-							Name: "session_id",
-							Value: &options.CookieOrReference{
-								Oneof: &options.CookieOrReference_Cookie{
-									Cookie: &options.Cookie{
-										Description: "Session identifier",
-										Required:    true,
-									},
+							Oneof: &options.CookieParameterOrReference_Cookie{
+								Cookie: &options.CookieParameter{
+									Name:        "session_id",
+									Description: "Session identifier",
+									Required:    true,
 								},
 							},
 						},
@@ -1890,14 +1884,11 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			name: "add header parameter with reference",
 			opts: &options.Operation{
 				Parameters: &options.OperationParameters{
-					Headers: []*options.NamedHeaderOrReference{
+					Headers: []*options.HeaderParameterOrReference{
 						{
-							Name: "X-Auth-Token",
-							Value: &options.HeaderOrReference{
-								Oneof: &options.HeaderOrReference_Reference{
-									Reference: &options.Reference{
-										Ref: "#/components/parameters/AuthToken",
-									},
+							Oneof: &options.HeaderParameterOrReference_Reference{
+								Reference: &options.Reference{
+									Ref: "#/components/parameters/AuthToken",
 								},
 							},
 						},
@@ -1917,26 +1908,22 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			name: "add mixed header and cookie parameters",
 			opts: &options.Operation{
 				Parameters: &options.OperationParameters{
-					Headers: []*options.NamedHeaderOrReference{
+					Headers: []*options.HeaderParameterOrReference{
 						{
-							Name: "X-Request-ID",
-							Value: &options.HeaderOrReference{
-								Oneof: &options.HeaderOrReference_Header{
-									Header: &options.Header{
-										Description: "Request ID",
-									},
+							Oneof: &options.HeaderParameterOrReference_Header{
+								Header: &options.HeaderParameter{
+									Name:        "X-Request-ID",
+									Description: "Request ID",
 								},
 							},
 						},
 					},
-					Cookies: []*options.NamedCookieOrReference{
+					Cookies: []*options.CookieParameterOrReference{
 						{
-							Name: "session",
-							Value: &options.CookieOrReference{
-								Oneof: &options.CookieOrReference_Cookie{
-									Cookie: &options.Cookie{
-										Description: "Session cookie",
-									},
+							Oneof: &options.CookieParameterOrReference_Cookie{
+								Cookie: &options.CookieParameter{
+									Name:        "session",
+									Description: "Session cookie",
 								},
 							},
 						},

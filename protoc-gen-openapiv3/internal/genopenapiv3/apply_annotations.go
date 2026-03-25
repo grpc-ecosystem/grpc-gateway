@@ -272,14 +272,14 @@ func (g *generator) applyOperationAnnotation(op *Operation, method *descriptor.M
 	// Apply custom parameters (headers and cookies)
 	if params := opts.GetParameters(); params != nil {
 		// Add header parameters
-		for _, namedHeader := range params.GetHeaders() {
-			if paramRef := g.convertNamedHeaderOrReference(namedHeader); paramRef != nil {
+		for _, headerParam := range params.GetHeaders() {
+			if paramRef := g.convertHeaderParameterOrReference(headerParam); paramRef != nil {
 				op.Parameters = append(op.Parameters, paramRef)
 			}
 		}
 		// Add cookie parameters
-		for _, namedCookie := range params.GetCookies() {
-			if paramRef := g.convertNamedCookieOrReference(namedCookie); paramRef != nil {
+		for _, cookieParam := range params.GetCookies() {
+			if paramRef := g.convertCookieParameterOrReference(cookieParam); paramRef != nil {
 				op.Parameters = append(op.Parameters, paramRef)
 			}
 		}
@@ -804,13 +804,14 @@ func (g *generator) convertHeaderOrReference(hor *options.HeaderOrReference) *He
 	}
 }
 
-// convertCookie converts a proto Cookie to a Parameter with in="cookie".
-func (g *generator) convertCookie(name string, cookie *options.Cookie) *Parameter {
+// convertCookieParameter converts a proto CookieParameter to a Parameter with in="cookie".
+// CookieParameter includes the name field directly, unlike Cookie.
+func (g *generator) convertCookieParameter(cookie *options.CookieParameter) *Parameter {
 	if cookie == nil {
 		return nil
 	}
 	p := &Parameter{
-		Name:        name,
+		Name:        cookie.GetName(),
 		In:          "cookie",
 		Description: cookie.GetDescription(),
 		Required:    cookie.GetRequired(),
@@ -832,14 +833,14 @@ func (g *generator) convertCookie(name string, cookie *options.Cookie) *Paramete
 	return p
 }
 
-// convertHeaderToParameter converts a proto Header to a Parameter with in="header".
-// This is used when adding header parameters to operations.
-func (g *generator) convertHeaderToParameter(name string, header *options.Header) *Parameter {
+// convertHeaderParameter converts a proto HeaderParameter to a Parameter with in="header".
+// HeaderParameter includes the name field directly, unlike Header.
+func (g *generator) convertHeaderParameter(header *options.HeaderParameter) *Parameter {
 	if header == nil {
 		return nil
 	}
 	p := &Parameter{
-		Name:            name,
+		Name:            header.GetName(),
 		In:              "header",
 		Description:     header.GetDescription(),
 		Required:        header.GetRequired(),
@@ -868,42 +869,40 @@ func (g *generator) convertHeaderToParameter(name string, header *options.Header
 	return p
 }
 
-// convertNamedHeaderOrReference converts a NamedHeaderOrReference to a ParameterRef.
+// convertHeaderParameterOrReference converts a HeaderParameterOrReference to a ParameterRef.
 // Headers are converted to parameters with in="header".
-func (g *generator) convertNamedHeaderOrReference(named *options.NamedHeaderOrReference) *ParameterRef {
-	if named == nil || named.GetValue() == nil {
+func (g *generator) convertHeaderParameterOrReference(param *options.HeaderParameterOrReference) *ParameterRef {
+	if param == nil {
 		return nil
 	}
-	name := named.GetName()
-	switch v := named.GetValue().GetOneof().(type) {
-	case *options.HeaderOrReference_Reference:
+	switch v := param.GetOneof().(type) {
+	case *options.HeaderParameterOrReference_Reference:
 		return &ParameterRef{
 			Ref: v.Reference.GetRef(),
 		}
-	case *options.HeaderOrReference_Header:
+	case *options.HeaderParameterOrReference_Header:
 		return &ParameterRef{
-			Value: g.convertHeaderToParameter(name, v.Header),
+			Value: g.convertHeaderParameter(v.Header),
 		}
 	default:
 		return nil
 	}
 }
 
-// convertNamedCookieOrReference converts a NamedCookieOrReference to a ParameterRef.
+// convertCookieParameterOrReference converts a CookieParameterOrReference to a ParameterRef.
 // Cookies are converted to parameters with in="cookie".
-func (g *generator) convertNamedCookieOrReference(named *options.NamedCookieOrReference) *ParameterRef {
-	if named == nil || named.GetValue() == nil {
+func (g *generator) convertCookieParameterOrReference(param *options.CookieParameterOrReference) *ParameterRef {
+	if param == nil {
 		return nil
 	}
-	name := named.GetName()
-	switch v := named.GetValue().GetOneof().(type) {
-	case *options.CookieOrReference_Reference:
+	switch v := param.GetOneof().(type) {
+	case *options.CookieParameterOrReference_Reference:
 		return &ParameterRef{
 			Ref: v.Reference.GetRef(),
 		}
-	case *options.CookieOrReference_Cookie:
+	case *options.CookieParameterOrReference_Cookie:
 		return &ParameterRef{
-			Value: g.convertCookie(name, v.Cookie),
+			Value: g.convertCookieParameter(v.Cookie),
 		}
 	default:
 		return nil

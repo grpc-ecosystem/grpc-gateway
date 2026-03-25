@@ -371,6 +371,7 @@ message ExampleOrReference {
 // `HeaderOrReference` is a discriminated union that can be either an inline Header
 // or a Reference. This allows headers to reference reusable headers defined in
 // components/headers.
+// Used in Response.headers and Components.headers where the name is the map key.
 // Aligned with gnostic-models pattern.
 message HeaderOrReference {
   oneof oneof {
@@ -379,15 +380,57 @@ message HeaderOrReference {
   }
 }
 
-// `NamedHeaderOrReference` is a name-value pair for ordered header parameters.
-// Used in OperationParameters to specify custom header parameters on operations.
-// The name is the header name (e.g., "X-Request-ID"), value is the header definition or reference.
-// Aligned with gnostic-models pattern.
-message NamedHeaderOrReference {
-  // The header name (e.g., "X-Request-ID").
+// `HeaderParameter` is a header parameter for use in operation parameters.
+// Unlike `Header`, this includes the `name` field since operation parameters
+// are represented as an array, not a map.
+//
+// See: https://spec.openapis.org/oas/v3.1.0#parameter-object
+//
+message HeaderParameter {
+  // REQUIRED. The name of the header parameter (e.g., "X-Request-ID").
   string name = 1;
-  // The header definition or reference.
-  HeaderOrReference value = 2;
+  // A brief description of the header parameter.
+  string description = 2;
+  // Determines whether this header parameter is mandatory.
+  bool required = 3;
+  // Specifies that the header parameter is deprecated.
+  bool deprecated = 4;
+  // Sets the ability to pass empty-valued headers.
+  bool allow_empty_value = 5;
+  // Describes how the header value will be serialized.
+  string style = 6;
+  // When this is true, header values of type array or object generate
+  // separate parameters for each value.
+  bool explode = 7;
+  // Determines whether the header value SHOULD allow reserved characters.
+  bool allow_reserved = 8;
+  // The schema defining the type used for the header parameter.
+  Schema schema = 9;
+  // Example of the header's potential value.
+  string example = 10;
+  // Examples of the header's potential value.
+  map<string, ExampleOrReference> examples = 11;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 12;
+}
+
+// `HeaderParameterOrReference` is a discriminated union for operation header parameters.
+// Can be either an inline HeaderParameter (which includes the name) or a Reference.
+// This design avoids redundant name fields when using references.
+//
+// Example usage:
+//
+//  // Inline header - name is part of the HeaderParameter
+//  { header: { name: "X-Request-ID", description: "...", required: true } }
+//
+//  // Reference - no name needed, the component defines it
+//  { reference: { ref: "#/components/parameters/PreferHeader" } }
+//
+message HeaderParameterOrReference {
+  oneof oneof {
+    HeaderParameter header = 1;
+    Reference reference = 2;
+  }
 }
 
 // `Cookie` is a representation of OpenAPI v3 specification's cookie parameter.
@@ -424,15 +467,49 @@ message CookieOrReference {
   }
 }
 
-// `NamedCookieOrReference` is a name-value pair for ordered cookie parameters.
-// Used in OperationParameters to specify custom cookie parameters on operations.
-// The name is the cookie name (e.g., "session_id"), value is the cookie definition or reference.
-// Aligned with gnostic-models pattern.
-message NamedCookieOrReference {
-  // The cookie name (e.g., "session_id").
+// `CookieParameter` is a cookie parameter for use in operation parameters.
+// Unlike `Cookie`, this includes the `name` field since operation parameters
+// are represented as an array, not a map.
+//
+// See: https://spec.openapis.org/oas/v3.1.0#parameter-object
+//
+message CookieParameter {
+  // REQUIRED. The name of the cookie parameter (e.g., "session_id").
   string name = 1;
-  // The cookie definition or reference.
-  CookieOrReference value = 2;
+  // A brief description of the cookie parameter.
+  string description = 2;
+  // Determines whether this cookie parameter is mandatory.
+  bool required = 3;
+  // Specifies that the cookie parameter is deprecated.
+  bool deprecated = 4;
+  // The schema defining the type used for the cookie parameter.
+  // If not specified, defaults to string type.
+  SchemaOrReference schema = 5;
+  // Example of the cookie's potential value.
+  string example = 6;
+  // Examples of the cookie's potential value.
+  map<string, ExampleOrReference> examples = 7;
+  // Custom properties that start with "x-" such as "x-foo".
+  map<string, google.protobuf.Value> extensions = 8;
+}
+
+// `CookieParameterOrReference` is a discriminated union for operation cookie parameters.
+// Can be either an inline CookieParameter (which includes the name) or a Reference.
+// This design avoids redundant name fields when using references.
+//
+// Example usage:
+//
+//  // Inline cookie - name is part of the CookieParameter
+//  { cookie: { name: "session_id", description: "...", required: true } }
+//
+//  // Reference - no name needed, the component defines it
+//  { reference: { ref: "#/components/parameters/SessionId" } }
+//
+message CookieParameterOrReference {
+  oneof oneof {
+    CookieParameter cookie = 1;
+    Reference reference = 2;
+  }
 }
 
 // `OperationParameters` allows specifying custom header and cookie parameters for operations.
@@ -444,30 +521,38 @@ message NamedCookieOrReference {
 //  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
 //    parameters: {
 //      headers: [
+//        // Inline header parameter - name is part of the header definition
 //        {
-//          name: "X-Request-ID"
-//          value: {
-//            header: {
-//              description: "Request tracking ID"
-//              required: true
-//            }
+//          header: {
+//            name: "X-Request-ID"
+//            description: "Request tracking ID"
+//            required: true
 //          }
-//        }
+//        },
+//        // Reference to a component parameter - no name needed
+//        { reference: { ref: "#/components/parameters/PreferHeader" } }
 //      ]
 //      cookies: [
+//        // Inline cookie parameter
 //        {
-//          name: "session_id"
-//          value: { reference: { ref: "#/components/parameters/SessionId" } }
-//        }
+//          cookie: {
+//            name: "session_id"
+//            description: "Session identifier"
+//          }
+//        },
+//        // Reference to a component parameter
+//        { reference: { ref: "#/components/parameters/TrackingCookie" } }
 //      ]
 //    }
 //  };
 //
 message OperationParameters {
   // Custom header parameters for the operation.
-  repeated NamedHeaderOrReference headers = 1;
+  // Each entry is either an inline HeaderParameter (with name inside) or a Reference.
+  repeated HeaderParameterOrReference headers = 1;
   // Custom cookie parameters for the operation.
-  repeated NamedCookieOrReference cookies = 2;
+  // Each entry is either an inline CookieParameter (with name inside) or a Reference.
+  repeated CookieParameterOrReference cookies = 2;
 }
 
 // `NamedExampleOrReference` is a name-value pair for ordered example maps.
