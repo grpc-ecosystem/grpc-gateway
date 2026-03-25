@@ -518,26 +518,24 @@ func toCanonicalDiscriminator(d *Discriminator) *model.Discriminator {
 	}
 }
 
-func toCanonicalExampleRefs(examples map[string]*ExampleRef) []*model.Example {
+func toCanonicalExampleRefs(examples map[string]*ExampleRef) map[string]*model.Example {
 	if len(examples) == 0 {
 		return nil
 	}
-	result := make([]*model.Example, 0, len(examples))
+	result := make(map[string]*model.Example)
 	for name, ex := range examples {
 		if ex == nil {
 			continue
 		}
 		if ex.Ref != "" {
-			// For references, we just store the ref as the name
-			result = append(result, &model.Example{Name: name})
+			result[name] = &model.Example{Ref: ex.Ref}
 		} else if ex.Value != nil {
-			result = append(result, &model.Example{
-				Name:          name,
+			result[name] = &model.Example{
 				Summary:       ex.Value.Summary,
 				Description:   ex.Value.Description,
 				Value:         ex.Value.Value,
 				ExternalValue: ex.Value.ExternalValue,
-			})
+			}
 		}
 	}
 	return result
@@ -593,25 +591,23 @@ func toCanonicalComponentParameters(params map[string]*ParameterRef) map[string]
 	return result
 }
 
-func toCanonicalComponentExamples(examples map[string]*ExampleRef) map[string]*model.ExampleOrRef {
+func toCanonicalComponentExamples(examples map[string]*ExampleRef) map[string]*model.Example {
 	if len(examples) == 0 {
 		return nil
 	}
-	result := make(map[string]*model.ExampleOrRef)
+	result := make(map[string]*model.Example)
 	for name, ex := range examples {
 		if ex == nil {
 			continue
 		}
 		if ex.Ref != "" {
-			result[name] = &model.ExampleOrRef{Ref: ex.Ref}
+			result[name] = &model.Example{Ref: ex.Ref}
 		} else if ex.Value != nil {
-			result[name] = &model.ExampleOrRef{
-				Value: &model.Example{
-					Summary:       ex.Value.Summary,
-					Description:   ex.Value.Description,
-					Value:         ex.Value.Value,
-					ExternalValue: ex.Value.ExternalValue,
-				},
+			result[name] = &model.Example{
+				Summary:       ex.Value.Summary,
+				Description:   ex.Value.Description,
+				Value:         ex.Value.Value,
+				ExternalValue: ex.Value.ExternalValue,
 			}
 		}
 	}
