@@ -297,7 +297,8 @@ message Parameter {
   // Determines whether the parameter value SHOULD allow reserved characters.
   bool allow_reserved = 9;
   // The schema defining the type used for the parameter.
-  Schema schema = 10;
+  // Can be an inline schema or a reference to a schema in components/schemas.
+  SchemaOrReference schema = 10;
   // Example of the parameter's potential value. Deprecated in OpenAPI 3.1.0, use examples instead.
   string example = 11;
   // Examples of the parameter's potential value. Values can be inline examples
@@ -328,7 +329,8 @@ message Header {
   // Determines whether the header value SHOULD allow reserved characters.
   bool allow_reserved = 7;
   // The schema defining the type used for the header.
-  Schema schema = 8;
+  // Can be an inline schema or a reference to a schema in components/schemas.
+  SchemaOrReference schema = 8;
   // Example of the header's potential value. Deprecated in OpenAPI 3.1.0, use examples instead.
   string example = 9;
   // Examples of the header's potential value. Values can be inline examples
@@ -405,7 +407,8 @@ message HeaderParameter {
   // Determines whether the header value SHOULD allow reserved characters.
   bool allow_reserved = 8;
   // The schema defining the type used for the header parameter.
-  Schema schema = 9;
+  // Can be an inline schema or a reference to a schema in components/schemas.
+  SchemaOrReference schema = 9;
   // Example of the header's potential value.
   string example = 10;
   // Examples of the header's potential value.

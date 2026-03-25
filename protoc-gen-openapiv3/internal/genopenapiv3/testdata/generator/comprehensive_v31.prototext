@@ -889,8 +889,10 @@ proto_file: {
             in: "query"
             description: "Number of items per page"
             schema: {
-              type: ["integer"]
-              format: "int32"
+              schema: {
+                type: ["integer"]
+                format: "int32"
+              }
             }
           }
         }
@@ -900,7 +902,9 @@ proto_file: {
             header: {
               description: "Unique request identifier"
               schema: {
-                type: ["string"]
+                schema: {
+                  type: ["string"]
+                }
               }
             }
           }

@@ -740,7 +740,7 @@ func (g *generator) convertParameter(param *options.Parameter) *Parameter {
 		p.Examples = makeExamplesMap(parseExampleValue(param.GetExample()))
 	}
 	if schema := param.GetSchema(); schema != nil {
-		p.Schema = g.convertSchema(schema)
+		p.Schema = g.convertSchemaOrReference(schema)
 	}
 	return p
 }
@@ -779,7 +779,7 @@ func (g *generator) convertHeader(header *options.Header) *Header {
 		h.Examples = makeExamplesMap(parseExampleValue(header.GetExample()))
 	}
 	if schema := header.GetSchema(); schema != nil {
-		h.Schema = g.convertSchema(schema)
+		h.Schema = g.convertSchemaOrReference(schema)
 	}
 	return h
 }
@@ -861,7 +861,7 @@ func (g *generator) convertHeaderParameter(header *options.HeaderParameter) *Par
 	}
 	// Convert schema or default to string type
 	if schema := header.GetSchema(); schema != nil {
-		p.Schema = g.convertSchema(schema)
+		p.Schema = g.convertSchemaOrReference(schema)
 	} else {
 		// Default to string type if no schema specified
 		p.Schema = &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}}}

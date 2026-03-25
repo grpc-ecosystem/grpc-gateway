@@ -749,8 +749,12 @@ func TestConvertResponse(t *testing.T) {
 		Headers: map[string]*options.Header{
 			"X-Request-Id": {
 				Description: "Request ID",
-				Schema: &options.Schema{
-					Type: []string{"string"},
+				Schema: &options.SchemaOrReference{
+					Oneof: &options.SchemaOrReference_Schema{
+						Schema: &options.Schema{
+							Type: []string{"string"},
+						},
+					},
 				},
 			},
 		},
@@ -1036,9 +1040,13 @@ func TestConvertParameter(t *testing.T) {
 		In:          "path",
 		Description: "User identifier",
 		Required:    true,
-		Schema: &options.Schema{
-			Type:   []string{"string"},
-			Format: "uuid",
+		Schema: &options.SchemaOrReference{
+			Oneof: &options.SchemaOrReference_Schema{
+				Schema: &options.Schema{
+					Type:   []string{"string"},
+					Format: "uuid",
+				},
+			},
 		},
 	}
 
@@ -1098,8 +1106,12 @@ func TestConvertHeader(t *testing.T) {
 	input := &options.Header{
 		Description: "Request correlation ID",
 		Required:    true,
-		Schema: &options.Schema{
-			Type: []string{"string"},
+		Schema: &options.SchemaOrReference{
+			Oneof: &options.SchemaOrReference_Schema{
+				Schema: &options.Schema{
+					Type: []string{"string"},
+				},
+			},
 		},
 	}
 
@@ -2242,7 +2254,11 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 						Name:     "page_size",
 						In:       "query",
 						Required: false,
-						Schema:   &options.Schema{Type: []string{"integer"}},
+						Schema: &options.SchemaOrReference{
+							Oneof: &options.SchemaOrReference_Schema{
+								Schema: &options.Schema{Type: []string{"integer"}},
+							},
+						},
 					},
 				},
 			},
@@ -2268,7 +2284,11 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 						Oneof: &options.HeaderOrReference_Header{
 							Header: &options.Header{
 								Description: "Request correlation ID",
-								Schema:      &options.Schema{Type: []string{"string"}},
+								Schema: &options.SchemaOrReference{
+									Oneof: &options.SchemaOrReference_Schema{
+										Schema: &options.Schema{Type: []string{"string"}},
+									},
+								},
 							},
 						},
 					},
