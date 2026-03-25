@@ -750,8 +750,8 @@ func TestConvertResponse(t *testing.T) {
 			"X-Request-Id": {
 				Description: "Request ID",
 				Schema: &options.SchemaOrReference{
-					Oneof: &options.SchemaOrReference_Schema{
-						Schema: &options.Schema{
+					Oneof: &options.SchemaOrReference_Value{
+						Value: &options.Schema{
 							Type: []string{"string"},
 						},
 					},
@@ -850,8 +850,8 @@ func TestConvertSchemaOrReference(t *testing.T) {
 		{
 			name: "inline string schema",
 			input: &options.SchemaOrReference{
-				Oneof: &options.SchemaOrReference_Schema{
-					Schema: &options.Schema{
+				Oneof: &options.SchemaOrReference_Value{
+					Value: &options.Schema{
 						Type:    []string{"string"},
 						Pattern: "^[a-z]+$",
 					},
@@ -865,8 +865,8 @@ func TestConvertSchemaOrReference(t *testing.T) {
 		{
 			name: "inline integer schema with format",
 			input: &options.SchemaOrReference{
-				Oneof: &options.SchemaOrReference_Schema{
-					Schema: &options.Schema{
+				Oneof: &options.SchemaOrReference_Value{
+					Value: &options.Schema{
 						Type:    []string{"integer"},
 						Format:  "int64",
 						Minimum: float64Ptr(0),
@@ -1041,8 +1041,8 @@ func TestConvertParameter(t *testing.T) {
 		Description: "User identifier",
 		Required:    true,
 		Schema: &options.SchemaOrReference{
-			Oneof: &options.SchemaOrReference_Schema{
-				Schema: &options.Schema{
+			Oneof: &options.SchemaOrReference_Value{
+				Value: &options.Schema{
 					Type:   []string{"string"},
 					Format: "uuid",
 				},
@@ -1076,8 +1076,8 @@ func TestConvertRequestBody(t *testing.T) {
 		Content: map[string]*options.MediaType{
 			"application/json": {
 				Schema: &options.SchemaOrReference{
-					Oneof: &options.SchemaOrReference_Schema{
-						Schema: &options.Schema{
+					Oneof: &options.SchemaOrReference_Value{
+						Value: &options.Schema{
 							Type: []string{"object"},
 						},
 					},
@@ -1107,8 +1107,8 @@ func TestConvertHeader(t *testing.T) {
 		Description: "Request correlation ID",
 		Required:    true,
 		Schema: &options.SchemaOrReference{
-			Oneof: &options.SchemaOrReference_Schema{
-				Schema: &options.Schema{
+			Oneof: &options.SchemaOrReference_Value{
+				Value: &options.Schema{
 					Type: []string{"string"},
 				},
 			},
@@ -1132,8 +1132,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("oneOf schema", func(t *testing.T) {
 		input := &options.Schema{
 			OneOf: []*options.SchemaOrReference{
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Format: "email"}}},
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"integer"}, Format: "int64"}}},
+				{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}, Format: "email"}}},
+				{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"integer"}, Format: "int64"}}},
 			},
 		}
 		wantOneOf := []*SchemaOrReference{
@@ -1157,8 +1157,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("anyOf schema", func(t *testing.T) {
 		input := &options.Schema{
 			AnyOf: []*options.SchemaOrReference{
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Pattern: "^[a-z]+$"}}},
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"number"}, Format: "double"}}},
+				{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}, Pattern: "^[a-z]+$"}}},
+				{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"number"}, Format: "double"}}},
 			},
 		}
 		wantAnyOf := []*SchemaOrReference{
@@ -1183,7 +1183,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 		input := &options.Schema{
 			AllOf: []*options.SchemaOrReference{
 				{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Base"}}},
-				{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"object"}}}},
+				{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"object"}}}},
 			},
 		}
 		wantAllOf := []*SchemaOrReference{
@@ -1207,7 +1207,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("not schema", func(t *testing.T) {
 		input := &options.Schema{
 			Type: []string{"string"},
-			Not:  &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Pattern: "^forbidden$"}}},
+			Not:  &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}, Pattern: "^forbidden$"}}},
 		}
 		wantNot := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Pattern: "^forbidden$"}}
 
@@ -1263,7 +1263,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 	t.Run("items for array", func(t *testing.T) {
 		input := &options.Schema{
 			Type:  []string{"array"},
-			Items: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Format: "uuid"}}},
+			Items: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}, Format: "uuid"}}},
 		}
 		wantItems := &SchemaOrReference{Schema: &Schema{Type: SchemaType{"string"}, Format: "uuid"}}
 
@@ -1279,8 +1279,8 @@ func TestConvertSchemaComposition(t *testing.T) {
 		input := &options.Schema{
 			Type: []string{"object"},
 			Properties: []*options.NamedSchemaOrReference{
-				{Name: "name", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, MinLength: 1}}}},
-				{Name: "age", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"integer"}, Format: "int32"}}}},
+				{Name: "name", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}, MinLength: 1}}}},
+				{Name: "age", Value: &options.SchemaOrReference{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"integer"}, Format: "int32"}}}},
 			},
 		}
 		wantProperties := map[string]*SchemaOrReference{
@@ -1312,7 +1312,7 @@ func TestConvertSchemaComposition(t *testing.T) {
 			AdditionalProperties: &options.AdditionalPropertiesItem{
 				Kind: &options.AdditionalPropertiesItem_SchemaOrReference{
 					SchemaOrReference: &options.SchemaOrReference{
-						Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}, Format: "uri"}},
+						Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}, Format: "uri"}},
 					},
 				},
 			},
@@ -1506,8 +1506,8 @@ func TestApplySchemaAnnotation(t *testing.T) {
 					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Base"}}},
 				},
 				AnyOf: []*options.SchemaOrReference{
-					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"string"}}}},
-					{Oneof: &options.SchemaOrReference_Schema{Schema: &options.Schema{Type: []string{"integer"}}}},
+					{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"string"}}}},
+					{Oneof: &options.SchemaOrReference_Value{Value: &options.Schema{Type: []string{"integer"}}}},
 				},
 				OneOf: []*options.SchemaOrReference{
 					{Oneof: &options.SchemaOrReference_Reference{Reference: &options.Reference{Ref: "#/components/schemas/Cat"}}},
@@ -2255,8 +2255,8 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 						In:       "query",
 						Required: false,
 						Schema: &options.SchemaOrReference{
-							Oneof: &options.SchemaOrReference_Schema{
-								Schema: &options.Schema{Type: []string{"integer"}},
+							Oneof: &options.SchemaOrReference_Value{
+								Value: &options.Schema{Type: []string{"integer"}},
 							},
 						},
 					},
@@ -2285,8 +2285,8 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 							Header: &options.Header{
 								Description: "Request correlation ID",
 								Schema: &options.SchemaOrReference{
-									Oneof: &options.SchemaOrReference_Schema{
-										Schema: &options.Schema{Type: []string{"string"}},
+									Oneof: &options.SchemaOrReference_Value{
+										Value: &options.Schema{Type: []string{"string"}},
 									},
 								},
 							},

@@ -939,8 +939,8 @@ func (g *generator) convertSchemaOrReference(sor *options.SchemaOrReference) *Sc
 				Description: v.Reference.GetDescription(),
 			},
 		}
-	case *options.SchemaOrReference_Schema:
-		return g.convertSchema(v.Schema)
+	case *options.SchemaOrReference_Value:
+		return g.convertSchema(v.Value)
 	default:
 		return nil
 	}

@@ -637,7 +637,7 @@ message Reference {
 // Aligned with gnostic-models pattern.
 message SchemaOrReference {
   oneof oneof {
-    Schema schema = 1;
+    Schema value = 1;
     Reference reference = 2;
   }
 }
