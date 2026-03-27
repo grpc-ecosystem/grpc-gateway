@@ -101,7 +101,7 @@ var (
 	expandSlashedPathPatterns      = flag.Bool("expand_slashed_path_patterns", false, "if set, expands path parameters with URI sub-paths into the URI")
 	proto3OptionalNullable         = flag.Bool("proto3_optional_nullable", false, "whether Proto3 Optional fields should be marked as nullable")
 	useProto3FieldSemantics        = flag.Bool("use_proto3_field_semantics", false, "if set, uses proto3 field semantics for the OpenAPI schema. This means that non-optional fields are required by default")
-	openAPIVersion                 = flag.String("openapi_version", "3.0.3", "OpenAPI version to use (3.0.3, 3.1.0)")
+	openAPIVersion                 = flag.String("openapi_version", "3.1.0", "OpenAPI version to use (currently only 3.1.0 is supported)")
 
 	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
 )

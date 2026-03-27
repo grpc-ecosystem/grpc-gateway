@@ -576,8 +576,21 @@ proto_file: {
           summary: "Get an item by ID"
           description: "Returns a single item by its unique identifier."
           responses: {
-            key: "404"
-            value: { description: "Item not found" }
+            default: {
+              response: { description: "Unexpected error" }
+            }
+            response_or_reference: {
+              name: "404"
+              value: {
+                response: { description: "Item not found" }
+              }
+            }
+            response_or_reference: {
+              name: "500"
+              value: {
+                reference: { ref: "#/components/responses/NotFound" }
+              }
+            }
           }
         }
       }
@@ -596,6 +609,10 @@ proto_file: {
         [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
           summary: "Create a new item"
           description: "Creates a new item and returns the created item."
+          request_body: {
+            description: "Item to create"
+            required: true
+          }
         }
       }
     }
@@ -877,9 +894,11 @@ proto_file: {
           }
         }
         responses: {
-          key: "NotFound"
+          name: "NotFound"
           value: {
-            description: "Resource not found"
+            response: {
+              description: "Resource not found"
+            }
           }
         }
         parameters: {

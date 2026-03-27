@@ -5,6 +5,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
+	"google.golang.org/grpc/grpclog"
 )
 
 // parseExampleValue attempts to parse a string as JSON.
@@ -29,8 +30,17 @@ func parseExampleValue(s string) any {
 	return result
 }
 
-// makeExamplesMap converts a single example value to the OpenAPI 3.1.0 examples map format.
-// In OpenAPI 3.1.0, the singular `example` field is deprecated in favor of `examples` (a map of named Example objects).
+// makeExamplesArray converts a single example value to the JSON Schema examples array format.
+// In OpenAPI 3.1.0, Schema Objects use JSON Schema which has `examples` as an array.
+func makeExamplesArray(value any) []any {
+	if value == nil {
+		return nil
+	}
+	return []any{value}
+}
+
+// makeExamplesMap converts a single example value to the OpenAPI examples map format.
+// Used for Parameter, Header, and MediaType objects (not Schema objects).
 func makeExamplesMap(value any) map[string]*ExampleRef {
 	if value == nil {
 		return nil
@@ -177,11 +187,11 @@ func (g *generator) applyComponentsAnnotation(comp *Components, opts *options.Co
 	}
 
 	// Apply Responses
-	for name, resp := range opts.GetResponses() {
+	for _, namedResp := range opts.GetResponses() {
 		if comp.Responses == nil {
 			comp.Responses = make(map[string]*ResponseRef)
 		}
-		comp.Responses[name] = &ResponseRef{Value: g.convertResponse(resp)}
+		comp.Responses[namedResp.GetName()] = g.convertResponseOrReference(namedResp.GetValue())
 	}
 
 	// Apply Parameters
@@ -257,16 +267,32 @@ func (g *generator) applyOperationAnnotation(op *Operation, method *descriptor.M
 	}
 
 	// Apply additional responses (merge with existing)
-	for code, resp := range opts.GetResponses() {
+	if responses := opts.GetResponses(); responses != nil {
 		if op.Responses == nil {
 			op.Responses = NewResponses()
 		}
-		op.Responses.Codes[code] = &ResponseRef{Value: g.convertResponse(resp)}
+		// Apply default response - merges inline, overwrites for reference
+		if defaultResp := responses.GetDefault(); defaultResp != nil {
+			op.Responses.Default = g.applyResponseOrReference(op.Responses.Default, defaultResp)
+		}
+		// Apply status code specific responses - merges inline, overwrites for reference
+		for _, namedResp := range responses.GetResponseOrReference() {
+			code := namedResp.GetName()
+			if code == "200" {
+				methodName := method.GetName()
+				if method.Service != nil {
+					methodName = method.Service.GetName() + "." + methodName
+				}
+				grpclog.Warningf("Annotation overrides 200 response for method %s - the success response schema should be derived from proto return type", methodName)
+			}
+			existing := op.Responses.Codes[code]
+			op.Responses.Codes[code] = g.applyResponseOrReference(existing, namedResp.GetValue())
+		}
 	}
 
-	// Apply request body override if provided
+	// Apply request body annotation - merges with existing (preserves content if not specified)
 	if reqBody := opts.GetRequestBody(); reqBody != nil {
-		op.RequestBody = &RequestBodyRef{Value: g.convertRequestBody(reqBody)}
+		op.RequestBody = g.applyRequestBody(op.RequestBody, reqBody)
 	}
 
 	// Apply custom parameters (headers and cookies)
@@ -310,7 +336,7 @@ func (g *generator) applySchemaAnnotation(schema *Schema, msg *descriptor.Messag
 
 	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if opts.GetExample() != "" {
-		schema.Examples = makeExamplesMap(parseExampleValue(opts.GetExample()))
+		schema.Examples = makeExamplesArray(parseExampleValue(opts.GetExample()))
 	}
 
 	// Apply read only
@@ -399,7 +425,7 @@ func (g *generator) applyFieldAnnotation(schema *Schema, field *descriptor.Field
 
 	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if opts.GetExample() != "" {
-		schema.Examples = makeExamplesMap(parseExampleValue(opts.GetExample()))
+		schema.Examples = makeExamplesArray(parseExampleValue(opts.GetExample()))
 	}
 
 	// Apply format
@@ -579,7 +605,7 @@ func (g *generator) applyEnumAnnotation(schema *Schema, enum *descriptor.Enum) {
 
 	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if opts.GetExample() != "" {
-		schema.Examples = makeExamplesMap(parseExampleValue(opts.GetExample()))
+		schema.Examples = makeExamplesArray(parseExampleValue(opts.GetExample()))
 	}
 
 	// Apply deprecated
@@ -616,7 +642,11 @@ func convertServer(s *options.Server) *Server {
 func convertSecurityRequirement(sec *options.SecurityRequirement) SecurityRequirement {
 	result := make(SecurityRequirement)
 	for name, val := range sec.GetSecurityRequirement() {
-		result[name] = val.GetScope()
+		scopes := val.GetScope()
+		if scopes == nil {
+			scopes = []string{} // OpenAPI requires empty array, not null
+		}
+		result[name] = scopes
 	}
 	return result
 }
@@ -706,7 +736,7 @@ func (g *generator) convertResponse(resp *options.Response) *Response {
 	if len(resp.GetHeaders()) > 0 {
 		r.Headers = make(map[string]*HeaderRef)
 		for name, h := range resp.GetHeaders() {
-			r.Headers[name] = &HeaderRef{Value: g.convertHeader(h)}
+			r.Headers[name] = g.convertHeaderOrReference(h)
 		}
 	}
 	if len(resp.GetContent()) > 0 {
@@ -802,6 +832,121 @@ func (g *generator) convertHeaderOrReference(hor *options.HeaderOrReference) *He
 	default:
 		return nil
 	}
+}
+
+// convertResponseOrReference converts a proto ResponseOrReference to a ResponseRef.
+func (g *generator) convertResponseOrReference(ror *options.ResponseOrReference) *ResponseRef {
+	if ror == nil {
+		return nil
+	}
+
+	switch v := ror.GetOneof().(type) {
+	case *options.ResponseOrReference_Reference:
+		return &ResponseRef{
+			Ref: v.Reference.GetRef(),
+		}
+	case *options.ResponseOrReference_Response:
+		return &ResponseRef{
+			Value: g.convertResponse(v.Response),
+		}
+	default:
+		return nil
+	}
+}
+
+// applyResponseOrReference applies a ResponseOrReference annotation to an existing ResponseRef.
+// For reference annotations ($ref): overwrites entirely.
+// For inline annotations: merges with existing (preserves content/headers if not specified in annotation).
+func (g *generator) applyResponseOrReference(existing *ResponseRef, annotation *options.ResponseOrReference) *ResponseRef {
+	if annotation == nil {
+		return existing
+	}
+
+	switch v := annotation.GetOneof().(type) {
+	case *options.ResponseOrReference_Reference:
+		// Reference: overwrite entirely
+		return &ResponseRef{
+			Ref: v.Reference.GetRef(),
+		}
+	case *options.ResponseOrReference_Response:
+		// Inline: merge with existing
+		annotationResp := v.Response
+		result := &Response{}
+
+		// Description: annotation wins if specified
+		if annotationResp.GetDescription() != "" {
+			result.Description = annotationResp.GetDescription()
+		} else if existing != nil && existing.Value != nil {
+			result.Description = existing.Value.Description
+		}
+
+		// Content: keep existing if annotation doesn't specify
+		if len(annotationResp.GetContent()) > 0 {
+			result.Content = make(map[string]*MediaType)
+			for mediaType, mt := range annotationResp.GetContent() {
+				result.Content[mediaType] = g.convertMediaType(mt)
+			}
+		} else if existing != nil && existing.Value != nil && len(existing.Value.Content) > 0 {
+			result.Content = existing.Value.Content
+		}
+
+		// Headers: merge maps (existing first, then annotation overrides/adds)
+		if (existing != nil && existing.Value != nil && len(existing.Value.Headers) > 0) || len(annotationResp.GetHeaders()) > 0 {
+			result.Headers = make(map[string]*HeaderRef)
+			// Copy existing headers first
+			if existing != nil && existing.Value != nil {
+				for name, header := range existing.Value.Headers {
+					result.Headers[name] = header
+				}
+			}
+			// Add/override with annotation headers
+			for name, headerOrRef := range annotationResp.GetHeaders() {
+				result.Headers[name] = g.convertHeaderOrReference(headerOrRef)
+			}
+		}
+
+		return &ResponseRef{Value: result}
+	default:
+		return existing
+	}
+}
+
+// applyRequestBody applies a RequestBody annotation to an existing RequestBodyRef.
+// Merges with existing (preserves content if not specified in annotation).
+// Note: References are not supported for Operation.request_body because the
+// request body schema is derived from the proto input message.
+func (g *generator) applyRequestBody(existing *RequestBodyRef, annotation *options.RequestBody) *RequestBodyRef {
+	if annotation == nil {
+		return existing
+	}
+
+	result := &RequestBody{}
+
+	// Description: annotation wins if specified
+	if annotation.GetDescription() != "" {
+		result.Description = annotation.GetDescription()
+	} else if existing != nil && existing.Value != nil {
+		result.Description = existing.Value.Description
+	}
+
+	// Content: keep existing if annotation doesn't specify
+	if len(annotation.GetContent()) > 0 {
+		result.Content = make(map[string]*MediaType)
+		for mediaType, mt := range annotation.GetContent() {
+			result.Content[mediaType] = g.convertMediaType(mt)
+		}
+	} else if existing != nil && existing.Value != nil && len(existing.Value.Content) > 0 {
+		result.Content = existing.Value.Content
+	}
+
+	// Required: annotation wins if true, otherwise preserve existing
+	if annotation.GetRequired() {
+		result.Required = true
+	} else if existing != nil && existing.Value != nil {
+		result.Required = existing.Value.Required
+	}
+
+	return &RequestBodyRef{Value: result}
 }
 
 // convertCookieParameter converts a proto CookieParameter to a Parameter with in="cookie".
@@ -972,7 +1117,7 @@ func (g *generator) convertSchema(schema *options.Schema) *SchemaOrReference {
 
 	// Apply example (using examples map for OpenAPI 3.1.0 compliance)
 	if schema.GetExample() != "" {
-		s.Examples = makeExamplesMap(parseExampleValue(schema.GetExample()))
+		s.Examples = makeExamplesArray(parseExampleValue(schema.GetExample()))
 	}
 
 	// Apply enum values

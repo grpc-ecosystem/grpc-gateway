@@ -494,7 +494,7 @@ type Schema struct {
 	Title        string        `json:"title,omitempty" yaml:"title,omitempty"`
 	Description  string        `json:"description,omitempty" yaml:"description,omitempty"`
 	Default      any           `json:"default,omitempty" yaml:"default,omitempty"`
-	Examples     map[string]*Example `json:"examples,omitempty" yaml:"examples,omitempty"`
+	Examples     []any         `json:"examples,omitempty" yaml:"examples,omitempty"` // JSON Schema: array of examples
 	Deprecated   bool          `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 	ReadOnly     bool          `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 	WriteOnly    bool          `json:"writeOnly,omitempty" yaml:"writeOnly,omitempty"`

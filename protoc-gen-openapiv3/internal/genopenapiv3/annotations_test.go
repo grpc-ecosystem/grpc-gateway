@@ -84,16 +84,13 @@ func isNullable(schema *Schema) bool {
 	return schema.Nullable
 }
 
-// getExampleValue extracts the example value from an examples map.
-// Returns nil if the map is empty or the "example" key doesn't exist.
-func getExampleValue(examples map[string]*ExampleRef) any {
-	if examples == nil {
+// getExampleValue extracts the first example value from a JSON Schema examples array.
+// Returns nil if the array is empty.
+func getExampleValue(examples []any) any {
+	if len(examples) == 0 {
 		return nil
 	}
-	if ex, ok := examples["example"]; ok && ex != nil && ex.Value != nil {
-		return ex.Value.Value
-	}
-	return nil
+	return examples[0]
 }
 
 // findParamByName finds a parameter by name in a slice of ParameterRef.
@@ -746,13 +743,17 @@ func TestConvertSecurityScheme(t *testing.T) {
 func TestConvertResponse(t *testing.T) {
 	input := &options.Response{
 		Description: "User not found",
-		Headers: map[string]*options.Header{
+		Headers: map[string]*options.HeaderOrReference{
 			"X-Request-Id": {
-				Description: "Request ID",
-				Schema: &options.SchemaOrReference{
-					Oneof: &options.SchemaOrReference_Value{
-						Value: &options.Schema{
-							Type: []string{"string"},
+				Oneof: &options.HeaderOrReference_Header{
+					Header: &options.Header{
+						Description: "Request ID",
+						Schema: &options.SchemaOrReference{
+							Oneof: &options.SchemaOrReference_Value{
+								Value: &options.Schema{
+									Type: []string{"string"},
+								},
+							},
 						},
 					},
 				},
@@ -1737,18 +1738,20 @@ func TestApplyOperationAnnotation(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name             string
-		opts             *options.Operation
-		wantSummary      string
-		wantDesc         string
-		wantOpID         string
-		wantTags         []string
-		wantDeprecated   bool
-		wantSecurity     int
-		wantServers      int
-		wantHeaderParams int
-		wantCookieParams int
-		verifyParams     func(t *testing.T, params []*ParameterRef)
+		name              string
+		opts              *options.Operation
+		wantSummary       string
+		wantDesc          string
+		wantOpID          string
+		wantTags          []string
+		wantDeprecated    bool
+		wantSecurity      int
+		wantServers       int
+		wantHeaderParams  int
+		wantCookieParams  int
+		verifyParams      func(t *testing.T, params []*ParameterRef)
+		verifyResponses   func(t *testing.T, responses *Responses)
+		verifyRequestBody func(t *testing.T, body *RequestBodyRef)
 	}{
 		{
 			name: "override summary and description",
@@ -1970,6 +1973,84 @@ func TestApplyOperationAnnotation(t *testing.T) {
 				}
 			},
 		},
+		{
+			name: "add responses with default and codes",
+			opts: &options.Operation{
+				Responses: &options.Responses{
+					Default: &options.ResponseOrReference{
+						Oneof: &options.ResponseOrReference_Response{
+							Response: &options.Response{Description: "Unexpected error"},
+						},
+					},
+					ResponseOrReference: []*options.NamedResponseOrReference{
+						{
+							Name: "200",
+							Value: &options.ResponseOrReference{
+								Oneof: &options.ResponseOrReference_Response{
+									Response: &options.Response{Description: "Success"},
+								},
+							},
+						},
+						{
+							Name: "404",
+							Value: &options.ResponseOrReference{
+								Oneof: &options.ResponseOrReference_Reference{
+									Reference: &options.Reference{Ref: "#/components/responses/NotFound"},
+								},
+							},
+						},
+					},
+				},
+			},
+			verifyResponses: func(t *testing.T, responses *Responses) {
+				t.Helper()
+				if responses == nil {
+					t.Fatal("Responses should not be nil")
+				}
+				// Check default response
+				if responses.Default == nil {
+					t.Error("Default response should not be nil")
+				} else if responses.Default.Value == nil || responses.Default.Value.Description != "Unexpected error" {
+					t.Errorf("Default response description = %q, want %q", responses.Default.Value.Description, "Unexpected error")
+				}
+				// Check 200 response (inline)
+				if r, ok := responses.Codes["200"]; !ok {
+					t.Error("Missing 200 response")
+				} else if r.Value == nil || r.Value.Description != "Success" {
+					t.Errorf("200 response description = %q, want %q", r.Value.Description, "Success")
+				}
+				// Check 404 response (reference)
+				if r, ok := responses.Codes["404"]; !ok {
+					t.Error("Missing 404 response")
+				} else if r.Ref != "#/components/responses/NotFound" {
+					t.Errorf("404 response ref = %q, want %q", r.Ref, "#/components/responses/NotFound")
+				}
+			},
+		},
+		{
+			name: "add request body",
+			opts: &options.Operation{
+				RequestBody: &options.RequestBody{
+					Description: "User input data",
+					Required:    true,
+				},
+			},
+			verifyRequestBody: func(t *testing.T, body *RequestBodyRef) {
+				t.Helper()
+				if body == nil {
+					t.Fatal("RequestBody should not be nil")
+				}
+				if body.Value == nil {
+					t.Fatal("RequestBody.Value should not be nil")
+				}
+				if body.Value.Description != "User input data" {
+					t.Errorf("Description = %q, want %q", body.Value.Description, "User input data")
+				}
+				if !body.Value.Required {
+					t.Error("Required should be true")
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -2031,6 +2112,14 @@ func TestApplyOperationAnnotation(t *testing.T) {
 			// Run custom param verification if provided
 			if tt.verifyParams != nil {
 				tt.verifyParams(t, op.Parameters)
+			}
+			// Run custom responses verification if provided
+			if tt.verifyResponses != nil {
+				tt.verifyResponses(t, op.Responses)
+			}
+			// Run custom request body verification if provided
+			if tt.verifyRequestBody != nil {
+				tt.verifyRequestBody(t, op.RequestBody)
 			}
 		})
 	}
@@ -2217,6 +2306,8 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 		wantParameters      int
 		wantRequestBodies   int
 		wantHeaders         int
+		verifyResponses     func(t *testing.T, responses map[string]*ResponseRef)
+		verifyRequestBodies func(t *testing.T, bodies map[string]*RequestBodyRef)
 	}{
 		{
 			name: "add security schemes",
@@ -2239,9 +2330,23 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 		{
 			name: "add responses",
 			opts: &options.Components{
-				Responses: map[string]*options.Response{
-					"NotFound":   {Description: "Resource not found"},
-					"BadRequest": {Description: "Invalid request"},
+				Responses: []*options.NamedResponseOrReference{
+					{
+						Name: "NotFound",
+						Value: &options.ResponseOrReference{
+							Oneof: &options.ResponseOrReference_Response{
+								Response: &options.Response{Description: "Resource not found"},
+							},
+						},
+					},
+					{
+						Name: "BadRequest",
+						Value: &options.ResponseOrReference{
+							Oneof: &options.ResponseOrReference_Response{
+								Response: &options.Response{Description: "Invalid request"},
+							},
+						},
+					},
 				},
 			},
 			wantResponses: 2,
@@ -2296,6 +2401,45 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 			},
 			wantHeaders: 1,
 		},
+		{
+			name: "add responses with reference",
+			opts: &options.Components{
+				Responses: []*options.NamedResponseOrReference{
+					{
+						Name: "NotFound",
+						Value: &options.ResponseOrReference{
+							Oneof: &options.ResponseOrReference_Response{
+								Response: &options.Response{Description: "Resource not found"},
+							},
+						},
+					},
+					{
+						Name: "ErrorResponse",
+						Value: &options.ResponseOrReference{
+							Oneof: &options.ResponseOrReference_Reference{
+								Reference: &options.Reference{Ref: "#/components/responses/GenericError"},
+							},
+						},
+					},
+				},
+			},
+			wantResponses: 2,
+			verifyResponses: func(t *testing.T, responses map[string]*ResponseRef) {
+				t.Helper()
+				// Check inline response
+				if r, ok := responses["NotFound"]; !ok {
+					t.Error("Missing NotFound response")
+				} else if r.Value == nil || r.Value.Description != "Resource not found" {
+					t.Errorf("NotFound response description = %q, want %q", r.Value.Description, "Resource not found")
+				}
+				// Check reference response
+				if r, ok := responses["ErrorResponse"]; !ok {
+					t.Error("Missing ErrorResponse response")
+				} else if r.Ref != "#/components/responses/GenericError" {
+					t.Errorf("ErrorResponse ref = %q, want %q", r.Ref, "#/components/responses/GenericError")
+				}
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -2325,8 +2469,400 @@ func TestApplyComponentsAnnotation(t *testing.T) {
 			if tt.wantHeaders > 0 && len(comp.Headers) != tt.wantHeaders {
 				t.Errorf("Headers count = %d, want %d", len(comp.Headers), tt.wantHeaders)
 			}
+			if tt.verifyResponses != nil {
+				tt.verifyResponses(t, comp.Responses)
+			}
+			if tt.verifyRequestBodies != nil {
+				tt.verifyRequestBodies(t, comp.RequestBodies)
+			}
 		})
 	}
 }
 
 // stringPtr is defined in generator_test.go
+
+// ============================================================================
+// Merge Behavior Tests
+// ============================================================================
+// These tests verify the annotation merge strategy:
+// - Reference ($ref): Overwrite entirely
+// - Inline: Merge with auto-generated (preserve content/schema)
+
+func TestResponseAnnotationMergeBehavior(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		existingResp *ResponseRef
+		annotation   *options.ResponseOrReference
+		wantDesc     string
+		wantRef      string
+		wantContent  map[string]string // mediaType -> expected schema $ref
+		wantHeaders  map[string]string // headerName -> expected description
+	}{
+		{
+			name: "inline annotation merges with existing - preserves content",
+			existingResp: &ResponseRef{
+				Value: &Response{
+					Description: "Auto-generated description",
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/Item"},
+							},
+						},
+					},
+				},
+			},
+			annotation: &options.ResponseOrReference{
+				Oneof: &options.ResponseOrReference_Response{
+					Response: &options.Response{
+						Description: "Custom description from annotation",
+					},
+				},
+			},
+			wantDesc: "Custom description from annotation",
+			wantContent: map[string]string{
+				"application/json": "#/components/schemas/Item", // preserved from existing
+			},
+		},
+		{
+			name: "inline annotation with headers merges both",
+			existingResp: &ResponseRef{
+				Value: &Response{
+					Description: "Auto-generated",
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/Item"},
+							},
+						},
+					},
+					Headers: map[string]*HeaderRef{
+						"X-Existing": {Value: &Header{Description: "Existing header"}},
+					},
+				},
+			},
+			annotation: &options.ResponseOrReference{
+				Oneof: &options.ResponseOrReference_Response{
+					Response: &options.Response{
+						Description: "Custom description",
+						Headers: map[string]*options.HeaderOrReference{
+							"X-New": {
+								Oneof: &options.HeaderOrReference_Header{
+									Header: &options.Header{Description: "New header"},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantDesc: "Custom description",
+			wantContent: map[string]string{
+				"application/json": "#/components/schemas/Item", // preserved from existing
+			},
+			wantHeaders: map[string]string{
+				"X-Existing": "Existing header", // preserved from existing
+				"X-New":      "New header",      // added from annotation
+			},
+		},
+		{
+			name: "reference annotation overwrites entirely",
+			existingResp: &ResponseRef{
+				Value: &Response{
+					Description: "Auto-generated description",
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/Item"},
+							},
+						},
+					},
+				},
+			},
+			annotation: &options.ResponseOrReference{
+				Oneof: &options.ResponseOrReference_Reference{
+					Reference: &options.Reference{
+						Ref: "#/components/responses/SharedResponse",
+					},
+				},
+			},
+			wantRef:     "#/components/responses/SharedResponse",
+			wantContent: nil, // Reference overwrites - no content
+		},
+		{
+			name: "inline annotation with content overwrites content",
+			existingResp: &ResponseRef{
+				Value: &Response{
+					Description: "Auto-generated",
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/OldSchema"},
+							},
+						},
+					},
+				},
+			},
+			annotation: &options.ResponseOrReference{
+				Oneof: &options.ResponseOrReference_Response{
+					Response: &options.Response{
+						Description: "Custom description",
+						Content: map[string]*options.MediaType{
+							"application/xml": {
+								Schema: &options.SchemaOrReference{
+									Oneof: &options.SchemaOrReference_Reference{
+										Reference: &options.Reference{Ref: "#/components/schemas/NewSchema"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			wantDesc: "Custom description",
+			wantContent: map[string]string{
+				"application/xml": "#/components/schemas/NewSchema", // from annotation, not existing
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			reg := &descriptor.Registry{}
+			gen := testGeneratorWithReg(reg)
+
+			result := gen.applyResponseOrReference(tt.existingResp, tt.annotation)
+
+			if result == nil {
+				t.Fatal("Result should not be nil")
+			}
+
+			// Check reference case
+			if tt.wantRef != "" {
+				if result.Ref != tt.wantRef {
+					t.Errorf("Ref = %q, want %q", result.Ref, tt.wantRef)
+				}
+				if result.Value != nil {
+					t.Error("Value should be nil for reference")
+				}
+				return
+			}
+
+			// Check inline case
+			if result.Value == nil {
+				t.Fatal("Value should not be nil for inline response")
+			}
+
+			if result.Value.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", result.Value.Description, tt.wantDesc)
+			}
+
+			// Verify content equality
+			if tt.wantContent != nil {
+				if result.Value.Content == nil {
+					t.Fatal("Content should not be nil")
+				}
+				if len(result.Value.Content) != len(tt.wantContent) {
+					t.Errorf("Content count = %d, want %d", len(result.Value.Content), len(tt.wantContent))
+				}
+				for mediaType, wantSchemaRef := range tt.wantContent {
+					gotMediaType, ok := result.Value.Content[mediaType]
+					if !ok {
+						t.Errorf("Missing content type %q", mediaType)
+						continue
+					}
+					if gotMediaType.Schema == nil || gotMediaType.Schema.Reference == nil {
+						t.Errorf("Content[%q].Schema.Reference is nil", mediaType)
+						continue
+					}
+					if gotMediaType.Schema.Reference.Ref != wantSchemaRef {
+						t.Errorf("Content[%q].Schema.$ref = %q, want %q", mediaType, gotMediaType.Schema.Reference.Ref, wantSchemaRef)
+					}
+				}
+			}
+
+			// Verify headers equality
+			if tt.wantHeaders != nil {
+				if result.Value.Headers == nil {
+					t.Fatal("Headers should not be nil")
+				}
+				if len(result.Value.Headers) != len(tt.wantHeaders) {
+					t.Errorf("Headers count = %d, want %d", len(result.Value.Headers), len(tt.wantHeaders))
+				}
+				for headerName, wantDesc := range tt.wantHeaders {
+					gotHeader, ok := result.Value.Headers[headerName]
+					if !ok {
+						t.Errorf("Missing header %q", headerName)
+						continue
+					}
+					if gotHeader.Value == nil {
+						t.Errorf("Header[%q].Value is nil", headerName)
+						continue
+					}
+					if gotHeader.Value.Description != wantDesc {
+						t.Errorf("Header[%q].Description = %q, want %q", headerName, gotHeader.Value.Description, wantDesc)
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestRequestBodyAnnotationMergeBehavior(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		existingBody *RequestBodyRef
+		annotation   *options.RequestBody
+		wantDesc     string
+		wantContent  map[string]string // mediaType -> expected schema $ref
+		wantRequired bool
+	}{
+		{
+			name: "annotation merges with existing - preserves content",
+			existingBody: &RequestBodyRef{
+				Value: &RequestBody{
+					Description: "Auto-generated description",
+					Required:    true,
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/CreateItemRequest"},
+							},
+						},
+					},
+				},
+			},
+			annotation: &options.RequestBody{
+				Description: "The item to create",
+			},
+			wantDesc: "The item to create",
+			wantContent: map[string]string{
+				"application/json": "#/components/schemas/CreateItemRequest", // preserved from existing
+			},
+			wantRequired: true, // preserved from existing
+		},
+		{
+			name: "annotation can set required",
+			existingBody: &RequestBodyRef{
+				Value: &RequestBody{
+					Description: "Auto-generated",
+					Required:    false,
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/Input"},
+							},
+						},
+					},
+				},
+			},
+			annotation: &options.RequestBody{
+				Description: "Custom description",
+				Required:    true,
+			},
+			wantDesc: "Custom description",
+			wantContent: map[string]string{
+				"application/json": "#/components/schemas/Input", // preserved from existing
+			},
+			wantRequired: true,
+		},
+		{
+			name: "annotation with content overwrites content",
+			existingBody: &RequestBodyRef{
+				Value: &RequestBody{
+					Description: "Auto-generated",
+					Content: map[string]*MediaType{
+						"application/json": {
+							Schema: &SchemaOrReference{
+								Reference: &Reference{Ref: "#/components/schemas/OldSchema"},
+							},
+						},
+					},
+				},
+			},
+			annotation: &options.RequestBody{
+				Description: "Custom description",
+				Content: map[string]*options.MediaType{
+					"application/xml": {
+						Schema: &options.SchemaOrReference{
+							Oneof: &options.SchemaOrReference_Reference{
+								Reference: &options.Reference{Ref: "#/components/schemas/NewSchema"},
+							},
+						},
+					},
+				},
+			},
+			wantDesc: "Custom description",
+			wantContent: map[string]string{
+				"application/xml": "#/components/schemas/NewSchema", // from annotation, not existing
+			},
+		},
+		{
+			name:         "annotation with nil existing creates new",
+			existingBody: nil,
+			annotation: &options.RequestBody{
+				Description: "Brand new request body",
+				Required:    true,
+			},
+			wantDesc:     "Brand new request body",
+			wantRequired: true,
+			wantContent:  nil, // No existing content to preserve
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			reg := &descriptor.Registry{}
+			gen := testGeneratorWithReg(reg)
+
+			result := gen.applyRequestBody(tt.existingBody, tt.annotation)
+
+			if result == nil {
+				t.Fatal("Result should not be nil")
+			}
+
+			if result.Value == nil {
+				t.Fatal("Value should not be nil")
+			}
+
+			if result.Value.Description != tt.wantDesc {
+				t.Errorf("Description = %q, want %q", result.Value.Description, tt.wantDesc)
+			}
+
+			// Verify content equality
+			if tt.wantContent != nil {
+				if result.Value.Content == nil {
+					t.Fatal("Content should not be nil")
+				}
+				if len(result.Value.Content) != len(tt.wantContent) {
+					t.Errorf("Content count = %d, want %d", len(result.Value.Content), len(tt.wantContent))
+				}
+				for mediaType, wantSchemaRef := range tt.wantContent {
+					gotMediaType, ok := result.Value.Content[mediaType]
+					if !ok {
+						t.Errorf("Missing content type %q", mediaType)
+						continue
+					}
+					if gotMediaType.Schema == nil || gotMediaType.Schema.Reference == nil {
+						t.Errorf("Content[%q].Schema.Reference is nil", mediaType)
+						continue
+					}
+					if gotMediaType.Schema.Reference.Ref != wantSchemaRef {
+						t.Errorf("Content[%q].Schema.$ref = %q, want %q", mediaType, gotMediaType.Schema.Reference.Ref, wantSchemaRef)
+					}
+				}
+			}
+
+			if result.Value.Required != tt.wantRequired {
+				t.Errorf("Required = %v, want %v", result.Value.Required, tt.wantRequired)
+			}
+		})
+	}
+}

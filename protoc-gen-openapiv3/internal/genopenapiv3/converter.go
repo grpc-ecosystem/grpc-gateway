@@ -442,7 +442,7 @@ func toCanonicalSchema(s *Schema) *model.Schema {
 		Title:                s.Title,
 		Description:          s.Description,
 		Default:              s.Default,
-		Examples:             toCanonicalExampleRefs(s.Examples),
+		Examples:             s.Examples, // JSON Schema: array of example values
 		Deprecated:           s.Deprecated,
 		ReadOnly:             s.ReadOnly,
 		WriteOnly:            s.WriteOnly,

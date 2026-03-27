@@ -93,6 +93,7 @@
                 "description": "Creates a new item and returns the created item.",
                 "operationId": "ItemService_CreateItem",
                 "requestBody": {
+                    "description": "Item to create",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -158,8 +159,11 @@
                     "404": {
                         "description": "Item not found"
                     },
+                    "500": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
                     "default": {
-                        "description": "An unexpected error response",
+                        "description": "Unexpected error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -394,7 +398,7 @@
                 },
                 "security": [
                     {
-                        "bearer_auth": null
+                        "bearer_auth": []
                     }
                 ],
                 "servers": [
@@ -830,14 +834,12 @@
                     "id",
                     "name"
                 ],
-                "examples": {
-                    "example": {
-                        "value": {
-                            "id": "item-123",
-                            "name": "Example Item"
-                        }
+                "examples": [
+                    {
+                        "id": "item-123",
+                        "name": "Example Item"
                     }
-                }
+                ]
             },
             "comprehensiveListItemsResponse": {
                 "type": "object",
@@ -1034,11 +1036,9 @@
                         "minLength": 3,
                         "maxLength": 50,
                         "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
-                        "examples": {
-                            "example": {
-                                "value": "johndoe"
-                            }
-                        }
+                        "examples": [
+                            "johndoe"
+                        ]
                     },
                     "uuid": {
                         "type": "string",
@@ -1131,7 +1131,7 @@
     },
     "security": [
         {
-            "api_key": null
+            "api_key": []
         }
     ],
     "tags": [

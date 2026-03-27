@@ -46,9 +46,13 @@ proto_file: {
         }
         [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
             responses: {
-              key: "205"
-              value: {
-                description: "hello"
+              response_or_reference: {
+                name: "205"
+                value: {
+                  response: {
+                    description: "hello"
+                  }
+                }
               }
             }
         }
