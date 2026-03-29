@@ -1,0 +1,297 @@
+file_to_generate: "test/visibility.proto"
+file_to_generate: "test/visibility2.proto"
+proto_file: {
+  name: "test/visibility.proto"
+  package: "test"
+  message_type: {
+    name: "PublicMessage"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "InternalMessage"
+    options: {
+      [google.api.message_visibility]: {
+        restriction: "INTERNAL"
+      }
+    }
+    field: {
+      name: "data"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "data"
+    }
+  }
+  message_type: {
+    name: "MixedFieldMessage"
+    field: {
+      name: "public_field"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "publicField"
+    }
+    field: {
+      name: "internal_field"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalField"
+      options: {
+        [google.api.field_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+  }
+  message_type: {
+    name: "MessageWithPublicEnum"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "enum_value"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".test.PublicEnum"
+      json_name: "enumValue"
+    }
+  }
+  message_type: {
+    name: "MessageWithInternalEnum"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "enum_value"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".test.InternalEnum"
+      json_name: "enumValue"
+    }
+  }
+  message_type: {
+    name: "MessageWithMixedValueEnum"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "enum_value"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".test.MixedValueEnum"
+      json_name: "enumValue"
+    }
+  }
+  enum_type: {
+    name: "PublicEnum"
+    value: {
+      name: "PUBLIC_UNSPECIFIED"
+      number: 0
+    }
+    value: {
+      name: "PUBLIC_PUBLIC_VALUE"
+      number: 1
+    }
+  }
+  enum_type: {
+    name: "InternalEnum"
+    options: {
+      [google.api.enum_visibility]: {
+        restriction: "INTERNAL"
+      }
+    }
+    value: {
+      name: "INTERNAL_UNSPECIFIED"
+      number: 0
+    }
+    value: {
+      name: "INTERNAL_VALUE"
+      number: 1
+    }
+  }
+  enum_type: {
+    name: "MixedValueEnum"
+    value: {
+      name: "MIXED_UNSPECIFIED"
+      number: 0
+    }
+    value: {
+      name: "MIXED_PUBLIC_VALUE"
+      number: 1
+    }
+    value: {
+      name: "MIXED_INTERNAL_VALUE"
+      number: 2
+      options: {
+        [google.api.value_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+  }
+  service: {
+    name: "PublicService"
+    method: {
+      name: "PublicMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.PublicMessage"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/method"
+        }
+      }
+    }
+    method: {
+      name: "InternalMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.InternalMessage"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/internal_method"
+        }
+        [google.api.method_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+    method: {
+      name: "MixedFieldMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.MixedFieldMessage"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/mixed_field"
+        }
+      }
+    }
+    method: {
+      name: "PublicEnumMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.MessageWithPublicEnum"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/public_enum"
+        }
+      }
+    }
+    method: {
+      name: "InternalEnumMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.MessageWithInternalEnum"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/internal_enum"
+        }
+        [google.api.method_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+    method: {
+      name: "MixedValueEnumMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.MessageWithMixedValueEnum"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/mixed_value_enum"
+        }
+      }
+    }
+  }
+  service: {
+    name: "InternalService"
+    options: {
+      [google.api.api_visibility]: {
+        restriction: "INTERNAL"
+      }
+    }
+    method: {
+      name: "InternalServiceMethod"
+      input_type: ".test.PublicMessage"
+      output_type: ".test.InternalMessage"
+      options: {
+        [google.api.http]: {
+          get: "/v1/internal_service/method"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/visibility;test"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "test/visibility2.proto"
+  package: "test"
+  message_type: {
+    name: "Message"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "PublicServiceInternalMethod"
+    method: {
+      name: "InternalMethod"
+      input_type: ".test.Message"
+      output_type: ".test.Message"
+      options: {
+        [google.api.http]: {
+          get: "/v1/public/internal_method"
+        }
+        [google.api.method_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+  }
+  service: {
+    name: "InternalService2"
+    options: {
+      [google.api.api_visibility]: {
+        restriction: "INTERNAL"
+      }
+    }
+    method: {
+      name: "InternalServiceMethod"
+      input_type: ".test.Message"
+      output_type: ".test.Message"
+      options: {
+        [google.api.http]: {
+          get: "/v1/internal_service/method"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/visibility;test"
+  }
+  syntax: "proto3"
+}

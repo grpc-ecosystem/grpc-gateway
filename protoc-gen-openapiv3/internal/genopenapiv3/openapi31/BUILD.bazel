@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+package(default_visibility = ["//protoc-gen-openapiv3:__subpackages__"])
+
+go_library(
+    name = "openapi31",
+    srcs = ["adapter.go"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapiv3/openapi31",
+    deps = [
+        "//protoc-gen-openapiv3/internal/genopenapiv3/model",
+        "@in_yaml_go_yaml_v3//:yaml",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":openapi31",
+    visibility = ["//protoc-gen-openapiv3:__subpackages__"],
+)
+
+go_test(
+    name = "openapi31_test",
+    srcs = ["adapter_test.go"],
+    embed = [":openapi31"],
+    deps = ["//protoc-gen-openapiv3/internal/genopenapiv3/model"],
+)

@@ -1,0 +1,67 @@
+file_to_generate: "test/query_param_visibility.proto"
+proto_file: {
+  name: "test/query_param_visibility.proto"
+  package: "test"
+  message_type: {
+    name: "MixedVisibilityRequest"
+    field: {
+      name: "public_param"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "publicParam"
+    }
+    field: {
+      name: "internal_param"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalParam"
+      options: {
+        [google.api.field_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+    field: {
+      name: "another_public_param"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "anotherPublicParam"
+    }
+  }
+  message_type: {
+    name: "Response"
+    field: {
+      name: "result"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "result"
+    }
+  }
+  service: {
+    name: "QueryParamService"
+    method: {
+      name: "GetWithMixedParams"
+      input_type: ".test.MixedVisibilityRequest"
+      output_type: ".test.Response"
+      options: {
+        [google.api.http]: {
+          get: "/v1/query-test"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/queryparam;test"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "Query Param Visibility Test"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}

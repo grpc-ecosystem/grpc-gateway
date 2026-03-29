@@ -1,0 +1,164 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OneOf with Enum Test",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/oneof-enum": {
+            "get": {
+                "tags": [
+                    "OneofEnumService"
+                ],
+                "operationId": "OneofEnumService_GetOneofWithEnum",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testOneofWithEnum"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            },
+            "testOneofWithEnum": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "choice.text_option",
+                        "properties": {
+                            "text_option": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "text_option"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.status_option",
+                        "properties": {
+                            "status_option": {
+                                "$ref": "#/components/schemas/testStatus"
+                            }
+                        },
+                        "required": [
+                            "status_option"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.priority_option",
+                        "properties": {
+                            "priority_option": {
+                                "$ref": "#/components/schemas/testPriority"
+                            }
+                        },
+                        "required": [
+                            "priority_option"
+                        ]
+                    },
+                    {
+                        "title": "choice.none",
+                        "not": {
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "text_option"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "status_option"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "priority_option"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "testPriority": {
+                "type": "string",
+                "enum": [
+                    "PRIORITY_UNSPECIFIED",
+                    "PRIORITY_LOW",
+                    "PRIORITY_HIGH"
+                ]
+            },
+            "testStatus": {
+                "type": "string",
+                "enum": [
+                    "STATUS_UNKNOWN",
+                    "STATUS_ACTIVE",
+                    "STATUS_INACTIVE"
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "OneofEnumService"
+        }
+    ]
+}

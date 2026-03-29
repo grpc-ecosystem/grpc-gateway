@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+package(default_visibility = ["//protoc-gen-openapiv3:__subpackages__"])
+
+go_library(
+    name = "model",
+    srcs = ["canonical.go"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapiv3/model",
+    deps = ["@in_yaml_go_yaml_v3//:yaml"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":model",
+    visibility = ["//protoc-gen-openapiv3:__subpackages__"],
+)
