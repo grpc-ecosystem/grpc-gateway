@@ -208,6 +208,11 @@ func (g *generator) generateFileSpec(file *descriptor.File) (*OpenAPI, error) {
 		g.generateMessageSchema(doc, msg, make(map[string]bool))
 	}
 
+	// Generate schemas for all messages and enums in the file if include_all_messages is enabled
+	if g.reg.GetIncludeAllMessages() {
+		g.generateAllMessageSchemas(doc, file)
+	}
+
 	// Add default error schema if not disabled
 	if !g.reg.GetDisableDefaultErrors() {
 		g.addErrorSchema(doc)
@@ -217,6 +222,35 @@ func (g *generator) generateFileSpec(file *descriptor.File) (*OpenAPI, error) {
 	g.applyFileAnnotation(doc, file)
 
 	return doc, nil
+}
+
+// generateAllMessageSchemas generates schemas for all messages and enums defined in the file,
+// including nested messages. The file.Messages already contains flattened nested messages.
+func (g *generator) generateAllMessageSchemas(doc *OpenAPI, file *descriptor.File) {
+	visited := make(map[string]bool)
+
+	// Generate schemas for all messages in the file (includes nested messages)
+	for _, msg := range file.Messages {
+		// Skip synthetic map entry messages
+		if msg.GetOptions() != nil && msg.GetOptions().GetMapEntry() {
+			continue
+		}
+
+		schemaName := g.messageSchemaName(msg)
+
+		// Skip if already generated
+		if _, exists := doc.Components.Schemas[schemaName]; exists {
+			continue
+		}
+
+		// Generate the schema for this message
+		g.generateMessageSchema(doc, msg, visited)
+	}
+
+	// Generate schemas for all enums in the file (includes nested enums)
+	for _, enum := range file.Enums {
+		g.generateEnumSchema(doc, enum)
+	}
 }
 
 // generateServicePaths generates paths for all methods in a service.

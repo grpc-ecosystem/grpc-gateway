@@ -1543,6 +1543,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetDisableDefaultResponses(true)
 				reg.SetDisableDefaultErrors(true)
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1561,6 +1562,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
 				reg.SetAllowMerge(true)
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1569,6 +1571,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/query_param_visibility_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1577,6 +1580,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/oneof_visibility_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1585,6 +1589,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/oneof_all_internal_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1593,6 +1598,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/oneof_multiple_groups_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1601,6 +1607,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/oneof_enum_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1609,6 +1616,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/oneof_wkt_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1617,6 +1625,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			wantJSON:       "testdata/generator/oneof_nested_definition_none.openapi.json",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 		{
@@ -1627,6 +1636,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
 				reg.SetPreserveRPCOrder(true)
 				reg.SetEnableRpcDeprecation(true)
+				reg.SetIncludeAllMessages(false)
 			},
 		},
 	}
