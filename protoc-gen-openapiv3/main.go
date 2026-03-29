@@ -51,6 +51,7 @@ type GeneratorConfig struct {
 
 	// Generation Control
 	GenerateUnboundMethods  bool
+	IncludeAllMessages      bool
 	DisableDefaultErrors    bool
 	DisableServiceTags      bool
 	DisableDefaultResponses bool
@@ -89,6 +90,7 @@ var (
 	enumsAsInts                    = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 	simpleOperationIDs             = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation")
 	generateUnboundMethods         = flag.Bool("generate_unbound_methods", false, "generate OpenAPI metadata even for RPC methods that have no HttpRule annotation")
+	includeAllMessages             = flag.Bool("include_all_messages", true, "if true, generates schemas for all message types in proto files, not just those used in RPC request/response")
 	recursiveDepth                 = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 	omitEnumDefaultValue           = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
 	outputFormat                   = flag.String("output_format", string(genopenapiv3.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapiv3.FormatJSON, genopenapiv3.FormatYAML))
@@ -134,6 +136,7 @@ func populateConfig() {
 	cfg.UseProto3FieldSemantics = *useProto3FieldSemantics
 	cfg.RecursiveDepth = *recursiveDepth
 	cfg.GenerateUnboundMethods = *generateUnboundMethods
+	cfg.IncludeAllMessages = *includeAllMessages
 	cfg.DisableDefaultErrors = *disableDefaultErrors
 	cfg.DisableServiceTags = *disableServiceTags
 	cfg.DisableDefaultResponses = *disableDefaultResponses
@@ -160,6 +163,7 @@ func configureRegistry(reg *descriptor.Registry) {
 	reg.SetDisableDefaultErrors(cfg.DisableDefaultErrors)
 	reg.SetSimpleOperationIDs(cfg.SimpleOperationIDs)
 	reg.SetGenerateUnboundMethods(cfg.GenerateUnboundMethods)
+	reg.SetIncludeAllMessages(cfg.IncludeAllMessages)
 	reg.SetRecursiveDepth(cfg.RecursiveDepth)
 	reg.SetOmitEnumDefaultValue(cfg.OmitEnumDefaultValue)
 	reg.SetVisibilityRestrictionSelectors(cfg.VisibilityRestrictionSelectors)

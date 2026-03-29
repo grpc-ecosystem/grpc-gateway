@@ -43,6 +43,7 @@ go_test(
     srcs = [
         "annotations_test.go",
         "generator_test.go",
+        "include_all_messages_test.go",
         "naming_test.go",
     ],
     data = glob(["testdata/**"]),

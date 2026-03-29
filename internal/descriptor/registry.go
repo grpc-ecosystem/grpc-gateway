@@ -188,6 +188,11 @@ type Registry struct {
 
 	// generateXGoType is a global generator option for generating x-go-type annotations
 	generateXGoType bool
+
+	// includeAllMessages controls whether all message types defined in proto files
+	// should be included in the OpenAPI schema, not just those directly used in RPC
+	// request/response types. Defaults to true.
+	includeAllMessages bool
 }
 
 type repeatedFieldSeparator struct {
@@ -222,8 +227,9 @@ func NewRegistry() *Registry {
 		messageOptions: make(map[string]*options.Schema),
 		serviceOptions: make(map[string]*options.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
-		annotationMap:  make(map[annotationIdentifier]struct{}),
-		recursiveDepth: 1000,
+		annotationMap:      make(map[annotationIdentifier]struct{}),
+		recursiveDepth:     1000,
+		includeAllMessages: true,
 	}
 }
 
@@ -733,6 +739,19 @@ func (r *Registry) SetGenerateUnboundMethods(generate bool) {
 // GetGenerateUnboundMethods returns generateUnboundMethods
 func (r *Registry) GetGenerateUnboundMethods() bool {
 	return r.generateUnboundMethods
+}
+
+// SetIncludeAllMessages controls whether all message types defined in proto files
+// should be included in the OpenAPI schema, not just those directly used in RPC
+// request/response types. Defaults to true.
+func (r *Registry) SetIncludeAllMessages(include bool) {
+	r.includeAllMessages = include
+}
+
+// GetIncludeAllMessages returns whether all message types should be included
+// in the OpenAPI schema.
+func (r *Registry) GetIncludeAllMessages() bool {
+	return r.includeAllMessages
 }
 
 // SetOmitPackageDoc controls whether the generated code contains a package comment (if set to false, it will contain one)
