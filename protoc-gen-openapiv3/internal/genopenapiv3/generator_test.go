@@ -7,7 +7,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"go.yaml.in/yaml/v3"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/protobuf/encoding/prototext"
@@ -938,49 +941,36 @@ func jsonEqual(t *testing.T, a, b string) bool {
 	return reflect.DeepEqual(objA, objB)
 }
 
-func jsonEqualOrdered(t *testing.T, a, b []byte) bool {
-	// Use semantic JSON comparison that ignores key order
+func jsonEqualOrdered(t *testing.T, a, b []byte) {
+	// // Use semantic JSON comparison that ignores key order
 	var objA, objB any
 	if err := json.Unmarshal(a, &objA); err != nil {
 		t.Errorf("Failed to unmarshal first JSON: %v", err)
-		return false
+		return
 	}
 	if err := json.Unmarshal(b, &objB); err != nil {
 		t.Errorf("Failed to unmarshal second JSON: %v", err)
-		return false
+		return
 	}
-	return jsonDeepEqual(objA, objB)
+	if !cmp.Equal(objA, objB) {
+		t.Errorf("JSON objects are not equal. Got: %v\nDiff: %v", string(a), cmp.Diff(objA, objB))
+	}
+
 }
 
-// jsonDeepEqual compares two JSON values for semantic equality,
-// ignoring key order in objects.
-func jsonDeepEqual(a, b any) bool {
-	switch va := a.(type) {
-	case map[string]any:
-		vb, ok := b.(map[string]any)
-		if !ok || len(va) != len(vb) {
-			return false
-		}
-		for k, valA := range va {
-			valB, exists := vb[k]
-			if !exists || !jsonDeepEqual(valA, valB) {
-				return false
-			}
-		}
-		return true
-	case []any:
-		vb, ok := b.([]any)
-		if !ok || len(va) != len(vb) {
-			return false
-		}
-		for i := range va {
-			if !jsonDeepEqual(va[i], vb[i]) {
-				return false
-			}
-		}
-		return true
-	default:
-		return a == b
+func yamlEqualOrdered(t *testing.T, a, b []byte) {
+	// Use semantic YAML comparison that ignores key order
+	var objA, objB any
+	if err := yaml.Unmarshal(a, &objA); err != nil {
+		t.Errorf("Failed to unmarshal first YAML: %v", err)
+		return
+	}
+	if err := yaml.Unmarshal(b, &objB); err != nil {
+		t.Errorf("Failed to unmarshal second YAML: %v", err)
+		return
+	}
+	if !cmp.Equal(objA, objB) {
+		t.Errorf("YAML objects are not equal. Got: %v\nDiff: %v", string(a), cmp.Diff(objA, objB))
 	}
 }
 
@@ -1493,6 +1483,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 		name             string
 		inputProtoText   string
 		wantJSON         string
+		wantYaml         string
 		registryModifier func(*descriptor.Registry)
 	}{
 		{
@@ -1632,6 +1623,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			name:           "comprehensive v3.1.0 features",
 			inputProtoText: "testdata/generator/comprehensive_v31.prototext",
 			wantJSON:       "testdata/generator/comprehensive_v31.openapi.json",
+			wantYaml:       "testdata/generator/comprehensive_v31.openapi.yaml",
 			registryModifier: func(reg *descriptor.Registry) {
 				reg.SetVisibilityRestrictionSelectors([]string{})
 				reg.SetPreserveRPCOrder(true)
@@ -1656,7 +1648,7 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			}
 
 			// Generate OpenAPI spec
-			resp := requireGenerate(t, &req, "3.1.0", tt.registryModifier)
+			resp := requireGenerate(t, &req, "3.1.0", FormatJSON, tt.registryModifier)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1670,8 +1662,24 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 			want := string(wantBytes)
 
 			// Compare generated JSON with expected JSON
-			if !jsonEqualOrdered(t, []byte(got), []byte(want)) {
-				t.Errorf("Generated JSON does not match expected JSON.\nGot:\n%s\n\nWant:\n%s", got, want)
+			jsonEqualOrdered(t, []byte(got), []byte(want))
+
+			if tt.wantYaml != "" {
+				// Generate OpenAPI spec
+				resp := requireGenerate(t, &req, "3.1.0", FormatYAML, tt.registryModifier)
+				if len(resp) != 1 {
+					t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+				}
+				got := resp[0].GetContent()
+				// Load expected YAML
+				wantYamlBytes, err := os.ReadFile(tt.wantYaml)
+				if err != nil {
+					t.Fatalf("Failed to read expected YAML file: %v", err)
+				}
+				wantYaml := string(wantYamlBytes)
+
+				// Compare generated YAML with expected YAML
+				yamlEqualOrdered(t, []byte(got), []byte(wantYaml))
 			}
 		})
 	}
@@ -1682,6 +1690,7 @@ func requireGenerate(
 	tb testing.TB,
 	req *pluginpb.CodeGeneratorRequest,
 	openapiVersion string,
+	format Format,
 	registryModifier func(*descriptor.Registry),
 ) []*descriptor.ResponseFile {
 	tb.Helper()
@@ -1705,7 +1714,7 @@ func requireGenerate(
 		targets = append(targets, f)
 	}
 
-	g, err := New(reg, FormatJSON, openapiVersion)
+	g, err := New(reg, format, openapiVersion)
 	if err != nil {
 		tb.Fatalf("failed to create generator: %s", err)
 	}
@@ -1735,7 +1744,7 @@ func requireGenerateInline(
 		tb.Fatalf("failed to unmarshal prototext: %s", err)
 	}
 
-	return requireGenerate(tb, &req, "3.1.0", registryModifier)
+	return requireGenerate(tb, &req, "3.1.0", FormatJSON, registryModifier)
 }
 
 // Basic prototext for a simple service with GET/POST endpoints

@@ -112,18 +112,18 @@ type PathItem struct {
 
 // Operation describes a single API operation on a path.
 type Operation struct {
-	Tags         []string              `json:"tags,omitempty" yaml:"tags,omitempty"`
-	Summary      string                `json:"summary,omitempty" yaml:"summary,omitempty"`
-	Description  string                `json:"description,omitempty" yaml:"description,omitempty"`
-	ExternalDocs *ExternalDocs         `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
-	OperationID  string                `json:"operationId,omitempty" yaml:"operationId,omitempty"`
-	Parameters   []*ParameterOrRef     `json:"parameters,omitempty" yaml:"parameters,omitempty"`
-	RequestBody  *RequestBodyOrRef     `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
-	Responses    *Responses            `json:"responses,omitempty" yaml:"responses,omitempty"`
+	Tags         []string                  `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Summary      string                    `json:"summary,omitempty" yaml:"summary,omitempty"`
+	Description  string                    `json:"description,omitempty" yaml:"description,omitempty"`
+	ExternalDocs *ExternalDocs             `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+	OperationID  string                    `json:"operationId,omitempty" yaml:"operationId,omitempty"`
+	Parameters   []*ParameterOrRef         `json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	RequestBody  *RequestBodyOrRef         `json:"requestBody,omitempty" yaml:"requestBody,omitempty"`
+	Responses    *Responses                `json:"responses,omitempty" yaml:"responses,omitempty"`
 	Callbacks    map[string]*CallbackOrRef `json:"callbacks,omitempty" yaml:"callbacks,omitempty"`
-	Deprecated   bool                  `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
-	Security     []SecurityRequirement `json:"security,omitempty" yaml:"security,omitempty"`
-	Servers      []*Server             `json:"servers,omitempty" yaml:"servers,omitempty"`
+	Deprecated   bool                      `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
+	Security     []SecurityRequirement     `json:"security,omitempty" yaml:"security,omitempty"`
+	Servers      []*Server                 `json:"servers,omitempty" yaml:"servers,omitempty"`
 }
 
 // ExternalDocs allows referencing external documentation.
@@ -208,18 +208,18 @@ type RequestBody struct {
 
 // MediaType provides schema and examples for a media type.
 type MediaType struct {
-	Schema   *SchemaOrRef          `json:"schema,omitempty" yaml:"schema,omitempty"`
-	Examples map[string]*Example   `json:"examples,omitempty" yaml:"examples,omitempty"`
-	Encoding map[string]*Encoding  `json:"encoding,omitempty" yaml:"encoding,omitempty"`
+	Schema   *SchemaOrRef         `json:"schema,omitempty" yaml:"schema,omitempty"`
+	Examples map[string]*Example  `json:"examples,omitempty" yaml:"examples,omitempty"`
+	Encoding map[string]*Encoding `json:"encoding,omitempty" yaml:"encoding,omitempty"`
 }
 
 // Encoding defines encoding for a single property.
 type Encoding struct {
-	ContentType   string                 `json:"contentType,omitempty" yaml:"contentType,omitempty"`
+	ContentType   string                  `json:"contentType,omitempty" yaml:"contentType,omitempty"`
 	Headers       map[string]*HeaderOrRef `json:"headers,omitempty" yaml:"headers,omitempty"`
-	Style         string                 `json:"style,omitempty" yaml:"style,omitempty"`
-	Explode       *bool                  `json:"explode,omitempty" yaml:"explode,omitempty"`
-	AllowReserved bool                   `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
+	Style         string                  `json:"style,omitempty" yaml:"style,omitempty"`
+	Explode       *bool                   `json:"explode,omitempty" yaml:"explode,omitempty"`
+	AllowReserved bool                    `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
 }
 
 // Responses is a container for expected responses.
@@ -298,7 +298,7 @@ func (r *Responses) MarshalYAML() (any, error) {
 	sort.Strings(codes)
 
 	for _, code := range codes {
-		keyNode := &yaml.Node{Kind: yaml.ScalarNode, Value: code}
+		keyNode := &yaml.Node{Kind: yaml.ScalarNode, Style: yaml.DoubleQuotedStyle, Value: code}
 		valueNode := &yaml.Node{}
 		if err := valueNode.Encode(r.Codes[code]); err != nil {
 			return nil, err
@@ -519,11 +519,11 @@ type Schema struct {
 	Items       *SchemaOrRef `json:"items,omitempty" yaml:"items,omitempty"`
 
 	// Object validation
-	MinProperties        *uint64                  `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
-	MaxProperties        *uint64                  `json:"maxProperties,omitempty" yaml:"maxProperties,omitempty"`
-	Required             []string                 `json:"required,omitempty" yaml:"required,omitempty"`
-	Properties           map[string]*SchemaOrRef  `json:"properties,omitempty" yaml:"properties,omitempty"`
-	AdditionalProperties *AdditionalProperties    `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
+	MinProperties        *uint64                 `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
+	MaxProperties        *uint64                 `json:"maxProperties,omitempty" yaml:"maxProperties,omitempty"`
+	Required             []string                `json:"required,omitempty" yaml:"required,omitempty"`
+	Properties           map[string]*SchemaOrRef `json:"properties,omitempty" yaml:"properties,omitempty"`
+	AdditionalProperties *AdditionalProperties   `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
 
 	// Composition
 	AllOf         []*SchemaOrRef `json:"allOf,omitempty" yaml:"allOf,omitempty"`
