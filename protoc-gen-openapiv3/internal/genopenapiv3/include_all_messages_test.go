@@ -75,7 +75,9 @@ proto_file: {
 	syntax: "proto3"
 }
 `
-	resp := requireGenerateInline(t, protoText, nil)
+	resp := requireGenerateInline(t, protoText, func(reg *descriptor.Registry) {
+		reg.SetIncludeAllMessages(true)
+	})
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -252,7 +254,9 @@ proto_file: {
 	syntax: "proto3"
 }
 `
-	resp := requireGenerateInline(t, protoText, nil)
+	resp := requireGenerateInline(t, protoText, func(reg *descriptor.Registry) {
+		reg.SetIncludeAllMessages(true)
+	})
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -350,7 +354,9 @@ proto_file: {
 	syntax: "proto3"
 }
 `
-	resp := requireGenerateInline(t, protoText, nil)
+	resp := requireGenerateInline(t, protoText, func(reg *descriptor.Registry) {
+		reg.SetIncludeAllMessages(true)
+	})
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -430,7 +436,9 @@ proto_file: {
 	syntax: "proto3"
 }
 `
-	resp := requireGenerateInline(t, protoText, nil)
+	resp := requireGenerateInline(t, protoText, func(reg *descriptor.Registry) {
+		reg.SetIncludeAllMessages(true)
+	})
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -444,14 +452,14 @@ proto_file: {
 	}
 }
 
-// TestIncludeAllMessages_DefaultIsTrue tests that include_all_messages defaults to true.
-func TestIncludeAllMessages_DefaultIsTrue(t *testing.T) {
+// TestIncludeAllMessages_DefaultIsFalse tests that include_all_messages defaults to false.
+func TestIncludeAllMessages_DefaultIsFalse(t *testing.T) {
 	t.Parallel()
 
 	reg := descriptor.NewRegistry()
-	// Should be true by default
-	if !reg.GetIncludeAllMessages() {
-		t.Error("expected include_all_messages to default to true")
+	// Should be false by default
+	if reg.GetIncludeAllMessages() {
+		t.Error("expected include_all_messages to default to false")
 	}
 }
 
@@ -522,7 +530,9 @@ proto_file: {
 	syntax: "proto3"
 }
 `
-	resp := requireGenerateInline(t, protoText, nil)
+	resp := requireGenerateInline(t, protoText, func(reg *descriptor.Registry) {
+		reg.SetIncludeAllMessages(true)
+	})
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -645,6 +655,7 @@ proto_file: {
 			t.Parallel()
 
 			resp := requireGenerateInline(t, protoText, func(reg *descriptor.Registry) {
+				reg.SetIncludeAllMessages(true)
 				reg.SetOpenAPINamingStrategy(tt.strategy)
 			})
 

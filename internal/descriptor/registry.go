@@ -229,7 +229,7 @@ func NewRegistry() *Registry {
 		fieldOptions:   make(map[string]*options.JSONSchema),
 		annotationMap:      make(map[annotationIdentifier]struct{}),
 		recursiveDepth:     1000,
-		includeAllMessages: true,
+		includeAllMessages: false,
 	}
 }
 

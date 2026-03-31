@@ -90,7 +90,7 @@ var (
 	enumsAsInts                    = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 	simpleOperationIDs             = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation")
 	generateUnboundMethods         = flag.Bool("generate_unbound_methods", false, "generate OpenAPI metadata even for RPC methods that have no HttpRule annotation")
-	includeAllMessages             = flag.Bool("include_all_messages", true, "if true, generates schemas for all message types in proto files, not just those used in RPC request/response")
+	includeAllMessages             = flag.Bool("include_all_messages", false, "if true, generates schemas for all message types in proto files, not just those used in RPC request/response")
 	recursiveDepth                 = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 	omitEnumDefaultValue           = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
 	outputFormat                   = flag.String("output_format", string(genopenapiv3.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapiv3.FormatJSON, genopenapiv3.FormatYAML))
