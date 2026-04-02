@@ -547,20 +547,22 @@ func TestResponsesObject(t *testing.T) {
 }
 
 func TestWellKnownTypeSchema(t *testing.T) {
-	// Uses OpenAPI 3.1.0 style: wrapper types use type arrays for nullable
+	// Uses version-agnostic format: Nullable bool for wrapper types
+	// Adapters convert to version-specific format (3.0.x: nullable: true, 3.1.0: type array)
 	tests := []struct {
-		typeName   string
-		expectType SchemaType
-		expectFmt  string
+		typeName       string
+		expectType     SchemaType
+		expectFmt      string
+		expectNullable bool
 	}{
-		{".google.protobuf.Timestamp", SchemaType{"string"}, "date-time"},
-		{".google.protobuf.Duration", SchemaType{"string"}, ""},
-		{".google.protobuf.StringValue", SchemaType{"string", "null"}, ""},
-		{".google.protobuf.Int32Value", SchemaType{"integer", "null"}, "int32"},
-		{".google.protobuf.Int64Value", SchemaType{"string", "null"}, "int64"},
-		{".google.protobuf.BoolValue", SchemaType{"boolean", "null"}, ""},
-		{".google.protobuf.Empty", SchemaType{"object"}, ""},
-		{".google.protobuf.Struct", SchemaType{"object"}, ""},
+		{".google.protobuf.Timestamp", SchemaType{"string"}, "date-time", false},
+		{".google.protobuf.Duration", SchemaType{"string"}, "", false},
+		{".google.protobuf.StringValue", SchemaType{"string"}, "", true},
+		{".google.protobuf.Int32Value", SchemaType{"integer"}, "int32", true},
+		{".google.protobuf.Int64Value", SchemaType{"string"}, "int64", true},
+		{".google.protobuf.BoolValue", SchemaType{"boolean"}, "", true},
+		{".google.protobuf.Empty", SchemaType{"object"}, "", false},
+		{".google.protobuf.Struct", SchemaType{"object"}, "", false},
 	}
 
 	for _, tt := range tests {
@@ -574,6 +576,9 @@ func TestWellKnownTypeSchema(t *testing.T) {
 			}
 			if tt.expectFmt != "" && schema.Format != tt.expectFmt {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFmt)
+			}
+			if schema.Nullable != tt.expectNullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.expectNullable)
 			}
 		})
 	}
@@ -2205,16 +2210,18 @@ func TestWellKnownTypeSchema_Duration(t *testing.T) {
 func TestWellKnownTypeSchema_Wrappers(t *testing.T) {
 	t.Parallel()
 
-	// OpenAPI 3.1.0 style: wrapper types use type arrays for nullable
+	// Version-agnostic: wrapper types use Nullable bool
+	// Adapters convert to version-specific format
 	tests := []struct {
-		typeName   string
-		expectType SchemaType
-		expectFmt  string
+		typeName       string
+		expectType     SchemaType
+		expectFmt      string
+		expectNullable bool
 	}{
-		{".google.protobuf.StringValue", SchemaType{"string", "null"}, ""},
-		{".google.protobuf.Int32Value", SchemaType{"integer", "null"}, "int32"},
-		{".google.protobuf.Int64Value", SchemaType{"string", "null"}, "int64"},
-		{".google.protobuf.BoolValue", SchemaType{"boolean", "null"}, ""},
+		{".google.protobuf.StringValue", SchemaType{"string"}, "", true},
+		{".google.protobuf.Int32Value", SchemaType{"integer"}, "int32", true},
+		{".google.protobuf.Int64Value", SchemaType{"string"}, "int64", true},
+		{".google.protobuf.BoolValue", SchemaType{"boolean"}, "", true},
 	}
 
 	for _, tt := range tests {
@@ -2228,6 +2235,9 @@ func TestWellKnownTypeSchema_Wrappers(t *testing.T) {
 			}
 			if tt.expectFmt != "" && schema.Format != tt.expectFmt {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFmt)
+			}
+			if schema.Nullable != tt.expectNullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.expectNullable)
 			}
 		})
 	}
@@ -2663,39 +2673,42 @@ func TestEmptyVisibilityRestriction(t *testing.T) {
 func TestAllWellKnownTypes(t *testing.T) {
 	t.Parallel()
 
+	// Version-agnostic format: Nullable bool for wrapper types
+	// Adapters convert to version-specific format
 	tests := []struct {
-		typeName     string
-		expectType   SchemaType // Use SchemaType for 3.1.0 style type arrays
-		expectFormat string
-		expectProps  []string
+		typeName       string
+		expectType     SchemaType
+		expectFormat   string
+		expectNullable bool
+		expectProps    []string
 	}{
 		// Timestamp and Duration
-		{".google.protobuf.Timestamp", SchemaType{"string"}, "date-time", nil},
-		{".google.protobuf.Duration", SchemaType{"string"}, "", nil},
+		{".google.protobuf.Timestamp", SchemaType{"string"}, "date-time", false, nil},
+		{".google.protobuf.Duration", SchemaType{"string"}, "", false, nil},
 
 		// FieldMask
-		{".google.protobuf.FieldMask", SchemaType{"string"}, "", nil},
+		{".google.protobuf.FieldMask", SchemaType{"string"}, "", false, nil},
 
-		// Wrapper types - nullable via type array (3.1.0 style)
-		{".google.protobuf.StringValue", SchemaType{"string", "null"}, "", nil},
-		{".google.protobuf.BytesValue", SchemaType{"string", "null"}, "byte", nil},
-		{".google.protobuf.Int32Value", SchemaType{"integer", "null"}, "int32", nil},
-		{".google.protobuf.UInt32Value", SchemaType{"integer", "null"}, "int64", nil},
-		{".google.protobuf.Int64Value", SchemaType{"string", "null"}, "int64", nil},
-		{".google.protobuf.UInt64Value", SchemaType{"string", "null"}, "uint64", nil},
-		{".google.protobuf.FloatValue", SchemaType{"number", "null"}, "float", nil},
-		{".google.protobuf.DoubleValue", SchemaType{"number", "null"}, "double", nil},
-		{".google.protobuf.BoolValue", SchemaType{"boolean", "null"}, "", nil},
+		// Wrapper types - nullable
+		{".google.protobuf.StringValue", SchemaType{"string"}, "", true, nil},
+		{".google.protobuf.BytesValue", SchemaType{"string"}, "byte", true, nil},
+		{".google.protobuf.Int32Value", SchemaType{"integer"}, "int32", true, nil},
+		{".google.protobuf.UInt32Value", SchemaType{"integer"}, "int64", true, nil},
+		{".google.protobuf.Int64Value", SchemaType{"string"}, "int64", true, nil},
+		{".google.protobuf.UInt64Value", SchemaType{"string"}, "uint64", true, nil},
+		{".google.protobuf.FloatValue", SchemaType{"number"}, "float", true, nil},
+		{".google.protobuf.DoubleValue", SchemaType{"number"}, "double", true, nil},
+		{".google.protobuf.BoolValue", SchemaType{"boolean"}, "", true, nil},
 
 		// Struct types
-		{".google.protobuf.Empty", SchemaType{"object"}, "", nil},
-		{".google.protobuf.Struct", SchemaType{"object"}, "", nil},
-		{".google.protobuf.Value", nil, "", nil}, // No type constraint (empty schema)
-		{".google.protobuf.ListValue", SchemaType{"array"}, "", nil},
-		{".google.protobuf.NullValue", SchemaType{"null"}, "", nil},
+		{".google.protobuf.Empty", SchemaType{"object"}, "", false, nil},
+		{".google.protobuf.Struct", SchemaType{"object"}, "", false, nil},
+		{".google.protobuf.Value", nil, "", false, nil}, // No type constraint (empty schema)
+		{".google.protobuf.ListValue", SchemaType{"array"}, "", false, nil},
+		{".google.protobuf.NullValue", SchemaType{"null"}, "", false, nil},
 
 		// Any type
-		{".google.protobuf.Any", SchemaType{"object"}, "", []string{"@type"}},
+		{".google.protobuf.Any", SchemaType{"object"}, "", false, []string{"@type"}},
 	}
 
 	for _, tt := range tests {
@@ -2711,6 +2724,10 @@ func TestAllWellKnownTypes(t *testing.T) {
 
 			if tt.expectFormat != "" && schema.Format != tt.expectFormat {
 				t.Errorf("Format = %q, want %q", schema.Format, tt.expectFormat)
+			}
+
+			if schema.Nullable != tt.expectNullable {
+				t.Errorf("Nullable = %v, want %v", schema.Nullable, tt.expectNullable)
 			}
 
 			for _, prop := range tt.expectProps {

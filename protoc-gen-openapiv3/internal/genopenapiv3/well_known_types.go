@@ -14,7 +14,8 @@ func wellKnownTypeSchema(typeName string) *Schema {
 }
 
 // wktSchemas maps well-known type names to their OpenAPI schema representations.
-// Uses OpenAPI 3.1.0 style: type arrays for nullable (e.g., ["string", "null"]).
+// Uses version-agnostic format: Nullable bool for nullable types.
+// Adapters convert to version-specific format (3.0.x: nullable: true, 3.1.0: type array).
 var wktSchemas = map[string]*Schema{
 	// Timestamp -> RFC 3339 string
 	".google.protobuf.Timestamp": {
@@ -32,40 +33,49 @@ var wktSchemas = map[string]*Schema{
 		Type: SchemaType{"string"},
 	},
 
-	// Wrapper types - unwrap to primitives, nullable via type array (3.1.0 style)
+	// Wrapper types - unwrap to primitives, nullable
 	".google.protobuf.StringValue": {
-		Type: SchemaType{"string", "null"},
+		Type:     SchemaType{"string"},
+		Nullable: true,
 	},
 	".google.protobuf.BytesValue": {
-		Type:   SchemaType{"string", "null"},
-		Format: "byte",
+		Type:     SchemaType{"string"},
+		Format:   "byte",
+		Nullable: true,
 	},
 	".google.protobuf.Int32Value": {
-		Type:   SchemaType{"integer", "null"},
-		Format: "int32",
+		Type:     SchemaType{"integer"},
+		Format:   "int32",
+		Nullable: true,
 	},
 	".google.protobuf.UInt32Value": {
-		Type:   SchemaType{"integer", "null"},
-		Format: "int64",
+		Type:     SchemaType{"integer"},
+		Format:   "int64",
+		Nullable: true,
 	},
 	".google.protobuf.Int64Value": {
-		Type:   SchemaType{"string", "null"},
-		Format: "int64",
+		Type:     SchemaType{"string"},
+		Format:   "int64",
+		Nullable: true,
 	},
 	".google.protobuf.UInt64Value": {
-		Type:   SchemaType{"string", "null"},
-		Format: "uint64",
+		Type:     SchemaType{"string"},
+		Format:   "uint64",
+		Nullable: true,
 	},
 	".google.protobuf.FloatValue": {
-		Type:   SchemaType{"number", "null"},
-		Format: "float",
+		Type:     SchemaType{"number"},
+		Format:   "float",
+		Nullable: true,
 	},
 	".google.protobuf.DoubleValue": {
-		Type:   SchemaType{"number", "null"},
-		Format: "double",
+		Type:     SchemaType{"number"},
+		Format:   "double",
+		Nullable: true,
 	},
 	".google.protobuf.BoolValue": {
-		Type: SchemaType{"boolean", "null"},
+		Type:     SchemaType{"boolean"},
+		Nullable: true,
 	},
 
 	// Empty -> empty object

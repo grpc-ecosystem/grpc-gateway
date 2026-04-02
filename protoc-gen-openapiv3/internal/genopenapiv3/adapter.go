@@ -50,7 +50,7 @@ func NewAdapterRegistry() *AdapterRegistry {
 	}
 	// Register built-in adapters
 	r.Register(&v31AdapterWrapper{adapter: v31.New()})
-	// r.Register(&v30AdapterWrapper{adapter: v30.New()}) // Future: 3.0.x support
+	// TODO: Add v30 adapter when 3.0.x support is ready
 	return r
 }
 

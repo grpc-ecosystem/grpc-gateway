@@ -51,6 +51,8 @@ go_test(
     deps = [
         "//internal/descriptor",
         "//protoc-gen-openapiv3/options",
+        "@com_github_google_go_cmp//cmp",
+        "@in_yaml_go_yaml_v3//:yaml",
         "@org_golang_google_genproto_googleapis_api//annotations",
         "@org_golang_google_genproto_googleapis_api//visibility",
         "@org_golang_google_protobuf//encoding/prototext",

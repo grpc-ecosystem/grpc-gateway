@@ -17,9 +17,9 @@ const (
 
 // Adapter converts canonical model to OpenAPI 3.1.0 output.
 //
-// OpenAPI 3.1.0 specifics:
-// - nullable via type arrays: ["string", "null"] (handled by Schema.MarshalJSON/YAML)
-// - examples as map, not singular example
+// OpenAPI 3.1.0 specifics handled by transformation:
+// - nullable via type arrays: ["string", "null"]
+// - examples as array (JSON Schema style)
 // - $ref can have sibling properties (summary, description)
 // - JSON Schema draft 2020-12 alignment
 type Adapter struct{}
@@ -35,19 +35,19 @@ func (a *Adapter) Version() string {
 }
 
 // Adapt converts a canonical Document to OpenAPI 3.1.0 JSON or YAML.
-// The canonical model handles its own marshaling with proper field ordering.
+// It transforms the canonical model to 3.1.0-specific output types, then serializes.
 func (a *Adapter) Adapt(doc *model.Document, format Format) ([]byte, error) {
 	if doc == nil {
 		return nil, nil
 	}
 
-	// Ensure OpenAPI version is set for 3.1.0
-	doc.OpenAPIVersion = "3.1.0"
+	// Transform canonical model to 3.1.0 output format
+	out := TransformDocument(doc)
 
 	switch format {
 	case FormatYAML:
-		return yaml.Marshal(doc)
+		return yaml.Marshal(out)
 	default:
-		return json.MarshalIndent(doc, "", "  ")
+		return json.MarshalIndent(out, "", "  ")
 	}
 }
