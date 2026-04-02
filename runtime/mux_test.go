@@ -561,6 +561,23 @@ func TestMuxServeHTTP(t *testing.T) {
 			unescapingMode: runtime.UnescapingModeAllCharacters,
 			respContent:    "POST /api/v1/organizations:verb",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1},
+					pool:   []string{"foo", "id"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/%25",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusBadRequest,
+			unescapingMode: runtime.UnescapingModeAllCharacters,
+			respContent:    `{"code":2,"message":"malformed path escape \"%\"","details":[]}`,
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			var opts []runtime.ServeMuxOption
