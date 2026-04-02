@@ -481,6 +481,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					HTTPStatus: http.StatusBadRequest,
 					Err:        mse,
 				})
+				return
 			}
 			continue
 		}
@@ -523,6 +524,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						HTTPStatus: http.StatusBadRequest,
 						Err:        mse,
 					})
+					return
 				}
 				continue
 			}
