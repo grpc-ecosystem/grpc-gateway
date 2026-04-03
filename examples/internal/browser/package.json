@@ -12,7 +12,7 @@
     "gulp": "^5.0.0",
     "jasmine-core": "^5.5.0",
     "playwright": "^1.49.1",
-    "swagger-client": "^2.1.32",
+    "swagger-client": "^3.36.0",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   },
