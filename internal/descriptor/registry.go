@@ -193,6 +193,12 @@ type Registry struct {
 	// should be included in the OpenAPI schema, not just those directly used in RPC
 	// request/response types. Defaults to true.
 	includeAllMessages bool
+
+	// wktAsRefs controls whether well-known types (like google.protobuf.Timestamp)
+	// should be rendered as $ref references to component schemas instead of being
+	// inlined. When false (default), WKTs are inlined and no WKT schema is generated.
+	// When true, WKTs use $ref and schemas are generated in components/schemas.
+	wktAsRefs bool
 }
 
 type repeatedFieldSeparator struct {
@@ -980,4 +986,15 @@ func (r *Registry) SetGenerateXGoType(generateXGoType bool) {
 
 func (r *Registry) GetGenerateXGoType() bool {
 	return r.generateXGoType
+}
+
+// SetWKTAsRefs controls whether well-known types should be rendered as $ref
+// references instead of being inlined.
+func (r *Registry) SetWKTAsRefs(use bool) {
+	r.wktAsRefs = use
+}
+
+// GetWKTAsRefs returns whether well-known types should use $ref references.
+func (r *Registry) GetWKTAsRefs() bool {
+	return r.wktAsRefs
 }

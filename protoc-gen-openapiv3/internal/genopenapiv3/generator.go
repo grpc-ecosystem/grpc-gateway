@@ -641,7 +641,11 @@ func (g *generator) generateMessageSchema(doc *OpenAPI, msg *descriptor.Message,
 
 	// Handle well-known types
 	if wktSchema := wellKnownTypeSchema(msg.FQMN()); wktSchema != nil {
-		doc.Components.Schemas[schemaName] = &SchemaOrReference{Schema: wktSchema}
+		// Only generate WKT schema when wkt_as_refs=true
+		// When false (default), WKTs are inlined and no schema is needed
+		if g.reg.GetWKTAsRefs() {
+			doc.Components.Schemas[schemaName] = &SchemaOrReference{Schema: wktSchema}
+		}
 		return
 	}
 
@@ -1054,6 +1058,18 @@ func (g *generator) fieldTypeToSchema(field *descriptor.Field, referencedSchemas
 	if field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
 		typeName := field.GetTypeName()
 		if wktSchema := wellKnownTypeSchema(typeName); wktSchema != nil {
+			if g.reg.GetWKTAsRefs() {
+				// Use $ref for WKTs when flag is enabled
+				// LookupMsg won't fail here - protoc validates all type references
+				// and registry loads all proto files including WKT dependencies
+				msg, _ := g.reg.LookupMsg("", typeName)
+				schemaName := g.messageSchemaName(msg)
+				if referencedSchemas != nil {
+					referencedSchemas[msg.FQMN()] = true
+				}
+				return NewSchemaRef(schemaName)
+			}
+			// Default: inline WKT schema
 			return &SchemaOrReference{Schema: wktSchema}
 		}
 	}

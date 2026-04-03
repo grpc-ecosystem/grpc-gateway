@@ -1636,6 +1636,23 @@ func TestGenerateFromProtoDescriptor(t *testing.T) {
 				reg.SetIncludeAllMessages(false)
 			},
 		},
+		{
+			name:           "wkt inline (default) - WKTs inlined, no WKT schemas",
+			inputProtoText: "testdata/generator/wkt_inline.prototext",
+			wantJSON:       "testdata/generator/wkt_inline.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetIncludeAllMessages(false)
+			},
+		},
+		{
+			name:           "wkt as refs - WKTs use $ref, WKT schemas generated",
+			inputProtoText: "testdata/generator/wkt_inline.prototext",
+			wantJSON:       "testdata/generator/wkt_as_refs.openapi.json",
+			registryModifier: func(reg *descriptor.Registry) {
+				reg.SetIncludeAllMessages(false)
+				reg.SetWKTAsRefs(true)
+			},
+		},
 	}
 
 	for _, tt := range tests {

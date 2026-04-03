@@ -58,6 +58,7 @@ type GeneratorConfig struct {
 	PreserveRPCOrder        bool
 	EnableRPCDeprecation    bool
 	EnableFieldDeprecation  bool
+	WKTAsRefs               bool
 
 	// Visibility
 	VisibilityRestrictionSelectors []string
@@ -104,6 +105,7 @@ var (
 	proto3OptionalNullable         = flag.Bool("proto3_optional_nullable", false, "whether Proto3 Optional fields should be marked as nullable")
 	useProto3FieldSemantics        = flag.Bool("use_proto3_field_semantics", false, "if set, uses proto3 field semantics for the OpenAPI schema. This means that non-optional fields are required by default")
 	openAPIVersion                 = flag.String("openapi_version", "3.1.0", "OpenAPI version to use (currently only 3.1.0 is supported)")
+	wktAsRefs                      = flag.Bool("wkt_as_refs", false, "if true, use $ref for well-known types instead of inlining schemas")
 
 	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
 )
@@ -146,6 +148,7 @@ func populateConfig() {
 	cfg.VisibilityRestrictionSelectors = *visibilityRestrictionSelectors
 	cfg.OpenAPIVersion = *openAPIVersion
 	cfg.GrpcAPIConfiguration = *grpcAPIConfiguration
+	cfg.WKTAsRefs = *wktAsRefs
 }
 
 // configureRegistry applies the configuration to a registry.
@@ -175,6 +178,7 @@ func configureRegistry(reg *descriptor.Registry) {
 	reg.SetExpandSlashedPathPatterns(cfg.ExpandSlashedPathPatterns)
 	reg.SetProto3OptionalNullable(cfg.Proto3OptionalNullable)
 	reg.SetUseProto3FieldSemantics(cfg.UseProto3FieldSemantics)
+	reg.SetWKTAsRefs(cfg.WKTAsRefs)
 }
 
 func main() {
