@@ -1,0 +1,96 @@
+file_to_generate: "test/oneof_multiple_groups.proto"
+proto_file: {
+  name: "test/oneof_multiple_groups.proto"
+  package: "test"
+  message_type: {
+    name: "Request"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "MessageWithTwoOneofGroups"
+    field: {
+      name: "regular_field"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "regularField"
+    }
+    field: {
+      name: "public_choice_a"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "publicChoiceA"
+      oneof_index: 0
+    }
+    field: {
+      name: "public_choice_b"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "publicChoiceB"
+      oneof_index: 0
+    }
+    field: {
+      name: "internal_choice_a"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalChoiceA"
+      oneof_index: 1
+      options: {
+        [google.api.field_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+    field: {
+      name: "internal_choice_b"
+      number: 5
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalChoiceB"
+      oneof_index: 1
+      options: {
+        [google.api.field_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+    oneof_decl: {
+      name: "public_group"
+    }
+    oneof_decl: {
+      name: "internal_group"
+    }
+  }
+  service: {
+    name: "TestService"
+    method: {
+      name: "GetResponse"
+      input_type: ".test.Request"
+      output_type: ".test.MessageWithTwoOneofGroups"
+      options: {
+        [google.api.http]: {
+          get: "/v1/test"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/oneof;test"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "Multiple Oneof Groups Test"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}

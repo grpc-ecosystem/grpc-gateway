@@ -1,0 +1,49 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "example/v1/echo.proto",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/echo": {
+            "post": {
+                "tags": [
+                    "EchoService"
+                ],
+                "operationId": "EchoService_CustomResponse",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1EchoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "hello"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "v1EchoRequest": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "EchoService"
+        }
+    ]
+}

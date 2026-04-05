@@ -1,0 +1,104 @@
+file_to_generate: "test/oneof_message_ref.proto"
+proto_file: {
+  name: "test/oneof_message_ref.proto"
+  package: "test"
+  message_type: {
+    name: "Request"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "TextConfig"
+    field: {
+      name: "content"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "content"
+    }
+    field: {
+      name: "format"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "format"
+    }
+  }
+  message_type: {
+    name: "NumberConfig"
+    field: {
+      name: "value"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_INT64
+      json_name: "value"
+    }
+    field: {
+      name: "precision"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "precision"
+    }
+  }
+  message_type: {
+    name: "OneofWithMessageRef"
+    field: {
+      name: "text_config"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".test.TextConfig"
+      json_name: "textConfig"
+      oneof_index: 0
+    }
+    field: {
+      name: "number_config"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".test.NumberConfig"
+      json_name: "numberConfig"
+      oneof_index: 0
+    }
+    field: {
+      name: "raw_value"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "rawValue"
+      oneof_index: 0
+    }
+    oneof_decl: {
+      name: "config"
+    }
+  }
+  service: {
+    name: "MessageRefService"
+    method: {
+      name: "GetOneofWithMessageRef"
+      input_type: ".test.Request"
+      output_type: ".test.OneofWithMessageRef"
+      options: {
+        [google.api.http]: {
+          get: "/v1/oneof-message-ref"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/oneof_message_ref;test"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "OneOf with Message References Test"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}

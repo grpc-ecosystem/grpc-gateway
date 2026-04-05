@@ -188,6 +188,17 @@ type Registry struct {
 
 	// generateXGoType is a global generator option for generating x-go-type annotations
 	generateXGoType bool
+
+	// includeAllMessages controls whether all message types defined in proto files
+	// should be included in the OpenAPI schema, not just those directly used in RPC
+	// request/response types. Defaults to true.
+	includeAllMessages bool
+
+	// wktAsRefs controls whether well-known types (like google.protobuf.Timestamp)
+	// should be rendered as $ref references to component schemas instead of being
+	// inlined. When false (default), WKTs are inlined and no WKT schema is generated.
+	// When true, WKTs use $ref and schemas are generated in components/schemas.
+	wktAsRefs bool
 }
 
 type repeatedFieldSeparator struct {
@@ -222,8 +233,9 @@ func NewRegistry() *Registry {
 		messageOptions: make(map[string]*options.Schema),
 		serviceOptions: make(map[string]*options.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
-		annotationMap:  make(map[annotationIdentifier]struct{}),
-		recursiveDepth: 1000,
+		annotationMap:      make(map[annotationIdentifier]struct{}),
+		recursiveDepth:     1000,
+		includeAllMessages: false,
 	}
 }
 
@@ -730,6 +742,24 @@ func (r *Registry) SetGenerateUnboundMethods(generate bool) {
 	r.generateUnboundMethods = generate
 }
 
+// GetGenerateUnboundMethods returns generateUnboundMethods
+func (r *Registry) GetGenerateUnboundMethods() bool {
+	return r.generateUnboundMethods
+}
+
+// SetIncludeAllMessages controls whether all message types defined in proto files
+// should be included in the OpenAPI schema, not just those directly used in RPC
+// request/response types. Defaults to true.
+func (r *Registry) SetIncludeAllMessages(include bool) {
+	r.includeAllMessages = include
+}
+
+// GetIncludeAllMessages returns whether all message types should be included
+// in the OpenAPI schema.
+func (r *Registry) GetIncludeAllMessages() bool {
+	return r.includeAllMessages
+}
+
 // SetOmitPackageDoc controls whether the generated code contains a package comment (if set to false, it will contain one)
 func (r *Registry) SetOmitPackageDoc(omit bool) {
 	r.omitPackageDoc = omit
@@ -956,4 +986,15 @@ func (r *Registry) SetGenerateXGoType(generateXGoType bool) {
 
 func (r *Registry) GetGenerateXGoType() bool {
 	return r.generateXGoType
+}
+
+// SetWKTAsRefs controls whether well-known types should be rendered as $ref
+// references instead of being inlined.
+func (r *Registry) SetWKTAsRefs(use bool) {
+	r.wktAsRefs = use
+}
+
+// GetWKTAsRefs returns whether well-known types should use $ref references.
+func (r *Registry) GetWKTAsRefs() bool {
+	return r.wktAsRefs
 }

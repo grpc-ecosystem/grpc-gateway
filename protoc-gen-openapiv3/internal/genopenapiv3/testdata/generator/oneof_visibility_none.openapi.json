@@ -1,0 +1,132 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Oneof Visibility Test",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/oneof-test": {
+            "get": {
+                "tags": [
+                    "OneofService"
+                ],
+                "operationId": "OneofService_GetOneof",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testOneofWithMixedVisibility"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            },
+            "testOneofWithMixedVisibility": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "choice.public_choice",
+                        "properties": {
+                            "public_choice": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "public_choice"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.another_public_choice",
+                        "properties": {
+                            "another_public_choice": {
+                                "type": "integer",
+                                "format": "int32"
+                            }
+                        },
+                        "required": [
+                            "another_public_choice"
+                        ]
+                    },
+                    {
+                        "title": "choice.none",
+                        "not": {
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "public_choice"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "another_public_choice"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "OneofService"
+        }
+    ]
+}

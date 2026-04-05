@@ -1,0 +1,100 @@
+file_to_generate: "test/oneof_enum.proto"
+proto_file: {
+  name: "test/oneof_enum.proto"
+  package: "test"
+  message_type: {
+    name: "Request"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "OneofWithEnum"
+    field: {
+      name: "text_option"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "textOption"
+      oneof_index: 0
+    }
+    field: {
+      name: "status_option"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".test.Status"
+      json_name: "statusOption"
+      oneof_index: 0
+    }
+    field: {
+      name: "priority_option"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".test.Priority"
+      json_name: "priorityOption"
+      oneof_index: 0
+    }
+    oneof_decl: {
+      name: "choice"
+    }
+  }
+  enum_type: {
+    name: "Status"
+    value: {
+      name: "STATUS_UNKNOWN"
+      number: 0
+    }
+    value: {
+      name: "STATUS_ACTIVE"
+      number: 1
+    }
+    value: {
+      name: "STATUS_INACTIVE"
+      number: 2
+    }
+  }
+  enum_type: {
+    name: "Priority"
+    value: {
+      name: "PRIORITY_UNSPECIFIED"
+      number: 0
+    }
+    value: {
+      name: "PRIORITY_LOW"
+      number: 1
+    }
+    value: {
+      name: "PRIORITY_HIGH"
+      number: 2
+    }
+  }
+  service: {
+    name: "OneofEnumService"
+    method: {
+      name: "GetOneofWithEnum"
+      input_type: ".test.Request"
+      output_type: ".test.OneofWithEnum"
+      options: {
+        [google.api.http]: {
+          get: "/v1/oneof-enum"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/oneof_enum;test"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "OneOf with Enum Test"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}
