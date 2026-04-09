@@ -98,6 +98,25 @@ This will place four binaries in your `$GOBIN`;
 
 Make sure that your `$GOBIN` is in your `$PATH`.
 
+If you want to emit OpenAPI 3.1 instead of (or in addition to) Swagger 2.0,
+install `protoc-gen-openapiv3` as well:
+
+```sh
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3
+```
+
+> ⚠️ **Alpha.** `protoc-gen-openapiv3` is new and its output is not yet
+> stable — the emitted JSON shape for oneofs, wrappers, enums, and similar
+> constructs may change in response to real-world feedback before the
+> plugin graduates. Don't rely on the exact spec bytes being stable across
+> minor releases; the proto-to-OpenAPI mapping rules are likely to
+> tighten, and tooling-compatibility compromises (documented in the
+> generator source) may be revisited as consumer OpenAPI 3.1 support
+> matures. `protoc-gen-openapiv2` is the production-stable option.
+
+See [OpenAPI 3.1 Output](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/openapi_v3/)
+for what it supports and how it differs from `protoc-gen-openapiv2`.
+
 ### **Using the `tool` Directive in Go 1.24**
 
 Starting from Go 1.24, the `tool` directive in `go.mod` provides a structured way to track and manage executable dependencies. This replaces the previous workaround of using a separate `tools.go` file with blank imports.
@@ -510,6 +529,42 @@ accept the URL encoded slash and still route the request, use the UnescapingMode
 UnescapingModeLegacy (which is the default currently though may change in future versions). See
 [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/)
 for more information.
+
+#### Alternative: OpenAPI 3.1 with `protoc-gen-openapiv3`
+
+> ⚠️ **Alpha.** `protoc-gen-openapiv3` is new and its output is not yet
+> stable. Expect breaking changes to the emitted JSON shape (oneof
+> encodings, wrapper types, enum form, path-template expansion, etc.)
+> between minor releases while the mapping rules settle in response to
+> real-world feedback. Use it if you want to follow that evolution;
+> otherwise `protoc-gen-openapiv2` remains the stable choice.
+
+`protoc-gen-openapiv3` is a separate generator that emits OpenAPI
+**3.1.0** JSON directly from `google.api.http` annotations. It's a good
+choice when your downstream tooling requires 3.1, when you want the richer
+JSON Schema 2020-12 constructs (proper `oneOf` encoding for proto oneofs,
+spec-accurate literal expansion of constrained path templates like
+`{name=shelves/*/books/*}`, etc.).
+
+Add it to your `buf.gen.yaml` alongside (or instead of) `protoc-gen-openapiv2`:
+
+```yaml
+version: v2
+plugins:
+  - local: protoc-gen-openapiv3
+    out: gen/openapiv3
+```
+
+Or invoke it directly with `protoc`:
+
+```sh
+protoc -I. --openapiv3_out=./gen/openapiv3 your/service/v1/your_service.proto
+```
+
+A `.openapi.json` file appears next to each proto file that declares HTTP
+bindings; files with no HTTP-bound services produce no output.
+See [OpenAPI 3.1 Output](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/openapi_v3/) for
+more information about the capabilities of protoc-gen-openapiv3.
 
 ## Usage with remote plugins
 
