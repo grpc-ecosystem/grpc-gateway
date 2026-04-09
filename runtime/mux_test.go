@@ -3,10 +3,12 @@ package runtime_test
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
@@ -561,6 +563,23 @@ func TestMuxServeHTTP(t *testing.T) {
 			unescapingMode: runtime.UnescapingModeAllCharacters,
 			respContent:    "POST /api/v1/organizations:verb",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1},
+					pool:   []string{"foo", "id"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/%25",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusBadRequest,
+			unescapingMode: runtime.UnescapingModeAllExceptReserved,
+			respContent:    `{"code":2,"message":"malformed path escape \"%\"","details":[]}`,
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			var opts []runtime.ServeMuxOption
@@ -599,7 +618,13 @@ func TestMuxServeHTTP(t *testing.T) {
 				t.Errorf("w.Code = %d; want %d; patterns=%v; req=%v", got, want, spec.patterns, r)
 			}
 			if spec.respContent != "" {
-				if got, want := w.Body.String(), spec.respContent; got != want {
+				got, want := w.Body.String(), spec.respContent
+				var gotJSON, wantJSON map[string]any
+				if json.Unmarshal([]byte(got), &gotJSON) == nil && json.Unmarshal([]byte(want), &wantJSON) == nil {
+					if !reflect.DeepEqual(gotJSON, wantJSON) {
+						t.Errorf("w.Body = %q; want %q; patterns=%v; req=%v", got, want, spec.patterns, r)
+					}
+				} else if got != want {
 					t.Errorf("w.Body = %q; want %q; patterns=%v; req=%v", got, want, spec.patterns, r)
 				}
 			}
@@ -928,5 +953,41 @@ func TestServeMux_InjectPattern(t *testing.T) {
 	mux.ServeHTTP(w, r)
 	if w.Code != 200 {
 		t.Errorf("request not processed")
+	}
+}
+
+func TestServeHTTP_WithDisableHTTPMethodOverride(t *testing.T) {
+	// When WithDisableHTTPMethodOverride is set, X-HTTP-Method-Override
+	// header should be ignored and the request should match the POST
+	// handler directly.
+	mux := runtime.NewServeMux(runtime.WithDisableHTTPMethodOverride())
+
+	pat, err := runtime.NewPattern(1, []int{int(utilities.OpLitPush), 0}, []string{"foo"}, "")
+	if err != nil {
+		t.Fatalf("runtime.NewPattern failed: %v", err)
+	}
+	mux.Handle("GET", pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		_, _ = fmt.Fprintf(w, "GET /foo")
+	})
+
+	postPat, err := runtime.NewPattern(1, []int{int(utilities.OpLitPush), 0}, []string{"foo"}, "")
+	if err != nil {
+		t.Fatalf("runtime.NewPattern failed: %v", err)
+	}
+	mux.Handle("POST", postPat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		_, _ = fmt.Fprintf(w, "POST /foo")
+	})
+
+	r := httptest.NewRequest("POST", "https://host.example/foo", bytes.NewReader(nil))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Set("X-HTTP-Method-Override", "GET")
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+
+	if got, want := w.Code, http.StatusOK; got != want {
+		t.Errorf("w.Code = %d; want %d", got, want)
+	}
+	if got, want := w.Body.String(), "POST /foo"; got != want {
+		t.Errorf("w.Body = %q; want %q", got, want)
 	}
 }
