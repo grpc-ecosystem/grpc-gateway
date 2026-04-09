@@ -5,6 +5,7 @@ go 1.25.0
 require (
 	github.com/antihax/optional v1.0.0
 	github.com/google/go-cmp v0.7.0
+	github.com/oapi-codegen/runtime v1.4.1-0.20260411144317-19040cc57320
 	github.com/rogpeppe/fastuuid v1.2.0
 	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/oauth2 v0.36.0
@@ -16,6 +17,8 @@ require (
 )
 
 require (
+	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
