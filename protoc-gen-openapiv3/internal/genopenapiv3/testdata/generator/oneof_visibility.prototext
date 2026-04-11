@@ -1,0 +1,73 @@
+file_to_generate: "test/oneof_visibility.proto"
+proto_file: {
+  name: "test/oneof_visibility.proto"
+  package: "test"
+  message_type: {
+    name: "Request"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "OneofWithMixedVisibility"
+    field: {
+      name: "public_choice"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "publicChoice"
+      oneof_index: 0
+    }
+    field: {
+      name: "internal_choice"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalChoice"
+      oneof_index: 0
+      options: {
+        [google.api.field_visibility]: {
+          restriction: "INTERNAL"
+        }
+      }
+    }
+    field: {
+      name: "another_public_choice"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "anotherPublicChoice"
+      oneof_index: 0
+    }
+    oneof_decl: {
+      name: "choice"
+    }
+  }
+  service: {
+    name: "OneofService"
+    method: {
+      name: "GetOneof"
+      input_type: ".test.Request"
+      output_type: ".test.OneofWithMixedVisibility"
+      options: {
+        [google.api.http]: {
+          get: "/v1/oneof-test"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/test/oneof;test"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "Oneof Visibility Test"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}

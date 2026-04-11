@@ -1,0 +1,94 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "example/v1/echo.proto",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/aecho": {
+            "post": {
+                "tags": [
+                    "EchoService"
+                ],
+                "operationId": "EchoService_AEcho",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1EchoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1EchoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/echo": {
+            "post": {
+                "tags": [
+                    "EchoService"
+                ],
+                "operationId": "EchoService_Echo",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1EchoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1EchoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "v1EchoRequest": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1EchoResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "EchoService"
+        }
+    ]
+}

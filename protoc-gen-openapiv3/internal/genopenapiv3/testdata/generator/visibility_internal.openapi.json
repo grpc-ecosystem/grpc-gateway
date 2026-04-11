@@ -1,0 +1,419 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "test/visibility.proto",
+        "version": "version not set"
+    },
+    "paths": {
+        "/v1/internal_service/method": {
+            "get": {
+                "tags": [
+                    "InternalService2"
+                ],
+                "operationId": "InternalService2_InternalServiceMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/public/internal_enum": {
+            "get": {
+                "tags": [
+                    "PublicService"
+                ],
+                "operationId": "PublicService_InternalEnumMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testMessageWithInternalEnum"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/public/internal_method": {
+            "get": {
+                "tags": [
+                    "PublicServiceInternalMethod"
+                ],
+                "operationId": "PublicServiceInternalMethod_InternalMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/public/method": {
+            "get": {
+                "tags": [
+                    "PublicService"
+                ],
+                "operationId": "PublicService_PublicMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testPublicMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/public/mixed_field": {
+            "get": {
+                "tags": [
+                    "PublicService"
+                ],
+                "operationId": "PublicService_MixedFieldMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testMixedFieldMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/public/mixed_value_enum": {
+            "get": {
+                "tags": [
+                    "PublicService"
+                ],
+                "operationId": "PublicService_MixedValueEnumMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testMessageWithMixedValueEnum"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/public/public_enum": {
+            "get": {
+                "tags": [
+                    "PublicService"
+                ],
+                "operationId": "PublicService_PublicEnumMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/testMessageWithPublicEnum"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            },
+            "testInternalEnum": {
+                "type": "string",
+                "enum": [
+                    "INTERNAL_UNSPECIFIED",
+                    "INTERNAL_VALUE"
+                ]
+            },
+            "testInternalMessage": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "string"
+                    }
+                }
+            },
+            "testMessage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "testMessageWithInternalEnum": {
+                "type": "object",
+                "properties": {
+                    "enum_value": {
+                        "$ref": "#/components/schemas/testInternalEnum"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "testMessageWithMixedValueEnum": {
+                "type": "object",
+                "properties": {
+                    "enum_value": {
+                        "$ref": "#/components/schemas/testMixedValueEnum"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "testMessageWithPublicEnum": {
+                "type": "object",
+                "properties": {
+                    "enum_value": {
+                        "$ref": "#/components/schemas/testPublicEnum"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "testMixedFieldMessage": {
+                "type": "object",
+                "properties": {
+                    "internal_field": {
+                        "type": "string"
+                    },
+                    "public_field": {
+                        "type": "string"
+                    }
+                }
+            },
+            "testMixedValueEnum": {
+                "type": "string",
+                "enum": [
+                    "MIXED_UNSPECIFIED",
+                    "MIXED_PUBLIC_VALUE",
+                    "MIXED_INTERNAL_VALUE"
+                ]
+            },
+            "testPublicEnum": {
+                "type": "string",
+                "enum": [
+                    "PUBLIC_UNSPECIFIED",
+                    "PUBLIC_PUBLIC_VALUE"
+                ]
+            },
+            "testPublicMessage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "PublicService"
+        },
+        {
+            "name": "InternalService"
+        },
+        {
+            "name": "PublicServiceInternalMethod"
+        },
+        {
+            "name": "InternalService2"
+        }
+    ]
+}

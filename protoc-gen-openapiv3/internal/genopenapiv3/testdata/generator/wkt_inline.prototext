@@ -1,0 +1,233 @@
+file_to_generate: "test/v1/wkt.proto"
+proto_file: {
+	name: "google/protobuf/timestamp.proto"
+	package: "google.protobuf"
+	message_type: {
+		name: "Timestamp"
+		field: {
+			name: "seconds"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_INT64
+			json_name: "seconds"
+		}
+		field: {
+			name: "nanos"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_INT32
+			json_name: "nanos"
+		}
+	}
+	options: {
+		go_package: "google.golang.org/protobuf/types/known/timestamppb"
+	}
+	syntax: "proto3"
+}
+proto_file: {
+	name: "google/protobuf/duration.proto"
+	package: "google.protobuf"
+	message_type: {
+		name: "Duration"
+		field: {
+			name: "seconds"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_INT64
+			json_name: "seconds"
+		}
+		field: {
+			name: "nanos"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_INT32
+			json_name: "nanos"
+		}
+	}
+	options: {
+		go_package: "google.golang.org/protobuf/types/known/durationpb"
+	}
+	syntax: "proto3"
+}
+proto_file: {
+	name: "test/v1/wkt.proto"
+	package: "test.v1"
+	dependency: "google/protobuf/timestamp.proto"
+	dependency: "google/protobuf/duration.proto"
+	message_type: {
+		name: "Level3"
+		field: {
+			name: "deep_timestamp"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Timestamp"
+			json_name: "deepTimestamp"
+		}
+		field: {
+			name: "deep_duration"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Duration"
+			json_name: "deepDuration"
+		}
+	}
+	message_type: {
+		name: "Level2"
+		field: {
+			name: "level3"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.Level3"
+			json_name: "level3"
+		}
+		field: {
+			name: "mid_timestamp"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Timestamp"
+			json_name: "midTimestamp"
+		}
+	}
+	message_type: {
+		name: "Level1"
+		field: {
+			name: "level2"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".test.v1.Level2"
+			json_name: "level2"
+		}
+		field: {
+			name: "top_timestamp"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Timestamp"
+			json_name: "topTimestamp"
+		}
+	}
+	message_type: {
+		name: "Event"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+		field: {
+			name: "created_at"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Timestamp"
+			json_name: "createdAt"
+		}
+		field: {
+			name: "updated_at"
+			number: 3
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Timestamp"
+			json_name: "updatedAt"
+		}
+	}
+	message_type: {
+		name: "Task"
+		field: {
+			name: "name"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "name"
+		}
+		field: {
+			name: "scheduled_at"
+			number: 2
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Timestamp"
+			json_name: "scheduledAt"
+		}
+		field: {
+			name: "timeout"
+			number: 3
+			label: LABEL_OPTIONAL
+			type: TYPE_MESSAGE
+			type_name: ".google.protobuf.Duration"
+			json_name: "timeout"
+		}
+	}
+	message_type: {
+		name: "GetEventRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	message_type: {
+		name: "GetNestedRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	message_type: {
+		name: "GetTaskRequest"
+		field: {
+			name: "id"
+			number: 1
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			json_name: "id"
+		}
+	}
+	service: {
+		name: "TestService"
+		method: {
+			name: "GetEvent"
+			input_type: ".test.v1.GetEventRequest"
+			output_type: ".test.v1.Event"
+			options: {
+				[google.api.http]: {
+					get: "/v1/events/{id}"
+				}
+			}
+		}
+		method: {
+			name: "GetNested"
+			input_type: ".test.v1.GetNestedRequest"
+			output_type: ".test.v1.Level1"
+			options: {
+				[google.api.http]: {
+					get: "/v1/nested/{id}"
+				}
+			}
+		}
+		method: {
+			name: "GetTask"
+			input_type: ".test.v1.GetTaskRequest"
+			output_type: ".test.v1.Task"
+			options: {
+				[google.api.http]: {
+					get: "/v1/tasks/{id}"
+				}
+			}
+		}
+	}
+	options: {
+		go_package: "test/v1;testv1"
+	}
+	syntax: "proto3"
+}
