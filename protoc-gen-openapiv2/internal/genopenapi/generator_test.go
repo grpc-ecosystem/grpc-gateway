@@ -35,7 +35,7 @@ func TestGenerate_YAML(t *testing.T) {
 		},
 	}
 
-	resp := requireGenerate(t, req, genopenapi.FormatYAML, false, false)
+	resp := requireGenerate(t, req, genopenapi.FormatYAML, false, false, false)
 	if len(resp) != 1 {
 		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 	}
@@ -111,7 +111,7 @@ func TestGenerateExtension(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, false, false)
+			resp := requireGenerate(t, &req, format, false, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -157,7 +157,7 @@ func TestGenerateYAML(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, true)
+			resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, true, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -181,12 +181,18 @@ func requireGenerate(
 	format genopenapi.Format,
 	preserveRPCOrder bool,
 	allowMerge bool,
+	enableRpcAndFieldDeprecation bool,
 ) []*descriptor.ResponseFile {
 	tb.Helper()
 
 	reg := descriptor.NewRegistry()
 	reg.SetPreserveRPCOrder(preserveRPCOrder)
 	reg.SetAllowMerge(allowMerge)
+
+	if enableRpcAndFieldDeprecation {
+		reg.SetEnableFieldDeprecation(true)
+		reg.SetEnableRpcDeprecation(true)
+	}
 
 	if err := reg.Load(req); err != nil {
 		tb.Fatalf("failed to load request: %s", err)
@@ -303,7 +309,7 @@ func TestGeneratedYAMLIndent(t *testing.T) {
 		t.Fatalf("failed to marshall yaml: %s", err)
 	}
 
-	resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, false)
+	resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, false, false)
 	if len(resp) != 1 {
 		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 	}
@@ -389,7 +395,7 @@ func TestGenerateRPCOrderPreserved(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, true, false)
+			resp := requireGenerate(t, &req, format, true, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -486,7 +492,7 @@ func TestGenerateRPCOrderNotPreserved(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, false, false)
+			resp := requireGenerate(t, &req, format, false, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -615,7 +621,7 @@ func TestGenerateRPCOrderPreservedMultipleServices(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, true, false)
+			resp := requireGenerate(t, &req, format, true, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -744,7 +750,7 @@ func TestGenerateRPCOrderNotPreservedMultipleServices(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, false, false)
+			resp := requireGenerate(t, &req, format, false, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -901,7 +907,7 @@ func TestGenerateRPCOrderPreservedMergeFiles(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req1, format, true, true)
+			resp := requireGenerate(t, &req1, format, true, true, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1057,7 +1063,7 @@ func TestGenerateRPCOrderNotPreservedMergeFiles(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req1, format, false, true)
+			resp := requireGenerate(t, &req1, format, false, true, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1163,7 +1169,7 @@ func TestGenerateRPCOrderPreservedAdditionalBindings(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, true, false)
+			resp := requireGenerate(t, &req, format, true, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1260,7 +1266,7 @@ func TestGenerateRPCOneOfFieldBodyAdditionalBindings(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, true, false)
+			resp := requireGenerate(t, &req, format, true, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1370,7 +1376,7 @@ func TestGenerateRPCOrderNotPreservedAdditionalBindings(t *testing.T) {
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req, format, false, false)
+			resp := requireGenerate(t, &req, format, false, false, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1569,7 +1575,7 @@ func TestGenerateRPCOrderPreservedMergeFilesAdditionalBindingsMultipleServices(t
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req1, format, true, true)
+			resp := requireGenerate(t, &req1, format, true, true, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -1769,7 +1775,7 @@ func TestGenerateRPCOrderNotPreservedMergeFilesAdditionalBindingsMultipleService
 		t.Run(string(format), func(t *testing.T) {
 			t.Parallel()
 
-			resp := requireGenerate(t, &req1, format, false, true)
+			resp := requireGenerate(t, &req1, format, false, true, false)
 			if len(resp) != 1 {
 				t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 			}
@@ -2031,7 +2037,7 @@ func TestIssue5684_UnusedMethodsNotInOpenAPI(t *testing.T) {
 		t.Fatalf("failed to unmarshal proto: %v", err)
 	}
 
-	resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, false)
+	resp := requireGenerate(t, &req, genopenapi.FormatYAML, false, false, false)
 	if len(resp) != 1 {
 		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
 	}
@@ -2181,7 +2187,7 @@ func TestGenerateMergeFilesWithBodyAndPathParams(t *testing.T) {
 	// This should not panic - the bug was that processing messages.proto first
 	// would build a cache without method FQNs, causing service.proto to panic
 	// when looking up method FQNs for body:"*" with path params.
-	resp := requireGenerate(t, &req1, genopenapi.FormatJSON, false, false)
+	resp := requireGenerate(t, &req1, genopenapi.FormatJSON, false, false, false)
 
 	// We expect 2 files (one per proto file)
 	if len(resp) != 2 {
@@ -2446,11 +2452,11 @@ func getKeys(m map[string]interface{}) []string {
 // enum field, and the package has multiple components (e.g. "example.v1"),
 // protoc-gen-openapiv2 panicked with "can't resolve OpenAPI ref from typename".
 // This was caused by two bugs in PR #6315:
-// 1. collectReferencedNamesForCache pre-populated all message FQMNs before scanning
-//    services, causing collectNestedTypeFQNs to short-circuit on already-visited
-//    entries and miss nested enum types.
-// 2. The package filter compared only the first dot-component against the full
-//    multi-component package name, so it never matched.
+//  1. collectReferencedNamesForCache pre-populated all message FQMNs before scanning
+//     services, causing collectNestedTypeFQNs to short-circuit on already-visited
+//     entries and miss nested enum types.
+//  2. The package filter compared only the first dot-component against the full
+//     multi-component package name, so it never matched.
 func TestGenerateEnumInNestedMessageMultiComponentPackage(t *testing.T) {
 	t.Parallel()
 
@@ -2519,7 +2525,7 @@ func TestGenerateEnumInNestedMessageMultiComponentPackage(t *testing.T) {
 
 	// This should not panic. Before the fix, it panicked with:
 	// "can't resolve OpenAPI ref from typename .example.v1.EventType"
-	resp := requireGenerate(t, &req, genopenapi.FormatJSON, false, false)
+	resp := requireGenerate(t, &req, genopenapi.FormatJSON, false, false, false)
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -2633,7 +2639,7 @@ func TestGenerateCrossPackageMessageReference(t *testing.T) {
 	req2.FileToGenerate = []string{"usercontrol/v1/usercontrol.proto"}
 
 	// This should not panic
-	resp := requireGenerate(t, &req2, genopenapi.FormatJSON, false, false)
+	resp := requireGenerate(t, &req2, genopenapi.FormatJSON, false, false, false)
 
 	if len(resp) != 1 {
 		t.Fatalf("expected 1 response file, got %d", len(resp))
@@ -2660,4 +2666,318 @@ func TestGenerateCrossPackageMessageReference(t *testing.T) {
 				ref, getKeys(definitions))
 		}
 	}
+}
+
+func TestDeprecateFieldsAndMethods(t *testing.T) {
+	t.Parallel()
+
+	t.Run("deprecated file with merge disabled", func(t *testing.T) {
+		t.Parallel()
+
+		const in = `
+		file_to_generate: "example/v1/deprecated.proto"
+		proto_file: {
+			name: "example/v1/deprecated.proto"
+			package: "example.v1"
+			message_type: {
+				name: "Request"
+				field: {
+					name: "id"
+					number: 1
+					label: LABEL_OPTIONAL
+					type: TYPE_STRING
+					json_name: "id"
+				}
+				field: {
+					name: "name"
+					number: 2
+					label: LABEL_OPTIONAL
+					type: TYPE_STRING
+					json_name: "name"
+				}
+			}
+			message_type: {
+				name: "Response"
+			}
+			service: {
+				name: "TestService"
+				method: {
+					name: "TestMethod"
+					input_type: ".example.v1.Request"
+					output_type: ".example.v1.Response"
+					options: {
+						[google.api.http]: {
+							post: "/v1/test/{id}"
+							body: "*"
+						}
+					}
+				}
+			}
+			options: {
+				go_package: "example/v1;example"
+				deprecated: true
+			}
+		}`
+
+		var req pluginpb.CodeGeneratorRequest
+		if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+			t.Fatalf("failed to unmarshal proto: %s", err)
+		}
+
+		resp := requireGenerate(t, &req, genopenapi.FormatJSON, false, false, true)
+		if len(resp) != 1 {
+			t.Fatalf("expected 1 response file, got %d", len(resp))
+		}
+
+		content := resp[0].GetContent()
+
+		// Parse the JSON to verify the structure
+		var doc map[string]any
+		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
+			t.Fatalf("failed to parse OpenAPI JSON: %v", err)
+		}
+
+		// Check that the method is deprecated
+		paths, ok := doc["paths"].(map[string]any)
+		if !ok {
+			t.Fatal("expected paths in OpenAPI output")
+		}
+
+		path, ok := paths["/v1/test/{id}"].(map[string]any)
+		if !ok {
+			t.Fatal("expected /v1/test/{id} path in OpenAPI output")
+		}
+
+		post, ok := path["post"].(map[string]any)
+		if !ok {
+			t.Fatal("expected POST operation in /v1/test/{id} path")
+		}
+
+		// Verify the method itself is marked as deprecated
+		if deprecated, ok := post["deprecated"].(bool); !ok || !deprecated {
+			t.Error("expected POST operation to be marked as deprecated")
+		}
+
+		// Verify that parameters are marked as deprecated
+		parameters, ok := post["parameters"].([]any)
+		if !ok {
+			t.Fatal("expected parameters in POST operation")
+		}
+
+		foundDeprecatedParam := false
+		for _, p := range parameters {
+			param, ok := p.(map[string]any)
+			if !ok {
+				continue
+			}
+			if deprecated, ok := param["deprecated"].(bool); ok && deprecated {
+				foundDeprecatedParam = true
+				break
+			}
+		}
+		if !foundDeprecatedParam {
+			t.Error("expected at least one parameter to be marked as deprecated")
+		}
+	})
+
+	t.Run("deprecated file with merge enabled", func(t *testing.T) {
+		t.Parallel()
+
+		const file1 = `
+		name: "example/v1/deprecated1.proto"
+		package: "example.v1"
+		message_type: {
+			name: "Message1"
+			field: {
+				name: "field1"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "field1"
+			}
+		}
+		service: {
+			name: "Service1"
+			method: {
+				name: "Method1"
+				input_type: ".example.v1.Message1"
+				output_type: ".example.v1.Message1"
+				options: {
+					[google.api.http]: {
+						get: "/v1/method1"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "example/v1;example"
+			deprecated: true
+		}`
+
+		const file2 = `
+		name: "example/v1/notdeprecated.proto"
+		package: "example.v1"
+		message_type: {
+			name: "Message2"
+			field: {
+				name: "field2"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "field2"
+			}
+		}
+		service: {
+			name: "Service2"
+			method: {
+				name: "Method2"
+				input_type: ".example.v1.Message2"
+				output_type: ".example.v1.Message2"
+				options: {
+					[google.api.http]: {
+						get: "/v1/method2"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "example/v1;example"
+		}`
+
+		req := &pluginpb.CodeGeneratorRequest{
+			FileToGenerate: []string{"example/v1/deprecated1.proto", "example/v1/notdeprecated.proto"},
+			Parameter:      proto.String("allow_merge=true,merge_file_name=merged"),
+		}
+
+		var fd1, fd2 descriptorpb.FileDescriptorProto
+		if err := prototext.Unmarshal([]byte(file1), &fd1); err != nil {
+			t.Fatalf("failed to unmarshal proto1: %s", err)
+		}
+		if err := prototext.Unmarshal([]byte(file2), &fd2); err != nil {
+			t.Fatalf("failed to unmarshal proto2: %s", err)
+		}
+
+		req.ProtoFile = []*descriptorpb.FileDescriptorProto{&fd1, &fd2}
+
+		resp := requireGenerate(t, req, genopenapi.FormatJSON, false, true, true)
+		if len(resp) != 1 {
+			t.Fatalf("expected 1 merged response file, got %d", len(resp))
+		}
+
+		content := resp[0].GetContent()
+
+		var doc map[string]any
+		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
+			t.Fatalf("failed to parse OpenAPI JSON: %v", err)
+		}
+
+		// Check paths for method deprecation
+		paths, ok := doc["paths"].(map[string]any)
+		if !ok {
+			t.Fatal("expected paths in OpenAPI output")
+		}
+
+		// Method1 should be deprecated
+		path1, ok := paths["/v1/method1"].(map[string]any)
+		if !ok {
+			t.Fatal("expected /v1/method1 path in OpenAPI output")
+		}
+
+		get1, ok := path1["get"].(map[string]any)
+		if !ok {
+			t.Fatal("expected GET operation in /v1/method1 path")
+		}
+
+		if deprecated, ok := get1["deprecated"].(bool); !ok || !deprecated {
+			t.Error("expected Method1 to be marked as deprecated")
+		}
+
+		// Method2 should NOT be deprecated
+		path2, ok := paths["/v1/method2"].(map[string]any)
+		if !ok {
+			t.Fatal("expected /v1/method2 path in OpenAPI output")
+		}
+
+		get2, ok := path2["get"].(map[string]any)
+		if !ok {
+			t.Fatal("expected GET operation in /v1/method2 path")
+		}
+
+		if deprecated, ok := get2["deprecated"].(bool); ok && deprecated {
+			t.Error("expected Method2 NOT to be marked as deprecated")
+		}
+	})
+
+	t.Run("non-deprecated file should not have deprecated fields", func(t *testing.T) {
+		t.Parallel()
+
+		const in = `
+		file_to_generate: "example/v1/notdeprecated2.proto"
+		proto_file: {
+			name: "example/v1/notdeprecated2.proto"
+			package: "example.v1"
+			message_type: {
+				name: "Message"
+				field: {
+					name: "field1"
+					number: 1
+					label: LABEL_OPTIONAL
+					type: TYPE_STRING
+					json_name: "field1"
+				}
+			}
+			service: {
+				name: "TestService"
+				method: {
+					name: "TestMethod"
+					input_type: ".example.v1.Message"
+					output_type: ".example.v1.Message"
+					options: {
+						[google.api.http]: {
+							get: "/v1/test"
+						}
+					}
+				}
+			}
+			options: {
+				go_package: "example/v1;example"
+			}
+		}`
+
+		var req pluginpb.CodeGeneratorRequest
+		if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+			t.Fatalf("failed to unmarshal proto: %s", err)
+		}
+
+		resp := requireGenerate(t, &req, genopenapi.FormatJSON, false, false, true)
+		if len(resp) != 1 {
+			t.Fatalf("expected 1 response file, got %d", len(resp))
+		}
+
+		content := resp[0].GetContent()
+
+		var doc map[string]any
+		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
+			t.Fatalf("failed to parse OpenAPI JSON: %v", err)
+		}
+
+		paths, ok := doc["paths"].(map[string]any)
+		if !ok {
+			t.Fatal("expected paths in OpenAPI output")
+		}
+
+		path, ok := paths["/v1/test"].(map[string]any)
+		if !ok {
+			t.Fatal("expected /v1/test path in OpenAPI output")
+		}
+
+		get, ok := path["get"].(map[string]any)
+		if !ok {
+			t.Fatal("expected GET operation in /v1/test path")
+		}
+
+		if deprecated, ok := get["deprecated"].(bool); ok && deprecated {
+			t.Error("expected TestMethod NOT to be marked as deprecated in non-deprecated file")
+		}
+	})
 }
