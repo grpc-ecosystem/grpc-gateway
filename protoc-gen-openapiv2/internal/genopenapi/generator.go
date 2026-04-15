@@ -370,22 +370,20 @@ func encodeOpenAPI(file *wrapper, format Format) (*descriptor.ResponseFile, erro
 }
 
 func deprecateFieldsAndMethods(file *descriptor.File) {
-	if opts := file.GetOptions(); opts != nil && opts.GetDeprecated() {
-		for _, msg := range file.Messages {
-			for _, field := range msg.GetField() {
-				if field.Options == nil {
-					field.Options = &descriptorpb.FieldOptions{}
-				}
-				field.Options.Deprecated = proto.Bool(true)
+	for _, msg := range file.Messages {
+		for _, field := range msg.GetField() {
+			if field.Options == nil {
+				field.Options = &descriptorpb.FieldOptions{}
 			}
+			field.Options.Deprecated = proto.Bool(true)
 		}
-		for _, svc := range file.Services {
-			for _, method := range svc.GetMethod() {
-				if method.Options == nil {
-					method.Options = &descriptorpb.MethodOptions{}
-				}
-				method.Options.Deprecated = proto.Bool(true)
+	}
+	for _, svc := range file.Services {
+		for _, method := range svc.GetMethod() {
+			if method.Options == nil {
+				method.Options = &descriptorpb.MethodOptions{}
 			}
+			method.Options.Deprecated = proto.Bool(true)
 		}
 	}
 }
@@ -394,7 +392,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	var files []*descriptor.ResponseFile
 	for _, f := range targets {
 		// Because of how the generator merges definitions, it is simpler to deprecate field and methods here if the file is deprecated
-		deprecateFieldsAndMethods(f)
+		if opts := f.GetOptions(); opts != nil && opts.GetDeprecated() {
+			deprecateFieldsAndMethods(f)
+		}
 	}
 	if g.reg.IsAllowMerge() {
 		var mergedTarget *descriptor.File

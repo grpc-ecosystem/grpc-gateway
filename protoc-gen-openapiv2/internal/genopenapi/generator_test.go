@@ -2732,23 +2732,23 @@ func TestDeprecateFieldsAndMethods(t *testing.T) {
 		content := resp[0].GetContent()
 
 		// Parse the JSON to verify the structure
-		var doc map[string]interface{}
+		var doc map[string]any
 		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
 			t.Fatalf("failed to parse OpenAPI JSON: %v", err)
 		}
 
 		// Check that the method is deprecated
-		paths, ok := doc["paths"].(map[string]interface{})
+		paths, ok := doc["paths"].(map[string]any)
 		if !ok {
 			t.Fatal("expected paths in OpenAPI output")
 		}
 
-		path, ok := paths["/v1/test/{id}"].(map[string]interface{})
+		path, ok := paths["/v1/test/{id}"].(map[string]any)
 		if !ok {
 			t.Fatal("expected /v1/test/{id} path in OpenAPI output")
 		}
 
-		post, ok := path["post"].(map[string]interface{})
+		post, ok := path["post"].(map[string]any)
 		if !ok {
 			t.Fatal("expected POST operation in /v1/test/{id} path")
 		}
@@ -2759,14 +2759,14 @@ func TestDeprecateFieldsAndMethods(t *testing.T) {
 		}
 
 		// Verify that parameters are marked as deprecated
-		parameters, ok := post["parameters"].([]interface{})
+		parameters, ok := post["parameters"].([]any)
 		if !ok {
 			t.Fatal("expected parameters in POST operation")
 		}
 
 		foundDeprecatedParam := false
 		for _, p := range parameters {
-			param, ok := p.(map[string]interface{})
+			param, ok := p.(map[string]any)
 			if !ok {
 				continue
 			}
@@ -2866,24 +2866,24 @@ func TestDeprecateFieldsAndMethods(t *testing.T) {
 
 		content := resp[0].GetContent()
 
-		var doc map[string]interface{}
+		var doc map[string]any
 		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
 			t.Fatalf("failed to parse OpenAPI JSON: %v", err)
 		}
 
 		// Check paths for method deprecation
-		paths, ok := doc["paths"].(map[string]interface{})
+		paths, ok := doc["paths"].(map[string]any)
 		if !ok {
 			t.Fatal("expected paths in OpenAPI output")
 		}
 
 		// Method1 should be deprecated
-		path1, ok := paths["/v1/method1"].(map[string]interface{})
+		path1, ok := paths["/v1/method1"].(map[string]any)
 		if !ok {
 			t.Fatal("expected /v1/method1 path in OpenAPI output")
 		}
 
-		get1, ok := path1["get"].(map[string]interface{})
+		get1, ok := path1["get"].(map[string]any)
 		if !ok {
 			t.Fatal("expected GET operation in /v1/method1 path")
 		}
@@ -2893,12 +2893,12 @@ func TestDeprecateFieldsAndMethods(t *testing.T) {
 		}
 
 		// Method2 should NOT be deprecated
-		path2, ok := paths["/v1/method2"].(map[string]interface{})
+		path2, ok := paths["/v1/method2"].(map[string]any)
 		if !ok {
 			t.Fatal("expected /v1/method2 path in OpenAPI output")
 		}
 
-		get2, ok := path2["get"].(map[string]interface{})
+		get2, ok := path2["get"].(map[string]any)
 		if !ok {
 			t.Fatal("expected GET operation in /v1/method2 path")
 		}
@@ -2956,22 +2956,22 @@ func TestDeprecateFieldsAndMethods(t *testing.T) {
 
 		content := resp[0].GetContent()
 
-		var doc map[string]interface{}
+		var doc map[string]any
 		if err := yaml.Unmarshal([]byte(content), &doc); err != nil {
 			t.Fatalf("failed to parse OpenAPI JSON: %v", err)
 		}
 
-		paths, ok := doc["paths"].(map[string]interface{})
+		paths, ok := doc["paths"].(map[string]any)
 		if !ok {
 			t.Fatal("expected paths in OpenAPI output")
 		}
 
-		path, ok := paths["/v1/test"].(map[string]interface{})
+		path, ok := paths["/v1/test"].(map[string]any)
 		if !ok {
 			t.Fatal("expected /v1/test path in OpenAPI output")
 		}
 
-		get, ok := path["get"].(map[string]interface{})
+		get, ok := path["get"].(map[string]any)
 		if !ok {
 			t.Fatal("expected GET operation in /v1/test path")
 		}
