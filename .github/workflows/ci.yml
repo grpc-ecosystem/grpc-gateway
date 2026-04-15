@@ -19,11 +19,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          go-version: 1.26
+          go-version-file: 'go.mod'
           check-latest: true
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - run: go test ./...
   node_test:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
           node-version: 24
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          go-version: 1.26
+          go-version-file: 'go.mod'
           check-latest: true
       - run: >
           cd examples/internal/browser &&
@@ -96,7 +96,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          go-version: 1.26
+          go-version-file: 'go.mod'
           check-latest: true
       - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.29.0
   proto_lint:
@@ -105,7 +105,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          go-version: 1.26
+          go-version-file: 'go.mod'
           check-latest: true
       - run: make install
       - run: PATH=$PATH:~/go/bin buf build
@@ -118,7 +118,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          go-version: 1.26
+          go-version-file: 'go.mod'
           check-latest: true
       - uses: dominikh/staticcheck-action@9716614d4101e79b4340dd97b10e54d68234e431 # v1.4.1
         with:
