@@ -2,8 +2,6 @@ on:
   push:
     tags:
       - v2.[0-9]+.[0-9]+
-    branches:
-      - copilot/update-release-workflow-go-version
   # For testing the workflow before pushing a tag
   # This will run goreleaser with --snapshot and test the
   # SLSA generator.
