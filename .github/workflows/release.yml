@@ -5,7 +5,14 @@ on:
   # For testing the workflow before pushing a tag
   # This will run goreleaser with --snapshot and test the
   # SLSA generator.
+  # Optionally provide a tag to run goreleaser against that
+  # specific tag (e.g. to re-run a failed release).
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to release (e.g. v2.29.0). Leave empty for a snapshot build.'
+        required: false
+        type: string
 permissions:
   contents: read
 name: release
@@ -20,6 +27,16 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+      - name: Checkout tag source code
+        if: ${{ inputs.tag != '' }}
+        run: |
+          set -euo pipefail
+          # Preserve the goreleaser config from the current branch
+          # so that fixes to the release process are always used,
+          # even when building from an older tag.
+          cp .goreleaser.yml /tmp/.goreleaser.yml
+          git checkout ${{ inputs.tag }}
+          cp /tmp/.goreleaser.yml .goreleaser.yml
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: 'go.mod'
@@ -29,10 +46,14 @@ jobs:
         run: |
           set -euo pipefail
           args='release --clean'
-          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+          tag='${{ inputs.tag }}'
+          if [[ "$GITHUB_REF" != refs/tags/* ]] && [[ -z "$tag" ]]; then
             args+=' --snapshot'
           fi
           echo "args=$args" >> $GITHUB_OUTPUT
+          if [[ -n "$tag" ]]; then
+            echo "GORELEASER_CURRENT_TAG=$tag" >> $GITHUB_ENV
+          fi
       - uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7
         id: run-goreleaser
         with:
@@ -60,4 +81,4 @@ jobs:
     with:
       compile-generator: true # Workaround for https://github.com/slsa-framework/slsa-github-generator/issues/1163
       base64-subjects: "${{ needs.goreleaser.outputs.hashes }}"
-      upload-assets: ${{ github.event_name == 'push' }} # upload to a new release when pushing via tag
+      upload-assets: ${{ github.event_name == 'push' || inputs.tag != '' }} # upload to a new release when pushing via tag or when a tag is provided via workflow_dispatch
