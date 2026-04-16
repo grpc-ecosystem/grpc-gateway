@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
-          ref: ${{ inputs.tag || '' }}
+          ref: ${{ inputs.tag }}
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: 'go.mod'
@@ -42,6 +42,9 @@ jobs:
             args+=' --snapshot'
           fi
           echo "args=$args" >> $GITHUB_OUTPUT
+          if [[ -n "$tag" ]]; then
+            echo "GORELEASER_CURRENT_TAG=$tag" >> $GITHUB_ENV
+          fi
       - uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7
         id: run-goreleaser
         with:
@@ -50,7 +53,6 @@ jobs:
           version: "~> v2" # or 'latest', 'nightly', semver
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_CURRENT_TAG: ${{ inputs.tag || '' }}
       - name: Generate subject
         id: hash
         env:
