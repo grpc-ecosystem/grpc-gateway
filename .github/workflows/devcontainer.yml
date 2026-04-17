@@ -20,7 +20,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Rebuild dev container image
-        uses: devcontainers/ci@19ddf8c5778961129f90613da69436820ba5e0d9 # v0.3
+        uses: devcontainers/ci@b63b30de439b47a52267f241112c5b453b673db5 # v0.3
         with:
           imageName: ghcr.io/grpc-ecosystem/grpc-gateway/build-env
           cacheFrom: ghcr.io/grpc-ecosystem/grpc-gateway/build-env
