@@ -74,11 +74,16 @@ func buildParameters(b *schemaBuilder, m *descriptor.Method, binding *descriptor
 			log.Printf("unexpected path parameter not found in binding: %q", pp.fieldName)
 			continue
 		}
+		deprecated := false
+		if proto.Target.GetOptions() != nil {
+			deprecated = proto.Target.GetOptions().GetDeprecated()
+		}
 		param := &Parameter{
-			Name:     pp.openAPIName,
-			In:       "path",
-			Required: true,
-			Schema:   b.fieldSchema(proto.Target),
+			Name:       pp.openAPIName,
+			In:         "path",
+			Required:   true,
+			Schema:     b.fieldSchema(proto.Target),
+			Deprecated: deprecated,
 		}
 		if desc := fieldComments(b.reg, proto.Target); desc != "" {
 			param.Description = desc
