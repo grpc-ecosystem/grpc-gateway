@@ -1,0 +1,58 @@
+file_to_generate: "legacy/v1/legacy.proto"
+proto_file: {
+  name: "google/protobuf/empty.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Empty"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/emptypb;emptypb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "legacy/v1/legacy.proto"
+  package: "legacy.v1"
+  dependency: "google/protobuf/empty.proto"
+  message_type: {
+    name: "LegacyMessage"
+    field: {
+      name: "legacy_field"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "legacyField"
+    }
+    field: {
+      name: "legacy_enum"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".legacy.v1.LegacyEnum"
+      json_name: "legacyEnum"
+    }
+  }
+  enum_type: {
+    name: "LegacyEnum"
+    value: { name: "LEGACY_ENUM_UNSPECIFIED" number: 0 }
+    value: { name: "LEGACY_ENUM_OLD" number: 1 }
+  }
+  service: {
+    name: "LegacyService"
+    method: {
+      name: "LegacyRead"
+      input_type: ".google.protobuf.Empty"
+      output_type: ".legacy.v1.LegacyMessage"
+      options: {
+        [google.api.http]: {
+          get: "/v1/legacy"
+        }
+      }
+    }
+  }
+  options: {
+    deprecated: true
+    go_package: "github.com/example/legacy/v1;legacyv1"
+  }
+  syntax: "proto3"
+}

@@ -173,6 +173,7 @@ go_proto_library(
 go_library(
     name = "examplepb",
     srcs = [
+        "openapi.go",
         "openapi_merge_a.pb.go",
         "openapi_merge_a.pb.gw.go",
         "openapi_merge_a_grpc.pb.go",
@@ -184,6 +185,7 @@ go_library(
         ":examplepb_go_proto",
         ":examplepb_opaque_go_proto",  #keep
     ],
+    embedsrcs = ["a_bit_of_everything.openapi.json"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     deps = [
         "//runtime",
