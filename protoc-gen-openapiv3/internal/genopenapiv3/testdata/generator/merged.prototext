@@ -1,0 +1,112 @@
+file_to_generate: "example/v1/echo.proto"
+file_to_generate: "example/v1/echo2.proto"
+file_to_generate: "example/v1/spec.proto"
+proto_file: {
+  name: "example/v1/echo.proto"
+  package: "example.v1"
+  message_type: {
+    name: "EchoRequest"
+    field: {
+      name: "message"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "message"
+    }
+  }
+  message_type: {
+    name: "EchoResponse"
+    field: {
+      name: "message"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "message"
+    }
+  }
+  service: {
+    name: "EchoService"
+    method: {
+      name: "Echo"
+      input_type: ".example.v1.EchoRequest"
+      output_type: ".example.v1.EchoResponse"
+      options: {
+        [google.api.http]: {
+          post: "/v1/echo"
+          body: "*"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/v1;examplev1"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "example/v1/echo2.proto"
+  package: "example.v1"
+  message_type: {
+    name: "EchoRequest2"
+    field: {
+      name: "message"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "message"
+    }
+  }
+  message_type: {
+    name: "EchoResponse2"
+    field: {
+      name: "message"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "message"
+    }
+  }
+  service: {
+    name: "EchoService2"
+    method: {
+      name: "Echo2"
+      input_type: ".example.v1.EchoRequest2"
+      output_type: ".example.v1.EchoResponse2"
+      options: {
+        [google.api.http]: {
+          post: "/v1/echo2"
+          body: "*"
+        }
+      }
+    }
+    method: {
+      name: "Echo3"
+      input_type: ".example.v1.EchoRequest2"
+      output_type: ".example.v1.EchoResponse2"
+      options: {
+        [google.api.http]: {
+          post: "/v1/aecho3"
+          body: "*"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/v1;examplev1"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "example/v1/spec.proto"
+  package: "example.v1"
+  options: {
+    go_package: "github.com/example/v1;examplev1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "merged openapi spec"
+        version: "1.0"
+      }
+    }
+  }
+  syntax: "proto3"
+}

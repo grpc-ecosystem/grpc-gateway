@@ -1,0 +1,935 @@
+file_to_generate: "comprehensive/api.proto"
+proto_file: {
+  name: "comprehensive/api.proto"
+  package: "comprehensive"
+
+  # ==========================================================================
+  # Enums
+  # ==========================================================================
+
+  enum_type: {
+    name: "Status"
+    value: { name: "STATUS_UNSPECIFIED" number: 0 }
+    value: { name: "STATUS_ACTIVE" number: 1 }
+    value: { name: "STATUS_INACTIVE" number: 2 }
+    value: { name: "STATUS_ARCHIVED" number: 3 }
+  }
+
+  enum_type: {
+    name: "Priority"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_enum]: {
+        title: "Priority Level"
+        description: "The priority level for an item"
+        example: "\"PRIORITY_HIGH\""
+      }
+    }
+    value: { name: "PRIORITY_UNSPECIFIED" number: 0 }
+    value: { name: "PRIORITY_LOW" number: 1 }
+    value: { name: "PRIORITY_MEDIUM" number: 2 }
+    value: { name: "PRIORITY_HIGH" number: 3 }
+  }
+
+  # ==========================================================================
+  # Item-related Messages
+  # ==========================================================================
+
+  message_type: {
+    name: "Item"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        title: "Item"
+        description: "Represents an item in the system"
+        required: ["id", "name"]
+        example: "{\"id\": \"item-123\", \"name\": \"Example Item\"}"
+      }
+    }
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Unique identifier"
+          read_only: true
+        }
+      }
+    }
+    field: {
+      name: "name"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Item name"
+        }
+      }
+    }
+    field: {
+      name: "status"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".comprehensive.Status"
+      json_name: "status"
+    }
+    field: {
+      name: "created_at"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "createdAt"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Creation timestamp"
+          read_only: true
+        }
+      }
+    }
+  }
+
+  message_type: {
+    name: "ListItemsRequest"
+    field: {
+      name: "page_size"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "pageSize"
+    }
+    field: {
+      name: "page_token"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "pageToken"
+    }
+  }
+
+  message_type: {
+    name: "ListItemsResponse"
+    field: {
+      name: "items"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.Item"
+      json_name: "items"
+    }
+    field: {
+      name: "next_page_token"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "nextPageToken"
+    }
+  }
+
+  message_type: {
+    name: "GetItemRequest"
+    field: {
+      name: "item_id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "itemId"
+    }
+  }
+
+  message_type: {
+    name: "CreateItemRequest"
+    field: {
+      name: "item"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.Item"
+      json_name: "item"
+    }
+  }
+
+  message_type: {
+    name: "UpdateItemRequest"
+    field: {
+      name: "item_id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "itemId"
+    }
+    field: {
+      name: "item"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.Item"
+      json_name: "item"
+    }
+  }
+
+  message_type: {
+    name: "PatchItemRequest"
+    field: {
+      name: "item_id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "itemId"
+    }
+    field: {
+      name: "item"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.Item"
+      json_name: "item"
+    }
+    field: {
+      name: "update_mask"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "updateMask"
+    }
+  }
+
+  message_type: {
+    name: "DeleteItemRequest"
+    field: {
+      name: "item_id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "itemId"
+    }
+  }
+
+  message_type: {
+    name: "DeleteItemResponse"
+    field: {
+      name: "success"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_BOOL
+      json_name: "success"
+    }
+  }
+
+  message_type: {
+    name: "SimpleRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+
+  # ==========================================================================
+  # Type-testing Messages
+  # ==========================================================================
+
+  message_type: {
+    name: "AllTypesMessage"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        description: "Message containing all scalar proto types"
+      }
+    }
+    field: { name: "string_value" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING json_name: "stringValue" }
+    field: { name: "bytes_value" number: 2 label: LABEL_OPTIONAL type: TYPE_BYTES json_name: "bytesValue" }
+    field: { name: "int32_value" number: 3 label: LABEL_OPTIONAL type: TYPE_INT32 json_name: "int32Value" }
+    field: { name: "int64_value" number: 4 label: LABEL_OPTIONAL type: TYPE_INT64 json_name: "int64Value" }
+    field: { name: "uint32_value" number: 5 label: LABEL_OPTIONAL type: TYPE_UINT32 json_name: "uint32Value" }
+    field: { name: "uint64_value" number: 6 label: LABEL_OPTIONAL type: TYPE_UINT64 json_name: "uint64Value" }
+    field: { name: "sint32_value" number: 7 label: LABEL_OPTIONAL type: TYPE_SINT32 json_name: "sint32Value" }
+    field: { name: "sint64_value" number: 8 label: LABEL_OPTIONAL type: TYPE_SINT64 json_name: "sint64Value" }
+    field: { name: "fixed32_value" number: 9 label: LABEL_OPTIONAL type: TYPE_FIXED32 json_name: "fixed32Value" }
+    field: { name: "fixed64_value" number: 10 label: LABEL_OPTIONAL type: TYPE_FIXED64 json_name: "fixed64Value" }
+    field: { name: "sfixed32_value" number: 11 label: LABEL_OPTIONAL type: TYPE_SFIXED32 json_name: "sfixed32Value" }
+    field: { name: "sfixed64_value" number: 12 label: LABEL_OPTIONAL type: TYPE_SFIXED64 json_name: "sfixed64Value" }
+    field: { name: "float_value" number: 13 label: LABEL_OPTIONAL type: TYPE_FLOAT json_name: "floatValue" }
+    field: { name: "double_value" number: 14 label: LABEL_OPTIONAL type: TYPE_DOUBLE json_name: "doubleValue" }
+    field: { name: "bool_value" number: 15 label: LABEL_OPTIONAL type: TYPE_BOOL json_name: "boolValue" }
+  }
+
+  message_type: {
+    name: "ValidationMessage"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        description: "Message with field-level validation constraints"
+      }
+    }
+    field: {
+      name: "username"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "username"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          title: "Username"
+          description: "User's unique username"
+          min_length: 3
+          max_length: 50
+          pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+          example: "\"johndoe\""
+        }
+      }
+    }
+    field: {
+      name: "email"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "email"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Email address"
+          format: "email"
+          pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        }
+      }
+    }
+    field: {
+      name: "uuid"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "uuid"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          format: "uuid"
+        }
+      }
+    }
+    field: {
+      name: "count"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "count"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          minimum: 0
+          maximum: 100
+          multiple_of: 5
+        }
+      }
+    }
+    field: {
+      name: "tags"
+      number: 5
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "tags"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          min_items: 1
+          max_items: 10
+          unique_items: true
+        }
+      }
+    }
+  }
+
+  # ==========================================================================
+  # OneOf Messages
+  # ==========================================================================
+
+  message_type: {
+    name: "NestedConfig"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+    field: {
+      name: "enabled"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_BOOL
+      json_name: "enabled"
+    }
+  }
+
+  message_type: {
+    name: "SingleOneofMessage"
+    field: {
+      name: "string_choice"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "stringChoice"
+      oneof_index: 0
+    }
+    field: {
+      name: "int_choice"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "intChoice"
+      oneof_index: 0
+    }
+    field: {
+      name: "config_choice"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.NestedConfig"
+      json_name: "configChoice"
+      oneof_index: 0
+    }
+    oneof_decl: { name: "choice" }
+  }
+
+  # ==========================================================================
+  # Nested Messages
+  # ==========================================================================
+
+  message_type: {
+    name: "OuterMessage"
+    nested_type: {
+      name: "InnerMessage"
+      nested_type: {
+        name: "DeeplyNested"
+        field: {
+          name: "level"
+          number: 1
+          label: LABEL_OPTIONAL
+          type: TYPE_INT32
+          json_name: "level"
+        }
+      }
+      field: {
+        name: "value"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "value"
+      }
+      field: {
+        name: "deep"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_MESSAGE
+        type_name: ".comprehensive.OuterMessage.InnerMessage.DeeplyNested"
+        json_name: "deep"
+      }
+    }
+    field: {
+      name: "inner"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.OuterMessage.InnerMessage"
+      json_name: "inner"
+    }
+  }
+
+  # ==========================================================================
+  # Recursive Message
+  # ==========================================================================
+
+  message_type: {
+    name: "TreeNode"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        description: "Recursive tree structure"
+      }
+    }
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+    field: {
+      name: "children"
+      number: 2
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.TreeNode"
+      json_name: "children"
+    }
+  }
+
+  # ==========================================================================
+  # Map Messages
+  # ==========================================================================
+
+  message_type: {
+    name: "MapFieldsMessage"
+    # Map entry for string -> string
+    nested_type: {
+      name: "StringMapEntry"
+      options: { map_entry: true }
+      field: { name: "key" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING }
+      field: { name: "value" number: 2 label: LABEL_OPTIONAL type: TYPE_STRING }
+    }
+    # Map entry for string -> NestedConfig
+    nested_type: {
+      name: "ObjectMapEntry"
+      options: { map_entry: true }
+      field: { name: "key" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING }
+      field: { name: "value" number: 2 label: LABEL_OPTIONAL type: TYPE_MESSAGE type_name: ".comprehensive.NestedConfig" }
+    }
+    field: {
+      name: "string_map"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.MapFieldsMessage.StringMapEntry"
+      json_name: "stringMap"
+    }
+    field: {
+      name: "object_map"
+      number: 2
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".comprehensive.MapFieldsMessage.ObjectMapEntry"
+      json_name: "objectMap"
+    }
+  }
+
+  # ==========================================================================
+  # Composition Message
+  # ==========================================================================
+
+  message_type: {
+    name: "CompositionMessage"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        title: "Composition Message"
+        description: "Demonstrates schema composition with allOf and discriminator"
+        all_of: [
+          { reference: { ref: "#/components/schemas/comprehensiveNestedConfig" } }
+        ]
+        discriminator: {
+          property_name: "type"
+          mapping: {
+            key: "configA"
+            value: "#/components/schemas/comprehensiveNestedConfig"
+          }
+          mapping: {
+            key: "configB"
+            value: "#/components/schemas/comprehensiveNestedConfig"
+          }
+        }
+      }
+    }
+    field: {
+      name: "type"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "type"
+    }
+  }
+
+  # ==========================================================================
+  # Services
+  # ==========================================================================
+
+  service: {
+    name: "ItemService"
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_tag]: {
+        description: "Service for managing items"
+      }
+    }
+
+    # List items - GET with query params
+    method: {
+      name: "ListItems"
+      input_type: ".comprehensive.ListItemsRequest"
+      output_type: ".comprehensive.ListItemsResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "List all items"
+          description: "Returns a paginated list of items."
+        }
+      }
+    }
+
+    # Get item - GET with path param
+    method: {
+      name: "GetItem"
+      input_type: ".comprehensive.GetItemRequest"
+      output_type: ".comprehensive.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/{item_id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Get an item by ID"
+          description: "Returns a single item by its unique identifier."
+          responses: {
+            default: {
+              response: { description: "Unexpected error" }
+            }
+            response_or_reference: {
+              name: "404"
+              value: {
+                response: { description: "Item not found" }
+              }
+            }
+            response_or_reference: {
+              name: "500"
+              value: {
+                reference: { ref: "#/components/responses/NotFound" }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    # Create item - POST with body
+    method: {
+      name: "CreateItem"
+      input_type: ".comprehensive.CreateItemRequest"
+      output_type: ".comprehensive.Item"
+      options: {
+        [google.api.http]: {
+          post: "/v1/items"
+          body: "*"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Create a new item"
+          description: "Creates a new item and returns the created item."
+          request_body: {
+            description: "Item to create"
+            required: true
+          }
+        }
+      }
+    }
+
+    # Update item - PUT with path param and body
+    method: {
+      name: "UpdateItem"
+      input_type: ".comprehensive.UpdateItemRequest"
+      output_type: ".comprehensive.Item"
+      options: {
+        [google.api.http]: {
+          put: "/v1/items/{item_id}"
+          body: "*"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Update an item"
+          description: "Fully updates an existing item."
+        }
+      }
+    }
+
+    # Patch item - PATCH with path param and body
+    method: {
+      name: "PatchItem"
+      input_type: ".comprehensive.PatchItemRequest"
+      output_type: ".comprehensive.Item"
+      options: {
+        [google.api.http]: {
+          patch: "/v1/items/{item_id}"
+          body: "*"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Partial update an item"
+          description: "Partially updates an item using field mask."
+        }
+      }
+    }
+
+    # Delete item - DELETE with path param
+    method: {
+      name: "DeleteItem"
+      input_type: ".comprehensive.DeleteItemRequest"
+      output_type: ".comprehensive.DeleteItemResponse"
+      options: {
+        [google.api.http]: {
+          delete: "/v1/items/{item_id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Delete an item"
+          description: "Deletes an item by its ID."
+        }
+      }
+    }
+
+    # Deprecated method
+    method: {
+      name: "DeprecatedMethod"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.Item"
+      options: {
+        deprecated: true
+        [google.api.http]: {
+          get: "/v1/deprecated"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Deprecated endpoint"
+          description: "This endpoint is deprecated and will be removed."
+          deprecated: true
+        }
+      }
+    }
+
+    # Secure method - operation-level security and servers
+    method: {
+      name: "SecureMethod"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/secure"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Secure endpoint"
+          description: "Endpoint with operation-level security override."
+          security: [
+            {
+              security_requirement: {
+                key: "bearer_auth"
+                value: {}
+              }
+            }
+          ]
+          servers: [
+            {
+              url: "https://secure.example.com/v1"
+              description: "Secure server"
+            }
+          ]
+        }
+      }
+    }
+  }
+
+  service: {
+    name: "TypeService"
+    # All types
+    method: {
+      name: "GetAllTypes"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.AllTypesMessage"
+      options: {
+        [google.api.http]: { get: "/v1/types/all" }
+      }
+    }
+
+    # Validation types
+    method: {
+      name: "GetValidation"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.ValidationMessage"
+      options: {
+        [google.api.http]: { get: "/v1/types/validation" }
+      }
+    }
+
+    # OneOf
+    method: {
+      name: "GetOneof"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.SingleOneofMessage"
+      options: {
+        [google.api.http]: { get: "/v1/types/oneof" }
+      }
+    }
+
+    # Maps
+    method: {
+      name: "GetMaps"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.MapFieldsMessage"
+      options: {
+        [google.api.http]: { get: "/v1/types/maps" }
+      }
+    }
+
+    # Nested
+    method: {
+      name: "GetNested"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.OuterMessage"
+      options: {
+        [google.api.http]: { get: "/v1/types/nested" }
+      }
+    }
+
+    # Tree (recursive)
+    method: {
+      name: "GetTree"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.TreeNode"
+      options: {
+        [google.api.http]: { get: "/v1/types/tree" }
+      }
+    }
+
+    # Composition
+    method: {
+      name: "GetComposition"
+      input_type: ".comprehensive.SimpleRequest"
+      output_type: ".comprehensive.CompositionMessage"
+      options: {
+        [google.api.http]: { get: "/v1/types/composition" }
+      }
+    }
+  }
+
+  # ==========================================================================
+  # File-level Options (Document Configuration)
+  # ==========================================================================
+
+  options: {
+    go_package: "github.com/comprehensive/api;comprehensive"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "Comprehensive OpenAPI v3.1.0 Test API"
+        summary: "Tests all OpenAPI 3.1.0 features"
+        description: "Comprehensive test covering all supported features including schemas, validation, composition, and visibility."
+        terms_of_service: "https://example.com/terms"
+        contact: {
+          name: "API Support"
+          url: "https://example.com/support"
+          email: "support@example.com"
+        }
+        license: {
+          name: "Apache 2.0"
+          identifier: "Apache-2.0"
+          url: "https://apache.org/licenses/LICENSE-2.0"
+        }
+        version: "1.0.0"
+      }
+      servers: [
+        {
+          url: "https://api.example.com/{version}"
+          description: "Production server"
+          variables: {
+            key: "version"
+            value: {
+              enum: ["v1", "v2"]
+              default: "v1"
+              description: "API version"
+            }
+          }
+        },
+        {
+          url: "https://staging.example.com/v1"
+          description: "Staging server"
+        }
+      ]
+      security: [
+        {
+          security_requirement: {
+            key: "api_key"
+            value: {}
+          }
+        }
+      ]
+      tags: [
+        {
+          name: "Items"
+          description: "Item management operations"
+          external_docs: {
+            description: "Item API Guide"
+            url: "https://example.com/docs/items"
+          }
+        }
+      ]
+      external_docs: {
+        description: "Full API documentation"
+        url: "https://example.com/docs"
+      }
+      components: {
+        security_schemes: {
+          key: "api_key"
+          value: {
+            type: TYPE_API_KEY
+            description: "API key authentication"
+            name: "X-API-Key"
+            in: IN_HEADER
+          }
+        }
+        security_schemes: {
+          key: "bearer_auth"
+          value: {
+            type: TYPE_HTTP
+            description: "Bearer token authentication"
+            scheme: "bearer"
+            bearer_format: "JWT"
+          }
+        }
+        security_schemes: {
+          key: "oauth2"
+          value: {
+            type: TYPE_OAUTH2
+            description: "OAuth2 authentication"
+            flows: {
+              authorization_code: {
+                authorization_url: "https://example.com/oauth/authorize"
+                token_url: "https://example.com/oauth/token"
+                scopes: {
+                  key: "read"
+                  value: "Read access"
+                }
+                scopes: {
+                  key: "write"
+                  value: "Write access"
+                }
+              }
+            }
+          }
+        }
+        responses: {
+          name: "NotFound"
+          value: {
+            response: {
+              description: "Resource not found"
+            }
+          }
+        }
+        parameters: {
+          key: "PageSize"
+          value: {
+            name: "page_size"
+            in: "query"
+            description: "Number of items per page"
+            schema: {
+              value: {
+                type: ["integer"]
+                format: "int32"
+              }
+            }
+          }
+        }
+        headers: {
+          key: "X-Request-Id"
+          value: {
+            header: {
+              description: "Unique request identifier"
+              schema: {
+                value: {
+                  type: ["string"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  syntax: "proto3"
+}

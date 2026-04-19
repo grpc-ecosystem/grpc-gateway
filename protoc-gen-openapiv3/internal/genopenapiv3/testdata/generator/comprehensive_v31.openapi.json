@@ -1,0 +1,1158 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Comprehensive OpenAPI v3.1.0 Test API",
+        "summary": "Tests all OpenAPI 3.1.0 features",
+        "description": "Comprehensive test covering all supported features including schemas, validation, composition, and visibility.",
+        "termsOfService": "https://example.com/terms",
+        "contact": {
+            "name": "API Support",
+            "url": "https://example.com/support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "identifier": "Apache-2.0"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.example.com/{version}",
+            "description": "Production server",
+            "variables": {
+                "version": {
+                    "enum": [
+                        "v1",
+                        "v2"
+                    ],
+                    "default": "v1",
+                    "description": "API version"
+                }
+            }
+        },
+        {
+            "url": "https://staging.example.com/v1",
+            "description": "Staging server"
+        }
+    ],
+    "paths": {
+        "/v1/items": {
+            "get": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "List all items",
+                "description": "Returns a paginated list of items.",
+                "operationId": "ItemService_ListItems",
+                "parameters": [
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "page_token",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveListItemsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Create a new item",
+                "description": "Creates a new item and returns the created item.",
+                "operationId": "ItemService_CreateItem",
+                "requestBody": {
+                    "description": "Item to create",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comprehensiveCreateItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveItem"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/items/{item_id}": {
+            "get": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Get an item by ID",
+                "description": "Returns a single item by its unique identifier.",
+                "operationId": "ItemService_GetItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveItem"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Update an item",
+                "description": "Fully updates an existing item.",
+                "operationId": "ItemService_UpdateItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comprehensiveUpdateItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveItem"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Delete an item",
+                "description": "Deletes an item by its ID.",
+                "operationId": "ItemService_DeleteItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveDeleteItemResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Partial update an item",
+                "description": "Partially updates an item using field mask.",
+                "operationId": "ItemService_PatchItem",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/comprehensivePatchItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveItem"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/deprecated": {
+            "get": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Deprecated endpoint",
+                "description": "This endpoint is deprecated and will be removed.",
+                "operationId": "ItemService_DeprecatedMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveItem"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "deprecated": true
+            }
+        },
+        "/v1/secure": {
+            "get": {
+                "tags": [
+                    "ItemService"
+                ],
+                "summary": "Secure endpoint",
+                "description": "Endpoint with operation-level security override.",
+                "operationId": "ItemService_SecureMethod",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveItem"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_auth": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "https://secure.example.com/v1",
+                        "description": "Secure server"
+                    }
+                ]
+            }
+        },
+        "/v1/types/all": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetAllTypes",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveAllTypesMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/types/validation": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetValidation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveValidationMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/types/oneof": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetOneof",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveSingleOneofMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/types/maps": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetMaps",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveMapFieldsMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/types/nested": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetNested",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveOuterMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/types/tree": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetTree",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveTreeNode"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/types/composition": {
+            "get": {
+                "tags": [
+                    "TypeService"
+                ],
+                "operationId": "TypeService_GetComposition",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/comprehensiveCompositionMessage"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/google.rpc.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "InnerMessageDeeplyNested": {
+                "type": "object",
+                "properties": {
+                    "level": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "OuterMessageInnerMessage": {
+                "type": "object",
+                "properties": {
+                    "deep": {
+                        "$ref": "#/components/schemas/InnerMessageDeeplyNested"
+                    },
+                    "value": {
+                        "type": "string"
+                    }
+                }
+            },
+            "comprehensiveAllTypesMessage": {
+                "type": "object",
+                "description": "Message containing all scalar proto types",
+                "properties": {
+                    "bool_value": {
+                        "type": "boolean"
+                    },
+                    "bytes_value": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "double_value": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "fixed32_value": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fixed64_value": {
+                        "type": "string",
+                        "format": "uint64"
+                    },
+                    "float_value": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "int32_value": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "int64_value": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "sfixed32_value": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "sfixed64_value": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "sint32_value": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "sint64_value": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "string_value": {
+                        "type": "string"
+                    },
+                    "uint32_value": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "uint64_value": {
+                        "type": "string",
+                        "format": "uint64"
+                    }
+                }
+            },
+            "comprehensiveCompositionMessage": {
+                "type": "object",
+                "title": "Composition Message",
+                "description": "Demonstrates schema composition with allOf and discriminator",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/comprehensiveNestedConfig"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "configA": "#/components/schemas/comprehensiveNestedConfig",
+                        "configB": "#/components/schemas/comprehensiveNestedConfig"
+                    }
+                }
+            },
+            "comprehensiveCreateItemRequest": {
+                "type": "object",
+                "properties": {
+                    "item": {
+                        "$ref": "#/components/schemas/comprehensiveItem"
+                    }
+                }
+            },
+            "comprehensiveDeleteItemResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "comprehensiveItem": {
+                "type": "object",
+                "title": "Item",
+                "description": "Represents an item in the system",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "description": "Creation timestamp",
+                        "readOnly": true
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Item name"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/comprehensiveStatus"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "examples": [
+                    {
+                        "id": "item-123",
+                        "name": "Example Item"
+                    }
+                ]
+            },
+            "comprehensiveListItemsResponse": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/comprehensiveItem"
+                        }
+                    },
+                    "next_page_token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "comprehensiveMapFieldsMessage": {
+                "type": "object",
+                "properties": {
+                    "object_map": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/comprehensiveNestedConfig"
+                        }
+                    },
+                    "string_map": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "comprehensiveNestedConfig": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "comprehensiveOuterMessage": {
+                "type": "object",
+                "properties": {
+                    "inner": {
+                        "$ref": "#/components/schemas/OuterMessageInnerMessage"
+                    }
+                }
+            },
+            "comprehensivePatchItemRequest": {
+                "type": "object",
+                "properties": {
+                    "item": {
+                        "$ref": "#/components/schemas/comprehensiveItem"
+                    },
+                    "item_id": {
+                        "type": "string"
+                    },
+                    "update_mask": {
+                        "type": "string"
+                    }
+                }
+            },
+            "comprehensiveSingleOneofMessage": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "choice.string_choice",
+                        "properties": {
+                            "string_choice": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "string_choice"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.int_choice",
+                        "properties": {
+                            "int_choice": {
+                                "type": "integer",
+                                "format": "int32"
+                            }
+                        },
+                        "required": [
+                            "int_choice"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "choice.config_choice",
+                        "properties": {
+                            "config_choice": {
+                                "$ref": "#/components/schemas/comprehensiveNestedConfig"
+                            }
+                        },
+                        "required": [
+                            "config_choice"
+                        ]
+                    },
+                    {
+                        "title": "choice.none",
+                        "not": {
+                            "anyOf": [
+                                {
+                                    "required": [
+                                        "string_choice"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "int_choice"
+                                    ]
+                                },
+                                {
+                                    "required": [
+                                        "config_choice"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "comprehensiveStatus": {
+                "type": "string",
+                "enum": [
+                    "STATUS_UNSPECIFIED",
+                    "STATUS_ACTIVE",
+                    "STATUS_INACTIVE",
+                    "STATUS_ARCHIVED"
+                ]
+            },
+            "comprehensiveTreeNode": {
+                "type": "object",
+                "description": "Recursive tree structure",
+                "properties": {
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/comprehensiveTreeNode"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "comprehensiveUpdateItemRequest": {
+                "type": "object",
+                "properties": {
+                    "item": {
+                        "$ref": "#/components/schemas/comprehensiveItem"
+                    },
+                    "item_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "comprehensiveValidationMessage": {
+                "type": "object",
+                "description": "Message with field-level validation constraints",
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "format": "int32",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "multipleOf": 5
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email address",
+                        "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "uniqueItems": true
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username",
+                        "description": "User's unique username",
+                        "minLength": 3,
+                        "maxLength": 50,
+                        "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+                        "examples": [
+                            "johndoe"
+                        ]
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "google.rpc.Status": {
+                "type": "object",
+                "description": "The `Status` type defines a logical error model that is suitable for different programming environments.",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The status code, which should be an enum value of google.rpc.Code."
+                    },
+                    "details": {
+                        "type": "array",
+                        "description": "A list of messages that carry the error details.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "@type": {
+                                    "type": "string",
+                                    "description": "A URL/resource name that uniquely identifies the type of the serialized protocol buffer message."
+                                }
+                            },
+                            "additionalProperties": {}
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "A developer-facing error message, which should be in English."
+                    }
+                }
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "description": "Resource not found"
+            }
+        },
+        "parameters": {
+            "PageSize": {
+                "name": "page_size",
+                "in": "query",
+                "description": "Number of items per page",
+                "schema": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "headers": {
+            "X-Request-Id": {
+                "description": "Unique request identifier",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "securitySchemes": {
+            "api_key": {
+                "type": "apiKey",
+                "description": "API key authentication",
+                "name": "X-API-Key",
+                "in": "header"
+            },
+            "bearer_auth": {
+                "type": "http",
+                "description": "Bearer token authentication",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "oauth2": {
+                "type": "oauth2",
+                "description": "OAuth2 authentication",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "https://example.com/oauth/authorize",
+                        "tokenUrl": "https://example.com/oauth/token",
+                        "scopes": {
+                            "read": "Read access",
+                            "write": "Write access"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "api_key": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Items",
+            "description": "Item management operations",
+            "externalDocs": {
+                "description": "Item API Guide",
+                "url": "https://example.com/docs/items"
+            }
+        },
+        {
+            "name": "ItemService",
+            "description": "Service for managing items"
+        },
+        {
+            "name": "TypeService"
+        }
+    ],
+    "externalDocs": {
+        "description": "Full API documentation",
+        "url": "https://example.com/docs"
+    }
+}
