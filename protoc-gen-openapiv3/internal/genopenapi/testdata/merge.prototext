@@ -1,0 +1,85 @@
+file_to_generate: "svc/v1/alpha.proto"
+file_to_generate: "svc/v1/beta.proto"
+proto_file: {
+  name: "svc/v1/alpha.proto"
+  package: "svc.v1"
+  message_type: {
+    name: "AlphaRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "AlphaResponse"
+    field: {
+      name: "result"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "result"
+    }
+  }
+  service: {
+    name: "AlphaService"
+    method: {
+      name: "GetAlpha"
+      input_type: ".svc.v1.AlphaRequest"
+      output_type: ".svc.v1.AlphaResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/alpha/{id}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "svc/v1;svcv1"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "svc/v1/beta.proto"
+  package: "svc.v1"
+  message_type: {
+    name: "BetaRequest"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "BetaResponse"
+    field: {
+      name: "value"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "value"
+    }
+  }
+  service: {
+    name: "BetaService"
+    method: {
+      name: "PostBeta"
+      input_type: ".svc.v1.BetaRequest"
+      output_type: ".svc.v1.BetaResponse"
+      options: {
+        [google.api.http]: {
+          post: "/v1/beta"
+          body: "*"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "svc/v1;svcv1"
+  }
+  syntax: "proto3"
+}

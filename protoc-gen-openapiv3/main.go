@@ -26,6 +26,8 @@ import (
 var (
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
+	allowMerge                     = flag.Bool("allow_merge", false, "if set, generates a single OpenAPI file out of multiple protos")
+	mergeFileName                  = flag.String("merge_file_name", "apidocs", "target OpenAPI file name prefix after merge")
 )
 
 func main() {
@@ -50,6 +52,8 @@ func run() error {
 	reg := descriptor.NewRegistry()
 	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
+	reg.SetAllowMerge(*allowMerge)
+	reg.SetMergeFileName(*mergeFileName)
 	if err := reg.Load(req); err != nil {
 		return err
 	}

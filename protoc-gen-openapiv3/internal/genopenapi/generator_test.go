@@ -440,7 +440,247 @@ func TestGenerate_DisableDefaultErrors(t *testing.T) {
 	}
 }
 
-// loadRequest reads a prototext-encoded CodeGeneratorRequest from disk.
+// TestGenerate_Merge verifies that when allow_merge is enabled on the registry
+// the generator combines all per-file documents into a single output file
+// named after the merge_file_name option.
+func TestGenerate_Merge(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/merge.prototext")
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+	reg.SetAllowMerge(true)
+	reg.SetMergeFileName("merged")
+
+	var targets []*descriptor.File
+	for _, name := range req.FileToGenerate {
+		f, err := reg.LookupFile(name)
+		if err != nil {
+			t.Fatalf("lookup %s: %v", name, err)
+		}
+		targets = append(targets, f)
+	}
+
+	out, err := Generate(reg, targets)
+	if err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+
+	// Exactly one output file must be produced.
+	if len(out) != 1 {
+		t.Fatalf("expected 1 merged output file, got %d", len(out))
+	}
+
+	// The file must carry the merge_file_name as its base.
+	if got := out[0].GetName(); got != "merged.openapi.json" {
+		t.Errorf("merged file name = %q, want %q", got, "merged.openapi.json")
+	}
+
+	var doc map[string]any
+	if err := json.Unmarshal([]byte(out[0].GetContent()), &doc); err != nil {
+		t.Fatalf("unmarshal merged output: %v\n%s", err, out[0].GetContent())
+	}
+
+	// Both paths from the two source files must be present.
+	paths, _ := doc["paths"].(map[string]any)
+	for _, wantPath := range []string{"/v1/alpha/{id}", "/v1/beta"} {
+		if _, ok := paths[wantPath]; !ok {
+			t.Errorf("merged document missing path %q; got paths: %v", wantPath, paths)
+		}
+	}
+
+	// Component schemas from both files must be present.
+	components, _ := doc["components"].(map[string]any)
+	schemas, _ := components["schemas"].(map[string]any)
+	for _, wantSchema := range []string{"svc.v1.AlphaResponse", "svc.v1.BetaResponse"} {
+		if _, ok := schemas[wantSchema]; !ok {
+			t.Errorf("merged document missing component schema %q; got: %v", wantSchema, schemas)
+		}
+	}
+
+	// Tags from both services must appear exactly once.
+	tags, _ := doc["tags"].([]any)
+	tagNames := make(map[string]int)
+	for _, tag := range tags {
+		m, _ := tag.(map[string]any)
+		if name, ok := m["name"].(string); ok {
+			tagNames[name]++
+		}
+	}
+	for _, wantTag := range []string{"AlphaService", "BetaService"} {
+		if tagNames[wantTag] != 1 {
+			t.Errorf("tag %q: want exactly 1 occurrence, got %d", wantTag, tagNames[wantTag])
+		}
+	}
+}
+
+// TestGenerate_MergeNoFiles verifies that merging with no HTTP-annotated
+// files produces an empty (nil) output rather than an error.
+func TestGenerate_MergeNoFiles(t *testing.T) {
+	t.Parallel()
+
+	// A request with a single file that has no HTTP annotations.
+	const rawReq = `
+file_to_generate: "empty/v1/empty.proto"
+proto_file: {
+  name: "empty/v1/empty.proto"
+  package: "empty.v1"
+  message_type: {
+    name: "Msg"
+    field: {
+      name: "value"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "value"
+    }
+  }
+  options: {
+    go_package: "empty/v1;emptyv1"
+  }
+  syntax: "proto3"
+}`
+
+	req := new(pluginpb.CodeGeneratorRequest)
+	if err := prototext.Unmarshal([]byte(rawReq), req); err != nil {
+		t.Fatalf("unmarshal request: %v", err)
+	}
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+	reg.SetAllowMerge(true)
+	reg.SetMergeFileName("merged")
+
+	var targets []*descriptor.File
+	for _, name := range req.FileToGenerate {
+		f, err := reg.LookupFile(name)
+		if err != nil {
+			t.Fatalf("lookup %s: %v", name, err)
+		}
+		targets = append(targets, f)
+	}
+
+	out, err := Generate(reg, targets)
+	if err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+	if len(out) != 0 {
+		t.Errorf("expected 0 output files for empty merge, got %d", len(out))
+	}
+}
+
+// TestGenerate_MergeDeduplicatesTags verifies that when two source files
+// share a service with the same name (in different packages), the merged
+// document only emits that tag once.
+func TestGenerate_MergeDeduplicatesTags(t *testing.T) {
+	t.Parallel()
+
+	const rawReq = `
+file_to_generate: "svc/v1/a.proto"
+file_to_generate: "svc/v2/b.proto"
+proto_file: {
+  name: "svc/v1/a.proto"
+  package: "svc.v1"
+  message_type: {
+    name: "Req"
+    field: { name: "id" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING json_name: "id" }
+  }
+  message_type: {
+    name: "Resp"
+    field: { name: "out" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING json_name: "out" }
+  }
+  service: {
+    name: "SharedService"
+    method: {
+      name: "MethodA"
+      input_type: ".svc.v1.Req"
+      output_type: ".svc.v1.Resp"
+      options: {
+        [google.api.http]: { get: "/v1/a" }
+      }
+    }
+  }
+  options: { go_package: "svc/v1;svcv1" }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "svc/v2/b.proto"
+  package: "svc.v2"
+  message_type: {
+    name: "Req2"
+    field: { name: "id" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING json_name: "id" }
+  }
+  message_type: {
+    name: "Resp2"
+    field: { name: "out" number: 1 label: LABEL_OPTIONAL type: TYPE_STRING json_name: "out" }
+  }
+  service: {
+    name: "SharedService"
+    method: {
+      name: "MethodB"
+      input_type: ".svc.v2.Req2"
+      output_type: ".svc.v2.Resp2"
+      options: {
+        [google.api.http]: { get: "/v2/b" }
+      }
+    }
+  }
+  options: { go_package: "svc/v2;svcv2" }
+  syntax: "proto3"
+}`
+
+	req := new(pluginpb.CodeGeneratorRequest)
+	if err := prototext.Unmarshal([]byte(rawReq), req); err != nil {
+		t.Fatalf("unmarshal request: %v", err)
+	}
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+	reg.SetAllowMerge(true)
+	reg.SetMergeFileName("merged")
+
+	var targets []*descriptor.File
+	for _, name := range req.FileToGenerate {
+		f, err := reg.LookupFile(name)
+		if err != nil {
+			t.Fatalf("lookup %s: %v", name, err)
+		}
+		targets = append(targets, f)
+	}
+
+	out, err := Generate(reg, targets)
+	if err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+	if len(out) != 1 {
+		t.Fatalf("expected 1 merged output file, got %d", len(out))
+	}
+
+	var doc map[string]any
+	if err := json.Unmarshal([]byte(out[0].GetContent()), &doc); err != nil {
+		t.Fatalf("unmarshal merged output: %v", err)
+	}
+
+	tags, _ := doc["tags"].([]any)
+	count := 0
+	for _, tag := range tags {
+		m, _ := tag.(map[string]any)
+		if m["name"] == "SharedService" {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Errorf("SharedService tag count = %d, want 1 (deduplication)", count)
+	}
+}
+
 func loadRequest(t *testing.T, path string) *pluginpb.CodeGeneratorRequest {
 	t.Helper()
 	body, err := os.ReadFile(path)
