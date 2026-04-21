@@ -37,9 +37,7 @@ response codes are emitted default-first then sorted.
 
 ## What it does not do
 
-The generator is deliberately opinionated. Its only configuration flag is
-[`visibility_restriction_selectors`](#hiding-fields-methods-services-and-enum-values).
-The following are **not** supported today:
+The generator is deliberately opinionated. The following are **not** supported today:
 
 - The `grpc.gateway.protoc_gen_openapiv2.options` annotation set.
 - OpenAPI 2.0 / Swagger output (use `protoc-gen-openapiv2` for that).
@@ -48,11 +46,45 @@ The following are **not** supported today:
   fully-qualified proto name with the leading dot stripped
   (e.g. `lib.v1.Book`).
 - Integer enums. Enums are always rendered as strings.
-- Configurable error response schemas. A `google.rpc.Status` default
-  response is injected automatically on every operation.
 
 Features can be added back as concrete needs emerge — if you want one of the
 above, please open an issue describing your use case.
+
+## Plugin options
+
+### `disable_default_errors`
+
+By default, every operation gets an auto-injected `default` response entry
+pointing to the `google.rpc.Status` component schema. If you use a custom
+error handler that returns a different response shape, you can suppress this
+behaviour with the `disable_default_errors` option.
+
+With **buf** (`buf.gen.yaml`):
+
+```yaml
+version: v2
+plugins:
+  - local: protoc-gen-openapiv3
+    out: .
+    opt:
+      - disable_default_errors=true
+```
+
+With **protoc**:
+
+```sh
+protoc -I. \
+  --openapiv3_out=. \
+  --openapiv3_opt=disable_default_errors=true \
+  path/to/your/service.proto
+```
+
+When set, neither the `default` response entry nor the `google.rpc.Status`
+component schema are emitted.
+
+### `visibility_restriction_selectors`
+
+See [Hiding fields, methods, services and enum values](#hiding-fields-methods-services-and-enum-values) below.
 
 ## Installation
 
@@ -274,7 +306,8 @@ valid responses.
 Every operation automatically gets a `default` response keyed to a
 component schema named `google.rpc.Status` with the standard `code`,
 `message`, and `details[]` fields. This matches what `grpc-gateway` returns
-on error paths.
+on error paths. Use the `disable_default_errors` plugin option to suppress
+this behaviour when using a custom error handler.
 
 ## Example
 

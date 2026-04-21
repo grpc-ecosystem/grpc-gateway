@@ -25,6 +25,7 @@ import (
 
 var (
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
+	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
 )
 
 func main() {
@@ -48,6 +49,7 @@ func run() error {
 
 	reg := descriptor.NewRegistry()
 	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
+	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	if err := reg.Load(req); err != nil {
 		return err
 	}
@@ -95,18 +97,23 @@ func emitResp(resp *pluginpb.CodeGeneratorResponse) {
 }
 
 // parseReqParam parses the protoc plugin parameter string (comma-separated
-// key=value pairs) and sets the corresponding flags.
+// key=value pairs) and sets the corresponding flags. When a flag name is
+// present without a value (e.g. "disable_default_errors"), it is treated as
+// "true", so that boolean flags can be enabled by name alone.
 func parseReqParam(param string, f *flag.FlagSet) error {
 	for p := range strings.SplitSeq(param, ",") {
+		if p == "" {
+			continue
+		}
 		flagName, val, ok := strings.Cut(p, "=")
 		if !ok {
-			if err := f.Set(flagName, ""); err != nil {
-				return fmt.Errorf("cannot set flag %s: %w", p, err)
+			if err := f.Set(flagName, "true"); err != nil {
+				return fmt.Errorf("cannot set flag %s: %w", flagName, err)
 			}
 			continue
 		}
 		if err := f.Set(flagName, val); err != nil {
-			return fmt.Errorf("cannot set flag %s: %w", p, err)
+			return fmt.Errorf("cannot set flag %s: %w", flagName, err)
 		}
 	}
 	return nil

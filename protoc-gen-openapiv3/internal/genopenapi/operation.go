@@ -325,7 +325,8 @@ func buildRequestBody(b *schemaBuilder, m *descriptor.Method, binding *descripto
 }
 
 // buildResponses constructs the responses map for an RPC: a 200 with the
-// response message schema, and a default google.rpc.Status error response.
+// response message schema, and (unless disabled) a default google.rpc.Status
+// error response.
 //
 // RPCs returning google.protobuf.Empty get a 200 with an empty object
 // schema rather than the HTTP-conventional 204 No Content. The grpc-gateway
@@ -349,8 +350,10 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method) *Responses {
 		resp.Codes["200"] = &ResponseRef{Value: NewResponse(desc).WithJSONSchema(schema)}
 	}
 
-	ensureStatusSchema(b.doc)
-	resp.Default = &ResponseRef{Value: NewResponse("An unexpected error response.").WithJSONSchema(NewSchemaRef(statusSchemaName))}
+	if !b.reg.GetDisableDefaultErrors() {
+		ensureStatusSchema(b.doc)
+		resp.Default = &ResponseRef{Value: NewResponse("An unexpected error response.").WithJSONSchema(NewSchemaRef(statusSchemaName))}
+	}
 	return resp
 }
 
