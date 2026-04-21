@@ -45,16 +45,21 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 	seenTags := make(map[string]bool)
 
 	for _, svc := range file.Services {
-		tag := svc.GetName()
-		if !seenTags[tag] {
-			seenTags[tag] = true
-			doc.Tags = append(doc.Tags, &Tag{
-				Name:        tag,
-				Description: serviceComments(svc),
-			})
+		if !isVisible(serviceVisibility(svc), reg) {
+			// Service is hidden by visibility rules, skip.
+			continue
 		}
 
+		tag := svc.GetName()
+		// Track whether any methods of this service are visible,
+		// to avoid emitting a tag for a service with only hidden methods.
+		hasVisibleMethod := false
+
 		for _, method := range svc.Methods {
+			if !isVisible(methodVisibility(method), reg) {
+				// Method is hidden by visibility rules, skip.
+				continue
+			}
 			for i, binding := range method.Bindings {
 				urlPath, pathParams := convertPathTemplate(binding.PathTmpl.Template)
 				op := buildOperation(b, svc, method, binding, i, pathParams)
@@ -66,6 +71,19 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 				}
 				item.SetOperation(binding.HTTPMethod, op)
 			}
+			// At least one method is visible, so the service's tag
+			// should be emitted.
+			hasVisibleMethod = true
+		}
+
+		// Emit the service's tag if it has any visible
+		// methods and the tag hasn't already been emitted.
+		if hasVisibleMethod && !seenTags[tag] {
+			seenTags[tag] = true
+			doc.Tags = append(doc.Tags, &Tag{
+				Name:        tag,
+				Description: serviceComments(svc),
+			})
 		}
 	}
 

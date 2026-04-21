@@ -9,27 +9,25 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"log"
 	"os"
+	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapi"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
-func main() {
-	// Write log output to standard error to prevent clobbering standard out.
-	// Drop the date/time prefix the standard logger adds by default — buf
-	// surfaces these messages interactively, so a timestamp adds noise
-	// without context.
-	log.SetOutput(os.Stderr)
-	log.SetPrefix("protoc-gen-openapiv3: ")
-	log.SetFlags(0)
+var (
+	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
+)
 
+func main() {
 	if err := run(); err != nil {
 		emitError(err)
 		os.Exit(1)
@@ -42,7 +40,14 @@ func run() error {
 		return err
 	}
 
+	if param := req.GetParameter(); param != "" {
+		if err := parseReqParam(param, flag.CommandLine); err != nil {
+			return err
+		}
+	}
+
 	reg := descriptor.NewRegistry()
+	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	if err := reg.Load(req); err != nil {
 		return err
 	}
@@ -87,4 +92,22 @@ func emitResp(resp *pluginpb.CodeGeneratorResponse) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+// parseReqParam parses the protoc plugin parameter string (comma-separated
+// key=value pairs) and sets the corresponding flags.
+func parseReqParam(param string, f *flag.FlagSet) error {
+	for p := range strings.SplitSeq(param, ",") {
+		flagName, val, ok := strings.Cut(p, "=")
+		if !ok {
+			if err := f.Set(flagName, ""); err != nil {
+				return fmt.Errorf("cannot set flag %s: %w", p, err)
+			}
+			continue
+		}
+		if err := f.Set(flagName, val); err != nil {
+			return fmt.Errorf("cannot set flag %s: %w", p, err)
+		}
+	}
+	return nil
 }
