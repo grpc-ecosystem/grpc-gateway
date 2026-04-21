@@ -64,8 +64,17 @@ jobs:
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: /home/vscode/.cache/_grpc_gateway_bazel
-          key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
-          restore-keys: v1-bazel-cache-
+          key: v2-bazel-output-${{ hashFiles('.bazelversion', 'MODULE.bazel.lock', 'repositories.bzl') }}
+          restore-keys: |
+            v2-bazel-output-${{ hashFiles('.bazelversion') }}-
+            v2-bazel-output-
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: /home/vscode/.cache/bazel_repo
+          key: v2-bazel-repo-${{ hashFiles('.bazelversion', 'MODULE.bazel.lock', 'repositories.bzl') }}
+          restore-keys: |
+            v2-bazel-repo-${{ hashFiles('.bazelversion') }}-
+            v2-bazel-repo-
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -74,6 +83,7 @@ jobs:
           | # put .bazelrc in $HOME so that it's read before project's .bazelrc
           cat > /home/vscode/.bazelrc << EOF
           startup --output_base=/home/vscode/.cache/_grpc_gateway_bazel
+          build --repository_cache=/home/vscode/.cache/bazel_repo
           build --@io_bazel_rules_go//go/config:race
           # Workaround https://github.com/bazelbuild/bazel/issues/3645
           # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
