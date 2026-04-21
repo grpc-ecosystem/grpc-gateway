@@ -24,7 +24,13 @@ func Run(ctx context.Context, network, address string) error {
 			grpclog.Errorf("Failed to close %s %s: %v", network, address, err)
 		}
 	}()
+	return ServeGRPC(ctx, l)
+}
 
+// ServeGRPC registers the example gRPC services on a fresh grpc.Server and
+// serves the given listener until ctx is cancelled. Callers retain
+// ownership of the listener and are responsible for closing it.
+func ServeGRPC(ctx context.Context, l net.Listener) error {
 	s := grpc.NewServer()
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())

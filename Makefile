@@ -81,10 +81,14 @@ $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPE
 	@rm -f $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/README.md \
 		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
 
+OAPI_CODEGEN_VERSION := v2.6.0
+
 install:
 	go install github.com/bufbuild/buf/cmd/buf@v1.45.0
+	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@$(OAPI_CODEGEN_VERSION)
 	go install \
 		./protoc-gen-openapiv2 \
+		./protoc-gen-openapiv3 \
 		./protoc-gen-grpc-gateway
 
 proto:
@@ -157,8 +161,40 @@ proto:
 	buf generate \
 		--template ./examples/internal/proto/examplepb/opaque.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/opaque.proto
+	buf generate \
+		--template ./protoc-gen-openapiv3/buf.gen.yaml \
+		--path ./examples/internal/helloworld/helloworld.proto \
+		--path ./examples/internal/proto/examplepb/a_bit_of_everything.proto
 
-generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
+# openapiv3-clients regenerates the Go clients consumed by the end-to-end
+# oracle tests under examples/internal/integration/openapiv3. Both clients
+# are produced by oapi-codegen from the specs emitted by `make proto`.
+#
+# The helloworldv3 oracle test (openapiv3_test.go) imports the generated
+# client, stands up a real grpc-gateway in front of an in-process Greeter
+# gRPC server, and round-trips a request through it. abe_oracle_test.go
+# does the same for the ABE server impl under examples/internal/server. If
+# the specs drift from what the gateway actually accepts, these tests fail.
+#
+# A third test in the same package (abe_spec_test.go) loads the checked-in
+# ABE spec and asserts structural facts without any codegen — that one runs
+# in normal CI and is the bulk of the coverage.
+HELLOWORLD_V3_SPEC := examples/internal/helloworld/helloworld.openapi.json
+HELLOWORLD_V3_CLIENT_DIR := examples/internal/clients/helloworldv3
+ABE_V3_SPEC := examples/internal/proto/examplepb/a_bit_of_everything.openapi.json
+ABE_V3_CLIENT_DIR := examples/internal/clients/abev3
+
+openapiv3-clients: proto
+	@rm -rf $(HELLOWORLD_V3_CLIENT_DIR)
+	@mkdir -p $(HELLOWORLD_V3_CLIENT_DIR)
+	oapi-codegen -package helloworldv3 -generate types,client \
+		-o $(HELLOWORLD_V3_CLIENT_DIR)/helloworldv3.go $(HELLOWORLD_V3_SPEC)
+	@rm -rf $(ABE_V3_CLIENT_DIR)
+	@mkdir -p $(ABE_V3_CLIENT_DIR)
+	oapi-codegen -package abev3 -generate types,client \
+		-o $(ABE_V3_CLIENT_DIR)/abev3.go $(ABE_V3_SPEC)
+
+generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS) openapiv3-clients
 
 test: proto
 	go test -short -race ./...
@@ -170,4 +206,4 @@ clean:
 	find . -type f -name '*.pb.gw.go' -delete
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 
-.PHONY: generate test clean proto install
+.PHONY: generate test clean proto install openapiv3-clients

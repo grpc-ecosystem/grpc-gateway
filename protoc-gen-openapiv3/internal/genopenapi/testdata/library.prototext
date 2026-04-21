@@ -1,0 +1,332 @@
+file_to_generate: "lib/v1/library.proto"
+proto_file: {
+  name: "google/protobuf/empty.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Empty"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/emptypb;emptypb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "google/protobuf/timestamp.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Timestamp"
+    field: {
+      name: "seconds"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_INT64
+      json_name: "seconds"
+    }
+    field: {
+      name: "nanos"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "nanos"
+    }
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/timestamppb;timestamppb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "lib/v1/library.proto"
+  package: "lib.v1"
+  dependency: "google/protobuf/empty.proto"
+  dependency: "google/protobuf/timestamp.proto"
+  message_type: {
+    name: "Book"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "title"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "title"
+    }
+    field: {
+      name: "tags"
+      number: 3
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "tags"
+    }
+    field: {
+      name: "page_count"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "pageCount"
+    }
+    field: {
+      name: "kind"
+      number: 5
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".lib.v1.Book.Kind"
+      json_name: "kind"
+    }
+    field: {
+      name: "published_at"
+      number: 6
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".google.protobuf.Timestamp"
+      json_name: "publishedAt"
+    }
+    field: {
+      name: "sequel"
+      number: 7
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".lib.v1.Book"
+      json_name: "sequel"
+    }
+    field: {
+      name: "paperback_isbn"
+      number: 8
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "paperbackIsbn"
+      oneof_index: 0
+    }
+    field: {
+      name: "ebook_url"
+      number: 9
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "ebookUrl"
+      oneof_index: 0
+    }
+    field: {
+      name: "bought_at"
+      number: 10
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "boughtAt"
+      oneof_index: 1
+    }
+    field: {
+      name: "borrowed_from"
+      number: 11
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "borrowedFrom"
+      oneof_index: 1
+    }
+    oneof_decl: { name: "format" }
+    oneof_decl: { name: "provenance" }
+    enum_type: {
+      name: "Kind"
+      value: { name: "KIND_UNSPECIFIED" number: 0 }
+      value: { name: "FICTION" number: 1 }
+      value: { name: "NON_FICTION" number: 2 }
+    }
+  }
+  message_type: {
+    name: "ListBooksRequest"
+    field: {
+      name: "page_size"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "pageSize"
+    }
+    field: {
+      name: "page_token"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "pageToken"
+    }
+    field: {
+      name: "filter"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".lib.v1.BookFilter"
+      json_name: "filter"
+    }
+    field: {
+      name: "updated_after"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".google.protobuf.Timestamp"
+      json_name: "updatedAfter"
+    }
+    field: {
+      name: "tags"
+      number: 5
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "tags"
+    }
+  }
+  message_type: {
+    name: "BookFilter"
+    field: {
+      name: "kind"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".lib.v1.Book.Kind"
+      json_name: "kind"
+    }
+    field: {
+      name: "min_pages"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "minPages"
+    }
+    field: {
+      name: "range"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".lib.v1.BookFilter.PageRange"
+      json_name: "range"
+    }
+    field: {
+      name: "labels"
+      number: 4
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".lib.v1.BookFilter.LabelsEntry"
+      json_name: "labels"
+    }
+    nested_type: {
+      name: "PageRange"
+      field: {
+        name: "start"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_INT32
+        json_name: "start"
+      }
+      field: {
+        name: "end"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_INT32
+        json_name: "end"
+      }
+    }
+    nested_type: {
+      name: "LabelsEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "value"
+      }
+      options: { map_entry: true }
+    }
+  }
+  message_type: {
+    name: "ListBooksResponse"
+    field: {
+      name: "books"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".lib.v1.Book"
+      json_name: "books"
+    }
+    field: {
+      name: "next_page_token"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "nextPageToken"
+    }
+  }
+  message_type: {
+    name: "CreateBookRequest"
+    field: {
+      name: "shelf"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "shelf"
+    }
+    field: {
+      name: "book"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".lib.v1.Book"
+      json_name: "book"
+    }
+  }
+  message_type: {
+    name: "DeleteBookRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "LibraryService"
+    method: {
+      name: "ListBooks"
+      input_type: ".lib.v1.ListBooksRequest"
+      output_type: ".lib.v1.ListBooksResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/books"
+        }
+      }
+    }
+    method: {
+      name: "CreateBook"
+      input_type: ".lib.v1.CreateBookRequest"
+      output_type: ".lib.v1.Book"
+      options: {
+        [google.api.http]: {
+          post: "/v1/shelves/{shelf}/books"
+          body: "*"
+        }
+      }
+    }
+    method: {
+      name: "DeleteBook"
+      input_type: ".lib.v1.DeleteBookRequest"
+      output_type: ".google.protobuf.Empty"
+      options: {
+        deprecated: true
+        [google.api.http]: {
+          delete: "/v1/books/{id}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/lib/v1;libv1"
+  }
+  syntax: "proto3"
+}
