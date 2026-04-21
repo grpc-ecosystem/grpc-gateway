@@ -383,6 +383,63 @@ func TestGenerate_SimpleEcho(t *testing.T) {
 	assertJSONEqual(t, got, want)
 }
 
+// TestGenerate_DisableDefaultErrors verifies that when DisableDefaultErrors is
+// set on the registry, no default error response (google.rpc.Status) is
+// injected into the operations, and the google.rpc.Status component schema is
+// also absent from the document.
+func TestGenerate_DisableDefaultErrors(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/simple_echo.prototext")
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+	reg.SetDisableDefaultErrors(true)
+
+	var targets []*descriptor.File
+	for _, name := range req.FileToGenerate {
+		f, err := reg.LookupFile(name)
+		if err != nil {
+			t.Fatalf("lookup %s: %v", name, err)
+		}
+		targets = append(targets, f)
+	}
+	out, err := Generate(reg, targets)
+	if err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+	if len(out) != 1 {
+		t.Fatalf("expected 1 output file, got %d", len(out))
+	}
+
+	var doc map[string]any
+	if err := json.Unmarshal([]byte(out[0].GetContent()), &doc); err != nil {
+		t.Fatalf("unmarshal output: %v", err)
+	}
+
+	// No operation should have a default response when disable_default_errors=true.
+	paths, _ := doc["paths"].(map[string]any)
+	for urlPath, item := range paths {
+		m, _ := item.(map[string]any)
+		for method, op := range m {
+			o, _ := op.(map[string]any)
+			responses, _ := o["responses"].(map[string]any)
+			if _, ok := responses["default"]; ok {
+				t.Errorf("%s %s: unexpected default response when disable_default_errors=true", method, urlPath)
+			}
+		}
+	}
+
+	// The google.rpc.Status component schema must not be present either.
+	components, _ := doc["components"].(map[string]any)
+	schemas, _ := components["schemas"].(map[string]any)
+	if _, ok := schemas["google.rpc.Status"]; ok {
+		t.Errorf("google.rpc.Status component schema must be absent when disable_default_errors=true")
+	}
+}
+
 // loadRequest reads a prototext-encoded CodeGeneratorRequest from disk.
 func loadRequest(t *testing.T, path string) *pluginpb.CodeGeneratorRequest {
 	t.Helper()
