@@ -233,7 +233,7 @@ GEM
     minitest (5.25.1)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    nokogiri (1.18.9)
+    nokogiri (1.19.1)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     octokit (4.25.1)
