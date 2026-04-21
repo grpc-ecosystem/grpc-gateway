@@ -92,6 +92,10 @@ func buildParameters(b *schemaBuilder, m *descriptor.Method, binding *descriptor
 	}
 	cycle := newQueryCycleChecker(b.reg.GetRecursiveDepth())
 	for _, field := range m.RequestType.Fields {
+		if !isVisible(fieldVisibility(field), b.reg) {
+			// Field is hidden by visibility rules, skip.
+			continue
+		}
 		if isPathParam(field, binding.PathParams) {
 			// Already handled as a path parameter, skip.
 			continue
@@ -160,6 +164,10 @@ func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, 
 			defer cycle.leave(msg.FQMN())
 			var out []*ParameterRef
 			for _, nested := range msg.Fields {
+				if !isVisible(fieldVisibility(nested), b.reg) {
+					// Field is hidden by visibility rules, skip.
+					continue
+				}
 				out = append(out, b.queryParameters(nested, name+".", deprecated, cycle)...)
 			}
 			return out
@@ -293,6 +301,10 @@ func buildRequestBody(b *schemaBuilder, m *descriptor.Method, binding *descripto
 		// body="*": synthesize a body-only inline schema.
 		bodySchema := &Schema{Type: SchemaType{"object"}}
 		for _, field := range m.RequestType.Fields {
+			if !isVisible(fieldVisibility(field), b.reg) {
+				// Field is hidden by visibility rules, skip.
+				continue
+			}
 			if isPathParam(field, binding.PathParams) {
 				continue
 			}

@@ -202,10 +202,18 @@ func (b *schemaBuilder) ensureMessageSchema(msg *descriptor.Message) {
 		schema.Properties = make(map[string]*SchemaOrRef, total)
 	}
 	for _, field := range regular {
+		if !isVisible(fieldVisibility(field), b.reg) {
+			// Field is hidden by visibility rules, skip.
+			continue
+		}
 		b.addProperty(schema, field)
 	}
 	for _, g := range oneofs {
 		for _, field := range g.fields {
+			if !isVisible(fieldVisibility(field), b.reg) {
+				// Field is hidden by visibility rules, skip.
+				continue
+			}
 			b.addProperty(schema, field)
 		}
 	}
@@ -244,13 +252,20 @@ func (b *schemaBuilder) ensureMessageSchema(msg *descriptor.Message) {
 	// directly onto the schema's `oneOf` for less verbose output.
 	groupConstraints := make([]*SchemaOrRef, 0, len(oneofs))
 	for _, g := range oneofs {
-		if len(g.fields) < 2 {
-			// Single-field oneof groups are a no-op constraint, so skip them.
+		// Collect only visible fields for the constraint.
+		var visibleFields []*descriptor.Field
+		for _, field := range g.fields {
+			if isVisible(fieldVisibility(field), b.reg) {
+				visibleFields = append(visibleFields, field)
+			}
+		}
+		if len(visibleFields) < 2 {
+			// Single-field (or empty) oneof groups are a no-op constraint, so skip them.
 			continue
 		}
-		anyRequired := make([]*SchemaOrRef, 0, len(g.fields))
-		options := make([]*SchemaOrRef, 0, len(g.fields)+1)
-		for _, field := range g.fields {
+		anyRequired := make([]*SchemaOrRef, 0, len(visibleFields))
+		options := make([]*SchemaOrRef, 0, len(visibleFields)+1)
+		for _, field := range visibleFields {
 			anyRequired = append(anyRequired, &SchemaOrRef{Value: &Schema{
 				Required: []string{jsonName(field)},
 			}})
@@ -259,7 +274,7 @@ func (b *schemaBuilder) ensureMessageSchema(msg *descriptor.Message) {
 			Type: SchemaType{"object"},
 			Not:  &SchemaOrRef{Value: &Schema{AnyOf: anyRequired}},
 		}})
-		for _, field := range g.fields {
+		for _, field := range visibleFields {
 			fname := jsonName(field)
 			options = append(options, &SchemaOrRef{Value: &Schema{
 				Type: SchemaType{"object"},
@@ -423,12 +438,25 @@ func (b *schemaBuilder) ensureEnumSchema(enum *descriptor.Enum) {
 	}
 	values := make([]any, 0, len(enum.Value))
 	for _, v := range enum.Value {
+		if !isVisible(enumValueVisibility(v), b.reg) {
+			// Enum value is hidden by visibility rules, skip.
+			continue
+		}
 		values = append(values, v.GetName())
 	}
 	schema := &Schema{
 		Type:       SchemaType{"string"},
-		Enum:       values,
 		Deprecated: enumDeprecated(enum),
+	}
+	if len(values) == 0 {
+		// Every value is hidden by visibility rules. We can't drop the
+		// component schema — a visible field may still reference it — so
+		// fall back to an unconstrained string and warn. The user almost
+		// certainly wants to either broaden their selectors or hide the
+		// referring fields as well.
+		grpclog.Infof("protoc-gen-openapiv3: enum %q has no visible values under current visibility_restriction_selectors; emitting as unconstrained string", enum.FQEN())
+	} else {
+		schema.Enum = values
 	}
 	if desc := enumComments(b.reg, enum); desc != "" {
 		schema.Description = desc

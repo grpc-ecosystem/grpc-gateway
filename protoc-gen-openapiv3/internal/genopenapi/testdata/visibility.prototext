@@ -1,0 +1,379 @@
+file_to_generate: "vis/v1/visibility.proto"
+proto_file: {
+  name: "vis/v1/visibility.proto"
+  package: "vis.v1"
+  message_type: {
+    name: "PublicRequest"
+    field: {
+      name: "public_field"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "publicField"
+    }
+    field: {
+      name: "internal_field"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalField"
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+    field: {
+      name: "preview_field"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "previewField"
+      options: {
+        [google.api.field_visibility]: { restriction: "PREVIEW" }
+      }
+    }
+    field: {
+      name: "multi_field"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "multiField"
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL,PREVIEW" }
+      }
+    }
+  }
+  message_type: {
+    name: "PublicResponse"
+    field: {
+      name: "value"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "value"
+    }
+    field: {
+      name: "status"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".vis.v1.Status"
+      json_name: "status"
+    }
+  }
+  message_type: {
+    name: "InternalRequest"
+    field: {
+      name: "secret"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "secret"
+    }
+  }
+  message_type: {
+    name: "InternalResponse"
+    field: {
+      name: "data"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "data"
+    }
+  }
+  message_type: {
+    name: "OneofRequest"
+    field: {
+      name: "visible_choice"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "visibleChoice"
+      oneof_index: 0
+    }
+    field: {
+      name: "internal_choice"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalChoice"
+      oneof_index: 0
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+    field: {
+      name: "preview_choice"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "previewChoice"
+      oneof_index: 0
+      options: {
+        [google.api.field_visibility]: { restriction: "PREVIEW" }
+      }
+    }
+    oneof_decl: { name: "choice" }
+  }
+  message_type: {
+    name: "OneofCollapseRequest"
+    field: {
+      name: "lonely_visible"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "lonelyVisible"
+      oneof_index: 0
+    }
+    field: {
+      name: "lonely_internal"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "lonelyInternal"
+      oneof_index: 0
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+    oneof_decl: { name: "lonely" }
+  }
+  message_type: {
+    name: "NestedFilter"
+    field: {
+      name: "label"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "label"
+    }
+    field: {
+      name: "secret_label"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "secretLabel"
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+  }
+  message_type: {
+    name: "QueryRequest"
+    field: {
+      name: "visible_q"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "visibleQ"
+    }
+    field: {
+      name: "internal_q"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "internalQ"
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+    field: {
+      name: "filter"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".vis.v1.NestedFilter"
+      json_name: "filter"
+    }
+  }
+  message_type: {
+    name: "BodyPayload"
+    field: {
+      name: "title"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "title"
+    }
+    field: {
+      name: "hidden_title"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "hiddenTitle"
+      options: {
+        [google.api.field_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+  }
+  message_type: {
+    name: "BodyFieldRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "payload"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".vis.v1.BodyPayload"
+      json_name: "payload"
+    }
+  }
+  message_type: {
+    name: "AllHiddenHolder"
+    field: {
+      name: "hidden_state"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".vis.v1.AllHiddenEnum"
+      json_name: "hiddenState"
+    }
+  }
+  enum_type: {
+    name: "Status"
+    value: { name: "STATUS_UNSPECIFIED" number: 0 }
+    value: {
+      name: "STATUS_ACTIVE"
+      number: 1
+    }
+    value: {
+      name: "STATUS_INTERNAL_ONLY"
+      number: 2
+      options: {
+        [google.api.value_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+  }
+  enum_type: {
+    name: "AllHiddenEnum"
+    value: {
+      name: "ALL_HIDDEN_UNSPECIFIED"
+      number: 0
+      options: {
+        [google.api.value_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+    value: {
+      name: "ALL_HIDDEN_A"
+      number: 1
+      options: {
+        [google.api.value_visibility]: { restriction: "INTERNAL" }
+      }
+    }
+  }
+  service: {
+    name: "PublicService"
+    method: {
+      name: "PublicMethod"
+      input_type: ".vis.v1.PublicRequest"
+      output_type: ".vis.v1.PublicResponse"
+      options: {
+        [google.api.http]: {
+          post: "/v1/public"
+          body: "*"
+        }
+      }
+    }
+    method: {
+      name: "InternalMethod"
+      input_type: ".vis.v1.InternalRequest"
+      output_type: ".vis.v1.InternalResponse"
+      options: {
+        [google.api.method_visibility]: { restriction: "INTERNAL" }
+        [google.api.http]: {
+          get: "/v1/internal"
+        }
+      }
+    }
+    method: {
+      name: "PreviewMethod"
+      input_type: ".vis.v1.PublicRequest"
+      output_type: ".vis.v1.PublicResponse"
+      options: {
+        [google.api.method_visibility]: { restriction: "PREVIEW" }
+        [google.api.http]: {
+          get: "/v1/preview"
+        }
+      }
+    }
+    method: {
+      name: "OneofMethod"
+      input_type: ".vis.v1.OneofRequest"
+      output_type: ".vis.v1.OneofRequest"
+      options: {
+        [google.api.http]: {
+          post: "/v1/oneof"
+          body: "*"
+        }
+      }
+    }
+    method: {
+      name: "OneofCollapseMethod"
+      input_type: ".vis.v1.OneofCollapseRequest"
+      output_type: ".vis.v1.OneofCollapseRequest"
+      options: {
+        [google.api.http]: {
+          post: "/v1/oneof_collapse"
+          body: "*"
+        }
+      }
+    }
+    method: {
+      name: "QueryMethod"
+      input_type: ".vis.v1.QueryRequest"
+      output_type: ".vis.v1.PublicResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/query"
+        }
+      }
+    }
+    method: {
+      name: "BodyFieldMethod"
+      input_type: ".vis.v1.BodyFieldRequest"
+      output_type: ".vis.v1.PublicResponse"
+      options: {
+        [google.api.http]: {
+          post: "/v1/body_field/{id}"
+          body: "payload"
+        }
+      }
+    }
+    method: {
+      name: "AllHiddenEnumMethod"
+      input_type: ".vis.v1.AllHiddenHolder"
+      output_type: ".vis.v1.PublicResponse"
+      options: {
+        [google.api.http]: {
+          post: "/v1/all_hidden_enum"
+          body: "*"
+        }
+      }
+    }
+  }
+  service: {
+    name: "InternalService"
+    method: {
+      name: "SecretMethod"
+      input_type: ".vis.v1.InternalRequest"
+      output_type: ".vis.v1.InternalResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/secret"
+        }
+      }
+    }
+    options: {
+      [google.api.api_visibility]: { restriction: "INTERNAL" }
+    }
+  }
+  options: {
+    go_package: "github.com/example/vis/v1;visv1"
+  }
+  syntax: "proto3"
+}

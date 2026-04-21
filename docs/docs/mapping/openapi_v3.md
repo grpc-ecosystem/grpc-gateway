@@ -37,8 +37,9 @@ response codes are emitted default-first then sorted.
 
 ## What it does not do
 
-The generator is deliberately opinionated and has no configuration flags. The
-following are **not** supported today:
+The generator is deliberately opinionated. Its only configuration flag is
+[`visibility_restriction_selectors`](#hiding-fields-methods-services-and-enum-values).
+The following are **not** supported today:
 
 - The `grpc.gateway.protoc_gen_openapiv2.options` annotation set.
 - OpenAPI 2.0 / Swagger output (use `protoc-gen-openapiv2` for that).
@@ -80,6 +81,62 @@ protoc -I. \
   --openapiv3_out=. \
   path/to/your/service.proto
 ```
+
+## Hiding fields, methods, services and enum values
+
+If you require internal or unreleased fields and APIs to be hidden from
+your API documentation,
+[`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/9916192ab15e3507e41ba2c5165182fec06120d0/google/api/visibility.proto#L89)
+annotations can be added to services, methods, fields and enum values.
+The generator drops any annotated element whose restriction labels do
+not overlap with the configured `visibility_restriction_selectors`.
+Elements without a `VisibilityRule` annotation are always emitted.
+
+`visibility_restriction_selectors` can be declared multiple times to
+include multiple visibility restrictions in the output. For example,
+with `buf`:
+
+```yaml
+version: v2
+plugins:
+  - local: protoc-gen-openapiv3
+    out: .
+    opt:
+      - visibility_restriction_selectors=PREVIEW
+      - visibility_restriction_selectors=INTERNAL
+```
+
+or with `protoc`:
+
+```sh
+protoc --openapiv3_out=. \
+  --openapiv3_opt=visibility_restriction_selectors=PREVIEW \
+  --openapiv3_opt=visibility_restriction_selectors=INTERNAL \
+  ./path/to/file.proto
+```
+
+The restriction labels are arbitrary. `INTERNAL` and `PREVIEW` are the
+conventional pair, but any label scheme works (`ALPHA`, `BETA`,
+`RELEASED`, ...) as long as the annotations and the selector flag use
+the same vocabulary.
+
+When a service is hidden, all of its methods are hidden along with it
+and the service's tag is omitted from `tags[]`. When every field in a
+`oneof` group is hidden, the group's "at most one set" constraint is
+also dropped.
+
+Visibility annotations on fields used as HTTP path parameters (via
+`google.api.http` path templates) are ignored — the path template
+itself always exposes the parameter's name. To hide an operation that
+takes a restricted input, apply `google.api.method_visibility` to the
+method (or `google.api.api_visibility` to the whole service) instead
+of annotating the path field.
+
+If every value of an enum ends up hidden, the enum's component schema
+is still emitted (a visible field may reference it) but falls back to
+an unconstrained `type: string`. A log line is written when this
+happens; broaden the selectors or hide the referring fields to silence
+it.
 
 ## Mapping rules
 
