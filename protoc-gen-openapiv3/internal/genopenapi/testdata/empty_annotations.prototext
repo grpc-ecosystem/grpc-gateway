@@ -1,0 +1,50 @@
+file_to_generate: "empty/v1/empty.proto"
+proto_file: {
+  name: "empty/v1/empty.proto"
+  package: "empty.v1"
+  message_type: {
+    name: "Thing"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {}
+      }
+    }
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {}
+    }
+  }
+  message_type: {
+    name: "GetThingRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "ThingService"
+    method: {
+      name: "GetThing"
+      input_type: ".empty.v1.GetThingRequest"
+      output_type: ".empty.v1.Thing"
+      options: {
+        [google.api.http]: {
+          get: "/v1/things/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {}
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/empty/v1;emptyv1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {}
+  }
+  syntax: "proto3"
+}
