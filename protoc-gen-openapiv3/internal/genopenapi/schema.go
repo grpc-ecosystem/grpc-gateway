@@ -188,6 +188,9 @@ func (b *schemaBuilder) ensureMessageSchema(msg *descriptor.Message) {
 	if desc := messageComments(b.reg, msg); desc != "" {
 		schema.Description = desc
 	}
+	if ann, ok := messageSchemaAnnotation(msg); ok {
+		applyMessageSchemaOverride(schema, ann)
+	}
 	b.doc.Components.Schemas[name] = &SchemaOrRef{Value: schema}
 
 	// Partition fields into oneof groups and regular fields. Synthetic
@@ -318,22 +321,35 @@ func (b *schemaBuilder) addProperty(schema *Schema, field *descriptor.Field) {
 // propertySchema produces a property schema for the given field, with
 // description and field-behavior flags applied. Description goes on the
 // $ref sibling for referenced types, or directly on inline schemas.
+//
+// A field-level openapiv3_field annotation overrides the comment-derived
+// description and may attach a title. Title cannot sit as a $ref sibling,
+// so for referenced fields its presence forces an allOf wrapper (same
+// mechanism as deprecated/readOnly/writeOnly).
 func (b *schemaBuilder) propertySchema(field *descriptor.Field) *SchemaOrRef {
 	prop := b.fieldSchema(field)
 	desc := fieldComments(b.reg, field)
+	ann, hasAnn := fieldSchemaAnnotation(field)
+	if hasAnn && ann.GetDescription() != "" {
+		desc = ann.GetDescription()
+	}
 
 	if prop.Ref != "" {
-		// 3.1.0 allows description as a sibling of $ref.
+		// 3.1.0 allows description as a sibling of $ref, but title and
+		// deprecated must live on a real schema body — so an annotation
+		// that sets either, like readOnly/writeOnly/deprecated cascade,
+		// forces an allOf wrapper.
+		if needsAllOfWrap(field) || annotationNeedsSchemaBody(ann) {
+			wrapped := &Schema{AllOf: []*SchemaOrRef{{Ref: prop.Ref}}}
+			if desc != "" {
+				wrapped.Description = desc
+			}
+			applyFieldFlags(wrapped, field)
+			applySchemaBodyOverride(wrapped, ann)
+			return &SchemaOrRef{Value: wrapped}
+		}
 		if desc != "" {
 			prop.Description = desc
-		}
-		// readOnly/writeOnly/deprecated next to a $ref also work as
-		// siblings in 3.1.0; for those we wrap in allOf so the consumer
-		// sees a real schema body to attach the flag to.
-		if needsAllOfWrap(field) {
-			wrapped := &Schema{AllOf: []*SchemaOrRef{{Ref: prop.Ref, Description: prop.Description}}}
-			applyFieldFlags(wrapped, field)
-			return &SchemaOrRef{Value: wrapped}
 		}
 		return prop
 	}
@@ -343,6 +359,7 @@ func (b *schemaBuilder) propertySchema(field *descriptor.Field) *SchemaOrRef {
 			prop.Value.Description = desc
 		}
 		applyFieldFlags(prop.Value, field)
+		applySchemaBodyOverride(prop.Value, ann)
 	}
 	return prop
 }

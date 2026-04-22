@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+// Package grpc.gateway.protoc_gen_openapiv3.options defines the minimal set of
+// OpenAPI 3.1.0 override messages consumed by protoc-gen-openapiv3.
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+
+// Document is a file-level override applied to the top of the generated
+// OpenAPI document. Only non-empty sub-fields replace the defaults the
+// generator would otherwise synthesize from the proto file name.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#openapi-object
+message Document {
+  // Provides metadata about the API. The metadata MAY be used by tooling as
+  // required.
+  Info info = 1;
+  // An array of Server Objects, which provide connectivity information to a
+  // target server. If the servers property is not provided, or is an empty
+  // array, the default value would be a Server Object with a url value of /.
+  repeated Server servers = 2;
+  // Additional external documentation.
+  ExternalDocs external_docs = 3;
+  // A list of tags used by the document with additional metadata. Tags
+  // declared here are merged with the tags derived from proto services: an
+  // entry here whose name matches a service's tag replaces the default,
+  // and entries with new names are appended. This is the only way to
+  // attach a description (or external docs) to a tag referenced by a
+  // method-level `openapiv3_operation.tags` override, since those tags
+  // would otherwise appear in the document with no metadata.
+  repeated Tag tags = 4;
+}
+
+// Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
+// often want to set from proto.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#info-object
+message Info {
+  // The title of the API.
+  string title = 1;
+  // A short summary of the API.
+  string summary = 2;
+  // A description of the API. CommonMark syntax MAY be used for rich text
+  // representation.
+  string description = 3;
+  // A URL to the Terms of Service for the API. This MUST be in the form of a
+  // URL.
+  string terms_of_service = 4;
+  // The contact information for the exposed API.
+  Contact contact = 5;
+  // The license information for the exposed API.
+  License license = 6;
+  // The version of the OpenAPI document (which is distinct from the OpenAPI
+  // Specification version or the API implementation version).
+  string version = 7;
+}
+
+// Contact information for the exposed API.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#contact-object
+message Contact {
+  // The identifying name of the contact person/organization.
+  string name = 1;
+  // The URL pointing to the contact information. This MUST be in the form of
+  // a URL.
+  string url = 2;
+  // The email address of the contact person/organization. This MUST be in the
+  // form of an email address.
+  string email = 3;
+}
+
+// License information for the exposed API. `identifier` and `url` are
+// mutually exclusive in the OpenAPI 3.1.0 spec, so they are modeled as a
+// oneof: setting one clears the other.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#license-object
+message License {
+  // The license name used for the API.
+  string name = 1;
+  // Source identifying the license. Either an SPDX expression or a URL,
+  // mutually exclusive per the OpenAPI 3.1.0 spec.
+  oneof source {
+    // An SPDX expression for the API.
+    string identifier = 2;
+    // A URL to the license used for the API. This MUST be in the form of a
+    // URL.
+    string url = 3;
+  }
+}
+
+// Server represents an API server.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#server-object
+message Server {
+  // A URL to the target host. This URL supports Server Variables and MAY be
+  // relative, to indicate that the host location is relative to the location
+  // where the OpenAPI document is being served.
+  string url = 1;
+  // An optional string describing the host designated by the URL. CommonMark
+  // syntax MAY be used for rich text representation.
+  string description = 2;
+}
+
+// Operation is a method-level override applied to the generated Operation
+// object. Non-empty fields replace values the generator would otherwise
+// derive from proto comments or defaults.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#operation-object
+message Operation {
+  // A list of tags for API documentation control. Tags can be used for
+  // logical grouping of operations by resources or any other qualifier.
+  repeated string tags = 1;
+  // A short summary of what the operation does.
+  string summary = 2;
+  // A verbose explanation of the operation behavior. CommonMark syntax MAY
+  // be used for rich text representation.
+  string description = 3;
+  // Additional external documentation for this operation.
+  ExternalDocs external_docs = 4;
+  // Unique string used to identify the operation. The id MUST be unique among
+  // all operations described in the API.
+  string operation_id = 5;
+  // Declares this operation to be deprecated. Consumers SHOULD refrain from
+  // usage of the declared operation. Default value is false. Setting this to
+  // false does not un-deprecate a method that is marked deprecated in proto
+  // (`option deprecated = true` on the method, service, or file).
+  bool deprecated = 6;
+  // An alternative `servers` array to service this operation. If a `servers`
+  // array is specified at the Path Item Object or OpenAPI Object level, it
+  // will be overridden by this value.
+  repeated Server servers = 7;
+}
+
+// Schema is a message- or field-level override applied to the generated
+// JSON Schema. Non-empty fields replace values the generator would
+// otherwise derive from proto comments or the proto type.
+//
+// Both `openapiv3_schema` (on MessageOptions) and `openapiv3_field` (on
+// FieldOptions) use this message.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#schema-object
+// Underlying dialect: https://json-schema.org/draft/2020-12/json-schema-core
+message Schema {
+  // A preferably short string describing the purpose of the instance
+  // described by the schema.
+  string title = 1;
+  // A string providing explanation about the purpose of the instance
+  // described by the schema.
+  string description = 2;
+  // Declares this schema to be deprecated. Consumers SHOULD refrain from
+  // usage of the declared schema. Default value is false. Setting this to
+  // false does not un-deprecate a schema that is marked deprecated in proto
+  // (`option deprecated = true` on the message, field, or file).
+  bool deprecated = 3;
+}
+
+// ExternalDocs is a link to external documentation.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#external-documentation-object
+message ExternalDocs {
+  // A description of the target documentation. CommonMark syntax MAY be used
+  // for rich text representation.
+  string description = 1;
+  // The URL for the target documentation. This MUST be in the form of a URL.
+  string url = 2;
+}
+
+// Tag adds metadata to a single tag that is used by the Operation Object. It
+// is not mandatory to have a Tag Object per tag defined in the Operation
+// Object instances.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#tag-object
+message Tag {
+  // The name of the tag.
+  string name = 1;
+  // A description for the tag. CommonMark syntax MAY be used for rich text
+  // representation.
+  string description = 2;
+  // Additional external documentation for this tag.
+  ExternalDocs external_docs = 3;
+}

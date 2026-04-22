@@ -20,7 +20,7 @@ const statusSchemaName = "google.rpc.Status"
 // `pathParams` is the synthetic OpenAPI path parameter list produced by
 // convertPathTemplate; it may be longer than binding.PathParams when a
 // single proto field expanded into multiple wildcards.
-func buildOperation(b *schemaBuilder, svc *descriptor.Service, m *descriptor.Method, binding *descriptor.Binding, bindingIdx int, pathParams []pathParam) *Operation {
+func buildOperation(b *schemaBuilder, svc *descriptor.Service, m *descriptor.Method, binding *descriptor.Binding, bindingIdx int, pathParams []pathParam) (*Operation, error) {
 	summary, description := splitSummaryDescription(methodComments(m))
 
 	op := &Operation{
@@ -38,7 +38,12 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, m *descriptor.Met
 	}
 
 	op.Responses = buildResponses(b, m)
-	return op
+	if o, ok := methodOperationAnnotation(m); ok {
+		if err := applyOperationOverride(op, o); err != nil {
+			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
+		}
+	}
+	return op, nil
 }
 
 // buildParameters returns the path and query parameters for an operation.

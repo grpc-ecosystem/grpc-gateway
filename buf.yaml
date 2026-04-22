@@ -87,6 +87,8 @@ lint:
       - internal/descriptor/openapiconfig/openapiconfig.proto
       - protoc-gen-openapiv2/options/annotations.proto
       - protoc-gen-openapiv2/options/openapiv2.proto
+      - protoc-gen-openapiv3/options/annotations.proto
+      - protoc-gen-openapiv3/options/openapiv3.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/non_standard_names.proto
       - runtime/internal/examplepb/proto2.proto
@@ -147,6 +149,8 @@ lint:
       - internal/descriptor/openapiconfig/openapiconfig.proto
       - protoc-gen-openapiv2/options/annotations.proto
       - protoc-gen-openapiv2/options/openapiv2.proto
+      - protoc-gen-openapiv3/options/annotations.proto
+      - protoc-gen-openapiv3/options/openapiv3.proto
       - runtime/internal/examplepb/example.proto
       - runtime/internal/examplepb/non_standard_names.proto
       - runtime/internal/examplepb/proto2.proto
