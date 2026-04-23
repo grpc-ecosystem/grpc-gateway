@@ -317,7 +317,24 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 					// This will generate a query in the format map_name[key_type]
 					fName := fmt.Sprintf("%s[%s]", *field.Name, kType)
 					field.Name = proto.String(fName)
-					schema.Type = schema.AdditionalProperties.schemaCore.Type
+
+					// Get the value field (index 1) to determine the type
+					v := m.GetField()[1]
+					switch v.GetType() {
+					case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
+						// For enum values, use string type (or integer if EnumsAsInts is set)
+						if reg.GetEnumsAsInts() {
+							schema.Type = "integer"
+						} else {
+							schema.Type = "string"
+						}
+					case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
+						// Nested message types in map values are not supported in query parameters
+						return nil, nil
+					default:
+						// For primitive types, use the type from AdditionalProperties
+						schema.Type = schema.AdditionalProperties.schemaCore.Type
+					}
 				}
 			}
 		}
