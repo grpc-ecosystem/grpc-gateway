@@ -16,7 +16,10 @@ import (
 func Generate(reg *descriptor.Registry, files []*descriptor.File) ([]*pluginpb.CodeGeneratorResponse_File, error) {
 	var out []*pluginpb.CodeGeneratorResponse_File
 	for _, file := range files {
-		doc, ok := generateFile(reg, file)
+		doc, ok, err := generateFile(reg, file)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", file.GetName(), err)
+		}
 		if !ok {
 			// No HTTP annotations found, skip file.
 			continue
@@ -36,13 +39,23 @@ func Generate(reg *descriptor.Registry, files []*descriptor.File) ([]*pluginpb.C
 
 // generateFile builds a Document for a single proto file. The boolean return
 // is false when the file has no HTTP-bound operations to emit.
-func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, bool) {
+func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, bool, error) {
 	name := file.GetName()
 	title := strings.TrimSuffix(path.Base(name), path.Ext(name))
 	doc := NewDocument(title, "1.0.0")
+	if d, ok := fileDocumentAnnotation(file); ok {
+		if err := applyDocumentOverride(doc, d); err != nil {
+			return nil, false, err
+		}
+	}
 	b := newSchemaBuilder(reg, doc)
 
-	seenTags := make(map[string]bool)
+	// Prime seenTags with any document-level annotation tags so a service's
+	// default tag does not clobber the annotation-provided description.
+	seenTags := make(map[string]bool, len(doc.Tags))
+	for _, t := range doc.Tags {
+		seenTags[t.Name] = true
+	}
 
 	for _, svc := range file.Services {
 		if !isVisible(serviceVisibility(svc), reg) {
@@ -88,10 +101,10 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 	}
 
 	if doc.Paths.Len() == 0 {
-		return nil, false
+		return nil, false, nil
 	}
 	if doc.Components.Empty() {
 		doc.Components = nil
 	}
-	return doc, true
+	return doc, true, nil
 }

@@ -38,6 +38,9 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, m *descriptor.Met
 	}
 
 	op.Responses = buildResponses(b, m)
+	if o, ok := methodOperationAnnotation(m); ok {
+		applyOperationOverride(op, o)
+	}
 	return op
 }
 

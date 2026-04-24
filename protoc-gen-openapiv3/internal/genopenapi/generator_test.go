@@ -3,6 +3,7 @@ package genopenapi
 import (
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -361,6 +362,322 @@ func TestGenerate_DeprecatedFileCascade(t *testing.T) {
 	}
 }
 
+// TestGenerate_CustomAnnotations exercises the four openapiv3 custom
+// annotations (document, operation, message schema, field schema). It
+// locks down that annotation values take precedence over comment-derived
+// and default values, and that field-level title force an
+// allOf wrapper when the field type is a $ref.
+func TestGenerate_CustomAnnotations(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/annotations.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// 1. File-level openapiv3_document replaces the default Info fields and
+	// installs servers and externalDocs.
+	info, _ := doc["info"].(map[string]any)
+	for k, want := range map[string]string{
+		"title":          "Annotated API",
+		"summary":        "An API demonstrating openapiv3 annotations.",
+		"description":    "Used by the generator test suite.",
+		"version":        "2.0.0",
+		"termsOfService": "https://example.com/tos",
+	} {
+		if got, _ := info[k].(string); got != want {
+			t.Errorf("info.%s: want %q, got %q", k, want, got)
+		}
+	}
+	contact, _ := info["contact"].(map[string]any)
+	if contact["name"] != "API Team" || contact["email"] != "team@example.com" {
+		t.Errorf("info.contact mismatch: %v", contact)
+	}
+	license, _ := info["license"].(map[string]any)
+	if license["name"] != "Apache-2.0" || license["identifier"] != "Apache-2.0" {
+		t.Errorf("info.license mismatch: %v", license)
+	}
+	servers, _ := doc["servers"].([]any)
+	if len(servers) != 1 {
+		t.Fatalf("servers: want 1, got %v", servers)
+	}
+	server, _ := servers[0].(map[string]any)
+	if server["url"] != "https://api.example.com/v1" || server["description"] != "Production" {
+		t.Errorf("servers[0] mismatch: %v", server)
+	}
+	extDocs, _ := doc["externalDocs"].(map[string]any)
+	if extDocs["url"] != "https://example.com/external" {
+		t.Errorf("externalDocs mismatch: %v", extDocs)
+	}
+
+	// 2. Method-level openapiv3_operation overrides summary/description,
+	// replaces tags with the annotated list, sets operationId and externalDocs,
+	// and forces deprecated=true.
+	paths, _ := doc["paths"].(map[string]any)
+	pi, _ := paths["/v1/widgets/{id}"].(map[string]any)
+	op, _ := pi["get"].(map[string]any)
+	if op == nil {
+		t.Fatal("missing GET /v1/widgets/{id} operation")
+	}
+	if op["summary"] != "Fetch a widget." {
+		t.Errorf("operation summary: want annotated value, got %v", op["summary"])
+	}
+	if op["description"] != "Loads a widget by its unique id." {
+		t.Errorf("operation description: want annotated value, got %v", op["description"])
+	}
+	if op["operationId"] != "getWidgetById" {
+		t.Errorf("operationId: want annotated value, got %v", op["operationId"])
+	}
+	if got, _ := op["deprecated"].(bool); !got {
+		t.Errorf("deprecated: want true via annotation, got %v", op["deprecated"])
+	}
+	tags, _ := op["tags"].([]any)
+	if len(tags) != 2 || tags[0] != "Widgets" || tags[1] != "Inventory" {
+		t.Errorf("tags: want [Widgets Inventory] from annotation, got %v", tags)
+	}
+	opExtDocs, _ := op["externalDocs"].(map[string]any)
+	if opExtDocs["url"] != "https://example.com/docs/get-widget" {
+		t.Errorf("operation externalDocs: want annotated URL, got %v", opExtDocs)
+	}
+
+	// 3. Message-level openapiv3_schema sets title and description on the
+	// Widget component schema.
+	components, _ := doc["components"].(map[string]any)
+	schemas, _ := components["schemas"].(map[string]any)
+	widget, _ := schemas["ann.v1.Widget"].(map[string]any)
+	if widget == nil {
+		t.Fatal("missing ann.v1.Widget component schema")
+	}
+	if widget["title"] != "Widget" {
+		t.Errorf("Widget.title: want annotated value, got %v", widget["title"])
+	}
+	if widget["description"] != "A widget, annotated." {
+		t.Errorf("Widget.description: want annotated value, got %v", widget["description"])
+	}
+
+	detail, _ := schemas["ann.v1.WidgetDetail"].(map[string]any)
+	if detail["title"] != "Widget Detail" {
+		t.Errorf("WidgetDetail.title: want annotated value, got %v", detail["title"])
+	}
+
+	// 4. Field-level openapiv3_field annotations attach description and
+	// title to the inline property schema.
+	widgetProps, _ := widget["properties"].(map[string]any)
+	idProp, _ := widgetProps["id"].(map[string]any)
+	if idProp["description"] != "Unique widget identifier." {
+		t.Errorf("Widget.id.description: want annotated value, got %v", idProp["description"])
+	}
+	countProp, _ := widgetProps["count"].(map[string]any)
+	if countProp["title"] != "Count" {
+		t.Errorf("Widget.count.title: want annotated value, got %v", countProp["title"])
+	}
+
+	// 5. Field annotation on a $ref-typed field (detail) carries description
+	// via the $ref sibling; title forces an allOf wrapper.
+	detailProp, _ := widgetProps["detail"].(map[string]any)
+	if _, isDirectRef := detailProp["$ref"]; isDirectRef {
+		t.Errorf("Widget.detail: want allOf wrapper since annotation sets title, got bare $ref: %v", detailProp)
+	}
+	if detailProp["title"] != "Detail" {
+		t.Errorf("Widget.detail.title: want annotated value on wrapper, got %v", detailProp["title"])
+	}
+	if detailProp["description"] != "Override for the referenced detail." {
+		t.Errorf("Widget.detail.description: want annotated value on wrapper, got %v", detailProp["description"])
+	}
+	allOfWrap, _ := detailProp["allOf"].([]any)
+	if len(allOfWrap) != 1 {
+		t.Fatalf("Widget.detail.allOf: want 1 entry, got %v", detailProp["allOf"])
+	}
+	allOfEntry, _ := allOfWrap[0].(map[string]any)
+	if allOfEntry["$ref"] != "#/components/schemas/ann.v1.WidgetDetail" {
+		t.Errorf("Widget.detail.allOf[0]: want $ref to WidgetDetail, got %v", allOfEntry)
+	}
+
+	// 6. A $ref-typed field without an annotation remains a plain $ref.
+	plainProp, _ := widgetProps["plain"].(map[string]any)
+	if plainProp["$ref"] != "#/components/schemas/ann.v1.WidgetDetail" {
+		t.Errorf("Widget.plain: want bare $ref, got %v", plainProp)
+	}
+
+	// 7. A $ref-typed field whose annotation sets only `description` must
+	// stay a plain $ref with description as a sibling — description is
+	// allowed next to $ref in OpenAPI 3.1.0, so no allOf wrapper is needed.
+	refDescProp, _ := widgetProps["refDescOnly"].(map[string]any)
+	if refDescProp["$ref"] != "#/components/schemas/ann.v1.WidgetDetail" {
+		t.Errorf("Widget.refDescOnly: want plain $ref with description sibling, got %v", refDescProp)
+	}
+	if refDescProp["description"] != "Description-only override for a referenced field." {
+		t.Errorf("Widget.refDescOnly.description: want annotated value as $ref sibling, got %v", refDescProp["description"])
+	}
+	if _, hasAllOf := refDescProp["allOf"]; hasAllOf {
+		t.Errorf("Widget.refDescOnly: description-only annotation must not force allOf wrapper, got %v", refDescProp)
+	}
+
+	// 8. Document-level tags merge with service-derived tags. The fixture
+	// declares three tags ("Widgets", "Inventory", "WidgetService"); the
+	// last collides with the service name and must suppress the default
+	// service tag so the annotation's description wins. The operation's
+	// own tag override ("Widgets", "Inventory") is satisfied by the
+	// top-level entries, so no tag referenced by the operation is orphaned.
+	topTags, _ := doc["tags"].([]any)
+	byName := map[string]map[string]any{}
+	for _, tg := range topTags {
+		m, _ := tg.(map[string]any)
+		if n, _ := m["name"].(string); n != "" {
+			byName[n] = m
+		}
+	}
+	for name, want := range map[string]string{
+		"Widgets":       "Widget-related operations.",
+		"Inventory":     "Inventory tracking.",
+		"WidgetService": "Override for the service-derived tag.",
+	} {
+		got, ok := byName[name]
+		if !ok {
+			t.Errorf("doc.tags: missing %q, got %v", name, byName)
+			continue
+		}
+		if got["description"] != want {
+			t.Errorf("doc.tags[%q].description: want %q, got %v", name, want, got["description"])
+		}
+	}
+	// Each name must appear exactly once — the WidgetService default must
+	// not duplicate the annotation entry.
+	counts := map[string]int{}
+	for _, tg := range topTags {
+		m, _ := tg.(map[string]any)
+		if n, _ := m["name"].(string); n != "" {
+			counts[n]++
+		}
+	}
+	for name, c := range counts {
+		if c != 1 {
+			t.Errorf("doc.tags[%q]: want 1 entry, got %d", name, c)
+		}
+	}
+	// The "Widgets" tag carries externalDocs from the annotation.
+	widgetsTag := byName["Widgets"]
+	widgetsExt, _ := widgetsTag["externalDocs"].(map[string]any)
+	if widgetsExt["url"] != "https://example.com/docs/widgets" {
+		t.Errorf("doc.tags[Widgets].externalDocs: want annotated URL, got %v", widgetsExt)
+	}
+}
+
+// TestGenerate_LicenseMissingName locks down that a License annotation
+// without a name is rejected at generate time, since OpenAPI 3.1.0 requires
+// License.name whenever a License object is present.
+func TestGenerate_LicenseMissingName(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/license_missing_name.prototext")
+	gotErr := runGeneratorExpectError(t, req)
+	if !strings.Contains(gotErr, "name is required") {
+		t.Errorf("error: want message about missing license name, got %q", gotErr)
+	}
+}
+
+// TestGenerate_EmptyAnnotations locks down the "all sub-fields empty means
+// no-op" semantics for each of the four openapiv3 extensions. An empty
+// annotation is indistinguishable from no annotation at all as far as the
+// generated document is concerned — every value must come from the
+// generator defaults.
+func TestGenerate_EmptyAnnotations(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/empty_annotations.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// Document: empty openapiv3_document leaves Info.title = file basename
+	// and version = "1.0.0" (the defaults from NewDocument).
+	info, _ := doc["info"].(map[string]any)
+	if info["title"] != "empty" {
+		t.Errorf("info.title: want file-derived default %q, got %v", "empty", info["title"])
+	}
+	if info["version"] != "1.0.0" {
+		t.Errorf("info.version: want default %q, got %v", "1.0.0", info["version"])
+	}
+	if _, hasLicense := info["license"]; hasLicense {
+		t.Errorf("info.license: empty annotation must not emit a license, got %v", info["license"])
+	}
+	if _, hasServers := doc["servers"]; hasServers {
+		t.Errorf("servers: empty annotation must not emit servers, got %v", doc["servers"])
+	}
+
+	// Operation: empty openapiv3_operation leaves the generator-derived
+	// operationId, the service-name tag, and deprecated=false (omitted).
+	paths, _ := doc["paths"].(map[string]any)
+	pi, _ := paths["/v1/things/{id}"].(map[string]any)
+	op, _ := pi["get"].(map[string]any)
+	if op == nil {
+		t.Fatal("missing GET /v1/things/{id} operation")
+	}
+	if op["operationId"] != "ThingService_GetThing" {
+		t.Errorf("operationId: want generator default, got %v", op["operationId"])
+	}
+	tags, _ := op["tags"].([]any)
+	if len(tags) != 1 || tags[0] != "ThingService" {
+		t.Errorf("operation.tags: want [ThingService] from service default, got %v", tags)
+	}
+	if _, hasDeprecated := op["deprecated"]; hasDeprecated {
+		t.Errorf("operation.deprecated: empty annotation must not set the flag, got %v", op["deprecated"])
+	}
+	if _, hasSummary := op["summary"]; hasSummary {
+		t.Errorf("operation.summary: want empty (no comments, empty annotation), got %v", op["summary"])
+	}
+
+	// Message schema: empty openapiv3_schema leaves title/description unset.
+	components, _ := doc["components"].(map[string]any)
+	schemas, _ := components["schemas"].(map[string]any)
+	thing, _ := schemas["empty.v1.Thing"].(map[string]any)
+	if thing == nil {
+		t.Fatal("missing empty.v1.Thing component schema")
+	}
+	if _, hasTitle := thing["title"]; hasTitle {
+		t.Errorf("Thing.title: empty annotation must not set title, got %v", thing["title"])
+	}
+	if _, hasDesc := thing["description"]; hasDesc {
+		t.Errorf("Thing.description: empty annotation must not set description, got %v", thing["description"])
+	}
+
+	// Field schema: empty openapiv3_field on Thing.id leaves the scalar
+	// inline schema untouched (no title, no description, no allOf wrap).
+	thingProps, _ := thing["properties"].(map[string]any)
+	idProp, _ := thingProps["id"].(map[string]any)
+	if idProp["type"] != "string" {
+		t.Errorf("Thing.id.type: want string, got %v", idProp["type"])
+	}
+	if _, hasTitle := idProp["title"]; hasTitle {
+		t.Errorf("Thing.id.title: empty annotation must not set title, got %v", idProp["title"])
+	}
+	if _, hasDesc := idProp["description"]; hasDesc {
+		t.Errorf("Thing.id.description: empty annotation must not set description, got %v", idProp["description"])
+	}
+	if _, hasAllOf := idProp["allOf"]; hasAllOf {
+		t.Errorf("Thing.id: empty annotation must not force allOf wrap, got %v", idProp)
+	}
+}
+
+// TestGenerate_LicenseConflict locks down that the OpenAPI 3.1.0 rule
+// "License.identifier and License.url are mutually exclusive" is enforced at
+// generate time rather than silently emitted into the document.
+func TestGenerate_LicenseConflict(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/license_conflict.prototext")
+	gotErr := runGeneratorExpectError(t, req)
+	if !strings.Contains(gotErr, "identifier and url are mutually exclusive") {
+		t.Errorf("error: want message about identifier/url mutual exclusion, got %q", gotErr)
+	}
+}
+
 // TestGenerate_SimpleEcho is the end-to-end smoke test: load a hand-rolled
 // CodeGeneratorRequest from prototext, run the generator, and compare the
 // JSON output against a golden.
@@ -479,6 +796,29 @@ func runGenerator(t *testing.T, req *pluginpb.CodeGeneratorRequest) []byte {
 		t.Fatalf("expected 1 output file, got %d", len(out))
 	}
 	return []byte(out[0].GetContent())
+}
+
+// runGeneratorExpectError runs Generate expecting it to fail, returning the
+// error string for assertion.
+func runGeneratorExpectError(t *testing.T, req *pluginpb.CodeGeneratorRequest) string {
+	t.Helper()
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+	var targets []*descriptor.File
+	for _, name := range req.FileToGenerate {
+		f, err := reg.LookupFile(name)
+		if err != nil {
+			t.Fatalf("lookup %s: %v", name, err)
+		}
+		targets = append(targets, f)
+	}
+	_, err := Generate(reg, targets)
+	if err == nil {
+		t.Fatalf("generate: want error, got nil")
+	}
+	return err.Error()
 }
 
 // assertJSONEqual parses both sides as generic JSON and reports a structural
