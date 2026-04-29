@@ -5,9 +5,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "bazel_features",
-    sha256 = "adfdb3cffab3a99a63363d844d559a81965d2b61a6062dd51a3d2478d416768f",
-    strip_prefix = "bazel_features-1.45.0",
-    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.45.0/bazel_features-v1.45.0.tar.gz",
+    sha256 = "497a10560c07b0478026f49766ebdb6fd07b4fba9767db4f1c25cb6ab2fa1cdb",
+    strip_prefix = "bazel_features-1.46.0",
+    url = "https://github.com/bazel-contrib/bazel_features/releases/download/v1.46.0/bazel_features-v1.46.0.tar.gz",
 )
 
 load("@bazel_features//:deps.bzl", "bazel_features_deps")
