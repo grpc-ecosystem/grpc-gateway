@@ -834,7 +834,16 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 }
 
 func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, pathParams []descriptor.Parameter) error {
-	for name, msg := range messages {
+	// Sort keys so that when two messages flatten to the same OpenAPI definition
+	// name the winner is deterministic (last in sorted order wins) rather than
+	// varying with Go's random map iteration order.
+	names := make([]string, 0, len(messages))
+	for name := range messages {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		msg := messages[name]
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
 			return fmt.Errorf("can't resolve OpenAPI name from %q", msg.FQMN())
