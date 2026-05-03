@@ -2,12 +2,12 @@
 {
   "name": "Go",
   "build": {
-    "dockerfile": "../.github/Dockerfile"
+    "dockerfile": "../.github/Dockerfile",
   },
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
     "ghcr.io/devcontainers/features/node:2": {},
-    "ghcr.io/devcontainers/features/go:1": {}
+    "ghcr.io/devcontainers/features/go:1.3.3": {},
   },
   "customizations": {
     "vscode": {
@@ -19,7 +19,7 @@
       "bazel.buildifierExecutable": "/go/bin/buildifier",
       "bazel.buildifierFixOnFormat": true,
       "bazel.enableCodeLens": true,
-      "extensions": ["golang.Go", "bazelbuild.vscode-bazel"]
-    }
-  }
+      "extensions": ["golang.Go", "bazelbuild.vscode-bazel"],
+    },
+  },
 }
