@@ -1,0 +1,20 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "openapiv3_test",
+    srcs = [
+        "abe_oracle_test.go",
+        "abe_spec_test.go",
+        "openapiv3_test.go",
+    ],
+    deps = [
+        "//examples/internal/clients/abev3",
+        "//examples/internal/clients/helloworldv3",
+        "//examples/internal/helloworld",
+        "//examples/internal/proto/examplepb",
+        "//examples/internal/server",
+        "//runtime",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//credentials/insecure",
+    ],
+)
