@@ -30,6 +30,11 @@ proto_file: {
       type: TYPE_ENUM
       type_name: ".legacy.v1.LegacyEnum"
       json_name: "legacyEnum"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Outer-wrapper description on a deprecated $ref."
+        }
+      }
     }
   }
   enum_type: {

@@ -159,6 +159,10 @@ proto:
 		--path ./protoc-gen-openapiv2/options/annotations.proto \
 		--path ./protoc-gen-openapiv2/options/openapiv2.proto
 	buf generate \
+		--template ./protoc-gen-openapiv3/options/buf.gen.yaml \
+		--path ./protoc-gen-openapiv3/options/annotations.proto \
+		--path ./protoc-gen-openapiv3/options/openapiv3.proto
+	buf generate \
 		--template ./examples/internal/proto/examplepb/opaque.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/opaque.proto
 	buf generate \

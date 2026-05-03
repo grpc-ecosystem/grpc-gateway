@@ -1,0 +1,58 @@
+file_to_generate: "bad/v1/bad.proto"
+proto_file: {
+  name: "bad/v1/bad.proto"
+  package: "bad.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "BadService"
+    method: {
+      name: "GetA"
+      input_type: ".bad.v1.GetRequest"
+      output_type: ".bad.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/a/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          operation_id: "duplicateId"
+        }
+      }
+    }
+    method: {
+      name: "GetB"
+      input_type: ".bad.v1.GetRequest"
+      output_type: ".bad.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/b/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          operation_id: "duplicateId"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/bad/v1;badv1"
+  }
+  syntax: "proto3"
+}

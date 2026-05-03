@@ -6731,7 +6731,7 @@
             }
           },
           "200": {
-            "description": "Wrapper message for `string`.\n\nThe JSON representation for `StringValue` is JSON string.",
+            "description": "Wrapper message for `string`.\n\nThe JSON representation for `StringValue` is JSON string.\n\nNot recommended for use in new APIs, but still useful for legacy APIs and\nhas no plan to be removed.",
             "content": {
               "application/json": {
                 "schema": {

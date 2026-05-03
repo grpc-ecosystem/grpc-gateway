@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapiv3.options;
+
+import "google/protobuf/descriptor.proto";
+import "protoc-gen-openapiv3/options/openapiv3.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
+
+extend google.protobuf.FileOptions {
+  // ID 1295 assigned by protobuf-global-extension-registry@google.com for the
+  // gRPC-Gateway OpenAPI v3 generator. All extensions in this file share the
+  // same ID because they each extend a different descriptor message.
+  // Ref: https://github.com/protocolbuffers/protobuf/commit/5e0f68530ae6ad47b78714e60861321e1d1c04ae
+  Document openapiv3_document = 1295;
+}
+
+extend google.protobuf.MethodOptions {
+  // ID 1295 assigned by protobuf-global-extension-registry@google.com for the
+  // gRPC-Gateway OpenAPI v3 generator. All extensions in this file share the
+  // same ID because they each extend a different descriptor message.
+  // Ref: https://github.com/protocolbuffers/protobuf/commit/5e0f68530ae6ad47b78714e60861321e1d1c04ae
+  Operation openapiv3_operation = 1295;
+}
+
+extend google.protobuf.MessageOptions {
+  // ID 1295 assigned by protobuf-global-extension-registry@google.com for the
+  // gRPC-Gateway OpenAPI v3 generator. All extensions in this file share the
+  // same ID because they each extend a different descriptor message.
+  // Ref: https://github.com/protocolbuffers/protobuf/commit/5e0f68530ae6ad47b78714e60861321e1d1c04ae
+  Schema openapiv3_schema = 1295;
+}
+
+extend google.protobuf.FieldOptions {
+  // ID 1295 assigned by protobuf-global-extension-registry@google.com for the
+  // gRPC-Gateway OpenAPI v3 generator. All extensions in this file share the
+  // same ID because they each extend a different descriptor message.
+  // Ref: https://github.com/protocolbuffers/protobuf/commit/5e0f68530ae6ad47b78714e60861321e1d1c04ae
+  Schema openapiv3_field = 1295;
+}

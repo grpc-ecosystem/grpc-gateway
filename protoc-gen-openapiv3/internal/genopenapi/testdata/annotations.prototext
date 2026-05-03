@@ -1,0 +1,200 @@
+file_to_generate: "ann/v1/annotations.proto"
+proto_file: {
+  name: "ann/v1/annotations.proto"
+  package: "ann.v1"
+  message_type: {
+    name: "WidgetDetail"
+    field: {
+      name: "note"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "note"
+    }
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        title: "Widget Detail"
+        description: "Detail payload for a widget."
+        deprecated: true
+      }
+    }
+  }
+  message_type: {
+    name: "Widget"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Unique widget identifier."
+        }
+      }
+    }
+    field: {
+      name: "count"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "count"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          title: "Count"
+        }
+      }
+    }
+    field: {
+      name: "detail"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".ann.v1.WidgetDetail"
+      json_name: "detail"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          title: "Detail"
+          description: "Override for the referenced detail."
+        }
+      }
+    }
+    field: {
+      name: "plain"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".ann.v1.WidgetDetail"
+      json_name: "plain"
+    }
+    field: {
+      name: "ref_desc_only"
+      number: 5
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".ann.v1.WidgetDetail"
+      json_name: "refDescOnly"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          description: "Description-only override for a referenced field."
+        }
+      }
+    }
+    field: {
+      name: "legacy"
+      number: 6
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "legacy"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          deprecated: true
+        }
+      }
+    }
+    field: {
+      name: "legacy_ref"
+      number: 7
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".ann.v1.WidgetDetail"
+      json_name: "legacyRef"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          deprecated: true
+        }
+      }
+    }
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        title: "Widget"
+        description: "A widget, annotated."
+      }
+    }
+  }
+  message_type: {
+    name: "GetWidgetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "WidgetService"
+    method: {
+      name: "GetWidget"
+      input_type: ".ann.v1.GetWidgetRequest"
+      output_type: ".ann.v1.Widget"
+      options: {
+        [google.api.http]: {
+          get: "/v1/widgets/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          summary: "Fetch a widget."
+          description: "Loads a widget by its unique id."
+          operation_id: "getWidgetById"
+          tags: "Widgets"
+          tags: "Inventory"
+          deprecated: true
+          external_docs: {
+            description: "More info."
+            url: "https://example.com/docs/get-widget"
+          }
+          servers: {
+            url: "https://api.example.com/widgets"
+            description: "Widget shard."
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/ann/v1;annv1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      info: {
+        title: "Annotated API"
+        summary: "An API demonstrating openapiv3 annotations."
+        description: "Used by the generator test suite."
+        version: "2.0.0"
+        terms_of_service: "https://example.com/tos"
+        contact: {
+          name: "API Team"
+          email: "team@example.com"
+          url: "https://example.com"
+        }
+        license: {
+          name: "Apache-2.0"
+          identifier: "Apache-2.0"
+        }
+      }
+      servers: {
+        url: "https://api.example.com/v1"
+        description: "Production"
+      }
+      external_docs: {
+        url: "https://example.com/external"
+        description: "Project docs."
+      }
+      tags: {
+        name: "Widgets"
+        description: "Widget-related operations."
+        external_docs: {
+          url: "https://example.com/docs/widgets"
+          description: "Widget docs."
+        }
+      }
+      tags: {
+        name: "Inventory"
+        description: "Inventory tracking."
+      }
+      tags: {
+        name: "WidgetService"
+        description: "Override for the service-derived tag."
+      }
+    }
+  }
+  syntax: "proto3"
+}
