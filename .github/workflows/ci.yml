@@ -54,7 +54,7 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
-      - run: git diff --exit-code
+      - run: git add -N . && git diff --exit-code
   bazel:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
@@ -91,13 +91,13 @@ jobs:
           build --local_cpu_resources=2    # Github runners have 2 vCPU
           EOF
       - name: Check that Bazel BUILD files are up-to-date
-        run: bazel run //:gazelle && git diff --exit-code
+        run: bazel run //:gazelle && git add -N . && git diff --exit-code
       - name: Check that repositories.bzl is up-to-date
         run: |
           bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories &&
-          git diff --exit-code
+          git add -N . && git diff --exit-code
       - name: Check formatting of Bazel BUILD files
-        run: bazel run //:buildifier && git diff --exit-code
+        run: bazel run //:buildifier && git add -N . && git diff --exit-code
       - name: Run tests with Bazel
         run: bazel test //...
   gorelease:
@@ -120,7 +120,7 @@ jobs:
       - run: make install
       - run: PATH=$PATH:~/go/bin buf build
       - run: PATH=$PATH:~/go/bin buf lint
-      - run: PATH=$PATH:~/go/bin buf format -w && git diff --exit-code
+      - run: PATH=$PATH:~/go/bin buf format -w && git add -N . && git diff --exit-code
       - run: PATH=$PATH:~/go/bin buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=main'
   lint:
     runs-on: ubuntu-latest
