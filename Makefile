@@ -5,87 +5,62 @@
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients
 ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/echo_service.swagger.json
-ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/client.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/response.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/configuration.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/api_echo_service.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/model_examplepb_simple_message.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/model_examplepb_embedded.go
 ABE_EXAMPLE_SPEC=examples/internal/proto/examplepb/a_bit_of_everything.swagger.json
-ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/model_a_bit_of_everything_nested.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/api_a_bit_of_everything_service.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/client.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/api_camel_case_service_name.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/configuration.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/api_echo_rpc.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_examplepb_a_bit_of_everything.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_examplepb_a_bit_of_everything_repeated.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_examplepb_body.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_examplepb_numeric_enum.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_examplepb_update_v2_request.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_message_path_enum_nested_path_enum.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_nested_deep_enum.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_pathenum_path_enum.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/model_protobuf_field_mask.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/response.go
 UNANNOTATED_ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/unannotated_echo_service.swagger.json
-UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/client.go \
-		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/response.go \
-		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/configuration.go \
-		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/model_examplepb_unannotated_simple_message.go \
-		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_unannotated_echo_service.go
 RESPONSE_BODY_EXAMPLE_SPEC=examples/internal/proto/examplepb/response_body_service.swagger.json
-RESPONSE_BODY_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/responsebody/client.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/response.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/configuration.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_examplepb_repeated_response_body_out.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_examplepb_repeated_response_body_out_response.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_examplepb_repeated_response_strings.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_examplepb_response_body_out.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_examplepb_response_body_out_response.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_response_response_type.go \
-		 $(EXAMPLE_CLIENT_DIR)/responsebody/api_response_body_service.go
 GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC=examples/internal/proto/examplepb/generate_unbound_methods.swagger.json
-GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/client.go \
-		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/response.go \
-		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/configuration.go \
-		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/model_examplepb_generate_unbound_methods_simple_message.go \
-		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/api_generate_unbound_methods.go
 
-EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
-SWAGGER_CODEGEN=swagger-codegen
+# go-swagger generates a per-spec tree:
+#   <client-dir>/client/                 facade (package "client")
+#   <client-dir>/client/<service-name>/  one subpackage per service tag
+#   <client-dir>/models/                 shared model types (package "models")
+# Targets are PHONY because the file set isn't fully predictable from the
+# spec without parsing it.
+#
+# The jq pass coerces non-body parameters with no `type`/`schema` (map<K,V>
+# request fields) and non-body parameters typed as `object` (oneof-of-empty
+# fields) to `string`. They can't round-trip through a query string in a
+# meaningful way, but go-swagger needs *some* primitive to chew on. The
+# accompanying default-value rewrite turns string defaults on numeric/integer
+# parameters into the corresponding number — protoc-gen-openapiv2 emits e.g.
+# `"default": "0"` on integer params, which go-swagger refuses.
+define swagger_client
+	rm -rf $(1)/client $(1)/models
+	mkdir -p $(1)
+	jq 'walk( \
+		if type == "object" and has("in") and (.in != "body") then \
+			(if (has("type") | not) and (has("schema") | not) then . + {type: "string"} \
+			 elif .type == "object" then . + {type: "string"} \
+			 else . end) \
+			| (if (.type == "number" or .type == "integer") and (.default | type) == "string" \
+			   then .default |= tonumber else . end) \
+		else . end \
+	)' $(2) > $(1)/.spec.json
+	swagger generate client -q -f $(1)/.spec.json -t $(1) \
+		--client-package=client --model-package=models --skip-validation
+	rm -f $(1)/.spec.json
+endef
 
-$(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
-	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
-		-l go -o examples/internal/clients/echo --additional-properties packageName=echo
-	@rm -f $(EXAMPLE_CLIENT_DIR)/echo/README.md \
-		$(EXAMPLE_CLIENT_DIR)/echo/git_push.sh
-$(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
-	$(SWAGGER_CODEGEN) generate -i $(ABE_EXAMPLE_SPEC) \
-		-l go -o examples/internal/clients/abe --additional-properties packageName=abe
-	@rm -f $(EXAMPLE_CLIENT_DIR)/abe/README.md \
-		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh
-$(UNANNOTATED_ECHO_EXAMPLE_SRCS): $(UNANNOTATED_ECHO_EXAMPLE_SPEC)
-	$(SWAGGER_CODEGEN) generate -i $(UNANNOTATED_ECHO_EXAMPLE_SPEC) \
-		-l go -o examples/internal/clients/unannotatedecho --additional-properties packageName=unannotatedecho
-	@rm -f $(EXAMPLE_CLIENT_DIR)/unannotatedecho/README.md \
-		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh
-$(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
-	$(SWAGGER_CODEGEN) generate -i $(RESPONSE_BODY_EXAMPLE_SPEC) \
-		-l go -o examples/internal/clients/responsebody --additional-properties packageName=responsebody
-	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
-		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
-$(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC)
-	$(SWAGGER_CODEGEN) generate -i $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC) \
-	    -l go -o examples/internal/clients/generateunboundmethods --additional-properties packageName=generateunboundmethods
-	@rm -f $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/README.md \
-		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
+echo-client:
+	$(call swagger_client,$(EXAMPLE_CLIENT_DIR)/echo,$(ECHO_EXAMPLE_SPEC))
+abe-client:
+	$(call swagger_client,$(EXAMPLE_CLIENT_DIR)/abe,$(ABE_EXAMPLE_SPEC))
+unannotatedecho-client:
+	$(call swagger_client,$(EXAMPLE_CLIENT_DIR)/unannotatedecho,$(UNANNOTATED_ECHO_EXAMPLE_SPEC))
+responsebody-client:
+	$(call swagger_client,$(EXAMPLE_CLIENT_DIR)/responsebody,$(RESPONSE_BODY_EXAMPLE_SPEC))
+generateunboundmethods-client:
+	$(call swagger_client,$(EXAMPLE_CLIENT_DIR)/generateunboundmethods,$(GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC))
+
+swagger-clients: echo-client abe-client unannotatedecho-client responsebody-client generateunboundmethods-client
 
 OAPI_CODEGEN_VERSION := v2.6.0
+GO_SWAGGER_VERSION := v0.33.2
 
 install:
 	go install github.com/bufbuild/buf/cmd/buf@v1.45.0
 	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@$(OAPI_CODEGEN_VERSION)
+	go install github.com/go-swagger/go-swagger/cmd/swagger@$(GO_SWAGGER_VERSION)
 	go install \
 		./protoc-gen-openapiv2 \
 		./protoc-gen-openapiv3 \
@@ -194,7 +169,7 @@ openapiv3-clients: proto
 	oapi-codegen -package abev3 -generate types,client \
 		-o $(ABE_V3_CLIENT_DIR)/abev3.go $(ABE_V3_SPEC)
 
-generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS) openapiv3-clients
+generate: proto swagger-clients openapiv3-clients
 
 test: proto
 	go test -short -race ./...
@@ -204,6 +179,12 @@ clean:
 	find . -type f -name '*.pb.go' -delete
 	find . -type f -name '*.swagger.json' -delete
 	find . -type f -name '*.pb.gw.go' -delete
-	rm -f $(EXAMPLE_CLIENT_SRCS)
+	rm -rf $(EXAMPLE_CLIENT_DIR)/echo/client $(EXAMPLE_CLIENT_DIR)/echo/models
+	rm -rf $(EXAMPLE_CLIENT_DIR)/abe/client $(EXAMPLE_CLIENT_DIR)/abe/models
+	rm -rf $(EXAMPLE_CLIENT_DIR)/unannotatedecho/client $(EXAMPLE_CLIENT_DIR)/unannotatedecho/models
+	rm -rf $(EXAMPLE_CLIENT_DIR)/responsebody/client $(EXAMPLE_CLIENT_DIR)/responsebody/models
+	rm -rf $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/client $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/models
 
-.PHONY: generate test clean proto install openapiv3-clients
+.PHONY: generate test clean proto install openapiv3-clients \
+	swagger-clients echo-client abe-client unannotatedecho-client \
+	responsebody-client generateunboundmethods-client

@@ -267,7 +267,7 @@
           "title": "Nested object title"
         },
         "int64OverrideType": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "requiredStringViaFieldBehaviorAnnotation": {

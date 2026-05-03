@@ -465,7 +465,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -981,7 +981,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -1440,7 +1440,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -1888,7 +1888,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -2354,7 +2354,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -2824,7 +2824,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -3329,7 +3329,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -3770,7 +3770,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -4235,7 +4235,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -4700,7 +4700,7 @@
             "name": "int64OverrideType",
             "in": "query",
             "required": false,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -5850,7 +5850,7 @@
                   "title": "Nested object title"
                 },
                 "int64OverrideType": {
-                  "type": "integer",
+                  "type": "string",
                   "format": "int64"
                 },
                 "requiredStringViaFieldBehaviorAnnotation": {
@@ -6175,7 +6175,7 @@
                   "title": "Nested object title"
                 },
                 "int64OverrideType": {
-                  "type": "integer",
+                  "type": "string",
                   "format": "int64"
                 },
                 "requiredStringViaFieldBehaviorAnnotation": {
@@ -7171,7 +7171,7 @@
           "title": "Nested object title"
         },
         "int64OverrideType": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "requiredStringViaFieldBehaviorAnnotation": {
@@ -7436,7 +7436,7 @@
               "title": "Nested object title"
             },
             "int64OverrideType": {
-              "type": "integer",
+              "type": "string",
               "format": "int64"
             },
             "requiredStringViaFieldBehaviorAnnotation": {
@@ -7725,7 +7725,7 @@
           "title": "Nested object title"
         },
         "int64OverrideType": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "requiredStringViaFieldBehaviorAnnotation": {
@@ -8113,7 +8113,7 @@
           "title": "Nested object title"
         },
         "int64OverrideType": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "requiredStringViaFieldBehaviorAnnotation": {
