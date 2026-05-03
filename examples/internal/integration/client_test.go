@@ -5,13 +5,39 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho"
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
+	abeclient "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/client"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/client/a_bit_of_everything"
+	abemodels "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/models"
+	echoclient "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo/client"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo/client/echo_service"
+	echomodels "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo/models"
+	uaeclient "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho/client"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho/client/unannotated_echo_service"
+	uaemodels "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho/models"
 	"github.com/rogpeppe/fastuuid"
 )
 
 var uuidgen = fastuuid.MustNewGenerator()
+
+// gatewayTransport returns a runtime transport pointed at the integration
+// gateway started by main_test.go. Each call yields a fresh transport so
+// per-test customization (timeouts, hooks) doesn't leak between tests.
+func gatewayTransport() *httptransport.Runtime {
+	return httptransport.New("localhost:8088", "/", []string{"http"})
+}
+
+// uuid renders a fastuuid value as an RFC 4122-shaped string. The grpc-
+// gateway server doesn't enforce the format, but the spec declares
+// `format: uuid` and go-openapi's strfmt registry rejects values that
+// don't match — matching the canonical layout keeps the params struct
+// from refusing to encode the request.
+func uuid() strfmt.UUID {
+	b := uuidgen.Next()
+	return strfmt.UUID(fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
+		b[0:4], b[4:6], b[6:8], b[8:10], b[10:16]))
+}
 
 func TestEchoClient(t *testing.T) {
 	if testing.Short() {
@@ -19,16 +45,16 @@ func TestEchoClient(t *testing.T) {
 		return
 	}
 
-	cfg := echo.NewConfiguration()
-	cfg.BasePath = "http://localhost:8088"
-
-	cl := echo.NewAPIClient(cfg)
-	resp, _, err := cl.EchoServiceApi.EchoServiceEcho(context.Background(), "foo", nil)
+	cl := echoclient.New(gatewayTransport(), strfmt.Default)
+	resp, err := cl.EchoService.EchoServiceEcho(
+		echo_service.NewEchoServiceEchoParamsWithContext(context.Background()).WithID("foo"),
+	)
 	if err != nil {
-		t.Errorf(`cl.EchoServiceApi.Echo("foo") failed with %v; want success`, err)
+		t.Errorf(`cl.EchoService.EchoServiceEcho("foo") failed with %v; want success`, err)
+		return
 	}
-	if got, want := resp.Id, "foo"; got != want {
-		t.Errorf("resp.Id = %q; want %q", got, want)
+	if got, want := resp.Payload.ID, "foo"; got != want {
+		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
 	}
 }
 
@@ -38,17 +64,17 @@ func TestEchoBodyClient(t *testing.T) {
 		return
 	}
 
-	cfg := echo.NewConfiguration()
-	cfg.BasePath = "http://localhost:8088"
-
-	cl := echo.NewAPIClient(cfg)
-	req := echo.ExamplepbSimpleMessage{Id: "foo"}
-	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody(context.Background(), req)
+	cl := echoclient.New(gatewayTransport(), strfmt.Default)
+	req := &echomodels.ExamplepbSimpleMessage{ID: "foo"}
+	resp, err := cl.EchoService.EchoServiceEchoBody(
+		echo_service.NewEchoServiceEchoBodyParamsWithContext(context.Background()).WithBody(req),
+	)
 	if err != nil {
-		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
+		t.Errorf("cl.EchoService.EchoServiceEchoBody(%#v) failed with %v; want success", req, err)
+		return
 	}
-	if got, want := resp.Id, "foo"; got != want {
-		t.Errorf("resp.Id = %q; want %q", got, want)
+	if got, want := resp.Payload.ID, "foo"; got != want {
+		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
 	}
 }
 
@@ -58,17 +84,19 @@ func TestEchoBody2Client(t *testing.T) {
 		return
 	}
 
-	cfg := echo.NewConfiguration()
-	cfg.BasePath = "http://localhost:8088"
-
-	cl := echo.NewAPIClient(cfg)
-	req := echo.ExamplepbEmbedded{Note: "note"}
-	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody2(context.Background(), "foo", req, nil)
+	cl := echoclient.New(gatewayTransport(), strfmt.Default)
+	req := &echomodels.ExamplepbEmbedded{Note: "note"}
+	resp, err := cl.EchoService.EchoServiceEchoBody2(
+		echo_service.NewEchoServiceEchoBody2ParamsWithContext(context.Background()).
+			WithID("foo").
+			WithNo(req),
+	)
 	if err != nil {
-		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
+		t.Errorf("cl.EchoService.EchoServiceEchoBody2(%#v) failed with %v; want success", req, err)
+		return
 	}
-	if got, want := resp.Id, "foo"; got != want {
-		t.Errorf("resp.Id = %q; want %q", got, want)
+	if got, want := resp.Payload.ID, "foo"; got != want {
+		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
 	}
 }
 
@@ -78,135 +106,138 @@ func TestAbitOfEverythingClient(t *testing.T) {
 		return
 	}
 
-	cfg := abe.NewConfiguration()
-	cfg.BasePath = "http://localhost:8088"
-
-	cl := abe.NewAPIClient(cfg)
-
+	cl := abeclient.New(gatewayTransport(), strfmt.Default)
 	testABEClientCreate(t, cl)
 }
 
-func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
-	enumZero := abe.ZERO_ExamplepbNumericEnum
-	enumPath := abe.ABC_PathenumPathEnum
-	messagePath := abe.JKL_MessagePathEnumNestedPathEnum
+func testABEClientCreate(t *testing.T, cl *abeclient.ABitOfEverything) {
+	enumZero := abemodels.ExamplepbNumericEnumZERO
+	enumPath := abemodels.PathenumPathEnumABC
+	messagePath := abemodels.MessagePathEnumNestedPathEnumJKL
 
-	want := &abe.ExamplepbABitOfEverything{
-		FloatValue:                          1.5,
-		DoubleValue:                         2.5,
-		Int64Value:                          "4294967296",
-		Uint64Value:                         "9223372036854775807",
-		Int32Value:                          -2147483648,
-		Fixed64Value:                        "9223372036854775807",
-		Fixed32Value:                        4294967295,
-		BoolValue:                           true,
-		StringValue:                         "strprefix/foo",
-		Uint32Value:                         4294967295,
-		Sfixed32Value:                       2147483647,
-		Sfixed64Value:                       "-4611686018427387904",
-		Sint32Value:                         2147483647,
-		Sint64Value:                         "4611686018427387903",
-		NonConventionalNameValue:            "camelCase",
-		EnumValue:                           &enumZero,
-		PathEnumValue:                       &enumPath,
-		NestedPathEnumValue:                 &messagePath,
-		EnumValueAnnotation:                 &enumZero,
-		Uuid:                                fmt.Sprintf("%x", uuidgen.Next()),
-		RequiredFieldBehaviorJsonNameCustom: "test",
-		RequiredFieldSchemaJsonNameCustom:   "test",
+	floatVal := float32(1.5)
+	doubleVal := 2.5
+	int64Val := "4294967296"
+	requestUUID := uuid()
+	want := &abemodels.ExamplepbABitOfEverything{
+		FloatValue:                               &floatVal,
+		DoubleValue:                              &doubleVal,
+		Int64Value:                               &int64Val,
+		Uint64Value:                              "9223372036854775807",
+		Int32Value:                               -2147483648,
+		Fixed64Value:                             "9223372036854775807",
+		Fixed32Value:                             4294967295,
+		BoolValue:                                true,
+		StringValue:                              "strprefix/foo",
+		Uint32Value:                              4294967295,
+		Sfixed32Value:                            2147483647,
+		Sfixed64Value:                            "-4611686018427387904",
+		Sint32Value:                              2147483647,
+		Sint64Value:                              "4611686018427387903",
+		NonConventionalNameValue:                 "camelCase",
+		EnumValue:                                &enumZero,
+		PathEnumValue:                            &enumPath,
+		NestedPathEnumValue:                      &messagePath,
+		EnumValueAnnotation:                      &enumZero,
+		UUID:                                     &requestUUID,
+		RequiredFieldBehaviorJSONNameCustom:      strPtr("test"),
+		RequiredFieldSchemaJSONNameCustom:        strPtr("test"),
+		RequiredStringField1:                     strPtr(""),
+		RequiredStringField2:                     strPtr(""),
+		RequiredStringViaFieldBehaviorAnnotation: strPtr(""),
 	}
-	resp, _, err := cl.ABitOfEverythingApi.ABitOfEverythingServiceCreate(
-		context.Background(),
-		want.FloatValue,
-		want.DoubleValue,
-		want.Int64Value,
-		want.Uint64Value,
-		want.Int32Value,
-		want.Fixed64Value,
-		want.Fixed32Value,
-		want.BoolValue,
-		want.StringValue,
-		want.Uint32Value,
-		want.Sfixed32Value,
-		want.Sfixed64Value,
-		want.Sint32Value,
-		want.Sint64Value,
-		want.NonConventionalNameValue,
-		want.EnumValue.String(),
-		want.PathEnumValue.String(),
-		want.NestedPathEnumValue.String(),
-		want.EnumValueAnnotation.String(),
-		want.Uuid,
-		want.RequiredStringViaFieldBehaviorAnnotation,
-		want.StringValue,
-		want.StringValue,
-		want.RequiredFieldBehaviorJsonNameCustom,
-		want.RequiredFieldSchemaJsonNameCustom,
+
+	createResp, err := cl.ABitOfEverything.ABitOfEverythingServiceCreate(
+		a_bit_of_everything.NewABitOfEverythingServiceCreateParamsWithContext(context.Background()).
+			WithFloatValue(*want.FloatValue).
+			WithDoubleValue(*want.DoubleValue).
+			WithInt64Value(*want.Int64Value).
+			WithUint64Value(want.Uint64Value).
+			WithInt32Value(want.Int32Value).
+			WithFixed64Value(want.Fixed64Value).
+			WithFixed32Value(want.Fixed32Value).
+			WithBoolValue(want.BoolValue).
+			WithStringValue(want.StringValue).
+			WithUint32Value(want.Uint32Value).
+			WithSfixed32Value(want.Sfixed32Value).
+			WithSfixed64Value(want.Sfixed64Value).
+			WithSint32Value(want.Sint32Value).
+			WithSint64Value(want.Sint64Value).
+			WithNonConventionalNameValue(want.NonConventionalNameValue).
+			WithEnumValue(string(*want.EnumValue)).
+			WithPathEnumValue(string(*want.PathEnumValue)).
+			WithNestedPathEnumValue(string(*want.NestedPathEnumValue)).
+			WithEnumValueAnnotation(string(*want.EnumValueAnnotation)).
+			WithUUID(*want.UUID).
+			WithRequiredStringViaFieldBehaviorAnnotation(*want.RequiredStringViaFieldBehaviorAnnotation).
+			WithRequiredStringField1(*want.RequiredStringField1).
+			WithRequiredStringField2(*want.RequiredStringField2).
+			WithRequiredFieldBehaviorJSONNameCustom(*want.RequiredFieldBehaviorJSONNameCustom).
+			WithRequiredFieldSchemaJSONNameCustom(*want.RequiredFieldSchemaJSONNameCustom),
 		nil,
 	)
 	if err != nil {
-		t.Fatalf("cl.Create(%#v) failed with %v; want success", want, err)
+		t.Fatalf("cl.ABitOfEverythingService.ABitOfEverythingServiceCreate(%#v) failed with %v; want success", want, err)
 	}
-	if resp.Uuid == "" {
-		t.Errorf("resp.Uuid is empty; want not empty")
+	resp := createResp.Payload
+	if resp.UUID == nil || *resp.UUID == "" {
+		t.Errorf("resp.UUID is empty; want not empty")
 	}
-	resp.Uuid = ""
+	resp.UUID = nil
+	want.UUID = nil
 
-	if resp.FloatValue != want.FloatValue {
+	if resp.FloatValue == nil || *resp.FloatValue != *want.FloatValue {
 		t.Error("float")
 	}
-	if resp.DoubleValue != want.DoubleValue {
+	if resp.DoubleValue == nil || *resp.DoubleValue != *want.DoubleValue {
 		t.Error("double")
 	}
-	if resp.Int64Value != want.Int64Value {
-		t.Error("double")
+	if resp.Int64Value == nil || *resp.Int64Value != *want.Int64Value {
+		t.Error("int64")
 	}
 	if resp.Uint64Value != want.Uint64Value {
-		t.Error("double")
+		t.Error("uint64")
 	}
 	if resp.Int32Value != want.Int32Value {
-		t.Error("double")
+		t.Error("int32")
 	}
 	if resp.Fixed32Value != want.Fixed32Value {
-		t.Error("bool")
+		t.Error("fixed32")
 	}
 	if resp.Fixed64Value != want.Fixed64Value {
-		t.Error("bool")
+		t.Error("fixed64")
 	}
 	if resp.BoolValue != want.BoolValue {
 		t.Error("bool")
 	}
 	if resp.StringValue != want.StringValue {
-		t.Error("bool")
+		t.Error("string")
 	}
 	if resp.Uint32Value != want.Uint32Value {
-		t.Error("bool")
+		t.Error("uint32")
 	}
 	if resp.Sfixed32Value != want.Sfixed32Value {
-		t.Error("bool")
+		t.Error("sfixed32")
 	}
 	if resp.Sfixed64Value != want.Sfixed64Value {
-		t.Error("bool")
+		t.Error("sfixed64")
 	}
 	if resp.Sint32Value != want.Sint32Value {
-		t.Error("bool")
+		t.Error("sint32")
 	}
 	if resp.Sint64Value != want.Sint64Value {
-		t.Error("enum")
+		t.Error("sint64")
 	}
 	if resp.NonConventionalNameValue != want.NonConventionalNameValue {
+		t.Error("non-conventional name")
+	}
+	if resp.EnumValue == nil || *resp.EnumValue != *want.EnumValue {
 		t.Error("enum")
 	}
-	if resp.EnumValue.String() != want.EnumValue.String() {
-		t.Error("enum")
-	}
-	if resp.PathEnumValue.String() != want.PathEnumValue.String() {
+	if resp.PathEnumValue == nil || *resp.PathEnumValue != *want.PathEnumValue {
 		t.Error("path enum")
 	}
-	if resp.NestedPathEnumValue.String() != want.NestedPathEnumValue.String() {
-		t.Error("nested path enum")
-	}
-	if resp.NestedPathEnumValue.String() != want.NestedPathEnumValue.String() {
+	if resp.NestedPathEnumValue == nil || *resp.NestedPathEnumValue != *want.NestedPathEnumValue {
 		t.Error("nested path enum")
 	}
 }
@@ -217,17 +248,23 @@ func TestUnannotatedEchoClient(t *testing.T) {
 		return
 	}
 
-	cfg := unannotatedecho.NewConfiguration()
-	cfg.BasePath = "http://localhost:8088"
-
-	cl := unannotatedecho.NewAPIClient(cfg)
-
-	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEcho(context.Background(), "foo", "1", nil)
+	cl := uaeclient.New(gatewayTransport(), strfmt.Default)
+	resp, err := cl.UnannotatedEchoService.UnannotatedEchoServiceEcho(
+		unannotated_echo_service.NewUnannotatedEchoServiceEchoParamsWithContext(context.Background()).
+			WithID("foo").
+			WithNum("1"),
+		nil,
+	)
 	if err != nil {
-		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
+		t.Errorf(`cl.UnannotatedEchoService.UnannotatedEchoServiceEcho("foo", "1") failed with %v; want success`, err)
+		return
 	}
-	if got, want := resp.Id, "foo"; got != want {
-		t.Errorf("resp.Id = %q; want %q", got, want)
+	if resp.Payload.ID == nil {
+		t.Errorf("resp.Payload.ID = nil; want %q", "foo")
+		return
+	}
+	if got, want := *resp.Payload.ID, "foo"; got != want {
+		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
 	}
 }
 
@@ -237,17 +274,23 @@ func TestUnannotatedEchoBodyClient(t *testing.T) {
 		return
 	}
 
-	cfg := unannotatedecho.NewConfiguration()
-	cfg.BasePath = "http://localhost:8088"
-
-	cl := unannotatedecho.NewAPIClient(cfg)
-
-	req := unannotatedecho.ExamplepbUnannotatedSimpleMessage{Id: "foo", Num: "1"}
-	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEchoBody(context.Background(), req)
+	cl := uaeclient.New(gatewayTransport(), strfmt.Default)
+	req := &uaemodels.ExamplepbUnannotatedSimpleMessage{ID: strPtr("foo"), Num: strPtr("1")}
+	resp, err := cl.UnannotatedEchoService.UnannotatedEchoServiceEchoBody(
+		unannotated_echo_service.NewUnannotatedEchoServiceEchoBodyParamsWithContext(context.Background()).WithBody(req),
+		nil,
+	)
 	if err != nil {
-		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
+		t.Errorf("cl.UnannotatedEchoService.UnannotatedEchoServiceEchoBody(%#v) failed with %v; want success", req, err)
+		return
 	}
-	if got, want := resp.Id, "foo"; got != want {
-		t.Errorf("resp.Id = %q; want %q", got, want)
+	if resp.Payload.ID == nil {
+		t.Errorf("resp.Payload.ID = nil; want %q", "foo")
+		return
+	}
+	if got, want := *resp.Payload.ID, "foo"; got != want {
+		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
 	}
 }
+
+func strPtr(s string) *string { return &s }
