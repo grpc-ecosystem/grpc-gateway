@@ -10,6 +10,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"maps"
 	"slices"
 	"sort"
 	"strconv"
@@ -837,12 +838,7 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 	// Sort keys so that when two messages flatten to the same OpenAPI definition
 	// name the winner is deterministic (last in sorted order wins) rather than
 	// varying with Go's random map iteration order.
-	names := make([]string, 0, len(messages))
-	for name := range messages {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	for _, name := range names {
+	for _, name := range slices.Sorted(maps.Keys(messages)) {
 		msg := messages[name]
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
@@ -854,6 +850,9 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
+		}
+		if _, exists := d[swgName]; exists {
+			grpclog.Warningf("Collision: multiple messages map to OpenAPI definition name %q; the definition will be overwritten", swgName)
 		}
 		var err error
 		d[swgName], err = renderMessageAsDefinition(msg, reg, customRefs, pathParams)
@@ -1079,7 +1078,8 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
 func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
-	for _, enum := range enums {
+	for _, key := range slices.Sorted(maps.Keys(enums)) {
+		enum := enums[key]
 		swgName, ok := fullyQualifiedNameToOpenAPIName(enum.FQEN(), reg)
 		if !ok {
 			panic(fmt.Sprintf("can't resolve OpenAPI name from FQEN %q", enum.FQEN()))
@@ -1135,6 +1135,9 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 			panic(err)
 		}
 
+		if _, exists := d[swgName]; exists {
+			grpclog.Warningf("Collision: multiple enums map to OpenAPI definition name %q; the definition will be overwritten", swgName)
+		}
 		d[swgName] = enumSchemaObject
 	}
 }
