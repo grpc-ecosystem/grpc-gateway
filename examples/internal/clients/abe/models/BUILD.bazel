@@ -1,0 +1,48 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "models",
+    srcs = [
+        "a_bit_of_everything_nested.go",
+        "a_bit_of_everything_service_deep_path_echo_body.go",
+        "a_bit_of_everything_service_post_with_empty_body_body.go",
+        "a_bit_of_everything_service_update_v2_body.go",
+        "examplepb_a_bit_of_everything.go",
+        "examplepb_a_bit_of_everything_repeated.go",
+        "examplepb_a_bit_of_everything_service_update_body.go",
+        "examplepb_bar.go",
+        "examplepb_body.go",
+        "examplepb_book.go",
+        "examplepb_check_status_response.go",
+        "examplepb_error_object.go",
+        "examplepb_error_response.go",
+        "examplepb_numeric_enum.go",
+        "examplepb_required_message_type_request.go",
+        "examplepb_snake_case0_enum.go",
+        "examplepb_snake_case_enum.go",
+        "examplepb_snake_enum_response.go",
+        "google_rpc_status.go",
+        "message_path_enum_nested_path_enum.go",
+        "nested_deep_enum.go",
+        "oneofenum_example_enum.go",
+        "pathenum_path_enum.go",
+        "pathenum_snake_case_for_import.go",
+        "proto_examplepb_foo.go",
+        "protobuf_any.go",
+        "sub_string_message.go",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/models",
+    visibility = ["//examples:__subpackages__"],
+    deps = [
+        "@com_github_go_openapi_errors//:errors",
+        "@com_github_go_openapi_strfmt//:strfmt",
+        "@com_github_go_openapi_swag//:swag",
+        "@com_github_go_openapi_validate//:validate",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":models",
+    visibility = ["//examples:__subpackages__"],
+)
