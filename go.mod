@@ -9,7 +9,7 @@ require (
 	github.com/go-openapi/swag v0.26.0
 	github.com/go-openapi/validate v0.25.2
 	github.com/google/go-cmp v0.7.0
-	github.com/oapi-codegen/runtime v1.4.1-0.20260411171516-6fd6c25e4f6d
+	github.com/oapi-codegen/runtime v1.4.1-0.20260503174551-d2b7c4c58e85
 	github.com/rogpeppe/fastuuid v1.2.0
 	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/text v0.36.0
