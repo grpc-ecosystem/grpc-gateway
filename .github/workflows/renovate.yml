@@ -59,9 +59,26 @@ jobs:
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: /home/vscode/.cache/_grpc_gateway_bazel
+          key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
+          restore-keys: v1-bazel-cache-
+      - name: Configure bazel
+        run:
+          | # put .bazelrc in $HOME so that it's read before project's .bazelrc
+          cat > /home/vscode/.bazelrc << EOF
+          startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
+          build --@io_bazel_rules_go//go/config:race
+          # Workaround https://github.com/bazelbuild/bazel/issues/3645
+          # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+          build --local_ram_resources=7168 # Github runners have 7G of memory
+          build --local_cpu_resources=2    # Github runners have 2 vCPU
+          EOF
       - run: make install
       - run: make clean
       - run: make generate
+      - run: bazel run //:gazelle
       - run: go mod tidy
       - run: |
           git add .
