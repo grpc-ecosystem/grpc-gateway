@@ -436,8 +436,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_strfmt",
         importpath = "github.com/go-openapi/strfmt",
-        sum = "h1:7zGCHji7zSYDC2tCXIusoxYQz/48jAf2q+sF6wXTG+c=",
-        version = "v0.26.1",
+        sum = "h1:ysjheCh4i1rmFEo2LanhELDNucNzfWTZhUDKgWWPaFM=",
+        version = "v0.26.2",
     )
     go_repository(
         name = "com_github_go_openapi_swag",
@@ -2450,8 +2450,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_crypto",
         importpath = "golang.org/x/crypto",
-        sum = "h1:+Ng2ULVvLHnJ/ZFEq4KdcDd/cfjrrjjNSXNzxg0Y4U4=",
-        version = "v0.49.0",
+        sum = "h1:zO47/JPrL6vsNkINmLoo/PH1gcxpls50DNogFvB5ZGI=",
+        version = "v0.50.0",
     )
     go_repository(
         name = "org_golang_x_exp",
@@ -2488,8 +2488,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_net",
         importpath = "golang.org/x/net",
-        sum = "h1:He/TN1l0e4mmR3QqHMT2Xab3Aj3L9qjbhRm78/6jrW0=",
-        version = "v0.52.0",
+        sum = "h1:d+qAbo5L0orcWAr0a9JweQpjXF19LMXJE8Ey7hwOdUA=",
+        version = "v0.53.0",
     )
     go_repository(
         name = "org_golang_x_oauth2",
@@ -2506,14 +2506,14 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_sys",
         importpath = "golang.org/x/sys",
-        sum = "h1:omrd2nAlyT5ESRdCLYdm3+fMfNFE/+Rf4bDIQImRJeo=",
-        version = "v0.42.0",
+        sum = "h1:Rlag2XtaFTxp19wS8MXlJwTvoh8ArU6ezoyFsMyCTNI=",
+        version = "v0.43.0",
     )
     go_repository(
         name = "org_golang_x_term",
         importpath = "golang.org/x/term",
-        sum = "h1:QCgPso/Q3RTJx2Th4bDLqML4W6iJiaXFq2/ftQF13YU=",
-        version = "v0.41.0",
+        sum = "h1:UiKe+zDFmJobeJ5ggPwOshJIVt6/Ft0rcfrXZDLWAWY=",
+        version = "v0.42.0",
     )
     go_repository(
         name = "org_golang_x_text",
