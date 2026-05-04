@@ -1,0 +1,56 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "genopenapi",
+    srcs = [
+        "comments.go",
+        "doc.go",
+        "generator.go",
+        "naming.go",
+        "operation.go",
+        "path.go",
+        "schema.go",
+        "types.go",
+        "visibility.go",
+        "wkt.go",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/internal/genopenapi",
+    visibility = ["//protoc-gen-openapiv3:__subpackages__"],
+    deps = [
+        "//internal/descriptor",
+        "@org_golang_google_genproto_googleapis_api//annotations",
+        "@org_golang_google_genproto_googleapis_api//visibility",
+        "@org_golang_google_grpc//grpclog",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/descriptorpb",
+        "@org_golang_google_protobuf//types/pluginpb",
+    ],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":genopenapi",
+    visibility = ["//protoc-gen-openapiv3:__subpackages__"],
+)
+
+go_test(
+    name = "genopenapi_test",
+    srcs = [
+        "comments_test.go",
+        "generator_test.go",
+        "path_test.go",
+        "schema_test.go",
+        "visibility_test.go",
+    ],
+    data = glob(["testdata/**"]),
+    embed = [":genopenapi"],
+    deps = [
+        "//internal/descriptor",
+        "@com_github_google_go_cmp//cmp",
+        "@org_golang_google_genproto_googleapis_api//visibility",
+        "@org_golang_google_protobuf//encoding/prototext",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//types/descriptorpb",
+        "@org_golang_google_protobuf//types/pluginpb",
+    ],
+)
