@@ -12,7 +12,7 @@ require (
 	github.com/oapi-codegen/runtime v1.4.1-0.20260503174551-d2b7c4c58e85
 	github.com/rogpeppe/fastuuid v1.2.0
 	go.yaml.in/yaml/v3 v3.0.4
-	golang.org/x/text v0.36.0
+	golang.org/x/text v0.37.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260504160031-60b97b32f348
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260504160031-60b97b32f348
 	google.golang.org/grpc v1.81.0
