@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"math"
 	"net/textproto"
 	"os"
 	"reflect"
 	"regexp"
-	"maps"
 	"slices"
 	"sort"
 	"strconv"
@@ -1133,6 +1133,15 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		}
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
+		}
+
+		// Enum comments should go to Description, not Title.
+		// updateOpenAPIDataFromComments may set Title as a fallback
+		// when Summary field is not available on schema objects.
+		// https://github.com/grpc-ecosystem/grpc-gateway/issues/2670
+		if enumComments != "" && enumSchemaObject.Description == "" && enumSchemaObject.Title != "" {
+			enumSchemaObject.Description = enumSchemaObject.Title
+			enumSchemaObject.Title = ""
 		}
 
 		if _, exists := d[swgName]; exists {
