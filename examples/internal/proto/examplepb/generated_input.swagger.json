@@ -6,7 +6,8 @@
   },
   "tags": [
     {
-      "name": "GeneratedService"
+      "name": "GeneratedService",
+      "description": "Defines some more operations to be added to ABitOfEverythingService"
     }
   ],
   "consumes": [

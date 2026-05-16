@@ -6,7 +6,8 @@
   },
   "tags": [
     {
-      "name": "Foo2Service"
+      "name": "Foo2Service",
+      "description": "Foo2Service"
     }
   ],
   "consumes": [

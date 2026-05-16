@@ -6,7 +6,8 @@
   },
   "tags": [
     {
-      "name": "StreamService"
+      "name": "StreamService",
+      "description": "Defines some more operations to be added to ABitOfEverythingService"
     }
   ],
   "consumes": [

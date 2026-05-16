@@ -29,7 +29,8 @@
       }
     },
     {
-      "name": "camelCaseServiceName"
+      "name": "camelCaseServiceName",
+      "description": "camelCase and lowercase service names are valid but not recommended (use TitleCase instead)"
     },
     {
       "name": "AnotherServiceWithNoBindings"

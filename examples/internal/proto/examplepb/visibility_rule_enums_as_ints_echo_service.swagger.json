@@ -7,7 +7,8 @@
   },
   "tags": [
     {
-      "name": "VisibilityRuleEchoService"
+      "name": "VisibilityRuleEchoService",
+      "description": "VisibilityRuleEchoService service responds to incoming echo requests.\nDifferent services will be available in the swagger documentation depending\nbased on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`\nflag when calling protoc-gen-openapiv2."
     }
   ],
   "consumes": [

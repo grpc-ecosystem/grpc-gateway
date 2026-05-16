@@ -7,10 +7,12 @@
   },
   "tags": [
     {
-      "name": "ServiceA"
+      "name": "ServiceA",
+      "description": "ServiceA provides MethodOne and MethodTwo"
     },
     {
-      "name": "ServiceC"
+      "name": "ServiceC",
+      "description": "ServiceC service responds to incoming merge requests."
     }
   ],
   "consumes": [

@@ -6,7 +6,8 @@
   },
   "tags": [
     {
-      "name": "Camel_Case_service"
+      "name": "Camel_Case_service",
+      "description": "Camel_Case_service consumes snake_case identifiers declared in the sub\npackage to ensure generated code camel-cases enum/message references, even\nwhen service and RPC names are snake_case."
     }
   ],
   "consumes": [
