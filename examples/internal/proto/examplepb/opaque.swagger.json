@@ -6,7 +6,8 @@
   },
   "tags": [
     {
-      "name": "OpaqueEcommerceService"
+      "name": "OpaqueEcommerceService",
+      "description": "OpaqueEcommerceService provides a comprehensive e-commerce API with various request/response patterns"
     }
   ],
   "consumes": [

@@ -6,7 +6,8 @@
   },
   "tags": [
     {
-      "name": "NonStandardService"
+      "name": "NonStandardService",
+      "description": "NonStandardService responds to incoming messages, applies a field mask and returns the masked response."
     }
   ],
   "consumes": [
