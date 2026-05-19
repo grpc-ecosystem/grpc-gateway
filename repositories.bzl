@@ -1149,10 +1149,16 @@ def go_repositories():
         version = "v0.0.0-20200524104333-86fad755b4d3",
     )
     go_repository(
+        name = "com_github_oapi_codegen_nullable",
+        importpath = "github.com/oapi-codegen/nullable",
+        sum = "h1:eAh8JVc5430VtYVnq00Hrbpag9PFRGWLjxR1/3KntMs=",
+        version = "v1.1.0",
+    )
+    go_repository(
         name = "com_github_oapi_codegen_runtime",
         importpath = "github.com/oapi-codegen/runtime",
-        sum = "h1:q89hvdCnATgApij+pl6P0opo2VM5lIUlByzAJxVvicc=",
-        version = "v1.4.1-0.20260503174551-d2b7c4c58e85",
+        sum = "h1:9nwLoI+KrWxzbBcp0jO/R8uXqbik/HUyCvPeU68Y/qo=",
+        version = "v1.4.1",
     )
 
     go_repository(
