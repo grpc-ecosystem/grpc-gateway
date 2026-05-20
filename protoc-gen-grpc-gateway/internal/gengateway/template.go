@@ -799,7 +799,7 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Server(ctx context.Cont
 		return
 	})
 	{{- else -}}
-	mux.Handle({{ $b.HTTPMethod | toHTTPMethod}}, pattern_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.HandleWithMessage({{ $b.HTTPMethod | toHTTPMethod}}, pattern_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 	{{- if $UseRequestContext }}
 		ctx, cancel := context.WithCancel(req.Context())
 	{{- else -}}
@@ -830,7 +830,7 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Server(ctx context.Cont
 		{{- else }}
 		forward_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 		{{- end }}
-	})
+	}, func() proto.Message { return &{{ $m.RequestType.GoType $m.Service.File.GoPkg.Path }}{} })
 	{{- end }}
 	{{ end }}
 	{{- end }}

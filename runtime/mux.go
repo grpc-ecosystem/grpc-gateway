@@ -1,9 +1,11 @@
 package runtime
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/textproto"
 	"regexp"
@@ -75,6 +77,10 @@ type ServeMux struct {
 	unescapingMode            UnescapingMode
 	writeContentLength        bool
 	disableChunkedEncoding    bool
+
+	// messageFactories maps "METHOD /pattern" to a MessageFactory for validation.
+	// Populated by HandleWithMessage, consumed by ValidatorFunc middleware.
+	messageFactories map[string]MessageFactory
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -360,6 +366,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		streamErrorHandler:      DefaultStreamErrorHandler,
 		routingErrorHandler:     DefaultRoutingErrorHandler,
 		unescapingMode:          UnescapingModeDefault,
+		messageFactories:        make(map[string]MessageFactory),
 	}
 
 	for _, opt := range opts {
@@ -576,5 +583,105 @@ func chainMiddlewares(mws []Middleware) Middleware {
 			next = mws[i-1](next)
 		}
 		return next
+	}
+}
+
+// MessageFactory creates a new proto.Message instance for a given route.
+// It is used by the validation middleware to construct a message, deserialize
+// the request body into it, and validate it before the handler is invoked.
+type MessageFactory func() proto.Message
+
+// HandleWithMessage registers a handler and associates it with a MessageFactory.
+// The MessageFactory is stored in the mux's internal registry so that middleware
+// (e.g. a validation middleware) can look up the request message type for a route
+// and validate it automatically, without manual registration.
+//
+// This is the key building block for automatic per-route validation in local
+// handler mode (RegisterXxxHandlerServer), where gRPC interceptors are bypassed.
+func (s *ServeMux) HandleWithMessage(meth string, pat Pattern, h HandlerFunc, factory MessageFactory) {
+	s.Handle(meth, pat, h)
+	if factory != nil {
+		s.messageFactories[meth+" "+pat.String()] = factory
+	}
+}
+
+// LookupMessageFactory returns the MessageFactory registered for the given
+// method and pattern key. Returns nil if no factory is registered.
+// This is used by validation middleware to find the message type for a route.
+func (s *ServeMux) LookupMessageFactory(key string) (MessageFactory, bool) {
+	f, ok := s.messageFactories[key]
+	return f, ok
+}
+
+// ValidatorFunc validates a proto.Message and returns an error if it is invalid.
+// Users can inject any validation implementation (e.g. go-argus, protovalidate, etc.)
+// via WithValidator.
+type ValidatorFunc func(msg proto.Message) error
+
+// WithValidator returns a ServeMuxOption that adds a validation middleware.
+// The middleware automatically looks up the MessageFactory for each route,
+// deserializes the request body, validates it using fn, and returns an error
+// if validation fails.
+//
+// Usage:
+//
+//	mux := runtime.NewServeMux(
+//	    runtime.WithValidator(myValidateFunc),
+//	)
+func WithValidator(fn ValidatorFunc) ServeMuxOption {
+	return func(sm *ServeMux) {
+		sm.middlewares = append(sm.middlewares, newValidationMiddleware(sm, fn))
+	}
+}
+
+// newValidationMiddleware creates a Middleware that validates request bodies
+// using the provided ValidatorFunc and the ServeMux's message factory registry.
+func newValidationMiddleware(mux *ServeMux, fn ValidatorFunc) Middleware {
+	return func(next HandlerFunc) HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+			pat, ok := HTTPPattern(r.Context())
+			if !ok {
+				next(w, r, pathParams)
+				return
+			}
+			key := r.Method + " " + pat.String()
+			factory, ok := mux.LookupMessageFactory(key)
+			if !ok {
+				next(w, r, pathParams)
+				return
+			}
+
+			// Read request body
+			bodyBytes, err := io.ReadAll(r.Body)
+			if err != nil {
+				HTTPError(r.Context(), mux, defaultMarshaler, w, r,
+					status.Error(codes.InvalidArgument, "failed to read request body"))
+				return
+			}
+			// Replay body for downstream handler
+			r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+
+			if len(bodyBytes) == 0 {
+				next(w, r, pathParams)
+				return
+			}
+
+			// Deserialize into message
+			msg := factory()
+			inbound, _ := MarshalerForRequest(mux, r)
+			if err := inbound.NewDecoder(bytes.NewReader(bodyBytes)).Decode(msg); err != nil {
+				next(w, r, pathParams)
+				return
+			}
+
+			// Validate
+			if err := fn(msg); err != nil {
+				HTTPError(r.Context(), mux, inbound, w, r,
+					status.Error(codes.InvalidArgument, err.Error()))
+				return
+			}
+
+			next(w, r, pathParams)
+		}
 	}
 }
