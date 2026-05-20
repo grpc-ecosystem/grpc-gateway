@@ -14,7 +14,7 @@ bazel_dep(name = "rules_go", version = "0.60.0", repo_name = "io_bazel_rules_go"
 bazel_dep(name = "rules_shell", version = "0.8.0")
 bazel_dep(name = "gazelle", version = "0.51.0", repo_name = "bazel_gazelle")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "protobuf", version = "34.1", repo_name = "com_google_protobuf")
+bazel_dep(name = "protobuf", version = "35.0", repo_name = "com_google_protobuf")
 bazel_dep(name = "googleapis", version = "0.0.0-20260514-1dbb1a14")
 
 # This is required as a transitive dependency and not directly needed by this module.
