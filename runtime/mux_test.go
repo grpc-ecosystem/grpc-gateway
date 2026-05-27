@@ -846,6 +846,33 @@ func TestWithHealthzEndpoint_serviceParam(t *testing.T) {
 
 	mux.ServeHTTP(rr, r)
 
+	if got, want := rr.Code, http.StatusInternalServerError; got != want {
+		t.Errorf("rr.Code = %d; want %d", got, want)
+	}
+	if !strings.Contains(rr.Body.String(), service) {
+		t.Errorf(
+			"service query parameter should be translated to HealthCheckRequest: expected %s to contain %s",
+			rr.Body.String(), service,
+		)
+	}
+}
+
+func TestWithHealthEndpointAt_serviceParam(t *testing.T) {
+	const endpointPath = "/readyz"
+	service := "test"
+
+	// trigger error to output service in body
+	dummyClient := dummyHealthCheckClient{status: grpc_health_v1.HealthCheckResponse_UNKNOWN, code: codes.Unknown}
+	mux := runtime.NewServeMux(runtime.WithHealthEndpointAt(&dummyClient, endpointPath))
+
+	r := httptest.NewRequest(http.MethodGet, endpointPath+"?service="+service, nil)
+	rr := httptest.NewRecorder()
+
+	mux.ServeHTTP(rr, r)
+
+	if got, want := rr.Code, http.StatusInternalServerError; got != want {
+		t.Errorf("rr.Code = %d; want %d", got, want)
+	}
 	if !strings.Contains(rr.Body.String(), service) {
 		t.Errorf(
 			"service query parameter should be translated to HealthCheckRequest: expected %s to contain %s",
