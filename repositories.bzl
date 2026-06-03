@@ -394,14 +394,14 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_analysis",
         importpath = "github.com/go-openapi/analysis",
-        sum = "h1:We0FXVvCY5XNSb8GrE+k+wsgkUqTJqnkqsVAC9EGdrM=",
-        version = "v0.25.1",
+        sum = "h1:I0vy4n3alz+DHTiN1PRhCb7QZxkK6g5YmswZKv2TKuw=",
+        version = "v0.25.2",
     )
     go_repository(
         name = "com_github_go_openapi_errors",
         importpath = "github.com/go-openapi/errors",
-        sum = "h1:JLFBGC0Apwdzw3484MmBqspjPbwa2SHvpDm0u5aGhUA=",
-        version = "v0.22.7",
+        sum = "h1:oP7sW7TWc3wFFjrzzj0nI83H2qMBkNjNfSd+XRejk/I=",
+        version = "v0.22.8",
     )
     go_repository(
         name = "com_github_go_openapi_jsonpointer",
@@ -424,8 +424,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_runtime",
         importpath = "github.com/go-openapi/runtime",
-        sum = "h1:X9mZz716lFwYZ6bFV1BBnthNdHTy46zKM5Em4D1UISI=",
-        version = "v0.32.2",
+        sum = "h1:J7Ycy5DJmhhP1By3NifhRUjnkXTrk21qbeqSULjwX8U=",
+        version = "v0.32.3",
     )
     go_repository(
         name = "com_github_go_openapi_runtime_server_middleware",
@@ -436,8 +436,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_spec",
         importpath = "github.com/go-openapi/spec",
-        sum = "h1:4pxGjipMKu0FzFiu/DPwN3CTBRlVM2yLf/YTWorYfDQ=",
-        version = "v0.22.4",
+        sum = "h1:KhO7RBlKQfonUWX2WzQCoLIXVA6AcNqDGZ3a1Dutdlo=",
+        version = "v0.22.5",
     )
     go_repository(
         name = "com_github_go_openapi_strfmt",
@@ -2351,20 +2351,20 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_otel",
         importpath = "go.opentelemetry.io/otel",
-        sum = "h1:mYIM03dnh5zfN7HautFE4ieIig9amkNANT+xcVxAj9I=",
-        version = "v1.43.0",
+        sum = "h1:JjwHmHpA4iZ3wBxluu2fbbE7j4kqlE8jXyAyPXH7HqU=",
+        version = "v1.44.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_metric",
         importpath = "go.opentelemetry.io/otel/metric",
-        sum = "h1:d7638QeInOnuwOONPp4JAOGfbCEpYb+K6DVWvdxGzgM=",
-        version = "v1.43.0",
+        sum = "h1:1w0gILTcHdr3YI+ixLyjemwrVnsMURbTZFrSYCdDdmc=",
+        version = "v1.44.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_sdk",
         importpath = "go.opentelemetry.io/otel/sdk",
-        sum = "h1:pi5mE86i5rTeLXqoF/hhiBtUNcrAGHLKQdhg4h4V9Dg=",
-        version = "v1.43.0",
+        sum = "h1:nHYwb9lK+fJPU/dnT6s7W7Z8itMWyqrnVfbheVYrZ58=",
+        version = "v1.44.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_sdk_metric",
@@ -2375,8 +2375,8 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_otel_trace",
         importpath = "go.opentelemetry.io/otel/trace",
-        sum = "h1:BkNrHpup+4k4w+ZZ86CZoHHEkohws8AY+WTX09nk+3A=",
-        version = "v1.43.0",
+        sum = "h1:jxF5CsGYCe74MCRx2X4g7WsY/VBKRqqpNvXlX/6gtIk=",
+        version = "v1.44.0",
     )
 
     go_repository(
