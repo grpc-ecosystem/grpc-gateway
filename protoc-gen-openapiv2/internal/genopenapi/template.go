@@ -355,6 +355,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Description: desc,
 			In:          "query",
 			Default:     schema.Default,
+			Example:     schema.Example,
 			Type:        schema.Type,
 			Items:       schema.Items,
 			Format:      schema.Format,
@@ -1547,8 +1548,9 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 				pathParamNames := make(map[string]string)
 				for _, parameter := range pathParams {
 
-					var paramType, paramFormat, desc, collectionFormat string
+					var paramType, paramFormat, desc, collectionFormat, schemaPattern string
 					var defaultValue interface{}
+					var example RawExample
 					var enumNames interface{}
 					var items *openapiItemsObject
 					var minItems *int
@@ -1564,6 +1566,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							paramFormat = schema.Format
 							desc = schema.Description
 							defaultValue = schema.Default
+							example = schema.Example
+							schemaPattern = schema.Pattern
 							extensions = schema.extensions
 						} else {
 							return errors.New("only primitive and well-known types are allowed in path parameters")
@@ -1585,6 +1589,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
+						example = schema.Example
+						schemaPattern = schema.Pattern
 						extensions = schema.extensions
 					default:
 						var ok bool
@@ -1596,6 +1602,8 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
+						example = schema.Example
+						schemaPattern = schema.Pattern
 						extensions = schema.extensions
 						// If there is no mandatory format based on the field,
 						// allow it to be overridden by the user
@@ -1625,7 +1633,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					if reg.GetUseJSONNamesForFields() {
 						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
 					}
-					var pattern string
+					pattern := schemaPattern
 					if regExp, ok := pathParamRegexpMap[parameterString]; ok {
 						pattern = regExp
 					}
@@ -1650,6 +1658,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						Required:    true,
 						Deprecated:  deprecated,
 						Default:     defaultValue,
+						Example:     example,
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:             paramType,
 						Format:           paramFormat,
