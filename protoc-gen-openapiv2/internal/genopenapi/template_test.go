@@ -9696,8 +9696,11 @@ func TestPathAndQueryParametersIncludeFieldSchemaExampleAndPattern(t *testing.T)
 		if err := json.Unmarshal(encoded, &got); err != nil {
 			t.Fatalf("json.Unmarshal(%s) failed: %v", encoded, err)
 		}
-		if got["example"] != wantExample {
-			t.Fatalf("wrong example for %#v: got %#v want %#v", parameter.Name, got["example"], wantExample)
+		if got["example"] != nil {
+			t.Fatalf("unexpected example for %#v: got %#v want nil", parameter.Name, got["example"])
+		}
+		if got["x-example"] != wantExample {
+			t.Fatalf("wrong x-example for %#v: got %#v want %#v", parameter.Name, got["x-example"], wantExample)
 		}
 		if got["default"] != wantDefault {
 			t.Fatalf("wrong default for %#v: got %#v want %#v", parameter.Name, got["default"], wantDefault)

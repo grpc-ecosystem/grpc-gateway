@@ -355,7 +355,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Description: desc,
 			In:          "query",
 			Default:     schema.Default,
-			Example:     schema.Example,
+			XExample:    schema.Example,
 			Type:        schema.Type,
 			Items:       schema.Items,
 			Format:      schema.Format,
@@ -1658,7 +1658,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 						Required:    true,
 						Deprecated:  deprecated,
 						Default:     defaultValue,
-						Example:     example,
+						XExample:    example,
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:             paramType,
 						Format:           paramFormat,
