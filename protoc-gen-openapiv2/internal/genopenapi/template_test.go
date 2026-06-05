@@ -9559,6 +9559,171 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 	}
 }
 
+func TestPathAndQueryParametersIncludeFieldSchemaExampleAndPattern(t *testing.T) {
+	imageURNFieldOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(proto.Message(imageURNFieldOptions), openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+		Example: `"urn:eagleview.com:v4:spatial-data:raster:visual:ated:QIgDbfZw-kqKfTxbMQXwhw:0"`,
+		Default: "urn:eagleview.com:v4:spatial-data:raster:visual:ated:QIgDbfZw-kqKfTxbMQXwhw:0",
+		Pattern: `^(urn:eagleview\.com:v\d+:spatial-data:\w+:\w+:\w+:[A-Za-z0-9-_]+):(\d+)$`,
+	})
+	filterFieldOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(proto.Message(filterFieldOptions), openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+		Example: `"active"`,
+		Default: "active",
+		Pattern: `^(active|archived)$`,
+	})
+
+	reqMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("GetTileForImageRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:    proto.String("image_urn"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(1),
+				Options: imageURNFieldOptions,
+			},
+			{
+				Name:    proto.String("filter"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(2),
+				Options: filterFieldOptions,
+			},
+		},
+	}
+	respMsgDesc := &descriptorpb.DescriptorProto{Name: proto.String("TileResponse")}
+
+	reqMsg := &descriptor.Message{DescriptorProto: reqMsgDesc}
+	respMsg := &descriptor.Message{DescriptorProto: respMsgDesc}
+	imageURNField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsgDesc.GetField()[0],
+	}
+	filterField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsgDesc.GetField()[1],
+	}
+	reqMsg.Fields = []*descriptor.Field{imageURNField, filterField}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("GetTileForImage"),
+		InputType:  proto.String("GetTileForImageRequest"),
+		OutputType: proto.String("TileResponse"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("TileService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("tile.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{reqMsgDesc, respMsgDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/example/tile;tile"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/tile/tile.pb",
+			Name: "tile_pb",
+		},
+		Messages: []*descriptor.Message{reqMsg, respMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           reqMsg,
+						ResponseType:          respMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/images/{image_urn}/tile",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath{
+											{
+												Name:   "image_urn",
+												Target: imageURNField,
+											},
+										},
+										Target: imageURNField,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(reqFromFile(fileCL)); err != nil {
+		t.Fatalf("reg.Load(%#v) failed with %v; want success", file, err)
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	parameters := result.getPathItemObject("/v1/images/{image_urn}/tile").Get.Parameters
+	findParameter := func(name, in string) openapiParameterObject {
+		t.Helper()
+		for _, parameter := range parameters {
+			if parameter.Name == name && parameter.In == in {
+				return parameter
+			}
+		}
+		t.Fatalf("parameter %s in %s not found in %#v", name, in, parameters)
+		return openapiParameterObject{}
+	}
+	assertParameterMetadata := func(parameter openapiParameterObject, wantExample any, wantDefault any, wantPattern string) {
+		t.Helper()
+		encoded, err := json.Marshal(parameter)
+		if err != nil {
+			t.Fatalf("json.Marshal(%#v) failed: %v", parameter, err)
+		}
+		var got map[string]any
+		if err := json.Unmarshal(encoded, &got); err != nil {
+			t.Fatalf("json.Unmarshal(%s) failed: %v", encoded, err)
+		}
+		if got["example"] != nil {
+			t.Fatalf("unexpected example for %#v: got %#v want nil", parameter.Name, got["example"])
+		}
+		if got["x-example"] != wantExample {
+			t.Fatalf("wrong x-example for %#v: got %#v want %#v", parameter.Name, got["x-example"], wantExample)
+		}
+		if got["default"] != wantDefault {
+			t.Fatalf("wrong default for %#v: got %#v want %#v", parameter.Name, got["default"], wantDefault)
+		}
+		if got["pattern"] != wantPattern {
+			t.Fatalf("wrong pattern for %#v: got %#v want %#v", parameter.Name, got["pattern"], wantPattern)
+		}
+	}
+
+	assertParameterMetadata(
+		findParameter("image_urn", "path"),
+		"urn:eagleview.com:v4:spatial-data:raster:visual:ated:QIgDbfZw-kqKfTxbMQXwhw:0",
+		"urn:eagleview.com:v4:spatial-data:raster:visual:ated:QIgDbfZw-kqKfTxbMQXwhw:0",
+		`^(urn:eagleview\.com:v\d+:spatial-data:\w+:\w+:\w+:[A-Za-z0-9-_]+):(\d+)$`,
+	)
+	assertParameterMetadata(
+		findParameter("filter", "query"),
+		"active",
+		"active",
+		`^(active|archived)$`,
+	)
+}
+
 func GetPaths(req *openapiSwaggerObject) []string {
 	paths := make([]string, len(req.Paths))
 	i := 0
