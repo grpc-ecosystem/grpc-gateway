@@ -87,10 +87,10 @@ rules_proto_toolchains()
 
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "5f05dbf4a8cfcf91f99139ad0ff2bedb7bc4fcf1b503ebf6fe8dfe7894efd117",
+    sha256 = "763f4a3f6b03469fdb00a77a333dd0b5546d3ee1fa29db373128c08fee73e0e8",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.61.0/rules_go-v0.61.0.zip",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.61.0/rules_go-v0.61.0.zip",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.61.1/rules_go-v0.61.1.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.61.1/rules_go-v0.61.1.zip",
     ],
 )
 
