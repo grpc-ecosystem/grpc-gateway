@@ -9,9 +9,13 @@ parent: Mapping
 
 The [HTTPBody](https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto) messages allow a response message to be specified with custom data content and a custom content-type header. The values included in the HTTPBody response will be used verbatim in the returned message from the gateway. Make sure you format your response carefully!
 
+`google.api.HttpBody` is also the native gRPC-Gateway response shape to use for
+binary downloads and other raw payload responses where you need to control the
+returned content type directly.
+
 ## Example Usage
 
-1. Define your service in gRPC with an httpbody response message
+1. Define your service in gRPC with an `HttpBody` response message.
 
 ```protobuf
 import "google/api/httpbody.proto";
@@ -32,7 +36,7 @@ service HttpBodyExampleService {
 }
 ```
 
-3. Generate gRPC and reverse-proxy stubs and implement your service.
+2. Generate gRPC and reverse-proxy stubs and implement your service.
 
 ## Example service implementation
 
