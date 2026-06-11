@@ -418,8 +418,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_loads",
         importpath = "github.com/go-openapi/loads",
-        sum = "h1:g5Xap1JfwKkUnZdn+S0L3SzBDpcTIYzZ5Qaag0YDkKQ=",
-        version = "v0.23.3",
+        sum = "h1:UMC8JClHQeASS+bh1Uc8ShGG6IrKt1kbM2DgFhx/vF0=",
+        version = "v0.23.4",
     )
     go_repository(
         name = "com_github_go_openapi_runtime",
@@ -538,8 +538,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_validate",
         importpath = "github.com/go-openapi/validate",
-        sum = "h1:4nzAIavcJ7WveHK2+V1UAkZK3kWcjzxZCzjfZAfavKs=",
-        version = "v0.25.3",
+        sum = "h1:dxWzQ3F+vb1SajqUxHjwb5T4mTpSHmdrtv5Bi7+ZNhw=",
+        version = "v0.26.0",
     )
     go_repository(
         name = "com_github_go_playground_locales",
