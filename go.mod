@@ -14,7 +14,7 @@ require (
 	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/text v0.38.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260610212136-7ab31c22f7ad
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260608224507-4308a22a1bab
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260610212136-7ab31c22f7ad
 	google.golang.org/grpc v1.81.1
 	google.golang.org/protobuf v1.36.11
 )
