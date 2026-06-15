@@ -28,6 +28,8 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude response_body_service_grpc.pb.go
 # gazelle:exclude stream.pb.gw.go
 # gazelle:exclude stream_grpc.pb.go
+# gazelle:exclude use_allof_for_refs.pb.gw.go
+# gazelle:exclude use_allof_for_refs_grpc.pb.go
 # gazelle:exclude use_go_template.pb.gw.go
 # gazelle:exclude use_go_template_grpc.pb.go
 # gazelle:exclude ignore_comment.pb.gw.go
@@ -73,6 +75,7 @@ proto_library(
         "response_body_service.proto",
         "stream.proto",
         "unannotated_echo_service.proto",
+        "use_allof_for_refs.proto",
         "use_go_template.proto",
         "visibility_rule_echo_service.proto",
         "wrappers.proto",
