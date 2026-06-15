@@ -1,0 +1,21 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "merge",
+    srcs = ["merge.go"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/openapiv3-merge/internal/merge",
+    visibility = ["//openapiv3-merge:__subpackages__"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":merge",
+    visibility = ["//openapiv3-merge:__subpackages__"],
+)
+
+go_test(
+    name = "merge_test",
+    srcs = ["merge_test.go"],
+    data = glob(["testdata/**"]),
+    embed = [":merge"],
+)
