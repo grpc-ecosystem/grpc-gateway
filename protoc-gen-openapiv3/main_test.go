@@ -63,3 +63,37 @@ func TestParseReqParam_DisableDefaultErrors(t *testing.T) {
 		})
 	}
 }
+
+func TestParseReqParam_IgnoresImportPathMappings(t *testing.T) {
+	t.Parallel()
+
+	// protoc-based pipelines pass M<file>=<importpath> mappings to every
+	// plugin. They are not flags of this plugin (protogen consumes them when
+	// loading the request), so parsing them must not error out.
+	tests := []struct {
+		name  string
+		param string
+	}{
+		{
+			name:  "single mapping",
+			param: "Mshared.proto=example.com/service_a/gen/go/api",
+		},
+		{
+			name:  "multiple mappings with a real flag",
+			param: "Mservice_a_1.proto=example.com/x,Mservice_a_2.proto=example.com/x,disable_default_errors=true",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			f := flag.NewFlagSet("test", flag.ContinueOnError)
+			f.Bool("disable_default_errors", false, "")
+
+			if err := parseReqParam(tc.param, f); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+		})
+	}
+}

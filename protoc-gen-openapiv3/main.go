@@ -106,6 +106,13 @@ func parseReqParam(param string, f *flag.FlagSet) error {
 			continue
 		}
 		flagName, val, ok := strings.Cut(p, "=")
+		if ok && strings.HasPrefix(flagName, "M") {
+			// Source-relative import-path mappings (M<file>=<importpath>) are
+			// passed to every plugin by protoc-based pipelines but are not
+			// flags of this plugin; protogen consumes them when loading the
+			// request, so we ignore them here rather than erroring out.
+			continue
+		}
 		if !ok {
 			if err := f.Set(flagName, "true"); err != nil {
 				return fmt.Errorf("cannot set flag %s: %w", flagName, err)
