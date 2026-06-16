@@ -401,8 +401,8 @@ func (p FieldPath) AssignableExpr(msgExpr string, currentPackage string) string 
 }
 
 // AssignableExprPrep returns preparation statements for an assignable expression to assign a value
-// to the target field. The Go expression of the method request object is "msgExpr". This is only
-// needed for field paths that contain oneofs. Otherwise, an empty string is returned.
+// to the target field. The Go expression of the method request object is "msgExpr". This is needed
+// for field paths that contain oneofs or intermediate message fields.
 func (p FieldPath) AssignableExprPrep(msgExpr string, currentPackage string) string {
 	l := len(p)
 	if l == 0 {
@@ -440,10 +440,42 @@ func (p FieldPath) AssignableExprPrep(msgExpr string, currentPackage string) str
 			components = components + "." + c.AssignableExpr()
 			continue
 		}
+
+		if isSingularMessageField(c.Target) {
+			if msg := p.messageTypeForIntermediate(i); msg != nil {
+				fieldExpr := components + "." + c.AssignableExpr()
+				preparations = append(preparations, fmt.Sprintf(`if %s == nil {
+				%s = &%s{}
+			}`, fieldExpr, fieldExpr, msg.GoType(currentPackage)))
+			}
+		}
+
 		components = components + "." + c.ValueExpr()
 	}
 
 	return strings.Join(preparations, "\n")
+}
+
+func (p FieldPath) messageTypeForIntermediate(i int) *Message {
+	if msg := p[i].Target.FieldMessage; msg != nil {
+		return msg
+	}
+	if i+1 < len(p) {
+		return p[i+1].Target.Message
+	}
+	return nil
+}
+
+func isSingularMessageField(f *Field) bool {
+	if f.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+		return false
+	}
+	switch f.GetType() {
+	case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
+		return true
+	default:
+		return false
+	}
 }
 
 // OpaqueSetterExpr returns the Go expression to invoke the generated setter for
