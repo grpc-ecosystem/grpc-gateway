@@ -1,6 +1,6 @@
 'use strict';
 
-var SwaggerClient = require('swagger-client');
+var SwaggerClient = require('swagger-client').default || require('swagger-client');
 
 describe('EchoService', function () {
   var client;
