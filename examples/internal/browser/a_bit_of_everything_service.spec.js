@@ -8,7 +8,6 @@ describe('ABitOfEverythingService', function () {
   beforeEach(function (done) {
     new SwaggerClient({
       url: "http://localhost:8080/openapiv2/a_bit_of_everything.swagger.json",
-      usePromise: true,
     }).then(function (c) {
       client = c;
     }).catch(function (err) {
@@ -142,7 +141,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_CreateBody({
+      client.apis.ABitOfEverything.ABitOfEverythingService_CreateBody({
         body: expected,
       }).then(function (resp) {
         created = resp.obj;
@@ -169,7 +168,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_CreateBody({
+      client.apis.ABitOfEverything.ABitOfEverythingService_CreateBody({
         body: expected,
       }).then(function (resp) {
         created = resp.obj;
@@ -179,17 +178,17 @@ describe('ABitOfEverythingService', function () {
     });
 
     it('should look up an object by uuid', function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_Lookup({
+      client.apis.ABitOfEverything.ABitOfEverythingService_Lookup({
         uuid: created.uuid
       }).then(function (resp) {
         expect(resp.obj).toEqual(created);
       }).catch(function (err) {
-        fail(err.errObj);
+        fail(err.message);
       }).finally(done);
     });
 
     it('should fail if no such object', function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_Lookup({
+      client.apis.ABitOfEverything.ABitOfEverythingService_Lookup({
         uuid: 'not_exist',
       }).then(function (resp) {
         fail('expected failure but succeeded');
@@ -207,7 +206,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_CreateBody({
+      client.apis.ABitOfEverything.ABitOfEverythingService_CreateBody({
         body: expected,
       }).then(function (resp) {
         created = resp.obj;
@@ -217,14 +216,14 @@ describe('ABitOfEverythingService', function () {
     });
 
     it('should delete an object by id', function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_Delete({
+      client.apis.ABitOfEverything.ABitOfEverythingService_Delete({
         uuid: created.uuid
       }).then(function (resp) {
         expect(resp.obj).toEqual({});
       }).catch(function (err) {
-        fail(err.errObj);
+        fail(err.message);
       }).then(function () {
-        return client.ABitOfEverything.ABitOfEverythingService_Lookup({
+        return client.apis.ABitOfEverything.ABitOfEverythingService_Lookup({
           uuid: created.uuid
         });
       }).then(function (resp) {
@@ -257,7 +256,7 @@ describe('ABitOfEverythingService', function () {
     };
 
     beforeEach(function (done) {
-      client.ABitOfEverything.ABitOfEverythingService_GetRepeatedQuery(expected).then(function (resp) {
+      client.apis.ABitOfEverything.ABitOfEverythingService_GetRepeatedQuery(expected).then(function (resp) {
         repeated = resp.obj;
       }).catch(function (err) {
         done.fail(err);

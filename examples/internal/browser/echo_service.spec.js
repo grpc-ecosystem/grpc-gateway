@@ -8,10 +8,11 @@ describe('EchoService', function () {
   beforeEach(function (done) {
     new SwaggerClient({
       url: "http://localhost:8080/openapiv2/echo_service.swagger.json",
-      usePromise: true,
     }).then(function (c) {
       client = c;
       done();
+    }).catch(function (err) {
+      done.fail(err);
     });
   });
 
@@ -24,7 +25,7 @@ describe('EchoService', function () {
         resourceId: '',
         nId: null
       };
-      client.EchoService.EchoService_Echo(
+      client.apis.EchoService.EchoService_Echo(
         expected,
         { responseContentType: "application/json" }
       ).then(function (resp) {
@@ -44,7 +45,7 @@ describe('EchoService', function () {
         resourceId: '',
         nId: null
       };
-      client.EchoService.EchoService_EchoBody(
+      client.apis.EchoService.EchoService_EchoBody(
         { body: expected },
         { responseContentType: "application/json" }
       ).then(function (resp) {
