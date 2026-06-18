@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package internal.descriptor.testdata.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/testdata/v1";
+
+message ExecutionInput {
+  oneof input {
+    string input_json = 1;
+    google.protobuf.Value input_value = 2;
+  }
+}
+
+message StartRequest {
+  string workflow_id = 1;
+  ExecutionInput input = 3;
+}
+
+message StartResponse {}
+
+service ExecutionService {
+  rpc Start(StartRequest) returns (StartResponse) {
+    option (google.api.http) = {
+      post: "/v1/example/execution/start"
+      body: "*"
+      additional_bindings: {
+        post: "/v1/example/execution/{workflow_id}/start"
+        body: "input.input_value"
+      }
+    };
+  }
+}

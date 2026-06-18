@@ -1,4 +1,8 @@
 version: v2
+inputs:
+  - directory: .
+    exclude_paths:
+      - internal/descriptor/testdata
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.35.1
     out: .
