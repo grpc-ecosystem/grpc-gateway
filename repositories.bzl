@@ -418,14 +418,14 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_loads",
         importpath = "github.com/go-openapi/loads",
-        sum = "h1:UMC8JClHQeASS+bh1Uc8ShGG6IrKt1kbM2DgFhx/vF0=",
-        version = "v0.23.4",
+        sum = "h1:4LLorXRPTzIN9V6ngMUZbAscsBOUBk3Oa8cClu/bFrQ=",
+        version = "v0.24.0",
     )
     go_repository(
         name = "com_github_go_openapi_runtime",
         importpath = "github.com/go-openapi/runtime",
-        sum = "h1:J7Ycy5DJmhhP1By3NifhRUjnkXTrk21qbeqSULjwX8U=",
-        version = "v0.32.3",
+        sum = "h1:8ElGj/3goG0itt0nBPP6Cm57ehcYyuHoI3O20nxgvkw=",
+        version = "v0.32.4",
     )
     go_repository(
         name = "com_github_go_openapi_runtime_server_middleware",
@@ -436,8 +436,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_spec",
         importpath = "github.com/go-openapi/spec",
-        sum = "h1:KhO7RBlKQfonUWX2WzQCoLIXVA6AcNqDGZ3a1Dutdlo=",
-        version = "v0.22.5",
+        sum = "h1:Tyy1pLaNCM8GBCFLoGYLonjJi6zykqyLCjXLc19ZPic=",
+        version = "v0.22.6",
     )
     go_repository(
         name = "com_github_go_openapi_strfmt",
