@@ -30,8 +30,12 @@ var (
 
 func main() {
 	if err := run(); err != nil {
+		// Report the error through the CodeGeneratorResponse and exit 0.
+		// protoc only surfaces the response's error field when the plugin
+		// exits successfully; a non-zero exit is treated as a crash and the
+		// response (including the error message) is discarded, leaving the
+		// user with only "Plugin failed with status code 1".
 		emitError(err)
-		os.Exit(1)
 	}
 }
 
@@ -79,8 +83,11 @@ func emitFiles(files []*pluginpb.CodeGeneratorResponse_File) {
 }
 
 func emitError(err error) {
-	// Echo to stderr in addition to the proto response
-	grpclog.Infoln(err)
+	// Echo to stderr in addition to the proto response. Log at error
+	// severity so the message is emitted under grpclog's default level
+	// (which discards info and warning), keeping it visible when debugging
+	// from the command line.
+	grpclog.Errorln(err)
 	emitResp(&pluginpb.CodeGeneratorResponse{Error: proto.String(err.Error())})
 }
 
