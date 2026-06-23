@@ -6,6 +6,9 @@ Optionally applies settings from the grpc-service configuration.
 
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 
+
+_PROTO_TOOLCHAIN_TYPE = "@com_google_protobuf//bazel/private:proto_toolchain_type"
+
 # TODO(yannic): Replace with |proto_common.direct_source_infos| when
 # https://github.com/bazelbuild/rules_proto/pull/22 lands.
 def _direct_source_infos(proto_info, provided_sources = []):
@@ -252,7 +255,7 @@ def _proto_gen_openapi_impl(ctx):
                         direct = ctx.files._well_known_protos,
                         transitive = [proto.transitive_sources],
                     ),
-                    protoc = ctx.executable._protoc,
+                    protoc = ctx.toolchains[_PROTO_TOOLCHAIN_TYPE].proto.proto_compiler,
                     protoc_gen_openapiv2 = ctx.executable._protoc_gen_openapi,
                     single_output = ctx.attr.single_output,
                     allow_delete_body = ctx.attr.allow_delete_body,
@@ -480,11 +483,6 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
             doc = "Generate x-go-type extension using the go_package option from proto files",
         ),
-        "_protoc": attr.label(
-            default = "@com_google_protobuf//:protoc",
-            executable = True,
-            cfg = "exec",
-        ),
         "_well_known_protos": attr.label(
             default = "@com_google_protobuf//:well_known_type_protos",
             allow_files = True,
@@ -495,5 +493,8 @@ protoc_gen_openapiv2 = rule(
             cfg = "exec",
         ),
     },
+    toolchains = [
+        _PROTO_TOOLCHAIN_TYPE,
+    ],
     implementation = _proto_gen_openapi_impl,
 )

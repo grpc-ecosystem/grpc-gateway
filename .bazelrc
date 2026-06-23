@@ -1,2 +1,5 @@
+common --@com_google_protobuf//bazel/flags:prefer_prebuilt_protoc
+common --incompatible_enable_proto_toolchain_resolution
+
 build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
 build --test_output=errors
