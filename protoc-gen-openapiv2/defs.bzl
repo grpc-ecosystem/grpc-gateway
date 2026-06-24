@@ -6,7 +6,6 @@ Optionally applies settings from the grpc-service configuration.
 
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 
-
 _PROTO_TOOLCHAIN_TYPE = "@com_google_protobuf//bazel/private:proto_toolchain_type"
 
 # TODO(yannic): Replace with |proto_common.direct_source_infos| when
