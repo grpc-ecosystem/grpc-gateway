@@ -62,14 +62,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: /home/vscode/.cache/_grpc_gateway_bazel
           key: v2-bazel-output-${{ hashFiles('.bazelversion', 'MODULE.bazel.lock', 'repositories.bzl') }}
           restore-keys: |
             v2-bazel-output-${{ hashFiles('.bazelversion') }}-
             v2-bazel-output-
-      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: /home/vscode/.cache/bazel_repo
           key: v2-bazel-repo-${{ hashFiles('.bazelversion', 'MODULE.bazel.lock', 'repositories.bzl') }}
