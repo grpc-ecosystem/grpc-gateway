@@ -986,6 +986,63 @@ func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marsh
 	return msg, metadata, err
 }
 
+var filter_ABitOfEverythingService_CreateNestedBodyOneof_0 = &utilities.DoubleArray{Encoding: map[string]int{"payload": 0, "input_value": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+
+func request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq NestedBodyOneofRequest
+		metadata runtime.ServerMetadata
+	)
+	if protoReq.Payload == nil {
+		protoReq.Payload = &NestedBodyOneof{}
+	}
+	if protoReq.Payload.Input == nil {
+		protoReq.Payload.Input = &NestedBodyOneof_InputValue{}
+	} else if _, ok := protoReq.Payload.Input.(*NestedBodyOneof_InputValue); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *NestedBodyOneof_InputValue, but: %t\n", protoReq.Payload.Input)
+	}
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Payload.Input.(*NestedBodyOneof_InputValue).InputValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CreateNestedBodyOneof_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.CreateNestedBodyOneof(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq NestedBodyOneofRequest
+		metadata runtime.ServerMetadata
+	)
+	if protoReq.Payload == nil {
+		protoReq.Payload = &NestedBodyOneof{}
+	}
+	if protoReq.Payload.Input == nil {
+		protoReq.Payload.Input = &NestedBodyOneof_InputValue{}
+	} else if _, ok := protoReq.Payload.Input.(*NestedBodyOneof_InputValue); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *NestedBodyOneof_InputValue, but: %t\n", protoReq.Payload.Input)
+	}
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Payload.Input.(*NestedBodyOneof_InputValue).InputValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CreateNestedBodyOneof_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.CreateNestedBodyOneof(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
 		protoReq sub2.IdMessage
@@ -2548,6 +2605,26 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 		}
 		forward_ABitOfEverythingService_UpdateV2_2(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_ABitOfEverythingService_CreateNestedBodyOneof_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateNestedBodyOneof", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/nested_body_oneof"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ABitOfEverythingService_CreateNestedBodyOneof_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_ABitOfEverythingService_CreateNestedBodyOneof_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodDelete, pattern_ABitOfEverythingService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -3332,6 +3409,23 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 		}
 		forward_ABitOfEverythingService_UpdateV2_2(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_ABitOfEverythingService_CreateNestedBodyOneof_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateNestedBodyOneof", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/nested_body_oneof"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_CreateNestedBodyOneof_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_ABitOfEverythingService_CreateNestedBodyOneof_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodDelete, pattern_ABitOfEverythingService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -3756,6 +3850,7 @@ var (
 	pattern_ABitOfEverythingService_UpdateV2_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2", "example", "a_bit_of_everything", "abe.uuid"}, ""))
 	pattern_ABitOfEverythingService_UpdateV2_1                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2", "example", "a_bit_of_everything", "abe.uuid"}, ""))
 	pattern_ABitOfEverythingService_UpdateV2_2                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2a", "example", "a_bit_of_everything", "abe.uuid"}, ""))
+	pattern_ABitOfEverythingService_CreateNestedBodyOneof_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "nested_body_oneof"}, ""))
 	pattern_ABitOfEverythingService_Delete_0                        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, ""))
 	pattern_ABitOfEverythingService_GetQuery_0                      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "example", "a_bit_of_everything", "query", "uuid"}, ""))
 	pattern_ABitOfEverythingService_GetRepeatedQuery_0              = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 1, 0, 4, 1, 5, 12, 1, 0, 4, 1, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18}, []string{"v1", "example", "a_bit_of_everything_repeated", "path_repeated_float_value", "path_repeated_double_value", "path_repeated_int64_value", "path_repeated_uint64_value", "path_repeated_int32_value", "path_repeated_fixed64_value", "path_repeated_fixed32_value", "path_repeated_bool_value", "path_repeated_string_value", "path_repeated_bytes_value", "path_repeated_uint32_value", "path_repeated_enum_value", "path_repeated_sfixed32_value", "path_repeated_sfixed64_value", "path_repeated_sint32_value", "path_repeated_sint64_value"}, ""))
@@ -3795,6 +3890,7 @@ var (
 	forward_ABitOfEverythingService_UpdateV2_0                      = runtime.ForwardResponseMessage
 	forward_ABitOfEverythingService_UpdateV2_1                      = runtime.ForwardResponseMessage
 	forward_ABitOfEverythingService_UpdateV2_2                      = runtime.ForwardResponseMessage
+	forward_ABitOfEverythingService_CreateNestedBodyOneof_0         = runtime.ForwardResponseMessage
 	forward_ABitOfEverythingService_Delete_0                        = runtime.ForwardResponseMessage
 	forward_ABitOfEverythingService_GetQuery_0                      = runtime.ForwardResponseMessage
 	forward_ABitOfEverythingService_GetRepeatedQuery_0              = runtime.ForwardResponseMessage

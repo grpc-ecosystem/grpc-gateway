@@ -1719,20 +1719,20 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							}
 						}
 					} else {
-						// Body field path is limited to one path component. From google.api.HttpRule.body:
-						// "NOTE: the referred field must be present at the top-level of the request message type."
-						// Ref: https://github.com/googleapis/googleapis/blob/b3397f5febbf21dfc69b875ddabaf76bee765058/google/api/http.proto#L350-L352
-						if len(b.Body.FieldPath) > 1 {
-							return fmt.Errorf("body of request %q is not a top level field: '%v'", meth.Service.GetName(), b.Body.FieldPath)
-						}
-						bodyField := b.Body.FieldPath[0]
+						bodyFieldPath := b.Body.FieldPath
+						bodyField := bodyFieldPath[len(bodyFieldPath)-1]
+						bodyFieldRequiredName := bodyField.Name
 						if reg.GetUseJSONNamesForFields() {
-							bodyFieldName = lowerCamelCase(bodyField.Name, meth.RequestType.Fields, msgs)
+							bodyFieldName = lowerCamelCase(bodyFieldPath.String(), meth.RequestType.Fields, msgs)
+							bodyFieldRequiredName = lowerCamelCase(bodyField.Name, bodyField.Target.Message.Fields, msgs)
 						} else {
-							bodyFieldName = bodyField.Name
+							bodyFieldName = bodyFieldPath.String()
 						}
 						// Align pathParams with body field path.
-						pathParams := subPathParams(bodyField.Name, b.PathParams)
+						pathParams := b.PathParams
+						for _, component := range bodyFieldPath {
+							pathParams = subPathParams(component.Name, pathParams)
+						}
 
 						if len(pathParams) == 0 {
 							// When there are no path parameters, we only need the base schema of the field.
@@ -1761,7 +1761,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 								filteredRequired := make([]string, 0, len(schema.Required))
 								seenBodyFieldName := false
 								for _, req := range schema.Required {
-									if req == bodyFieldName {
+									if req == bodyFieldRequiredName {
 										if propertyNames[req] {
 											// It's a property, keep it (but only once)
 											if !seenBodyFieldName {

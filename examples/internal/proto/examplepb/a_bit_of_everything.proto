@@ -452,6 +452,16 @@ message UpdateV2Request {
   google.protobuf.FieldMask update_mask = 2;
 }
 
+message NestedBodyOneof {
+  oneof input {
+    string input_value = 1;
+  }
+}
+
+message NestedBodyOneofRequest {
+  NestedBodyOneof payload = 1;
+}
+
 // An example resource type from AIP-123 used to test the behavior described in
 // the CreateBookRequest message.
 //
@@ -583,6 +593,12 @@ service ABitOfEverythingService {
           body: "*"
         }
       ]
+    };
+  }
+  rpc CreateNestedBodyOneof(NestedBodyOneofRequest) returns (NestedBodyOneof) {
+    option (google.api.http) = {
+      post: "/v1/example/a_bit_of_everything/nested_body_oneof"
+      body: "payload.input_value"
     };
   }
 
