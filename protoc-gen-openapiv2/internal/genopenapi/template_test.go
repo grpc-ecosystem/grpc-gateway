@@ -5528,6 +5528,8 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	fieldVisibilityPreviewOption := new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldVisibilityPreviewOption, visibility.E_FieldVisibility, fieldVisibilityFieldPreview)
 
+	boolTrue := true
+
 	tests := []struct {
 		descr                 string
 		msgDescs              []*descriptorpb.DescriptorProto
@@ -5537,6 +5539,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		pathParams            []descriptor.Parameter
 		UseJSONNamesForFields bool
 		UseAllOfForRefs       bool
+		Proto3OptionalNullable bool
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -6205,6 +6208,97 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				},
 			},
 		},
+		{
+			descr: "optional proto3 message field with use_allof_for_refs and proto3_optional_nullable",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:           proto.String("items"),
+							Type:           descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName:       proto.String(".example.Message.Nested"),
+							Number:         proto.Int32(1),
+							Proto3Optional: &boolTrue,
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{{
+						Name: proto.String("Nested"),
+					}},
+				},
+			},
+			UseAllOfForRefs:        true,
+			Proto3OptionalNullable: true,
+			defs: map[string]openapiSchemaObject{
+				"exampleMessage": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "items",
+							Value: openapiSchemaObject{
+								AllOf: []allOfEntry{{Ref: "#/definitions/MessageNested"}},
+								schemaCore: schemaCore{
+									XNullable: true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			descr: "optional proto3 message field with title, use_allof_for_refs and proto3_optional_nullable",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:           proto.String("items"),
+							Type:           descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName:       proto.String(".example.Message.Nested"),
+							Number:         proto.Int32(1),
+							Proto3Optional: &boolTrue,
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{{
+						Name: proto.String("Nested"),
+					}},
+				},
+			},
+			UseAllOfForRefs:        true,
+			Proto3OptionalNullable: true,
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: "example.Message.items",
+						Option: &openapi_options.JSONSchema{
+							Title: "Support for array item definitions",
+						},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"exampleMessage": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "items",
+							Value: openapiSchemaObject{
+								AllOf: []allOfEntry{{Ref: "#/definitions/MessageNested"}},
+								schemaCore: schemaCore{
+									XNullable: true,
+								},
+								Title: "Support for array item definitions",
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -6216,20 +6310,24 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			}
 
 			reg := descriptor.NewRegistry()
-			file := descriptor.File{
-				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-					Name:           proto.String("example.proto"),
-					Package:        proto.String("example"),
-					Dependency:     []string{},
-					MessageType:    test.msgDescs,
-					EnumType:       []*descriptorpb.EnumDescriptorProto{},
-					Service:        []*descriptorpb.ServiceDescriptorProto{},
-					Options: &descriptorpb.FileOptions{
-						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-					},
+			fileDesc := &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.msgDescs,
+				EnumType:       []*descriptorpb.EnumDescriptorProto{},
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
 				},
-				Messages: msgs,
+			}
+			if test.Proto3OptionalNullable {
+				fileDesc.Syntax = proto.String("proto3")
+			}
+			file := descriptor.File{
+				FileDescriptorProto: fileDesc,
+				Messages:            msgs,
 			}
 			err := reg.Load(&pluginpb.CodeGeneratorRequest{
 				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
@@ -6242,6 +6340,10 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			if test.UseAllOfForRefs {
 				reg.SetUseAllOfForRefs(true)
+			}
+
+			if test.Proto3OptionalNullable {
+				reg.SetProto3OptionalNullable(true)
 			}
 
 			if err != nil {
