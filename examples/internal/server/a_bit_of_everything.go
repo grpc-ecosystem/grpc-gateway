@@ -72,6 +72,10 @@ func (s *_ABitOfEverythingServer) CreateBook(ctx context.Context, req *examples.
 	return &examples.Book{}, nil
 }
 
+func (s *_ABitOfEverythingServer) CreateNestedBodyOneof(ctx context.Context, req *examples.NestedBodyOneofRequest) (*examples.NestedBodyOneof, error) {
+	return req.GetPayload(), nil
+}
+
 func (s *_ABitOfEverythingServer) UpdateBook(ctx context.Context, req *examples.UpdateBookRequest) (*examples.Book, error) {
 	return &examples.Book{}, nil
 }

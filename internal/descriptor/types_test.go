@@ -1,6 +1,7 @@
 package descriptor
 
 import (
+	"strings"
 	"testing"
 
 	"google.golang.org/protobuf/encoding/prototext"
@@ -203,6 +204,77 @@ func TestFieldPath(t *testing.T) {
 	var fpEmpty FieldPath
 	if got, want := fpEmpty.AssignableExpr("resp", "example"), "resp"; got != want {
 		t.Errorf("fpEmpty.AssignableExpr(%q) = %q; want %q", "resp", got, want)
+	}
+}
+
+func TestFieldPathAssignableExprPrepInitializesIntermediateMessage(t *testing.T) {
+	file := &File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			Syntax: proto.String("proto3"),
+		},
+		GoPkg: GoPackage{Path: "example", Name: "example"},
+	}
+
+	executionInput := &Message{
+		File: file,
+		DescriptorProto: &descriptorpb.DescriptorProto{
+			Name: proto.String("ExecutionInput"),
+			OneofDecl: []*descriptorpb.OneofDescriptorProto{
+				{Name: proto.String("input")},
+			},
+		},
+	}
+	inputValueField := &Field{
+		Message: executionInput,
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:       proto.String("input_value"),
+			Number:     proto.Int32(2),
+			Label:      descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+			Type:       descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+			TypeName:   proto.String(".google.protobuf.Value"),
+			OneofIndex: proto.Int32(0),
+		},
+	}
+	executionInput.Fields = []*Field{inputValueField}
+
+	request := &Message{
+		File: file,
+		DescriptorProto: &descriptorpb.DescriptorProto{
+			Name: proto.String("StartExecutionRequest"),
+		},
+	}
+	inputField := &Field{
+		Message: request,
+		FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+			Name:     proto.String("input"),
+			Number:   proto.Int32(3),
+			Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+			Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+			TypeName: proto.String(".example.ExecutionInput"),
+		},
+	}
+	request.Fields = []*Field{inputField}
+	file.Messages = []*Message{request, executionInput}
+
+	fieldPath := FieldPath{
+		{Name: "input", Target: inputField},
+		{Name: "input_value", Target: inputValueField},
+	}
+
+	got := fieldPath.AssignableExprPrep("protoReq", "example")
+	parentInit := "if protoReq.Input == nil"
+	oneofInit := "if protoReq.Input.Input == nil"
+	if !strings.Contains(got, parentInit) {
+		t.Fatalf("AssignableExprPrep missing parent message initialization %q in:\n%s", parentInit, got)
+	}
+	if !strings.Contains(got, "protoReq.Input = &ExecutionInput{}") {
+		t.Fatalf("AssignableExprPrep missing parent message allocation in:\n%s", got)
+	}
+	if !strings.Contains(got, oneofInit) {
+		t.Fatalf("AssignableExprPrep missing oneof initialization %q in:\n%s", oneofInit, got)
+	}
+	if strings.Index(got, parentInit) > strings.Index(got, oneofInit) {
+		t.Fatalf("parent message initialization must precede oneof initialization; got:\n%s", got)
 	}
 }
 
