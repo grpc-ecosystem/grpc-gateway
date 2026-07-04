@@ -66,6 +66,8 @@ management. Use a
 [tool dependency](https://go.dev/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module)
 to track the versions of the following executable packages:
 
+For Go 1.24 and later, prefer the `tool` directive in `go.mod` described in the "Tracking Tools in `go.mod`" section. The following blank-import pattern is mainly useful for projects that are not using Go 1.24 yet.
+
 ```go
 // +build tools
 
