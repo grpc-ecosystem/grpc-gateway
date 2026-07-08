@@ -120,7 +120,7 @@ func (b binding) HasRepeatedEnumPathParam() bool {
 // based on the provided 'repeated' parameter.
 func (b binding) hasEnumPathParam(repeated bool) bool {
 	for _, p := range b.PathParams {
-		if p.IsEnum() && p.IsRepeated() == repeated {
+		if p.IsEnum() && p.IsRepeated() == repeated && !p.IsNestedProto3() {
 			return true
 		}
 	}
@@ -481,12 +481,6 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q" }}, err)
 	}
-	{{- if $enum }}
-		e{{ if $param.IsRepeated }}s{{ end }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }}, {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}_value)
-		if err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
-		}
-	{{- end }}
 {{- else if $enum }}
 	e{{ if $param.IsRepeated }}s{{ end }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }}, {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}_value)
 	if err != nil {
@@ -510,6 +504,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	}
 	{{- end }}
 {{- end}}
+{{- if not $param.IsNestedProto3 }}
 {{- if and $enum $param.IsRepeated }}
 	s := make([]{{ $enum.GoType $param.Method.Service.File.GoPkg.Path }}, len(es))
 	for i, v := range es {
@@ -527,6 +522,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
 	{{- end }}
 {{- end}}
+{{- end }}
 	{{- end }}
 {{- end }}
 {{- if .HasQueryParam }}
@@ -716,12 +712,6 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
 	}
-	{{- if $enum }}
-		e{{ if $param.IsRepeated }}s{{ end }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }}, {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}_value)
-		if err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
-		}
-	{{- end }}
 {{- else if $enum}}
 	e{{ if $param.IsRepeated }}s{{ end }}, err = {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }}, {{ $enum.GoType  $param.Method.Service.File.GoPkg.Path | camelIdentifier }}_value)
 	if err != nil {
@@ -745,6 +735,7 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	}
 	{{- end }}
 {{- end}}
+{{- if not $param.IsNestedProto3 }}
 {{- if and $enum $param.IsRepeated }}
 	s := make([]{{ $enum.GoType $param.Method.Service.File.GoPkg.Path }}, len(es))
 	for i, v := range es {
@@ -761,6 +752,7 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- else }}
 	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
 	{{- end }}
+{{- end }}
 {{- end }}
 	{{- end }}
 {{- end }}
