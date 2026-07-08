@@ -60,9 +60,9 @@ func TestConvertTimestamp(t *testing.T) {
 			ts, err := runtime.Timestamp(spec.input)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !proto.Equal(ts, spec.output):
 				t.Errorf(
 					"when testing %s; got\n%#v\nexpected\n%#v",
@@ -125,9 +125,9 @@ func TestConvertDuration(t *testing.T) {
 			ts, err := runtime.Duration(spec.input)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !proto.Equal(ts, spec.output):
 				t.Errorf(
 					"when testing %s; got\n%#v\nexpected\n%#v",
@@ -156,10 +156,10 @@ func TestConvertStringSlice(t *testing.T) {
 		t.Run(spec.name, func(t *testing.T) {
 			got, err := runtime.StringSlice(spec.input, spec.sep)
 			if err != nil {
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			}
 			if !reflect.DeepEqual(got, spec.output) {
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -182,11 +182,11 @@ func TestConvertBoolSlice(t *testing.T) {
 			got, err := runtime.BoolSlice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -209,11 +209,11 @@ func TestConvertFloat64Slice(t *testing.T) {
 			got, err := runtime.Float64Slice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -236,11 +236,11 @@ func TestConvertFloat32Slice(t *testing.T) {
 			got, err := runtime.Float32Slice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -263,11 +263,11 @@ func TestConvertInt64Slice(t *testing.T) {
 			got, err := runtime.Int64Slice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -291,11 +291,11 @@ func TestConvertInt32Slice(t *testing.T) {
 			got, err := runtime.Int32Slice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -318,11 +318,11 @@ func TestConvertUint64Slice(t *testing.T) {
 			got, err := runtime.Uint64Slice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -346,11 +346,11 @@ func TestConvertUint32Slice(t *testing.T) {
 			got, err := runtime.Uint32Slice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -374,11 +374,11 @@ func TestConvertBytesSlice(t *testing.T) {
 			got, err := runtime.BytesSlice(spec.input, spec.sep)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
@@ -404,11 +404,11 @@ func TestConvertEnumSlice(t *testing.T) {
 			got, err := runtime.EnumSlice(spec.input, spec.sep, enumValMap)
 			switch {
 			case err != nil && !spec.wanterr:
-				t.Errorf("got unexpected error\n%#v", err)
+				t.Errorf("got error %v, want nil", err)
 			case err == nil && spec.wanterr:
-				t.Errorf("did not error when expected")
+				t.Errorf("got nil error, want an error")
 			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
-				t.Errorf("got\n%#v\nexpected\n%#v", got, spec.output)
+				t.Errorf("got %v, want %v", got, spec.output)
 			}
 		})
 	}
