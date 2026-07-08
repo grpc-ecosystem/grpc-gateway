@@ -372,6 +372,11 @@ type GrpcGatewayExamplesInternalProtoExamplepbFoo struct {
 	Bar GrpcGatewayExamplesInternalProtoExamplepbBar `json:"bar"`
 }
 
+// GrpcGatewayExamplesInternalProtoExamplepbNestedBodyOneof defines model for grpc.gateway.examples.internal.proto.examplepb.NestedBodyOneof.
+type GrpcGatewayExamplesInternalProtoExamplepbNestedBodyOneof struct {
+	InputValue *string `json:"inputValue,omitempty"`
+}
+
 // GrpcGatewayExamplesInternalProtoExamplepbNumericEnum NumericEnum is one or zero.
 type GrpcGatewayExamplesInternalProtoExamplepbNumericEnum string
 
@@ -579,6 +584,9 @@ type ABitOfEverythingServiceCustom1Params struct {
 	// Uuids Specify a custom format of repeated field items
 	Uuids *[]string `form:"uuids,omitempty" json:"uuids,omitempty"`
 }
+
+// ABitOfEverythingServiceCreateNestedBodyOneofJSONBody defines parameters for ABitOfEverythingServiceCreateNestedBodyOneof.
+type ABitOfEverythingServiceCreateNestedBodyOneofJSONBody = string
 
 // ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams defines parameters for ABitOfEverythingServiceCheckNestedEnumGetQueryParams.
 type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
@@ -1723,6 +1731,9 @@ type ABitOfEverythingServiceUpdateV22JSONBody struct {
 // ABitOfEverythingServiceCreateBodyJSONRequestBody defines body for ABitOfEverythingServiceCreateBody for application/json ContentType.
 type ABitOfEverythingServiceCreateBodyJSONRequestBody ABitOfEverythingServiceCreateBodyJSONBody
 
+// ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody defines body for ABitOfEverythingServiceCreateNestedBodyOneof for application/json ContentType.
+type ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody = ABitOfEverythingServiceCreateNestedBodyOneofJSONBody
+
 // ABitOfEverythingServiceCheckPostQueryParamsJSONRequestBody defines body for ABitOfEverythingServiceCheckPostQueryParams for application/json ContentType.
 type ABitOfEverythingServiceCheckPostQueryParamsJSONRequestBody = GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested
 
@@ -2717,6 +2728,11 @@ type ClientInterface interface {
 	// ABitOfEverythingServiceEcho request
 	ABitOfEverythingServiceEcho(ctx context.Context, value string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ABitOfEverythingServiceCreateNestedBodyOneofWithBody request with any body
+	ABitOfEverythingServiceCreateNestedBodyOneofWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ABitOfEverythingServiceCreateNestedBodyOneof(ctx context.Context, body ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ABitOfEverythingServiceCheckNestedEnumGetQueryParams request
 	ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNestedDeepEnum, params *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2889,6 +2905,30 @@ func (c *Client) ABitOfEverythingServiceCustom1(ctx context.Context, optionalStr
 
 func (c *Client) ABitOfEverythingServiceEcho(ctx context.Context, value string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewABitOfEverythingServiceEchoRequest(c.Server, value)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ABitOfEverythingServiceCreateNestedBodyOneofWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewABitOfEverythingServiceCreateNestedBodyOneofRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ABitOfEverythingServiceCreateNestedBodyOneof(ctx context.Context, body ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewABitOfEverythingServiceCreateNestedBodyOneofRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4413,6 +4453,46 @@ func NewABitOfEverythingServiceEchoRequest(server string, value string) (*http.R
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewABitOfEverythingServiceCreateNestedBodyOneofRequest calls the generic ABitOfEverythingServiceCreateNestedBodyOneof builder with application/json body
+func NewABitOfEverythingServiceCreateNestedBodyOneofRequest(server string, body ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewABitOfEverythingServiceCreateNestedBodyOneofRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewABitOfEverythingServiceCreateNestedBodyOneofRequestWithBody generates requests for ABitOfEverythingServiceCreateNestedBodyOneof with any type of body
+func NewABitOfEverythingServiceCreateNestedBodyOneofRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/example/a_bit_of_everything/nested_body_oneof")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -14067,6 +14147,11 @@ type ClientWithResponsesInterface interface {
 	// ABitOfEverythingServiceEchoWithResponse request
 	ABitOfEverythingServiceEchoWithResponse(ctx context.Context, value string, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceEchoResponse, error)
 
+	// ABitOfEverythingServiceCreateNestedBodyOneofWithBodyWithResponse request with any body
+	ABitOfEverythingServiceCreateNestedBodyOneofWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceCreateNestedBodyOneofResponse, error)
+
+	ABitOfEverythingServiceCreateNestedBodyOneofWithResponse(ctx context.Context, body ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceCreateNestedBodyOneofResponse, error)
+
 	// ABitOfEverythingServiceCheckNestedEnumGetQueryParamsWithResponse request
 	ABitOfEverythingServiceCheckNestedEnumGetQueryParamsWithResponse(ctx context.Context, singleNestedOk GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNestedDeepEnum, params *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceCheckNestedEnumGetQueryParamsResponse, error)
 
@@ -14264,6 +14349,29 @@ func (r ABitOfEverythingServiceEchoResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r ABitOfEverythingServiceEchoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ABitOfEverythingServiceCreateNestedBodyOneofResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GrpcGatewayExamplesInternalProtoExamplepbNestedBodyOneof
+	JSONDefault  *GoogleRpcStatus
+}
+
+// Status returns HTTPResponse.Status
+func (r ABitOfEverythingServiceCreateNestedBodyOneofResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ABitOfEverythingServiceCreateNestedBodyOneofResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -15110,6 +15218,23 @@ func (c *ClientWithResponses) ABitOfEverythingServiceEchoWithResponse(ctx contex
 	return ParseABitOfEverythingServiceEchoResponse(rsp)
 }
 
+// ABitOfEverythingServiceCreateNestedBodyOneofWithBodyWithResponse request with arbitrary body returning *ABitOfEverythingServiceCreateNestedBodyOneofResponse
+func (c *ClientWithResponses) ABitOfEverythingServiceCreateNestedBodyOneofWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceCreateNestedBodyOneofResponse, error) {
+	rsp, err := c.ABitOfEverythingServiceCreateNestedBodyOneofWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseABitOfEverythingServiceCreateNestedBodyOneofResponse(rsp)
+}
+
+func (c *ClientWithResponses) ABitOfEverythingServiceCreateNestedBodyOneofWithResponse(ctx context.Context, body ABitOfEverythingServiceCreateNestedBodyOneofJSONRequestBody, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceCreateNestedBodyOneofResponse, error) {
+	rsp, err := c.ABitOfEverythingServiceCreateNestedBodyOneof(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseABitOfEverythingServiceCreateNestedBodyOneofResponse(rsp)
+}
+
 // ABitOfEverythingServiceCheckNestedEnumGetQueryParamsWithResponse request returning *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsResponse
 func (c *ClientWithResponses) ABitOfEverythingServiceCheckNestedEnumGetQueryParamsWithResponse(ctx context.Context, singleNestedOk GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNestedDeepEnum, params *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams, reqEditors ...RequestEditorFn) (*ABitOfEverythingServiceCheckNestedEnumGetQueryParamsResponse, error) {
 	rsp, err := c.ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx, singleNestedOk, params, reqEditors...)
@@ -15619,6 +15744,39 @@ func ParseABitOfEverythingServiceEchoResponse(rsp *http.Response) (*ABitOfEveryt
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest GrpcGatewayExamplesInternalProtoSubStringMessage
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest GoogleRpcStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseABitOfEverythingServiceCreateNestedBodyOneofResponse parses an HTTP response from a ABitOfEverythingServiceCreateNestedBodyOneofWithResponse call
+func ParseABitOfEverythingServiceCreateNestedBodyOneofResponse(rsp *http.Response) (*ABitOfEverythingServiceCreateNestedBodyOneofResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ABitOfEverythingServiceCreateNestedBodyOneofResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GrpcGatewayExamplesInternalProtoExamplepbNestedBodyOneof
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

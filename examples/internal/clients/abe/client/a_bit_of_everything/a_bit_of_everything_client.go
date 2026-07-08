@@ -123,6 +123,8 @@ type ClientService interface {
 
 	ABitOfEverythingServiceCreateBook(params *ABitOfEverythingServiceCreateBookParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceCreateBookOK, error)
 
+	ABitOfEverythingServiceCreateNestedBodyOneof(params *ABitOfEverythingServiceCreateNestedBodyOneofParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceCreateNestedBodyOneofOK, error)
+
 	ABitOfEverythingServiceCustom(params *ABitOfEverythingServiceCustomParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceCustomOK, error)
 
 	ABitOfEverythingServiceCustom2(params *ABitOfEverythingServiceCustom2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceCustom2OK, error)
@@ -557,6 +559,49 @@ func (a *Client) ABitOfEverythingServiceCreateBook(params *ABitOfEverythingServi
 	//
 	// a default response is provided: fill this and return an error
 	unexpectedSuccess := result.(*ABitOfEverythingServiceCreateBookDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+ABitOfEverythingServiceCreateNestedBodyOneof a bit of everything service create nested body oneof API
+*/
+func (a *Client) ABitOfEverythingServiceCreateNestedBodyOneof(params *ABitOfEverythingServiceCreateNestedBodyOneofParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceCreateNestedBodyOneofOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewABitOfEverythingServiceCreateNestedBodyOneofParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ABitOfEverythingService_CreateNestedBodyOneof",
+		Method:             "POST",
+		PathPattern:        "/v1/example/a_bit_of_everything/nested_body_oneof",
+		ProducesMediaTypes: []string{"application/json", "application/x-foo-mime"},
+		ConsumesMediaTypes: []string{"application/json", "application/x-foo-mime"},
+		Schemes:            []string{"http", "https", "wss"},
+		Params:             params,
+		Reader:             &ABitOfEverythingServiceCreateNestedBodyOneofReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*ABitOfEverythingServiceCreateNestedBodyOneofOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*ABitOfEverythingServiceCreateNestedBodyOneofDefault)
 
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }

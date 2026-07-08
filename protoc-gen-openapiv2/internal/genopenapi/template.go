@@ -1719,6 +1719,11 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 							}
 						}
 					} else {
+						// google.api.HttpRule.body documents body fields as top-level request fields:
+						// "NOTE: the referred field must be present at the top-level of the request message type."
+						// Ref: https://github.com/googleapis/googleapis/blob/b3397f5febbf21dfc69b875ddabaf76bee765058/google/api/http.proto#L350-L352
+						// grpc-gateway accepts nested body field paths when generating gateway handlers,
+						// so OpenAPI rendering also follows the full path and uses the terminal field type.
 						bodyFieldPath := b.Body.FieldPath
 						bodyField := bodyFieldPath[len(bodyFieldPath)-1]
 						bodyFieldRequiredName := bodyField.Name
