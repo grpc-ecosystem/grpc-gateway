@@ -3313,31 +3313,23 @@ func getEnumValueVisibilityOption(fd *descriptorpb.EnumValueDescriptorProto) *vi
 }
 
 func getMethodOpenAPIOption(reg *descriptor.Registry, meth *descriptor.Method) (*openapi_options.Operation, error) {
+	if opts, ok := reg.GetOpenAPIMethodOption(meth.FQMN()); ok {
+		return opts, nil
+	}
 	opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
 	if err != nil {
 		return nil, err
-	}
-	if opts != nil {
-		return opts, nil
-	}
-	opts, ok := reg.GetOpenAPIMethodOption(meth.FQMN())
-	if !ok {
-		return nil, nil
 	}
 	return opts, nil
 }
 
 func getMessageOpenAPIOption(reg *descriptor.Registry, msg *descriptor.Message) (*openapi_options.Schema, error) {
+	if opts, ok := reg.GetOpenAPIMessageOption(msg.FQMN()); ok {
+		return opts, nil
+	}
 	opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
 	if err != nil {
 		return nil, err
-	}
-	if opts != nil {
-		return opts, nil
-	}
-	opts, ok := reg.GetOpenAPIMessageOption(msg.FQMN())
-	if !ok {
-		return nil, nil
 	}
 	return opts, nil
 }
@@ -3362,31 +3354,23 @@ func getServiceOpenAPIOption(reg *descriptor.Registry, svc *descriptor.Service) 
 }
 
 func getFileOpenAPIOption(reg *descriptor.Registry, file *descriptor.File) (*openapi_options.Swagger, error) {
+	if opts, ok := reg.GetOpenAPIFileOption(*file.Name); ok {
+		return opts, nil
+	}
 	opts, err := extractOpenAPIOptionFromFileDescriptor(file.FileDescriptorProto)
 	if err != nil {
 		return nil, err
-	}
-	if opts != nil {
-		return opts, nil
-	}
-	opts, ok := reg.GetOpenAPIFileOption(*file.Name)
-	if !ok {
-		return nil, nil
 	}
 	return opts, nil
 }
 
 func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*openapi_options.JSONSchema, error) {
+	if opts, ok := reg.GetOpenAPIFieldOption(fd.FQFN()); ok {
+		return opts, nil
+	}
 	opts, err := extractJSONSchemaFromFieldDescriptor(fd.FieldDescriptorProto)
 	if err != nil {
 		return nil, err
-	}
-	if opts != nil {
-		return opts, nil
-	}
-	opts, ok := reg.GetOpenAPIFieldOption(fd.FQFN())
-	if !ok {
-		return nil, nil
 	}
 	return opts, nil
 }

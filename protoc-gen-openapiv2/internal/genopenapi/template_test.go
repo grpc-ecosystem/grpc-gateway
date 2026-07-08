@@ -2092,6 +2092,163 @@ func TestApplyTemplateOverrideWithOperation(t *testing.T) {
 	})
 }
 
+func TestOpenAPIConfigOptionsTakePrecedenceOverProtoOptions(t *testing.T) {
+	methodOptions := &descriptorpb.MethodOptions{}
+	proto.SetExtension(methodOptions, openapi_options.E_Openapiv2Operation, &openapi_options.Operation{
+		OperationId: "proto operation",
+	})
+
+	messageOptions := &descriptorpb.MessageOptions{}
+	proto.SetExtension(messageOptions, openapi_options.E_Openapiv2Schema, &openapi_options.Schema{
+		JsonSchema: &openapi_options.JSONSchema{
+			Title: "proto message",
+		},
+	})
+
+	fieldOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+		Title: "proto field",
+	})
+
+	fileOptions := &descriptorpb.FileOptions{
+		GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+	}
+	proto.SetExtension(fileOptions, openapi_options.E_Openapiv2Swagger, &openapi_options.Swagger{
+		Info: &openapi_options.Info{
+			Title: "proto file",
+		},
+	})
+
+	fieldDesc := &descriptorpb.FieldDescriptorProto{
+		Name:    proto.String("value"),
+		Number:  proto.Int32(1),
+		Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		Options: fieldOptions,
+	}
+	msgDesc := &descriptorpb.DescriptorProto{
+		Name:    proto.String("ExampleMessage"),
+		Field:   []*descriptorpb.FieldDescriptorProto{fieldDesc},
+		Options: messageOptions,
+	}
+	methDesc := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String(".example.ExampleMessage"),
+		OutputType: proto.String(".example.ExampleMessage"),
+		Options:    methodOptions,
+	}
+	svcDesc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{methDesc},
+	}
+
+	field := &descriptor.Field{FieldDescriptorProto: fieldDesc}
+	msg := &descriptor.Message{
+		DescriptorProto: msgDesc,
+		Fields:          []*descriptor.Field{field},
+	}
+	field.Message = msg
+	file := crossLinkFixture(&descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svcDesc},
+			Options:        fileOptions,
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svcDesc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: methDesc,
+						RequestType:           msg,
+						ResponseType:          msg,
+					},
+				},
+			},
+		},
+	})
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(reqFromFile(file)); err != nil {
+		t.Fatalf("failed to load code generator request: %v", err)
+	}
+	if err := reg.RegisterOpenAPIOptions(&openapiconfig.OpenAPIOptions{
+		File: []*openapiconfig.OpenAPIFileOption{
+			{
+				File: "example.proto",
+				Option: &openapi_options.Swagger{
+					Info: &openapi_options.Info{
+						Title: "config file",
+					},
+				},
+			},
+		},
+		Method: []*openapiconfig.OpenAPIMethodOption{
+			{
+				Method: "example.ExampleService.Example",
+				Option: &openapi_options.Operation{
+					OperationId: "config operation",
+				},
+			},
+		},
+		Message: []*openapiconfig.OpenAPIMessageOption{
+			{
+				Message: "example.ExampleMessage",
+				Option: &openapi_options.Schema{
+					JsonSchema: &openapi_options.JSONSchema{
+						Title: "config message",
+					},
+				},
+			},
+		},
+		Field: []*openapiconfig.OpenAPIFieldOption{
+			{
+				Field: "example.ExampleMessage.value",
+				Option: &openapi_options.JSONSchema{
+					Title: "config field",
+				},
+			},
+		},
+	}); err != nil {
+		t.Fatalf("failed to register OpenAPI options: %s", err)
+	}
+
+	methodOpt, err := getMethodOpenAPIOption(reg, file.Services[0].Methods[0])
+	if err != nil {
+		t.Fatalf("getMethodOpenAPIOption failed: %v", err)
+	}
+	if got, want := methodOpt.GetOperationId(), "config operation"; got != want {
+		t.Errorf("getMethodOpenAPIOption().OperationId = %q, want %q", got, want)
+	}
+
+	messageOpt, err := getMessageOpenAPIOption(reg, msg)
+	if err != nil {
+		t.Fatalf("getMessageOpenAPIOption failed: %v", err)
+	}
+	if got, want := messageOpt.GetJsonSchema().GetTitle(), "config message"; got != want {
+		t.Errorf("getMessageOpenAPIOption().JsonSchema.Title = %q, want %q", got, want)
+	}
+
+	fileOpt, err := getFileOpenAPIOption(reg, file)
+	if err != nil {
+		t.Fatalf("getFileOpenAPIOption failed: %v", err)
+	}
+	if got, want := fileOpt.GetInfo().GetTitle(), "config file"; got != want {
+		t.Errorf("getFileOpenAPIOption().Info.Title = %q, want %q", got, want)
+	}
+
+	fieldOpt, err := getFieldOpenAPIOption(reg, field)
+	if err != nil {
+		t.Fatalf("getFieldOpenAPIOption failed: %v", err)
+	}
+	if got, want := fieldOpt.GetTitle(), "config field"; got != want {
+		t.Errorf("getFieldOpenAPIOption().Title = %q, want %q", got, want)
+	}
+}
+
 func TestApplyTemplateExtensions(t *testing.T) {
 	newFile := func() *descriptor.File {
 		msgdesc := &descriptorpb.DescriptorProto{
