@@ -20,6 +20,8 @@ go_library(
         "a_bit_of_everything_service_create_body_responses.go",
         "a_bit_of_everything_service_create_book_parameters.go",
         "a_bit_of_everything_service_create_book_responses.go",
+        "a_bit_of_everything_service_create_nested_body_oneof_parameters.go",
+        "a_bit_of_everything_service_create_nested_body_oneof_responses.go",
         "a_bit_of_everything_service_create_parameters.go",
         "a_bit_of_everything_service_create_responses.go",
         "a_bit_of_everything_service_custom2_parameters.go",
