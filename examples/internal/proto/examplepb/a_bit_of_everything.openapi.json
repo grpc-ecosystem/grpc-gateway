@@ -761,9 +761,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.EntityId"
-                  },
                   "otherField": {
                     "type": "string"
                   }
@@ -7636,14 +7633,6 @@
         "properties": {
           "status": {
             "$ref": "#/components/schemas/google.rpc.Status"
-          }
-        }
-      },
-      "grpc.gateway.examples.internal.proto.examplepb.EntityId": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string"
           }
         }
       },

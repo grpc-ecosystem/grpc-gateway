@@ -310,7 +310,7 @@ func buildRequestBody(b *schemaBuilder, m *descriptor.Method, binding *descripto
 				// Field is hidden by visibility rules, skip.
 				continue
 			}
-			if isPathParam(field, binding.PathParams) {
+			if b.fieldConsumedByPathParams(field, binding.PathParams) {
 				continue
 			}
 			b.addProperty(bodySchema, field)
@@ -422,6 +422,47 @@ func isPathParam(field *descriptor.Field, params []descriptor.Parameter) bool {
 		}
 	}
 	return false
+}
+
+// subPathParams returns the path parameters nested under the given field name,
+// with the leading field-path component stripped so they are expressed
+// relative to that field.
+func subPathParams(fieldName string, params []descriptor.Parameter) []descriptor.Parameter {
+	var inner []descriptor.Parameter
+	for _, p := range params {
+		if len(p.FieldPath) > 1 && p.FieldPath[0].Name == fieldName {
+			inner = append(inner, descriptor.Parameter{
+				FieldPath: p.FieldPath[1:],
+				Target:    p.Target,
+				Method:    p.Method,
+			})
+		}
+	}
+	return inner
+}
+
+func (b *schemaBuilder) fieldConsumedByPathParams(field *descriptor.Field, params []descriptor.Parameter) bool {
+	if isPathParam(field, params) {
+		return true
+	}
+	if field.GetType() != descriptorpb.FieldDescriptorProto_TYPE_MESSAGE ||
+		field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+		return false
+	}
+	sub := subPathParams(field.GetName(), params)
+	if len(sub) == 0 {
+		return false
+	}
+	msg, err := b.reg.LookupMsg("", field.GetTypeName())
+	if err != nil || len(msg.Fields) == 0 {
+		return false
+	}
+	for _, f := range msg.Fields {
+		if !b.fieldConsumedByPathParams(f, sub) {
+			return false
+		}
+	}
+	return true
 }
 
 func isBodyField(field *descriptor.Field, body *descriptor.Body) bool {
