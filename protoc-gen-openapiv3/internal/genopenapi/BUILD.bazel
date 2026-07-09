@@ -40,6 +40,7 @@ go_test(
     srcs = [
         "comments_test.go",
         "generator_test.go",
+        "operation_test.go",
         "path_test.go",
         "schema_test.go",
         "visibility_test.go",

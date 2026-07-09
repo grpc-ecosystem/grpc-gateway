@@ -367,11 +367,6 @@ type GrpcGatewayExamplesInternalProtoExamplepbCheckStatusResponse struct {
 	Status *GoogleRpcStatus `json:"status,omitempty"`
 }
 
-// GrpcGatewayExamplesInternalProtoExamplepbEntityId defines model for grpc.gateway.examples.internal.proto.examplepb.EntityId.
-type GrpcGatewayExamplesInternalProtoExamplepbEntityId struct {
-	Value *string `json:"value,omitempty"`
-}
-
 // GrpcGatewayExamplesInternalProtoExamplepbFoo defines model for grpc.gateway.examples.internal.proto.examplepb.Foo.
 type GrpcGatewayExamplesInternalProtoExamplepbFoo struct {
 	Bar GrpcGatewayExamplesInternalProtoExamplepbBar `json:"bar"`
@@ -592,8 +587,7 @@ type ABitOfEverythingServiceCustom1Params struct {
 
 // ABitOfEverythingServiceUpdateEntityJSONBody defines parameters for ABitOfEverythingServiceUpdateEntity.
 type ABitOfEverythingServiceUpdateEntityJSONBody struct {
-	Id         *GrpcGatewayExamplesInternalProtoExamplepbEntityId `json:"id,omitempty"`
-	OtherField *string                                            `json:"otherField,omitempty"`
+	OtherField *string `json:"otherField,omitempty"`
 }
 
 // ABitOfEverythingServiceCreateNestedBodyOneofJSONBody defines parameters for ABitOfEverythingServiceCreateNestedBodyOneof.
