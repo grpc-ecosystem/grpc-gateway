@@ -62,6 +62,8 @@ go_library(
         "a_bit_of_everything_service_timeout_responses.go",
         "a_bit_of_everything_service_update_book_parameters.go",
         "a_bit_of_everything_service_update_book_responses.go",
+        "a_bit_of_everything_service_update_entity_parameters.go",
+        "a_bit_of_everything_service_update_entity_responses.go",
         "a_bit_of_everything_service_update_parameters.go",
         "a_bit_of_everything_service_update_responses.go",
         "a_bit_of_everything_service_update_v22_parameters.go",

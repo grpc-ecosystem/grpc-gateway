@@ -644,6 +644,69 @@
         }
       }
     },
+    "/v1/example/a_bit_of_everything/entity/{id.value}": {
+      "put": {
+        "summary": "UpdateEntity updates an entity identified by a nested path parameter.\nThe request body (body: \"*\") should not include the id object, whose\nonly field is the id.value path parameter.",
+        "operationId": "ABitOfEverythingService_UpdateEntity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googleRpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id.value",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ABitOfEverythingServiceUpdateEntityBody"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverything"
+        ]
+      }
+    },
     "/v1/example/a_bit_of_everything/nested_body_oneof": {
       "post": {
         "operationId": "ABitOfEverythingService_CreateNestedBodyOneof",
@@ -7328,6 +7391,15 @@
     "ABitOfEverythingServicePostWithEmptyBodyBody": {
       "type": "object"
     },
+    "ABitOfEverythingServiceUpdateEntityBody": {
+      "type": "object",
+      "properties": {
+        "otherField": {
+          "type": "string"
+        }
+      },
+      "description": "UpdateEntityRequest exercises the case where a body message contains a\nnested message field whose only sub-field is bound to a path parameter.\nWith body: \"*\" the id field reduces to an empty object and should be\nomitted from the generated body schema, while other_field remains."
+    },
     "ABitOfEverythingServiceUpdateV2Body": {
       "type": "object",
       "properties": {
@@ -8311,6 +8383,14 @@
       "properties": {
         "status": {
           "$ref": "#/definitions/googleRpcStatus"
+        }
+      }
+    },
+    "examplepbEntityId": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
         }
       }
     },

@@ -13335,3 +13335,160 @@ func TestRenderServiceTagsNoComment(t *testing.T) {
 		t.Errorf("renderServiceTags().Tags[0].Description = %q, want empty string", tags[0].Description)
 	}
 }
+
+func TestRenderServicesOpenapiOmitsBodyFieldOnlyPathParams(t *testing.T) {
+	// DeleteEntityRequest has an id message field (whose only sub-field is a
+	// path parameter) and a regular other_field. With body="*", the id field
+	// renders to an empty object and must be omitted from the body schema,
+	// while other_field remains. See #2624.
+	entityIDDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("EntityId"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("value"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+	reqDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("DeleteEntityRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("id"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".EntityId"),
+				Number:   proto.Int32(1),
+			},
+			{
+				Name:   proto.String("other_field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	respDesc := &descriptorpb.DescriptorProto{Name: proto.String("DeleteEntityResponse")}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("DeleteEntity"),
+		InputType:  proto.String("DeleteEntityRequest"),
+		OutputType: proto.String("DeleteEntityResponse"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("EntityService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	entityIDMsg := &descriptor.Message{DescriptorProto: entityIDDesc}
+	reqMsg := &descriptor.Message{DescriptorProto: reqDesc}
+	respMsg := &descriptor.Message{DescriptorProto: respDesc}
+	valueField := &descriptor.Field{
+		Message:              entityIDMsg,
+		FieldDescriptorProto: entityIDMsg.GetField()[0],
+	}
+	entityIDMsg.Fields = []*descriptor.Field{valueField}
+	idField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldMessage:         entityIDMsg,
+		FieldDescriptorProto: reqMsg.GetField()[0],
+	}
+	otherField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsg.GetField()[1],
+	}
+	reqMsg.Fields = []*descriptor.Field{idField, otherField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("entity.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{entityIDDesc, reqDesc, respDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{entityIDMsg, reqMsg, respMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           reqMsg,
+						ResponseType:          respMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "DELETE",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/entities/{id.value}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{Name: "id", Target: idField},
+											{Name: "value", Target: valueField},
+										}),
+										Target: valueField,
+									},
+								},
+								Body: &descriptor.Body{FieldPath: []descriptor.FieldPathComponent{}},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(reqFromFile(fileCL)); err != nil {
+		t.Fatalf("reg.Load(%#v) failed with %v; want success", file, err)
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	op := result.getPathItemObject("/entities/{id.value}").Delete
+	if op == nil {
+		t.Fatal("expected a DELETE operation for /entities/{id.value}")
+	}
+	var bodySchema *openapiSchemaObject
+	for i := range op.Parameters {
+		if op.Parameters[i].In == "body" {
+			bodySchema = op.Parameters[i].Schema
+		}
+	}
+	if bodySchema == nil {
+		t.Fatal("expected a body parameter (other_field should remain)")
+	}
+	// With path params present the body is a $ref to a generated <Method>Body
+	// definition; resolve it to inspect the emitted properties.
+	props := bodySchema.Properties
+	if props == nil && bodySchema.Ref != "" {
+		defName := strings.TrimPrefix(bodySchema.Ref, "#/definitions/")
+		def, ok := result.Definitions[defName]
+		if !ok {
+			t.Fatalf("body ref %q has no matching definition", bodySchema.Ref)
+		}
+		props = def.Properties
+	}
+	if props == nil {
+		t.Fatal("expected the body schema to have properties")
+	}
+	keys := map[string]bool{}
+	for _, kv := range *props {
+		keys[kv.Key] = true
+	}
+	if keys["id"] {
+		t.Error("expected the empty id object to be omitted from the body schema")
+	}
+	if !keys["other_field"] {
+		t.Errorf("expected other_field to remain in the body schema, got keys %v", keys)
+	}
+}

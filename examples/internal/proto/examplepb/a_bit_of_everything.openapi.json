@@ -738,6 +738,65 @@
         }
       }
     },
+    "/v1/example/a_bit_of_everything/entity/{id.value}": {
+      "put": {
+        "tags": [
+          "ABitOfEverythingService"
+        ],
+        "summary": "UpdateEntity updates an entity identified by a nested path parameter.\nThe request body (body: \"*\") should not include the id object, whose\nonly field is the id.value path parameter.",
+        "operationId": "ABitOfEverythingService_UpdateEntity",
+        "parameters": [
+          {
+            "name": "id.value",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.EntityId"
+                  },
+                  "otherField": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/publishers/{parent}/books": {
       "post": {
         "tags": [
@@ -7577,6 +7636,14 @@
         "properties": {
           "status": {
             "$ref": "#/components/schemas/google.rpc.Status"
+          }
+        }
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.EntityId": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
           }
         }
       },

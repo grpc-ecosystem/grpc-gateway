@@ -609,6 +609,14 @@ func skipRenderingRef(refName string) bool {
 	return ok
 }
 
+// isEmptyObjectSchema reports whether schema is an object carrying no
+// information: type "object" with no properties and no additional properties.
+func isEmptyObjectSchema(schema openapiSchemaObject) bool {
+	return schema.Type == "object" &&
+		(schema.Properties == nil || len(*schema.Properties) == 0) &&
+		schema.AdditionalProperties == nil
+}
+
 func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, pathParams []descriptor.Parameter) (openapiSchemaObject, error) {
 	schema := openapiSchemaObject{
 		schemaCore: schemaCore{
@@ -758,6 +766,16 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 					fieldSchema = openapiSchemaObject{schemaCore: schemaCore{Ref: fieldSchema.Ref}}
 				}
 			}
+		}
+
+		// If this field's only sub-fields are bound to path parameters, it
+		// renders as an empty object that carries no information. Omit it from
+		// the body schema rather than emitting `{"type":"object"}`. See #2624.
+		if len(subPathParams) > 0 && isEmptyObjectSchema(fieldSchema) {
+			if idx := find(schema.Required, reg.FieldName(f)); idx != -1 {
+				schema.Required = append(schema.Required[:idx], schema.Required[idx+1:]...)
+			}
+			continue
 		}
 
 		kv := keyVal{Value: fieldSchema}
