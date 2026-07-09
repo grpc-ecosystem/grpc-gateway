@@ -644,6 +644,61 @@
         }
       }
     },
+    "/v1/example/a_bit_of_everything/nested_body_oneof": {
+      "post": {
+        "operationId": "ABitOfEverythingService_CreateNestedBodyOneof",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNestedBodyOneof"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googleRpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "payload.inputValue",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverything"
+        ]
+      }
+    },
     "/v1/example/a_bit_of_everything/params/get/nested_enum/{singleNested.ok}": {
       "get": {
         "operationId": "ABitOfEverythingService_CheckNestedEnumGetQueryParams",
@@ -8290,6 +8345,14 @@
         },
         "error": {
           "$ref": "#/definitions/examplepbErrorObject"
+        }
+      }
+    },
+    "examplepbNestedBodyOneof": {
+      "type": "object",
+      "properties": {
+        "inputValue": {
+          "type": "string"
         }
       }
     },

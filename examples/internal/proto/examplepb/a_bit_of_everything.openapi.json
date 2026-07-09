@@ -4087,6 +4087,46 @@
         }
       }
     },
+    "/v1/example/a_bit_of_everything/nested_body_oneof": {
+      "post": {
+        "tags": [
+          "ABitOfEverythingService"
+        ],
+        "operationId": "ABitOfEverythingService_CreateNestedBodyOneof",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "An unexpected error response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/google.rpc.Status"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.NestedBodyOneof"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/example/a_bit_of_everything/query/{uuid}": {
       "get": {
         "tags": [
@@ -7550,6 +7590,14 @@
         "required": [
           "bar"
         ]
+      },
+      "grpc.gateway.examples.internal.proto.examplepb.NestedBodyOneof": {
+        "type": "object",
+        "properties": {
+          "inputValue": {
+            "type": "string"
+          }
+        }
       },
       "grpc.gateway.examples.internal.proto.examplepb.NumericEnum": {
         "type": "string",
