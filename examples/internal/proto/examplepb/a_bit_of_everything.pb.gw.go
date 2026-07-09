@@ -1706,7 +1706,6 @@ func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context
 	var (
 		protoReq ABitOfEverything
 		metadata runtime.ServerMetadata
-		e        int32
 		err      error
 	)
 	if req.Body != nil {
@@ -1720,11 +1719,6 @@ func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.ok", err)
 	}
-	e, err = runtime.Enum(val, ABitOfEverything_Nested_DeepEnum_value)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "single_nested.ok", err)
-	}
-	protoReq.SingleNested.Ok = ABitOfEverything_Nested_DeepEnum(e)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -1739,7 +1733,6 @@ func local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx c
 	var (
 		protoReq ABitOfEverything
 		metadata runtime.ServerMetadata
-		e        int32
 		err      error
 	)
 	val, ok := pathParams["single_nested.ok"]
@@ -1750,11 +1743,6 @@ func local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx c
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.ok", err)
 	}
-	e, err = runtime.Enum(val, ABitOfEverything_Nested_DeepEnum_value)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "single_nested.ok", err)
-	}
-	protoReq.SingleNested.Ok = ABitOfEverything_Nested_DeepEnum(e)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
