@@ -28,6 +28,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ABitOfEverythingService_Create_FullMethodName                        = "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Create"
 	ABitOfEverythingService_CreateBody_FullMethodName                    = "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBody"
+	ABitOfEverythingService_UpdateEntity_FullMethodName                  = "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateEntity"
 	ABitOfEverythingService_CreateBook_FullMethodName                    = "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBook"
 	ABitOfEverythingService_UpdateBook_FullMethodName                    = "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateBook"
 	ABitOfEverythingService_Lookup_FullMethodName                        = "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Lookup"
@@ -73,6 +74,10 @@ type ABitOfEverythingServiceClient interface {
 	// This API creates a new ABitOfEverything
 	Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	// UpdateEntity updates an entity identified by a nested path parameter.
+	// The request body (body: "*") should not include the id object, whose
+	// only field is the id.value path parameter.
+	UpdateEntity(ctx context.Context, in *UpdateEntityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Create a book.
 	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error)
@@ -136,6 +141,16 @@ func (c *aBitOfEverythingServiceClient) CreateBody(ctx context.Context, in *ABit
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ABitOfEverything)
 	err := c.cc.Invoke(ctx, ABitOfEverythingService_CreateBody_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) UpdateEntity(ctx context.Context, in *UpdateEntityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_UpdateEntity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -464,6 +479,10 @@ type ABitOfEverythingServiceServer interface {
 	// This API creates a new ABitOfEverything
 	Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	// UpdateEntity updates an entity identified by a nested path parameter.
+	// The request body (body: "*") should not include the id object, whose
+	// only field is the id.value path parameter.
+	UpdateEntity(context.Context, *UpdateEntityRequest) (*emptypb.Empty, error)
 	// Create a book.
 	CreateBook(context.Context, *CreateBookRequest) (*Book, error)
 	UpdateBook(context.Context, *UpdateBookRequest) (*Book, error)
@@ -517,6 +536,9 @@ func (UnimplementedABitOfEverythingServiceServer) Create(context.Context, *ABitO
 }
 func (UnimplementedABitOfEverythingServiceServer) CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBody not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) UpdateEntity(context.Context, *UpdateEntityRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEntity not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
@@ -663,6 +685,24 @@ func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).CreateBody(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_UpdateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateEntityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).UpdateEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_UpdateEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).UpdateEntity(ctx, req.(*UpdateEntityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1239,6 +1279,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateBody",
 			Handler:    _ABitOfEverythingService_CreateBody_Handler,
+		},
+		{
+			MethodName: "UpdateEntity",
+			Handler:    _ABitOfEverythingService_UpdateEntity_Handler,
 		},
 		{
 			MethodName: "CreateBook",

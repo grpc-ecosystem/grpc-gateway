@@ -521,6 +521,19 @@ message UpdateBookRequest {
   bool allow_missing = 3;
 }
 
+message EntityId {
+  string value = 1;
+}
+
+// UpdateEntityRequest exercises the case where a body message contains a
+// nested message field whose only sub-field is bound to a path parameter.
+// With body: "*" the id field reduces to an empty object and should be
+// omitted from the generated body schema, while other_field remains.
+message UpdateEntityRequest {
+  EntityId id = 1;
+  string other_field = 2;
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
@@ -542,6 +555,15 @@ service ABitOfEverythingService {
   rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
     option (google.api.http) = {
       post: "/v1/example/a_bit_of_everything"
+      body: "*"
+    };
+  }
+  // UpdateEntity updates an entity identified by a nested path parameter.
+  // The request body (body: "*") should not include the id object, whose
+  // only field is the id.value path parameter.
+  rpc UpdateEntity(UpdateEntityRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/v1/example/a_bit_of_everything/entity/{id.value}"
       body: "*"
     };
   }
