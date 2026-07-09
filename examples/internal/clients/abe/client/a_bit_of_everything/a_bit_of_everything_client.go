@@ -165,6 +165,8 @@ type ClientService interface {
 
 	ABitOfEverythingServiceUpdateBook(params *ABitOfEverythingServiceUpdateBookParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceUpdateBookOK, error)
 
+	ABitOfEverythingServiceUpdateEntity(params *ABitOfEverythingServiceUpdateEntityParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceUpdateEntityOK, error)
+
 	ABitOfEverythingServiceUpdateV2(params *ABitOfEverythingServiceUpdateV2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceUpdateV2OK, error)
 
 	ABitOfEverythingServiceUpdateV22(params *ABitOfEverythingServiceUpdateV22Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceUpdateV22OK, error)
@@ -1461,6 +1463,49 @@ func (a *Client) ABitOfEverythingServiceUpdateBook(params *ABitOfEverythingServi
 	//
 	// a default response is provided: fill this and return an error
 	unexpectedSuccess := result.(*ABitOfEverythingServiceUpdateBookDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+ABitOfEverythingServiceUpdateEntity updates entity updates an entity identified by a nested path parameter the request body body should not include the id object whose only field is the id value path parameter
+*/
+func (a *Client) ABitOfEverythingServiceUpdateEntity(params *ABitOfEverythingServiceUpdateEntityParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ABitOfEverythingServiceUpdateEntityOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewABitOfEverythingServiceUpdateEntityParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ABitOfEverythingService_UpdateEntity",
+		Method:             "PUT",
+		PathPattern:        "/v1/example/a_bit_of_everything/entity/{id.value}",
+		ProducesMediaTypes: []string{"application/json", "application/x-foo-mime"},
+		ConsumesMediaTypes: []string{"application/json", "application/x-foo-mime"},
+		Schemes:            []string{"http", "https", "wss"},
+		Params:             params,
+		Reader:             &ABitOfEverythingServiceUpdateEntityReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*ABitOfEverythingServiceUpdateEntityOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*ABitOfEverythingServiceUpdateEntityDefault)
 
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }

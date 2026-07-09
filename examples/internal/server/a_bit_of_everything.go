@@ -252,6 +252,11 @@ func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.Up
 	return new(emptypb.Empty), nil
 }
 
+func (s *_ABitOfEverythingServer) UpdateEntity(ctx context.Context, msg *examples.UpdateEntityRequest) (*emptypb.Empty, error) {
+	grpclog.Info(msg)
+	return new(emptypb.Empty), nil
+}
+
 func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()

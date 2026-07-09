@@ -1038,6 +1038,9 @@ func request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.Context
 		protoReq NestedBodyOneofRequest
 		metadata runtime.ServerMetadata
 	)
+	if protoReq.Payload == nil {
+		protoReq.Payload = &NestedBodyOneof{}
+	}
 	if protoReq.Payload.Input == nil {
 		protoReq.Payload.Input = &NestedBodyOneof_InputValue{}
 	} else if _, ok := protoReq.Payload.Input.(*NestedBodyOneof_InputValue); !ok {
@@ -1064,6 +1067,9 @@ func local_request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.C
 		protoReq NestedBodyOneofRequest
 		metadata runtime.ServerMetadata
 	)
+	if protoReq.Payload == nil {
+		protoReq.Payload = &NestedBodyOneof{}
+	}
 	if protoReq.Payload.Input == nil {
 		protoReq.Payload.Input = &NestedBodyOneof_InputValue{}
 	} else if _, ok := protoReq.Payload.Input.(*NestedBodyOneof_InputValue); !ok {
