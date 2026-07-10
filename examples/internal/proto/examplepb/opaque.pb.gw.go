@@ -370,7 +370,6 @@ func request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Context, ma
 	var (
 		protoReq OpaqueSearchOrdersRequest
 		metadata runtime.ServerMetadata
-		e        int32
 		err      error
 	)
 	if req.Body != nil {
@@ -384,11 +383,6 @@ func request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Context, ma
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.status", err)
 	}
-	e, err = runtime.Enum(val, OpaqueOrder_OpaqueOrderStatus_value)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.status", err)
-	}
-	protoReq.GetOrder().SetStatus(OpaqueOrder_OpaqueOrderStatus(e))
 	val, ok = pathParams["order.shipping_address.address_type"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "order.shipping_address.address_type")
@@ -397,11 +391,6 @@ func request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Context, ma
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.shipping_address.address_type", err)
 	}
-	e, err = runtime.Enum(val, OpaqueAddress_OpaqueAddressType_value)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.shipping_address.address_type", err)
-	}
-	protoReq.GetOrder().GetShippingAddress().SetAddressType(OpaqueAddress_OpaqueAddressType(e))
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -416,7 +405,6 @@ func local_request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Conte
 	var (
 		protoReq OpaqueSearchOrdersRequest
 		metadata runtime.ServerMetadata
-		e        int32
 		err      error
 	)
 	val, ok := pathParams["order.status"]
@@ -427,11 +415,6 @@ func local_request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Conte
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.status", err)
 	}
-	e, err = runtime.Enum(val, OpaqueOrder_OpaqueOrderStatus_value)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.status", err)
-	}
-	protoReq.GetOrder().SetStatus(OpaqueOrder_OpaqueOrderStatus(e))
 	val, ok = pathParams["order.shipping_address.address_type"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "order.shipping_address.address_type")
@@ -440,11 +423,6 @@ func local_request_OpaqueEcommerceService_OpaqueSearchOrders_0(ctx context.Conte
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "order.shipping_address.address_type", err)
 	}
-	e, err = runtime.Enum(val, OpaqueAddress_OpaqueAddressType_value)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "order.shipping_address.address_type", err)
-	}
-	protoReq.GetOrder().GetShippingAddress().SetAddressType(OpaqueAddress_OpaqueAddressType(e))
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}

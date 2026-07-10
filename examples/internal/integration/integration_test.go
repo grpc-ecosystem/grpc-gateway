@@ -2882,3 +2882,23 @@ func testExcessBodyStreamWithBodyUnexpected(t *testing.T, port int) {
 		t.Errorf("server context not done")
 	}
 }
+
+func TestNestedEnumGetQueryParams(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	// 1 corresponds to DeepEnum.TRUE
+	url := "http://localhost:8088/v1/example/a_bit_of_everything/params/get/nested_enum/1"
+	
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Fatalf("http.Get(%q) failed with %v; want success", url, err)
+	}
+	defer resp.Body.Close()
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Fatalf("resp.StatusCode = %d; want %d", got, want)
+	}
+}
