@@ -13,7 +13,7 @@ require (
 	github.com/rogpeppe/fastuuid v1.2.0
 	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/text v0.40.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20260713194154-142c488ef3d3
+	google.golang.org/genproto/googleapis/api v0.0.0-20260713224248-f5fc221cf8c4
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260706201446-f0a921348800
 	google.golang.org/grpc v1.82.0
 	google.golang.org/protobuf v1.36.11
