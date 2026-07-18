@@ -1,0 +1,27 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "example-otel-tracing_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/cmd/example-otel-tracing",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//examples/internal/helloworld",
+        "//runtime",
+        "@io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc//:otelgrpc",
+        "@io_opentelemetry_go_contrib_instrumentation_net_http_otelhttp//:otelhttp",
+        "@io_opentelemetry_go_otel//:otel",
+        "@io_opentelemetry_go_otel//propagation",
+        "@io_opentelemetry_go_otel_exporters_stdout_stdouttrace//:stdouttrace",
+        "@io_opentelemetry_go_otel_sdk//trace",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//credentials/insecure",
+        "@org_golang_google_grpc//grpclog",
+    ],
+)
+
+go_binary(
+    name = "example-otel-tracing",
+    embed = [":example-otel-tracing_lib"],
+    visibility = ["//visibility:public"],
+)
