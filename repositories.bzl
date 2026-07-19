@@ -406,8 +406,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_jsonpointer",
         importpath = "github.com/go-openapi/jsonpointer",
-        sum = "h1:AA6mCjHYHmZ+1RU2Js089EaOK/iwXXNwQsTgnsTha2M=",
-        version = "v0.24.0",
+        sum = "h1:kR9tHqY0CtZaOPVFm622dPVNhrvYpwr4uCxgL3h1H8s=",
+        version = "v1.0.0",
     )
     go_repository(
         name = "com_github_go_openapi_jsonreference",
@@ -448,26 +448,26 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_swag",
         importpath = "github.com/go-openapi/swag",
-        sum = "h1:8ecSuZlh4NXc3GsmAOqECIYqDTApCWaMe3gO4gjJNEE=",
-        version = "v0.27.0",
+        sum = "h1:VotvOLWW8q/EAxB0YdsBBGC8XYyeL1YwBj2ungAGPNg=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_cmdutils",
         importpath = "github.com/go-openapi/swag/cmdutils",
-        sum = "h1:aIKiqhB29AaP+7xm8/CPg3uOpeHx2SUp6TvMpu/a31Y=",
-        version = "v0.27.0",
+        sum = "h1:I7sYqaWVl5mq0NEmNQkAmFDyNin9ufvMX/p2zwtQaOE=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_conv",
         importpath = "github.com/go-openapi/swag/conv",
-        sum = "h1:EKOH4feXrvdo8DbSsXSAqRT8fz1epEnS5O2IfXUOzE8=",
-        version = "v0.27.0",
+        sum = "h1:8wi9ZG+olmY1wXphl93EWniPtbSPkXM/feH7FgjsvrU=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_fileutils",
         importpath = "github.com/go-openapi/swag/fileutils",
-        sum = "h1:ib5jMUqGq5tY1EyO4inlrabsaeDAleFU+XD1FXQcgp8=",
-        version = "v0.27.0",
+        sum = "h1:QQqBSoi5mW4XpU85nS0mLcA+zAE6vLzrb0QkmLKf9oM=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_jsonname",
@@ -478,50 +478,56 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_swag_jsonutils",
         importpath = "github.com/go-openapi/swag/jsonutils",
-        sum = "h1:VYtd9jEQYeU4j8q5vdn5KWotF4vKywhGdMBrALtAsfE=",
-        version = "v0.27.0",
+        sum = "h1:SVgK3i4USzCU5mibOOS/l4ea2h9UQXy7J7RNLTjuXjU=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_jsonutils_fixtures_test",
         importpath = "github.com/go-openapi/swag/jsonutils/fixtures_test",
-        sum = "h1:+d7C7Ur/SsGg/UZ9G0JEovnfRqtMNZCJQGKc2h/ojoE=",
-        version = "v0.27.0",
+        sum = "h1:mJu3COL9WEaZVp/Kf2PRMi7tPszPEJfSr/OO75ynCs8=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_loading",
         importpath = "github.com/go-openapi/swag/loading",
-        sum = "h1:s8DA9aPEdFH6OluHUYUn3DnIuoTdyWs9RwffXBUfyeI=",
-        version = "v0.27.0",
+        sum = "h1:/DxUgDXKbBX4bcn7r9uEXfJyzN5XpiJmZplzQTjrRCY=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_mangling",
         importpath = "github.com/go-openapi/swag/mangling",
-        sum = "h1:rpPJuqQHa6z2pDiP3iIpXOyNXlSs9cQCxnJSAxzdfOc=",
-        version = "v0.27.0",
+        sum = "h1:yC9D0HyUE8gbP+BfmGx9+AA89ikwZTMjESK3OnnoaqA=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_netutils",
         importpath = "github.com/go-openapi/swag/netutils",
-        sum = "h1:lEUG+hHvPvLggB3A8snFk0IRKNf9uC0YKc+7WYqvAF8=",
-        version = "v0.27.0",
+        sum = "h1:mICMFoS82F5TZ4Zy3cqmcQk+BFeCp3Uyq3Np7GI0/qU=",
+        version = "v0.27.1",
+    )
+    go_repository(
+        name = "com_github_go_openapi_swag_pools",
+        importpath = "github.com/go-openapi/swag/pools",
+        sum = "h1:9LeadcMyb2GJCbXX5hVQDbZ2Lq9TL4dCs/nx1j5DO0E=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_stringutils",
         importpath = "github.com/go-openapi/swag/stringutils",
-        sum = "h1:Of7w/HljWsNZvuxsUAnw3n+hCOyI6HLJOxW2kQRAxio=",
-        version = "v0.27.0",
+        sum = "h1:ZXePZ0r2p1qSjo8tD3Un4vFj8+FqlCkczxDrJIhYUp8=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_typeutils",
         importpath = "github.com/go-openapi/swag/typeutils",
-        sum = "h1:aCf4MSGo8NLwZP8Q6t32DWLJSvl/WwNqgmEG+xJ6v2o=",
-        version = "v0.27.0",
+        sum = "h1:KSTdFlfnse4r6dP9IrEnwMldjE+zs71UeEB3//PtVXc=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_swag_yamlutils",
         importpath = "github.com/go-openapi/swag/yamlutils",
-        sum = "h1:bQ6eAMil5X9tdcf7dMn4t15alzG6jddnrKPuKa/zxKM=",
-        version = "v0.27.0",
+        sum = "h1:ftxv6xvXb1E3zohUc+okZ9nSqNb9StQX/FXnKZ98sQA=",
+        version = "v0.27.1",
     )
     go_repository(
         name = "com_github_go_openapi_testify_enable_yaml_v2",
