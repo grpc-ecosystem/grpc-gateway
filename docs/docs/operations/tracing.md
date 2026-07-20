@@ -7,7 +7,18 @@ parent: Operations
 
 # Tracing
 
+If you are starting a new project, jump to the [OpenTelemetry](#opentelemetry)
+section below. OpenTelemetry is the current standard for tracing in the Go
+ecosystem and, when combined with `otelhttp` and `otelgrpc`, propagates spans
+through the gateway with **no custom middleware**. The
+[OpenCensus](#with-opencensusio-and-aws-x-ray) and
+[OpenTracing](#opentracing-support-legacy) sections below are kept for existing
+integrations and are considered legacy.
+
 ## With [OpenCensus.io](https://opencensus.io/) and [AWS X-ray](https://aws.amazon.com/xray/)
+
+> **Legacy:** OpenCensus is deprecated in favor of OpenTelemetry. See the
+> [OpenTelemetry](#opentelemetry) section for the current approach.
 
 ### Adding tracing using AWS-Xray as the exporter
 
@@ -122,7 +133,12 @@ func (s *service) Check(ctx context.Context, in *health.HealthCheckRequest) (*he
 }
 ```
 
-## OpenTracing Support
+## OpenTracing Support (legacy)
+
+> **Legacy:** OpenTracing is deprecated in favor of OpenTelemetry. The custom
+> `tracingWrapper` middleware below is **only** needed for OpenTracing. With
+> OpenTelemetry's `otelhttp` and `otelgrpc` no such wrapper is required — see the
+> [OpenTelemetry](#opentelemetry) section.
 
 If your project uses [OpenTracing](https://github.com/opentracing/opentracing-go) and you'd like spans to propagate through the gateway, you can add some middleware which parses the incoming HTTP headers to create a new span correctly.
 
@@ -182,4 +198,131 @@ if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opt
 
 ## OpenTelemetry
 
-If your project uses [OpenTelemetry](https://opentelemetry.io/) and you would like spans to propagate through the gateway, you can refer to the [OpenTelemetry gRPC-Gateway Boilerplate](https://github.com/iamrajiv/opentelemetry-grpc-gateway-boilerplate) project. This repository provides a sample project that showcases the integration of OpenTelemetry with gRPC-Gateway to set up an OpenTelemetry-enabled gRPC-Gateway REST server. The project includes a simple `SayHello` method implemented on the gRPC server that returns a greeting message to the client.
+[OpenTelemetry](https://opentelemetry.io/) is the recommended way to trace
+requests through the gateway. **You do not need a custom `tracingWrapper` (as in
+the legacy OpenTracing section above).** The official instrumentation libraries
+already do the work:
+
+- [`otelhttp`](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp)
+  wraps the gateway `http.Handler`, extracts the incoming
+  [W3C Trace Context](https://www.w3.org/TR/trace-context/) from the request
+  headers, and starts the **HTTP server span**.
+- [`otelgrpc`](https://pkg.go.dev/go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc)
+  stats handlers start the **gRPC client span** for the gateway's outgoing call
+  (injecting the trace context into the gRPC metadata) and the **gRPC server
+  span** on the backend.
+
+An incoming HTTP request therefore produces three connected parent/child spans
+that share a single trace ID:
+
+```
+HTTP server span (otelhttp)  ->  gRPC client span (otelgrpc)  ->  gRPC server span (otelgrpc)
+```
+
+### Runnable example
+
+A complete, self-contained example lives at
+[`examples/internal/cmd/example-otel-tracing`](https://github.com/grpc-ecosystem/grpc-gateway/tree/main/examples/internal/cmd/example-otel-tracing).
+In a single process it wires up a stdout span exporter, an instrumented
+in-process gRPC backend, and the gateway. Run it with:
+
+```shell
+go run ./examples/internal/cmd/example-otel-tracing
+# then, in another terminal:
+curl http://localhost:8081/say/OpenTelemetry
+```
+
+### Wiring
+
+Install a `TracerProvider` and a propagator once at startup:
+
+```go
+import (
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/propagation"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+)
+
+exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
+if err != nil {
+	// Handle any error.
+}
+tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter))
+defer tp.Shutdown(context.Background())
+
+otel.SetTracerProvider(tp)
+otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+	propagation.TraceContext{},
+	propagation.Baggage{},
+))
+```
+
+Instrument the gRPC backend with the server stats handler:
+
+```go
+import "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+
+s := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
+```
+
+Dial the backend with the client stats handler so the gateway's outgoing call is
+traced and the trace context is propagated:
+
+```go
+conn, err := grpc.NewClient(
+	"localhost:9091",
+	grpc.WithTransportCredentials(insecure.NewCredentials()),
+	grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+)
+```
+
+Finally, wrap the gateway mux with `otelhttp` — this replaces the custom
+`tracingWrapper` entirely:
+
+```go
+import "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+
+mux := runtime.NewServeMux()
+if err := pb.RegisterGreeterHandler(ctx, mux, conn); err != nil {
+	// Handle any error.
+}
+
+handler := otelhttp.NewHandler(mux, "grpc-gateway")
+if err := http.ListenAndServe(":8081", handler); err != nil {
+	log.Fatalf("failed to start gateway server: %v", err)
+}
+```
+
+### Sample output
+
+Issuing `curl http://localhost:8081/say/OpenTelemetry` prints three spans that
+all share the same `TraceID`, confirming the trace propagates through the
+gateway. Trimmed for brevity:
+
+```jsonc
+// 1. HTTP server span (otelhttp) — the root span.
+{
+	"Name": "GET",
+	"SpanContext": { "TraceID": "6952...4aa5", "SpanID": "3b9c...fd0e" },
+	"Parent":      { "TraceID": "0000...0000", "SpanID": "0000...0000" },
+	"SpanKind": 2, // server
+	"InstrumentationScope": { "Name": ".../net/http/otelhttp" }
+}
+// 2. gRPC client span (otelgrpc) — child of the HTTP span.
+{
+	"Name": "grpc.gateway.examples.internal.helloworld.Greeter/SayHello",
+	"SpanContext": { "TraceID": "6952...4aa5", "SpanID": "1224...75ca" },
+	"Parent":      { "TraceID": "6952...4aa5", "SpanID": "3b9c...fd0e" },
+	"SpanKind": 3, // client
+	"InstrumentationScope": { "Name": ".../grpc/otelgrpc" }
+}
+// 3. gRPC server span (otelgrpc) — child of the client span, context received over the wire.
+{
+	"Name": "grpc.gateway.examples.internal.helloworld.Greeter/SayHello",
+	"SpanContext": { "TraceID": "6952...4aa5", "SpanID": "950f...d85e" },
+	"Parent":      { "TraceID": "6952...4aa5", "SpanID": "1224...75ca", "Remote": true },
+	"SpanKind": 2, // server
+	"InstrumentationScope": { "Name": ".../grpc/otelgrpc" }
+}
+```

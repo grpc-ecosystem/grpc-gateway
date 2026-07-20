@@ -310,6 +310,12 @@ def go_repositories():
         version = "v1.1.0",
     )
     go_repository(
+        name = "com_github_felixge_httpsnoop",
+        importpath = "github.com/felixge/httpsnoop",
+        sum = "h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=",
+        version = "v1.0.4",
+    )
+    go_repository(
         name = "com_github_flosch_pongo2_v4",
         importpath = "github.com/flosch/pongo2/v4",
         sum = "h1:gv+5Pe3vaSVmiJvh/BZa82b7/00YUGm0PIyVVLop0Hw=",
@@ -2355,9 +2361,27 @@ def go_repositories():
         version = "v1.43.0",
     )
     go_repository(
+        name = "io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc",
+        importpath = "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc",
+        sum = "h1:2yEATaop1/a1I4psnSLgWVPLWwCzkqWakgJy7xTDVy0=",
+        version = "v0.69.0",
+    )
+    go_repository(
+        name = "io_opentelemetry_go_contrib_instrumentation_net_http_otelhttp",
+        importpath = "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+        sum = "h1:8tvICD4vSTOOsNrsI4Ljf6C+6UKvpTEH5XY3JMoyPoo=",
+        version = "v0.69.0",
+    )
+    go_repository(
         name = "io_opentelemetry_go_otel",
         importpath = "go.opentelemetry.io/otel",
         sum = "h1:JjwHmHpA4iZ3wBxluu2fbbE7j4kqlE8jXyAyPXH7HqU=",
+        version = "v1.44.0",
+    )
+    go_repository(
+        name = "io_opentelemetry_go_otel_exporters_stdout_stdouttrace",
+        importpath = "go.opentelemetry.io/otel/exporters/stdout/stdouttrace",
+        sum = "h1:bl2S7Ubua0Nms+D/gAmznQTd4dxxMA93aKbcpKqiTCs=",
         version = "v1.44.0",
     )
     go_repository(
@@ -2375,8 +2399,8 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_otel_sdk_metric",
         importpath = "go.opentelemetry.io/otel/sdk/metric",
-        sum = "h1:S88dyqXjJkuBNLeMcVPRFXpRw2fuwdvfCGLEo89fDkw=",
-        version = "v1.43.0",
+        sum = "h1:3LlKgI+VjbVsjNRFZJZAJ30WjXC5VkNRks6si09iEfI=",
+        version = "v1.44.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel_trace",
@@ -2570,6 +2594,13 @@ def go_repositories():
         sum = "h1:ADUqmZGgLDDfbSL9ZmPxKTybcoEYHgpYfELNoN+7hsw=",
         version = "v1.7.0",
     )
+    go_repository(
+        name = "org_uber_go_goleak",
+        importpath = "go.uber.org/goleak",
+        sum = "h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=",
+        version = "v1.3.0",
+    )
+
     go_repository(
         name = "org_uber_go_multierr",
         importpath = "go.uber.org/multierr",
