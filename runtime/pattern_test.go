@@ -634,3 +634,88 @@ func TestPatternString(t *testing.T) {
 		}
 	}
 }
+
+func TestGetPathPattern(t *testing.T) {
+	for _, spec := range []struct {
+		ops  []int
+		pool []string
+		verb string
+
+		want string
+	}{
+		{
+			want: "/",
+		},
+		{
+			ops:  []int{int(utilities.OpNop), anything},
+			want: "/",
+		},
+		{
+			ops:  []int{int(utilities.OpPush), anything},
+			want: "/*",
+		},
+		{
+			ops:  []int{int(utilities.OpLitPush), 0},
+			pool: []string{"endpoint"},
+			want: "/endpoint",
+		},
+		{
+			ops:  []int{int(utilities.OpPushM), anything},
+			want: "/**",
+		},
+		{
+			ops: []int{
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+			},
+			want: "/*",
+		},
+		{
+			ops: []int{
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
+			},
+			pool: []string{"name"},
+			want: "/{name}",
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+				int(utilities.OpLitPush), 3,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 4,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpCapture), 6,
+				int(utilities.OpLitPush), 5,
+			},
+			pool: []string{"v1", "buckets", "bucket_name", "objects", ".ext", "tail", "name"},
+			want: "/v1/{bucket_name}/{name}/tail",
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+			},
+			pool: []string{"v1", "bucket", "name"},
+			verb: "LOCK",
+			want: "/v1/{name}:LOCK",
+		},
+	} {
+		p, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
+		if err != nil {
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
+			continue
+		}
+		if got, want := p.GetPathPattern(), spec.want; got != want {
+			t.Errorf("%#v.GetPathPattern() = %q; want %q", p, got, want)
+		}
+	}
+}
