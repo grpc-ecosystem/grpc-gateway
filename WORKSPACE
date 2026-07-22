@@ -102,10 +102,10 @@ go_register_toolchains(version = "1.26.0")
 
 http_archive(
     name = "bazel_gazelle",
-    sha256 = "49d9eba309b0b695824ff417d734242824ad9ab5edb56063b9d3400df1a61a56",
+    sha256 = "564508c5329de6fbffeade560cb5c02a5b9b86f47eb13856f0f00b8548d8e5d6",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.51.3/bazel-gazelle-v0.51.3.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.51.3/bazel-gazelle-v0.51.3.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.52.0/bazel-gazelle-v0.52.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.52.0/bazel-gazelle-v0.52.0.tar.gz",
     ],
 )
 
