@@ -101,6 +101,32 @@ It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb
 
    This will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
 
+    **Using Buf with one configuration for multiple services**
+
+    When a single gRPC API Configuration YAML file contains selectors for
+    services defined in different directories, set `strategy: all` for each
+    local Buf plugin that uses the configuration. Buf invokes local plugins
+    once per directory by default, so each invocation sees only part of the
+    schema and reports rules for services in other directories as unmatched.
+
+    ```yaml
+    version: v2
+    plugins:
+      - local: protoc-gen-grpc-gateway
+        out: gen/go
+        strategy: all
+        opt:
+          - paths=source_relative
+          - grpc_api_configuration=path/to/your_service.yaml
+      - local: protoc-gen-openapiv2
+        out: gen/openapiv2
+        strategy: all
+        opt:
+          - grpc_api_configuration=path/to/your_service.yaml
+    ```
+
+    See [Buf's invocation strategy documentation](https://buf.build/docs/configuration/v2/buf-gen-yaml/#strategy).
+
    In situations where you only need the reverse-proxy you can use the `standalone=true` option when generating the code. This will ensure the `types` used within `your_service.pb.gw.go` reference the external source appropriately.
 
    ```
