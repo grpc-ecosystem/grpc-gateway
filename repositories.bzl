@@ -2331,8 +2331,8 @@ def go_repositories():
     go_repository(
         name = "in_yaml_go_yaml_v3",
         importpath = "go.yaml.in/yaml/v3",
-        sum = "h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=",
-        version = "v3.0.4",
+        sum = "h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=",
+        version = "v3.0.5",
     )
 
     go_repository(
