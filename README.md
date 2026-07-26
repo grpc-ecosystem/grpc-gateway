@@ -173,7 +173,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 ### Download the binaries
 
 You may alternatively download the binaries from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
-We generate [SLSA3 signatures](slsa.dev) using the OpenSSF's [slsa-framework/slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) during the release process. To verify a release binary:
+We generate [SLSA3 signatures](https://slsa.dev) using the OpenSSF's [slsa-framework/slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) during the release process. To verify a release binary:
 
 1. Install the verification tool from [slsa-framework/slsa-verifier#installation](https://github.com/slsa-framework/slsa-verifier#installation).
 2. Download the provenance file `attestation.intoto.jsonl` from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
