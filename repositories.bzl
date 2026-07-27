@@ -430,8 +430,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_runtime",
         importpath = "github.com/go-openapi/runtime",
-        sum = "h1:hrcTTF8P7ZZr2Majzq11I65QtL/s85o7Q+zJf+AvFN4=",
-        version = "v0.32.6",
+        sum = "h1:Dd3Oj2ig+WH8ckK95l0Wn2V8a4bH/UqWPRZVT0vc8yU=",
+        version = "v0.33.0",
     )
     go_repository(
         name = "com_github_go_openapi_runtime_server_middleware",
