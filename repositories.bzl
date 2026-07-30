@@ -685,23 +685,34 @@ def go_repositories():
         version = "v0.1.0",
     )
     go_repository(
+        name = "com_github_google_s2a_go",
+        importpath = "github.com/google/s2a-go",
+        sum = "h1:LGD7gtMgezd8a/Xak7mEWL0PjoTQFvpRudN895yqKW0=",
+        version = "v0.1.9",
+    )
+    go_repository(
         name = "com_github_google_uuid",
         importpath = "github.com/google/uuid",
         sum = "h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=",
         version = "v1.6.0",
     )
-
+    go_repository(
+        name = "com_github_googleapis_enterprise_certificate_proxy",
+        importpath = "github.com/googleapis/enterprise-certificate-proxy",
+        sum = "h1:vAe81Msw+8tKUxi2Dqh/NZMz7475yUvmRIkXr4oN2ao=",
+        version = "v0.3.11",
+    )
     go_repository(
         name = "com_github_googleapis_gax_go_v2",
         importpath = "github.com/googleapis/gax-go/v2",
-        sum = "h1:sjZBwGj9Jlw33ImPtvFviGYvseOtDM7hkSKB7+Tv3SM=",
-        version = "v2.0.5",
+        sum = "h1:RksgfBpxqff0EZkDWYuz9q/uWsTVz+kf43LsZ1J6SMc=",
+        version = "v2.17.0",
     )
     go_repository(
         name = "com_github_googlecloudplatform_opentelemetry_operations_go_detectors_gcp",
         importpath = "github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp",
-        sum = "h1:rIkQfkCOVKc1OiRCNcSDD8ml5RJlZbH/Xsq7lbpynwc=",
-        version = "v1.32.0",
+        sum = "h1:l7+6kwRMJNwdCvYdDl7Eax+wzEYHSnNY7zrrfbhDdTA=",
+        version = "v1.33.0",
     )
 
     go_repository(
@@ -1410,8 +1421,8 @@ def go_repositories():
     go_repository(
         name = "com_github_spiffe_go_spiffe_v2",
         importpath = "github.com/spiffe/go-spiffe/v2",
-        sum = "h1:l+DolpxNWYgruGQVV0xsfeya3CsC7m8iBzDnMpsbLuo=",
-        version = "v2.6.0",
+        sum = "h1:uXe1MflJoHw58wAUvxVlcM7WpKtijWG7I1UidcGh6g4=",
+        version = "v2.7.0",
     )
     go_repository(
         name = "com_github_spkg_bom",
@@ -1609,6 +1620,13 @@ def go_repositories():
         sum = "h1:gCrN3IyvqY3cP0wh2h43d99CgH3G+WYs9CeuFVKChR8=",
         version = "v1.11.5",
     )
+    go_repository(
+        name = "com_google_cloud_go_auth",
+        importpath = "cloud.google.com/go/auth",
+        sum = "h1:+Nbt5Ev0xEqxlNjd6c+yYUeosQ5TtEUaNcN/3FozlaM=",
+        version = "v0.18.2",
+    )
+
     go_repository(
         name = "com_google_cloud_go_automl",
         importpath = "cloud.google.com/go/automl",
@@ -2280,8 +2298,8 @@ def go_repositories():
     go_repository(
         name = "dev_cel_expr",
         importpath = "cel.dev/expr",
-        sum = "h1:1KrZg61W6TWSxuNZ37Xy49ps13NUovb66QLprthtwi4=",
-        version = "v0.25.1",
+        sum = "h1:K6j46C81hXtZQfuX60cVWQFBJahKSE2gfRbNuvr5bFs=",
+        version = "v0.25.2",
     )
 
     go_repository(
@@ -2357,8 +2375,8 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_contrib_detectors_gcp",
         importpath = "go.opentelemetry.io/contrib/detectors/gcp",
-        sum = "h1:62yY3dT7/ShwOxzA0RsKRgshBmfElKI4d/Myu2OxDFU=",
-        version = "v1.43.0",
+        sum = "h1:NmLfL734pJhM0JKaYd2Y28+nY9dPRWYAAbxhRCrKXPw=",
+        version = "v1.44.0",
     )
     go_repository(
         name = "io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc",
@@ -2467,8 +2485,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_grpc",
         importpath = "google.golang.org/grpc",
-        sum = "h1:NnAxzGRA0677vCa4BUkOAnO5+FfQqVl9iUXeD0IqcGE=",
-        version = "v1.82.1",
+        sum = "h1:JeNZEKJFbQxArAMl+hiytHauacDNqJUllNfmIMmpqnQ=",
+        version = "v1.83.0",
     )
 
     go_repository(
