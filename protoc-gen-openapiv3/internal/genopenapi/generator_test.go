@@ -76,6 +76,19 @@ func TestGenerate_Library(t *testing.T) {
 			t.Errorf("nested message %q should be flattened, not emitted as a parameter", name)
 		}
 	}
+	// Fields marked google.api.field_behavior = REQUIRED become required
+	// query parameters. Unannotated fields must omit the flag entirely
+	// rather than emit required: false.
+	if required, _ := gotParams["pageSize"]["required"].(bool); !required {
+		t.Errorf("pageSize[required]: wanted true, got %v", required)
+	}
+	if _, ok := gotParams["pageToken"]["required"]; ok {
+		t.Errorf("pageToken[required]: must not carry a required flag")
+	}
+	// Map-parameters are built by a separate code path.
+	if required, _ := gotParams["filter.labels[string]"]["required"].(bool); !required {
+		t.Errorf("filter.labels[string][required]: wanted true, got %v", required)
+	}
 	// Spot-check the flattened parameter shapes:
 	//   filter.kind reuses the Book.Kind enum schema via $ref.
 	if schema, _ := gotParams["filter.kind"]["schema"].(map[string]any); schema["$ref"] != "#/components/schemas/lib.v1.Book.Kind" {
