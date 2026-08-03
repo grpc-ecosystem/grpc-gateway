@@ -27,6 +27,7 @@ go_test(
     size = "small",
     srcs = [
         "generator_test.go",
+        "request_body_draining_test.go",
         "template_test.go",
     ],
     embed = [":gengateway"],

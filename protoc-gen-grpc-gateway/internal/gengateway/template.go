@@ -17,19 +17,21 @@ import (
 
 type param struct {
 	*descriptor.File
-	Imports            []descriptor.GoPackage
-	UseRequestContext  bool
-	RegisterFuncSuffix string
-	AllowPatchFeature  bool
-	OmitPackageDoc     bool
-	UseOpaqueAPI       bool
+	Imports                    []descriptor.GoPackage
+	UseRequestContext          bool
+	RegisterFuncSuffix         string
+	AllowPatchFeature          bool
+	OmitPackageDoc             bool
+	UseOpaqueAPI               bool
+	DisableRequestBodyDraining bool
 }
 
 type binding struct {
 	*descriptor.Binding
-	Registry          *descriptor.Registry
-	AllowPatchFeature bool
-	UseOpaqueAPI      bool
+	Registry                   *descriptor.Registry
+	AllowPatchFeature          bool
+	UseOpaqueAPI               bool
+	DisableRequestBodyDraining bool
 }
 
 // GetBodyFieldPath returns the binding body's field path.
@@ -206,20 +208,22 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 
 				methodWithBindingsSeen = true
 				if err := handlerTemplate.Execute(w, binding{
-					Binding:           b,
-					Registry:          reg,
-					AllowPatchFeature: p.AllowPatchFeature,
-					UseOpaqueAPI:      p.UseOpaqueAPI,
+					Binding:                    b,
+					Registry:                   reg,
+					AllowPatchFeature:          p.AllowPatchFeature,
+					UseOpaqueAPI:               p.UseOpaqueAPI,
+					DisableRequestBodyDraining: p.DisableRequestBodyDraining,
 				}); err != nil {
 					return "", err
 				}
 
 				// Local
 				if err := localHandlerTemplate.Execute(w, binding{
-					Binding:           b,
-					Registry:          reg,
-					AllowPatchFeature: p.AllowPatchFeature,
-					UseOpaqueAPI:      p.UseOpaqueAPI,
+					Binding:                    b,
+					Registry:                   reg,
+					AllowPatchFeature:          p.AllowPatchFeature,
+					UseOpaqueAPI:               p.UseOpaqueAPI,
+					DisableRequestBodyDraining: p.DisableRequestBodyDraining,
 				}); err != nil {
 					return "", err
 				}
@@ -369,6 +373,7 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Funcs(funcMap).Parse(`
 {{ $AllowPatchFeature := .AllowPatchFeature }}
 {{ $UseOpaqueAPI := .UseOpaqueAPI }}
+{{ $DisableRequestBodyDraining := .DisableRequestBodyDraining }}
 {{ if .HasQueryParam }}
 var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{ .QueryParamFilter }}
 {{ end }}
@@ -418,9 +423,11 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
+	{{- if not $DisableRequestBodyDraining }}
 	if req.Body != nil {
 		_, _  = io.Copy(io.Discard, req.Body)
 	}
+	{{- end }}
 	{{- end }}
 	{{- if $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
@@ -442,9 +449,11 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
+	{{- if not $DisableRequestBodyDraining }}
 	if req.Body != nil {
 		_, _  = io.Copy(io.Discard, req.Body)
 	}
+	{{- end }}
 	{{- if $UseOpaqueAPI }}
 	if !protoReq.Has{{ .FieldMaskField }}() || len(protoReq.Get{{ .FieldMaskField }}().GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Get{{ .GetBodyFieldStructName }}()); err != nil {
@@ -464,9 +473,11 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- end }}
 	{{- end }}
 {{- else }}
+	{{- if not $DisableRequestBodyDraining }}
 	if req.Body != nil {
 		_, _  = io.Copy(io.Discard, req.Body)
 	}
+	{{- end }}
 {{- end }}
 {{- if .PathParams }}
 	{{- $binding := . }}

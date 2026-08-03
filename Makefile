@@ -97,6 +97,9 @@ proto:
 		--template ./examples/internal/proto/examplepb/generate_unbound_methods.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/generate_unbound_methods.proto
 	buf generate \
+		--template ./examples/internal/proto/examplepb/disable_request_body_draining.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/disable_request_body_draining.proto
+	buf generate \
 		--template ./examples/internal/proto/examplepb/use_go_template.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/use_go_template.proto
 	buf generate \

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+// DisableRequestBodyDrainingService demonstrates preserving form-encoded
+// request data by disabling the generated request-body drain.
+service DisableRequestBodyDrainingService {
+  // SubmitForm accepts an HTTP POST without a protobuf body mapping.
+  rpc SubmitForm(SubmitFormRequest) returns (SubmitFormResponse) {
+    option (google.api.http) = {post: "/v1/example/disable-request-body-draining"};
+  }
+}
+
+// SubmitFormRequest contains a value populated from form or query data.
+message SubmitFormRequest {
+  // Value is the submitted form value.
+  string value = 1;
+}
+
+// SubmitFormResponse contains the submitted value.
+message SubmitFormResponse {
+  // Value is the submitted form value.
+  string value = 1;
+}

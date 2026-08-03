@@ -11,6 +11,10 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude a_bit_of_everything_grpc.pb.go
 # gazelle:exclude camel_case_service.pb.gw.go
 # gazelle:exclude camel_case_service_grpc.pb.go
+# gazelle:exclude disable_request_body_draining.proto
+# gazelle:exclude disable_request_body_draining.pb.go
+# gazelle:exclude disable_request_body_draining.pb.gw.go
+# gazelle:exclude disable_request_body_draining_grpc.pb.go
 # gazelle:exclude echo_service.pb.gw.go
 # gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude enum_with_single_value.pb.gw.go
@@ -102,6 +106,17 @@ proto_library(
 
 #keep
 proto_library(
+    name = "examplepb_disable_request_body_draining_proto",
+    srcs = [
+        "disable_request_body_draining.proto",
+    ],
+    deps = [
+        "@googleapis//google/api:annotations_proto",
+    ],
+)
+
+#keep
+proto_library(
     name = "examplepb_opaque_proto",
     srcs = [
         "opaque.proto",
@@ -158,6 +173,21 @@ go_proto_library(
 
 #keep
 go_proto_library(
+    name = "examplepb_disable_request_body_draining_go_proto",
+    compilers = [
+        "//:go_apiv2",
+        "//:go_grpc",
+        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway_disable_request_body_draining",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
+    proto = ":examplepb_disable_request_body_draining_proto",
+    deps = [
+        "@org_golang_google_genproto_googleapis_api//annotations",
+    ],
+)
+
+#keep
+go_proto_library(
     name = "examplepb_opaque_go_proto",
     compilers = [
         "//:go_apiv2_opaque",
@@ -185,6 +215,7 @@ go_library(
         "openapi_merge_b_grpc.pb.go",
     ],
     embed = [
+        ":examplepb_disable_request_body_draining_go_proto",  #keep
         ":examplepb_go_proto",
         ":examplepb_opaque_go_proto",  #keep
     ],

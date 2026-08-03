@@ -7,6 +7,45 @@ parent: Mapping
 
 # Customizing your gateway
 
+## Disabling request body draining
+
+Generated handlers for RPCs without client streaming explicitly drain any
+remaining HTTP request body by default.
+
+Set the `disable_request_body_draining` generator option to `true` to omit this
+explicit drain. This can be useful for form-encoded requests or custom
+integrations that need access to request data that is not mapped to the
+protobuf request body. The option defaults to `false`, preserving the existing
+generated behavior.
+
+This option does not prevent normal request processing, such as protobuf body
+decoding or `req.ParseForm()`, from consuming the request body.
+
+With Buf:
+
+```yaml
+version: v2
+plugins:
+  - local: protoc-gen-grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
+      - disable_request_body_draining=true
+```
+
+With `protoc`:
+
+```sh
+protoc -I . --grpc-gateway_out ./gen/go \
+    --grpc-gateway_opt paths=source_relative \
+    --grpc-gateway_opt disable_request_body_draining=true \
+    your/service/v1/your_service.proto
+```
+
+With Bazel, use the public compiler target
+`//protoc-gen-grpc-gateway:go_gen_grpc_gateway_disable_request_body_draining`
+in the `compilers` list of your `go_proto_library`.
+
 ## Message serialization
 
 ### Custom serializer

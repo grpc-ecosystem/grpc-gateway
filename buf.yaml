@@ -16,6 +16,7 @@ lint:
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
+      - examples/internal/proto/examplepb/disable_request_body_draining.proto
       - examples/internal/proto/examplepb/generated_input.proto
       - examples/internal/proto/examplepb/excess_body.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
@@ -64,6 +65,7 @@ lint:
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
+      - examples/internal/proto/examplepb/disable_request_body_draining.proto
       - examples/internal/proto/examplepb/generated_input.proto
       - examples/internal/proto/examplepb/excess_body.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
@@ -102,6 +104,7 @@ lint:
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
+      - examples/internal/proto/examplepb/disable_request_body_draining.proto
       - examples/internal/proto/examplepb/generated_input.proto
       - examples/internal/proto/examplepb/excess_body.proto
       - examples/internal/proto/examplepb/non_standard_names.proto
@@ -128,6 +131,7 @@ lint:
       - examples/internal/proto/examplepb/enum_with_single_value.proto
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/generate_unbound_methods.proto
+      - examples/internal/proto/examplepb/disable_request_body_draining.proto
       - examples/internal/proto/examplepb/generated_input.proto
       - examples/internal/proto/examplepb/excess_body.proto
       - examples/internal/proto/examplepb/non_standard_names.proto

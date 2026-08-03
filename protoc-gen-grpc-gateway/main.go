@@ -31,6 +31,7 @@ var (
 	_                          = flag.Bool("allow_repeated_fields_in_body", true, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option. DEPRECATED: the value is ignored and always behaves as `true`.")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
+	disableRequestBodyDraining = flag.Bool("disable_request_body_draining", false, "if true, do not explicitly drain HTTP request bodies in generated handlers for RPCs without client streaming")
 	omitPackageDoc             = flag.Bool("omit_package_doc", false, "if true, no package comment will be included in the generated code")
 	standalone                 = flag.Bool("standalone", false, "generates a standalone gateway package, which imports the target service package")
 	versionFlag                = flag.Bool("version", false, "print the current version")
@@ -81,7 +82,7 @@ func main() {
 
 		codegenerator.SetSupportedFeaturesOnPluginGen(gen)
 
-		generator := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone, *useOpaqueAPI)
+		generator := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone, *useOpaqueAPI, *disableRequestBodyDraining)
 
 		if grpclog.V(1) {
 			grpclog.Infof("Parsing code generator request")

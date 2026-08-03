@@ -1,0 +1,7 @@
+version: v2
+plugins:
+  - local: protoc-gen-grpc-gateway
+    out: .
+    opt:
+      - paths=source_relative
+      - disable_request_body_draining=true
