@@ -1341,11 +1341,17 @@ func partsToOpenAPIPath(parts []string, overrides map[string]string) string {
 		}
 		parts[index] = part
 	}
-	if last := len(parts) - 1; strings.HasPrefix(parts[last], ":") {
-		// Last item is a verb (":" LITERAL).
-		return strings.Join(parts[:last], "/") + parts[last]
+
+	hasTrailingSlash := len(parts) > 0 && parts[len(parts)-1] == ""
+	if hasTrailingSlash {
+		parts = parts[:len(parts)-1]
 	}
-	return strings.Join(parts, "/")
+
+	if last := len(parts) - 1; last >= 0 && strings.HasPrefix(parts[last], ":") {
+		// The final non-empty part is a verb (":" LITERAL).
+		return strings.Join(parts[:last], "/") + parts[last] + map[bool]string{true: "/", false: ""}[hasTrailingSlash]
+	}
+	return strings.Join(parts, "/") + map[bool]string{true: "/", false: ""}[hasTrailingSlash]
 }
 
 // partsToRegexpMap returns a map of parameter name to ECMA 262 patterns
