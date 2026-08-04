@@ -312,8 +312,8 @@ def go_repositories():
     go_repository(
         name = "com_github_felixge_httpsnoop",
         importpath = "github.com/felixge/httpsnoop",
-        sum = "h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=",
-        version = "v1.0.4",
+        sum = "h1:3YtUj32ZZkqZtt3sZZsClsymw/QDuVfpNhoA31zeORc=",
+        version = "v1.1.0",
     )
     go_repository(
         name = "com_github_flosch_pongo2_v4",
@@ -2381,14 +2381,14 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc",
         importpath = "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc",
-        sum = "h1:2yEATaop1/a1I4psnSLgWVPLWwCzkqWakgJy7xTDVy0=",
-        version = "v0.69.0",
+        sum = "h1:oECp5f+hN7nkwjU/8BxQ/q23bGPb8FIrD839owX222E=",
+        version = "v0.70.0",
     )
     go_repository(
         name = "io_opentelemetry_go_contrib_instrumentation_net_http_otelhttp",
         importpath = "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
-        sum = "h1:8tvICD4vSTOOsNrsI4Ljf6C+6UKvpTEH5XY3JMoyPoo=",
-        version = "v0.69.0",
+        sum = "h1:LMuyCAyfalSjDyjdC65nK6N0zoTT63+E/u95X0JovZI=",
+        version = "v0.70.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel",
@@ -2479,8 +2479,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
         importpath = "google.golang.org/genproto/googleapis/rpc",
-        sum = "h1:mJiOtnGp0k/BcSgdu03G2NwnscCfCH+h2QKUBZr18KI=",
-        version = "v0.0.0-20260729162451-8efbd57d26e0",
+        sum = "h1:IL4hdHzcUv2l/gcg98/Rj3FbtE6axwqslOW8SW0C+S0=",
+        version = "v0.0.0-20260803160001-6ac0973c030d",
     )
     go_repository(
         name = "org_golang_google_grpc",
