@@ -2891,7 +2891,7 @@ func TestNestedEnumGetQueryParams(t *testing.T) {
 
 	// 1 corresponds to DeepEnum.TRUE
 	url := "http://localhost:8088/v1/example/a_bit_of_everything/params/get/nested_enum/1"
-	
+
 	resp, err := http.Get(url)
 	if err != nil {
 		t.Fatalf("http.Get(%q) failed with %v; want success", url, err)
@@ -2900,5 +2900,45 @@ func TestNestedEnumGetQueryParams(t *testing.T) {
 
 	if got, want := resp.StatusCode, http.StatusOK; got != want {
 		t.Fatalf("resp.StatusCode = %d; want %d", got, want)
+	}
+}
+
+func TestRequestParseForm(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	data := url.Values{"num": {"1"}}
+	url := "http://localhost:8088/v1/example/echo/myid1"
+	contentType := "application/x-www-form-urlencoded"
+
+	resp, err := http.Post(url, contentType, strings.NewReader(data.Encode()))
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		return
+	}
+
+	msg := new(examplepb.SimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+
+	if got, want := msg.Num, int64(1); got != want {
+		t.Errorf("msg.Num = %q; want %q", got, want)
+		return
 	}
 }
