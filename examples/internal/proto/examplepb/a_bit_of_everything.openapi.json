@@ -342,6 +342,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -383,6 +384,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -390,6 +392,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -398,6 +401,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1591,6 +1595,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1632,6 +1637,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1639,6 +1645,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1647,6 +1654,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2039,6 +2047,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2080,6 +2089,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2087,6 +2097,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2095,6 +2106,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2487,6 +2499,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2528,6 +2541,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2535,6 +2549,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2543,6 +2558,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2937,6 +2953,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2978,6 +2995,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2985,6 +3003,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -2993,6 +3012,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3394,6 +3414,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3428,6 +3449,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3435,6 +3457,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3443,6 +3466,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3837,6 +3861,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3878,6 +3903,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3885,6 +3911,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -3893,6 +3920,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -4500,6 +4528,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -4541,6 +4570,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -4548,6 +4578,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -4556,6 +4587,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -5737,6 +5769,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -5778,6 +5811,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -5785,6 +5819,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -5793,6 +5828,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6195,6 +6231,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6236,6 +6273,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6243,6 +6281,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6251,6 +6290,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6621,6 +6661,7 @@
             "name": "requiredStringViaFieldBehaviorAnnotation",
             "in": "query",
             "description": "mark a field as required in Open API definition",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6662,6 +6703,7 @@
           {
             "name": "requiredStringField1",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6669,6 +6711,7 @@
           {
             "name": "requiredStringField2",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6677,6 +6720,7 @@
             "name": "required_field_behavior_json_name_custom",
             "in": "query",
             "description": "Test openapiv2 handling of required json_name fields",
+            "required": true,
             "schema": {
               "type": "string"
             }
