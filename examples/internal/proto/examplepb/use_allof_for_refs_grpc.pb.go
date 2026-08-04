@@ -32,6 +32,9 @@ const (
 // renders as a bare "$ref". Per the JSON Reference syntax any sibling members
 // of a "$ref" are ignored, so the field is instead wrapped in an "allOf" to
 // preserve its title, description and OpenAPI extensions next to the ref.
+//
+// This example also enables proto3_optional_nullable. Proto3 optional message
+// fields must keep x-nullable alongside the allOf wrapper.
 type UseAllOfForRefsServiceClient interface {
 	GetExample(ctx context.Context, in *GetExampleRequest, opts ...grpc.CallOption) (*GetExampleResponse, error)
 }
@@ -64,6 +67,9 @@ func (c *useAllOfForRefsServiceClient) GetExample(ctx context.Context, in *GetEx
 // renders as a bare "$ref". Per the JSON Reference syntax any sibling members
 // of a "$ref" are ignored, so the field is instead wrapped in an "allOf" to
 // preserve its title, description and OpenAPI extensions next to the ref.
+//
+// This example also enables proto3_optional_nullable. Proto3 optional message
+// fields must keep x-nullable alongside the allOf wrapper.
 type UseAllOfForRefsServiceServer interface {
 	GetExample(context.Context, *GetExampleRequest) (*GetExampleResponse, error)
 }
