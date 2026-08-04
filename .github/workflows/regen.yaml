@@ -1,0 +1,29 @@
+name: regen
+
+on:
+  workflow_dispatch:
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: openapiv3-required-optional-parameters
+
+      - name: Run generation in build-env
+        run: |
+          docker run -v ${{ github.workspace }}:/grpc-gateway -w /grpc-gateway --rm \
+            ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest \
+            /bin/bash -c 'make install && make clean && make generate'
+
+      - name: Commit
+        run: |
+          sudo chown -R $(id -u):$(id -g) .
+          git config user.name "maydietwice"
+          git config user.email "твой@email"
+          git add -A
+          git diff --staged --quiet || git commit -m "regenerate examples"
+          git push
