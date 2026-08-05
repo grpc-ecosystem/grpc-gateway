@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -136,6 +137,9 @@ func buildParameters(b *schemaBuilder, m *descriptor.Method, binding *descriptor
 // parentDeprecated propagates deprecation from an ancestor field: if a
 // message-typed field is deprecated, all flattened child parameters inherit
 // the flag even if the nested fields themselves are not marked deprecated.
+//
+// Unlike deprecation, google.api.field_behavior = REQUIRED is not inherited:
+// only the field's own annotation is considered, matching protoc-gen-openapiv2 behavior
 func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, parentDeprecated bool, cycle *queryCycleChecker) []*ParameterRef {
 	name := prefix + jsonName(field)
 	deprecated := parentDeprecated || fieldDeprecated(field)
@@ -187,6 +191,9 @@ func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, 
 	if desc := fieldComments(b.reg, field); desc != "" {
 		param.Description = desc
 	}
+	if hasFieldBehavior(field, annotations.FieldBehavior_REQUIRED) {
+		param.Required = true
+	}
 	if deprecated {
 		param.Deprecated = true
 	}
@@ -228,6 +235,9 @@ func mapQueryParameter(b *schemaBuilder, field *descriptor.Field, name string, d
 	}
 	if desc := fieldComments(b.reg, field); desc != "" {
 		param.Description = desc
+	}
+	if hasFieldBehavior(field, annotations.FieldBehavior_REQUIRED) {
+		param.Required = true
 	}
 	if deprecated {
 		param.Deprecated = true

@@ -143,6 +143,9 @@ proto_file: {
       label: LABEL_OPTIONAL
       type: TYPE_INT32
       json_name: "pageSize"
+      options: {
+        [google.api.field_behavior]: REQUIRED
+      }
     }
     field: {
       name: "page_token"
@@ -207,6 +210,9 @@ proto_file: {
       type: TYPE_MESSAGE
       type_name: ".lib.v1.BookFilter.LabelsEntry"
       json_name: "labels"
+      options: {
+        [google.api.field_behavior]: REQUIRED
+      }
     }
     nested_type: {
       name: "PageRange"

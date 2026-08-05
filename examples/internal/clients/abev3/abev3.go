@@ -554,7 +554,7 @@ type ABitOfEverythingServiceCustom1Params struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -564,11 +564,11 @@ type ABitOfEverythingServiceCustom1Params struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -654,7 +654,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -665,11 +665,11 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -747,7 +747,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -758,11 +758,11 @@ type ABitOfEverythingServiceCheckGetQueryParamsParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -833,7 +833,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -844,11 +844,11 @@ type ABitOfEverythingServiceCheckPostQueryParamsParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -925,7 +925,7 @@ type ABitOfEverythingServiceGetQueryParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -936,11 +936,11 @@ type ABitOfEverythingServiceGetQueryParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -997,7 +997,7 @@ type ABitOfEverythingServiceCreateParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -1008,11 +1008,11 @@ type ABitOfEverythingServiceCreateParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -1089,7 +1089,7 @@ type ABitOfEverythingServiceExistsParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -1100,11 +1100,11 @@ type ABitOfEverythingServiceExistsParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -1181,7 +1181,7 @@ type ABitOfEverythingServiceCustomOptionsRequestParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -1192,11 +1192,11 @@ type ABitOfEverythingServiceCustomOptionsRequestParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -1364,7 +1364,7 @@ type ABitOfEverythingServiceTraceRequestParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -1375,11 +1375,11 @@ type ABitOfEverythingServiceTraceRequestParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -1456,7 +1456,7 @@ type ABitOfEverythingServiceCustomParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -1467,11 +1467,11 @@ type ABitOfEverythingServiceCustomParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -1548,7 +1548,7 @@ type ABitOfEverythingServiceDoubleColonParams struct {
 	Int64OverrideType  *string                                                                  `form:"int64OverrideType,omitempty" json:"int64OverrideType,omitempty"`
 
 	// RequiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
-	RequiredStringViaFieldBehaviorAnnotation *string `form:"requiredStringViaFieldBehaviorAnnotation,omitempty" json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `form:"requiredStringViaFieldBehaviorAnnotation" json:"requiredStringViaFieldBehaviorAnnotation"`
 
 	// OutputOnlyStringViaFieldBehaviorAnnotation mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation *string `form:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty" json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
@@ -1559,11 +1559,11 @@ type ABitOfEverythingServiceDoubleColonParams struct {
 
 	// OptionalStringField Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 	OptionalStringField  *string `form:"optionalStringField,omitempty" json:"optionalStringField,omitempty"`
-	RequiredStringField1 *string `form:"requiredStringField1,omitempty" json:"requiredStringField1,omitempty"`
-	RequiredStringField2 *string `form:"requiredStringField2,omitempty" json:"requiredStringField2,omitempty"`
+	RequiredStringField1 string  `form:"requiredStringField1" json:"requiredStringField1"`
+	RequiredStringField2 string  `form:"requiredStringField2" json:"requiredStringField2"`
 
 	// RequiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
-	RequiredFieldBehaviorJsonNameCustom *string `form:"required_field_behavior_json_name_custom,omitempty" json:"required_field_behavior_json_name_custom,omitempty"`
+	RequiredFieldBehaviorJsonNameCustom string  `form:"required_field_behavior_json_name_custom" json:"required_field_behavior_json_name_custom"`
 	RequiredFieldSchemaJsonNameCustom   *string `form:"required_field_schema_json_name_custom,omitempty" json:"required_field_schema_json_name_custom,omitempty"`
 	TrailingOnly                        *string `form:"trailingOnly,omitempty" json:"trailingOnly,omitempty"`
 	TrailingOnlyDot                     *string `form:"trailingOnlyDot,omitempty" json:"trailingOnlyDot,omitempty"`
@@ -4241,20 +4241,16 @@ func NewABitOfEverythingServiceCustom1Request(server string, optionalStringValue
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -4305,52 +4301,40 @@ func NewABitOfEverythingServiceCustom1Request(server string, optionalStringValue
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -5218,20 +5202,16 @@ func NewABitOfEverythingServiceCheckNestedEnumGetQueryParamsRequest(server strin
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -5298,52 +5278,40 @@ func NewABitOfEverythingServiceCheckNestedEnumGetQueryParamsRequest(server strin
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -6090,20 +6058,16 @@ func NewABitOfEverythingServiceCheckGetQueryParamsRequest(server string, singleN
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -6170,52 +6134,40 @@ func NewABitOfEverythingServiceCheckGetQueryParamsRequest(server string, singleN
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -6909,20 +6861,16 @@ func NewABitOfEverythingServiceCheckPostQueryParamsRequestWithBody(server string
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -6989,52 +6937,40 @@ func NewABitOfEverythingServiceCheckPostQueryParamsRequestWithBody(server string
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -7767,20 +7703,16 @@ func NewABitOfEverythingServiceGetQueryRequest(server string, uuid string, param
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -7847,52 +7779,40 @@ func NewABitOfEverythingServiceGetQueryRequest(server string, uuid string, param
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -8461,20 +8381,16 @@ func NewABitOfEverythingServiceCreateRequest(server string, floatValue float32, 
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -8541,52 +8457,40 @@ func NewABitOfEverythingServiceCreateRequest(server string, floatValue float32, 
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -9385,20 +9289,16 @@ func NewABitOfEverythingServiceExistsRequest(server string, uuid string, params 
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -9465,52 +9365,40 @@ func NewABitOfEverythingServiceExistsRequest(server string, uuid string, params 
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -10241,20 +10129,16 @@ func NewABitOfEverythingServiceCustomOptionsRequestRequest(server string, uuid s
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -10321,52 +10205,40 @@ func NewABitOfEverythingServiceCustomOptionsRequestRequest(server string, uuid s
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -11144,20 +11016,16 @@ func NewABitOfEverythingServiceTraceRequestRequest(server string, uuid string, p
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -11224,52 +11092,40 @@ func NewABitOfEverythingServiceTraceRequestRequest(server string, uuid string, p
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -12000,20 +11856,16 @@ func NewABitOfEverythingServiceCustomRequest(server string, uuid string, params 
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -12080,52 +11932,40 @@ func NewABitOfEverythingServiceCustomRequest(server string, uuid string, params 
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
@@ -12856,20 +12696,16 @@ func NewABitOfEverythingServiceDoubleColonRequest(server string, uuid string, pa
 
 		}
 
-		if params.RequiredStringViaFieldBehaviorAnnotation != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", *params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringViaFieldBehaviorAnnotation", params.RequiredStringViaFieldBehaviorAnnotation, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.OutputOnlyStringViaFieldBehaviorAnnotation != nil {
@@ -12936,52 +12772,40 @@ func NewABitOfEverythingServiceDoubleColonRequest(server string, uuid string, pa
 
 		}
 
-		if params.RequiredStringField1 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", *params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField1", params.RequiredStringField1, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredStringField2 != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", *params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "requiredStringField2", params.RequiredStringField2, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
-		if params.RequiredFieldBehaviorJsonNameCustom != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", *params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "required_field_behavior_json_name_custom", params.RequiredFieldBehaviorJsonNameCustom, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
 				}
 			}
-
 		}
 
 		if params.RequiredFieldSchemaJsonNameCustom != nil {
