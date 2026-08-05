@@ -418,9 +418,6 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
-	if req.Body != nil {
-		_, _  = io.Copy(io.Discard, req.Body)
-	}
 	{{- end }}
 	{{- if $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
@@ -442,9 +439,6 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
-	if req.Body != nil {
-		_, _  = io.Copy(io.Discard, req.Body)
-	}
 	{{- if $UseOpaqueAPI }}
 	if !protoReq.Has{{ .FieldMaskField }}() || len(protoReq.Get{{ .FieldMaskField }}().GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Get{{ .GetBodyFieldStructName }}()); err != nil {
@@ -463,10 +457,6 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	}
 	{{- end }}
 	{{- end }}
-{{- else }}
-	if req.Body != nil {
-		_, _  = io.Copy(io.Discard, req.Body)
-	}
 {{- end }}
 {{- if .PathParams }}
 	{{- $binding := . }}
@@ -533,6 +523,9 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{- end }}
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
 {{- if .Method.GetServerStreaming }}
 	stream, err := client.{{ .Method.GetName }}(ctx, &protoReq)
 	if err != nil {
