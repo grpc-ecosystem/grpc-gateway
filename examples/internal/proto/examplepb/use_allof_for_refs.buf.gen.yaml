@@ -4,3 +4,4 @@ plugins:
     out: .
     opt:
       - use_allof_for_refs=true
+      - proto3_optional_nullable=true

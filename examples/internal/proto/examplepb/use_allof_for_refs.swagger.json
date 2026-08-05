@@ -7,7 +7,7 @@
   "tags": [
     {
       "name": "UseAllOfForRefsService",
-      "description": "UseAllOfForRefsService demonstrates the use_allof_for_refs option.\n\nWhen that option is enabled, a field that is a message reference normally\nrenders as a bare \"$ref\". Per the JSON Reference syntax any sibling members\nof a \"$ref\" are ignored, so the field is instead wrapped in an \"allOf\" to\npreserve its title, description and OpenAPI extensions next to the ref."
+      "description": "UseAllOfForRefsService demonstrates the use_allof_for_refs option.\n\nWhen that option is enabled, a field that is a message reference normally\nrenders as a bare \"$ref\". Per the JSON Reference syntax any sibling members\nof a \"$ref\" are ignored, so the field is instead wrapped in an \"allOf\" to\npreserve its title, description and OpenAPI extensions next to the ref.\n\nThis example also enables proto3_optional_nullable. Proto3 optional message\nfields must keep x-nullable alongside the allOf wrapper."
     }
   ],
   "consumes": [
@@ -71,6 +71,23 @@
             }
           ],
           "x-person-role": "colleague"
+        },
+        "mentor": {
+          "x-nullable": true,
+          "description": "An optional mentor.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/examplepbPerson"
+            }
+          ]
+        },
+        "neighbor": {
+          "x-nullable": true,
+          "allOf": [
+            {
+              "$ref": "#/definitions/examplepbPerson"
+            }
+          ]
         }
       }
     },
