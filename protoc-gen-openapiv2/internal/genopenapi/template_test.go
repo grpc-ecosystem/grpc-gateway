@@ -4411,6 +4411,14 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 	}
 }
 
+func TestPartsToOpenAPIPathVerbSuffix(t *testing.T) {
+	got := partsToOpenAPIPath([]string{"/v1", "{name}", ":customMethod", ""}, nil)
+	want := "/v1/{name}:customMethod/"
+	if got != want {
+		t.Fatalf("partsToOpenAPIPath() = %q, want %q", got, want)
+	}
+}
+
 func TestTemplateToOpenAPIPath(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -4432,6 +4440,8 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 		{"/{user.name=prefix/*}:customMethod", "/{user.name}:customMethod"},
 		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name}:customMethod"},
 		{"/{parent=prefix/*}/children:customMethod", "/{parent}/children:customMethod"},
+		{"/{name=prefix/*}/:customMethod", "/{name}/:customMethod"},
+		{"/foo/:bar", "/foo/:bar"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
