@@ -1,6 +1,7 @@
 ---
 layout: default
-title: Mapping
-nav_order: 2
-has_children: true
+title: Binary file downloads
+nav_order: 4
+parent: Mapping
+permalink: /docs/mapping/binary_file_downloads/
 ---
