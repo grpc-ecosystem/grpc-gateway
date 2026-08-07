@@ -72,11 +72,6 @@ type EchoServiceEcho3Params struct {
 	// Lang.
 	Lang string
 
-	// LineNum.
-	//
-	// Format: int64
-	LineNum *string
-
 	// NIDnID.
 	NIDnID *string
 
@@ -191,17 +186,6 @@ func (o *EchoServiceEcho3Params) WithLang(lang string) *EchoServiceEcho3Params {
 // SetLang adds the lang to the echo service echo3 params
 func (o *EchoServiceEcho3Params) SetLang(lang string) {
 	o.Lang = lang
-}
-
-// WithLineNum adds the lineNum to the echo service echo3 params
-func (o *EchoServiceEcho3Params) WithLineNum(lineNum *string) *EchoServiceEcho3Params {
-	o.SetLineNum(lineNum)
-	return o
-}
-
-// SetLineNum adds the lineNum to the echo service echo3 params
-func (o *EchoServiceEcho3Params) SetLineNum(lineNum *string) {
-	o.LineNum = lineNum
 }
 
 // WithNIDnID adds the nIDnID to the echo service echo3 params
@@ -325,23 +309,6 @@ func (o *EchoServiceEcho3Params) WriteToRequest(r runtime.ClientRequest, reg str
 	// path param lang
 	if err := r.SetPathParam("lang", o.Lang); err != nil {
 		return err
-	}
-
-	if o.LineNum != nil {
-
-		// query param lineNum
-		var qrLineNum string
-
-		if o.LineNum != nil {
-			qrLineNum = *o.LineNum
-		}
-		qLineNum := qrLineNum
-		if qLineNum != "" {
-
-			if err := r.SetQueryParam("lineNum", qLineNum); err != nil {
-				return err
-			}
-		}
 	}
 
 	if o.NIDnID != nil {

@@ -181,6 +181,12 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 			continue
 		}
 
+		// When a path parameter is set to a oneof field, we want to skip the other
+		// fields in the oneof group.
+		if isPathSameOneOf(pathParams, field) {
+			continue
+		}
+
 		if !isVisible(getFieldVisibilityOption(field), reg) {
 			continue
 		}
@@ -195,6 +201,37 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 		params = append(params, p...)
 	}
 	return params, nil
+}
+
+// isPathSameOneOf returns true if the given field is a member of a oneof group of
+// which another member is already bound to a path parameter. Only one member of a
+// oneof group can be set at a time, so the remaining members can never be
+// populated through the query string.
+func isPathSameOneOf(pathParams []descriptor.Parameter, field *descriptor.Field) bool {
+	if field.OneofIndex == nil {
+		return false
+	}
+
+	for _, pathParam := range pathParams {
+		if len(pathParam.FieldPath) == 0 {
+			continue
+		}
+
+		// Only the first component of the path parameter is a field of the same
+		// message as field, so that is the only level at which the oneof indices
+		// are comparable. Oneof indices are only unique within their containing
+		// message.
+		target := pathParam.FieldPath[0].Target
+		if target == nil || target == field || target.OneofIndex == nil {
+			continue
+		}
+
+		if *target.OneofIndex == *field.OneofIndex {
+			return true
+		}
+	}
+
+	return false
 }
 
 func isBodySameOneOf(body *descriptor.Body, field *descriptor.Field) bool {
