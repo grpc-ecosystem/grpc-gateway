@@ -672,6 +672,443 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
+// TestMessageToQueryParametersWithOneOfPathParams checks that when a member of a
+// oneof group is bound to a path parameter, the other members of that same group
+// are not emitted as query parameters, while oneof groups in nested messages are
+// left untouched.
+func TestMessageToQueryParametersWithOneOfPathParams(t *testing.T) {
+	// simpleMessageDescs mirrors the SimpleMessage/Embedded pair used by the echo
+	// service example, which is the canonical reproduction of the reported issue.
+	simpleMessageDescs := func() []*descriptorpb.DescriptorProto {
+		return []*descriptorpb.DescriptorProto{
+			{
+				Name: proto.String("Embedded"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:       proto.String("progress"),
+						Type:       descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+						Number:     proto.Int32(1),
+						OneofIndex: proto.Int32(0),
+					},
+					{
+						Name:       proto.String("note"),
+						Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+						Number:     proto.Int32(2),
+						OneofIndex: proto.Int32(0),
+					},
+				},
+				OneofDecl: []*descriptorpb.OneofDescriptorProto{
+					{Name: proto.String("mark")},
+				},
+			},
+			{
+				Name: proto.String("SimpleMessage"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:   proto.String("id"),
+						Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+						Number: proto.Int32(1),
+					},
+					{
+						Name:   proto.String("num"),
+						Type:   descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+						Number: proto.Int32(2),
+					},
+					{
+						Name:       proto.String("line_num"),
+						Type:       descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+						Number:     proto.Int32(3),
+						OneofIndex: proto.Int32(0),
+					},
+					{
+						Name:       proto.String("lang"),
+						Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+						Number:     proto.Int32(4),
+						OneofIndex: proto.Int32(0),
+					},
+					{
+						Name:     proto.String("status"),
+						Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+						TypeName: proto.String(".example.Embedded"),
+						Number:   proto.Int32(5),
+					},
+					{
+						Name:       proto.String("en"),
+						Type:       descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+						Number:     proto.Int32(6),
+						OneofIndex: proto.Int32(1),
+					},
+					{
+						Name:       proto.String("no"),
+						Type:       descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+						TypeName:   proto.String(".example.Embedded"),
+						Number:     proto.Int32(7),
+						OneofIndex: proto.Int32(1),
+					},
+					{
+						Name:   proto.String("resource_id"),
+						Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+						Number: proto.Int32(8),
+					},
+				},
+				OneofDecl: []*descriptorpb.OneofDescriptorProto{
+					{Name: proto.String("code")},
+					{Name: proto.String("ext")},
+				},
+			},
+		}
+	}
+
+	type test struct {
+		Descr string
+		// PathParams are dotted proto field paths, as they appear in the URL template.
+		PathParams []string
+		MsgDescs   []*descriptorpb.DescriptorProto
+		Message    string
+		Params     []openapiParameterObject
+		// Proto3 marks the file syntax explicitly, which is required for
+		// descriptors that use proto3 optional semantics.
+		Proto3 bool
+	}
+
+	tests := []test{
+		{
+			Descr:      "oneof sibling of a path parameter is omitted",
+			PathParams: []string{"lang"},
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("id"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:       proto.String("line_num"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+							Number:     proto.Int32(2),
+							OneofIndex: proto.Int32(0),
+						},
+						{
+							Name:       proto.String("lang"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:     proto.Int32(3),
+							OneofIndex: proto.Int32(0),
+						},
+					},
+					OneofDecl: []*descriptorpb.OneofDescriptorProto{
+						{Name: proto.String("code")},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "id",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+		{
+			// Regression test: oneof indices are only unique within their
+			// containing message, so a path parameter on SimpleMessage's oneof
+			// "code" (index 0) must not strip Embedded's oneof "mark" (also
+			// index 0) out of the nested query parameters.
+			Descr:      "oneof groups of nested messages are unaffected",
+			PathParams: []string{"id", "num", "lang"},
+			MsgDescs:   simpleMessageDescs(),
+			Message:    "SimpleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "status.progress",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "status.note",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				{
+					Name:     "en",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "no.progress",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "no.note",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				{
+					Name:     "resource_id",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+		{
+			Descr:      "nested path parameter omits only its own oneof sibling",
+			PathParams: []string{"id.hex"},
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ObjectID"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("hex"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:   proto.String("extra"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:       proto.String("id"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName:   proto.String(".example.ObjectID"),
+							Number:     proto.Int32(1),
+							OneofIndex: proto.Int32(0),
+						},
+						{
+							Name:       proto.String("slug"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:     proto.Int32(2),
+							OneofIndex: proto.Int32(0),
+						},
+					},
+					OneofDecl: []*descriptorpb.OneofDescriptorProto{
+						{Name: proto.String("article_id")},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "id.extra",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+		{
+			Descr:      "path parameter outside a oneof keeps every oneof member",
+			PathParams: []string{"id"},
+			MsgDescs:   simpleMessageDescs(),
+			Message:    "SimpleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "num",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "line_num",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "lang",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				{
+					Name:     "status.progress",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "status.note",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				{
+					Name:     "en",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "no.progress",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "int64",
+				},
+				{
+					Name:     "no.note",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				{
+					Name:     "resource_id",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+		{
+			// proto3 optional fields are modelled as synthetic single-member
+			// oneofs, each with its own index, so they must not affect each other.
+			Descr:      "proto3 optional path parameter keeps the other optional fields",
+			PathParams: []string{"a"},
+			Proto3:     true,
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:           proto.String("a"),
+							Type:           descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:         proto.Int32(1),
+							Proto3Optional: proto.Bool(true),
+							OneofIndex:     proto.Int32(0),
+						},
+						{
+							Name:           proto.String("b"),
+							Type:           descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:         proto.Int32(2),
+							Proto3Optional: proto.Bool(true),
+							OneofIndex:     proto.Int32(1),
+						},
+					},
+					OneofDecl: []*descriptorpb.OneofDescriptorProto{
+						{Name: proto.String("_a")},
+						{Name: proto.String("_b")},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "b",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Descr, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			msgs := []*descriptor.Message{}
+			for _, msgdesc := range test.MsgDescs {
+				msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+			}
+			fileDesc := &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			}
+			if test.Proto3 {
+				fileDesc.Syntax = proto.String("proto3")
+			}
+			file := descriptor.File{
+				FileDescriptorProto: fileDesc,
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: msgs,
+			}
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{
+				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+			})
+			if err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
+
+			message, err := reg.LookupMsg("", ".example."+test.Message)
+			if err != nil {
+				t.Fatalf("failed to lookup message: %s", err)
+			}
+
+			pathParams := make([]descriptor.Parameter, 0, len(test.PathParams))
+			for _, path := range test.PathParams {
+				current := message
+				var components []descriptor.FieldPathComponent
+				for i, name := range strings.Split(path, ".") {
+					var target *descriptor.Field
+					for _, f := range current.Fields {
+						if f.GetName() == name {
+							target = f
+							break
+						}
+					}
+					if target == nil {
+						t.Fatalf("failed to resolve path parameter %q: no field %q", path, name)
+					}
+					components = append(components, descriptor.FieldPathComponent{Name: name, Target: target})
+					if i != len(strings.Split(path, "."))-1 {
+						current, err = reg.LookupMsg("", target.GetTypeName())
+						if err != nil {
+							t.Fatalf("failed to resolve path parameter %q: %s", path, err)
+						}
+					}
+				}
+				pathParams = append(pathParams, descriptor.Parameter{
+					FieldPath: components,
+					Target:    components[len(components)-1].Target,
+				})
+			}
+
+			params, err := messageToQueryParameters(message, reg, pathParams, nil, "")
+			if err != nil {
+				t.Fatalf("failed to convert message to query parameters: %s", err)
+			}
+			// avoid checking Items for array types
+			for i := range params {
+				params[i].Items = nil
+			}
+			if !reflect.DeepEqual(params, test.Params) {
+				t.Errorf("expected %v, got %v", test.Params, params)
+			}
+		})
+	}
+}
+
 // TestMessageToQueryParametersNoRecursive, is a check that cyclical references between messages
 // are not falsely detected given previous known edge-cases.
 func TestMessageToQueryParametersNoRecursive(t *testing.T) {
