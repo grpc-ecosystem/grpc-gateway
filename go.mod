@@ -7,7 +7,7 @@ require (
 	github.com/go-openapi/runtime v0.33.0
 	github.com/go-openapi/strfmt v0.27.0
 	github.com/go-openapi/swag v0.28.0
-	github.com/go-openapi/validate v0.26.2
+	github.com/go-openapi/validate v0.26.3
 	github.com/google/go-cmp v0.7.0
 	github.com/oapi-codegen/runtime v1.6.0
 	github.com/rogpeppe/fastuuid v1.2.0

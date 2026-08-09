@@ -62,8 +62,8 @@ github.com/go-openapi/testify/enable/yaml/v2 v2.6.0 h1:gGHwAJ0R/5jU8BEGDbfRNR3hL
 github.com/go-openapi/testify/enable/yaml/v2 v2.6.0/go.mod h1:tY+St1SGq4NFl0QIqdTY4aEdbChAHxhyB77XQi9iJCo=
 github.com/go-openapi/testify/v2 v2.6.0 h1:5PKH2HE7YJ/LuRPQGvSxBRlFXNQhSetBLlGAgUEu3ug=
 github.com/go-openapi/testify/v2 v2.6.0/go.mod h1:SgsVHtfooshd0tublTtJ50FPKhujf47YRqauXXOUxfw=
-github.com/go-openapi/validate v0.26.2 h1:Wa+FQZxY5kl4fjQi2qVfdZK0vXSRv1q9swRBcCn0TXk=
-github.com/go-openapi/validate v0.26.2/go.mod h1:XyZHVJRGcJrDducM1Ex37+bSrUGSP+CmZ3l5deNKUqM=
+github.com/go-openapi/validate v0.26.3 h1:OkfZgLvLDnGP2hrRGD+42WBiPWWkoHomTJ+IVI+KaDc=
+github.com/go-openapi/validate v0.26.3/go.mod h1:7DOOa4raU6NRe7A8VQSKbm3VcuUIioREYHFt+er9Sk8=
 github.com/go-viper/mapstructure/v2 v2.5.0 h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro=
 github.com/go-viper/mapstructure/v2 v2.5.0/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
 github.com/golang/protobuf v1.5.4 h1:i7eJL8qZTpSEXOPTxNKhASYpMn+8e5Q6AdndVa1dWek=
