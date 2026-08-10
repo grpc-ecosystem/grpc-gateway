@@ -117,7 +117,7 @@
           "type": "string"
         }
       },
-      "additionalProperties": {},
+      "additionalProperties": true,
       "required": [
         "typeUrl",
         "value"
