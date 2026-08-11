@@ -120,6 +120,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		for _, m := range svc.Methods {
 			imports = append(imports, g.addEnumPathParamImports(file, m, pkgSeen)...)
 			imports = append(imports, g.addBodyFieldImports(file, m, pkgSeen)...)
+			imports = append(imports, g.addResponseTypeImports(file, m, pkgSeen)...)
 			pkg := m.RequestType.File.GoPkg
 			if len(m.Bindings) == 0 ||
 				pkg == file.GoPkg || pkgSeen[pkg.Path] {
@@ -159,6 +160,23 @@ func (g *generator) addEnumPathParamImports(file *descriptor.File, m *descriptor
 			pkgSeen[pkg.Path] = true
 			imports = append(imports, pkg)
 		}
+	}
+	return imports
+}
+
+// addResponseTypeImports adds the response type's Go package for response_body bindings.
+func (g *generator) addResponseTypeImports(file *descriptor.File, m *descriptor.Method, pkgSeen map[string]bool) []descriptor.GoPackage {
+	var imports []descriptor.GoPackage
+	for _, b := range m.Bindings {
+		if b.ResponseBody == nil {
+			continue
+		}
+		pkg := m.ResponseType.File.GoPkg
+		if pkg == file.GoPkg || pkgSeen[pkg.Path] {
+			continue
+		}
+		pkgSeen[pkg.Path] = true
+		imports = append(imports, pkg)
 	}
 	return imports
 }

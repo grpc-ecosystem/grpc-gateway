@@ -1,6 +1,9 @@
 package gengateway
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -156,6 +159,124 @@ func TestAddBodyFieldImportsOpaqueOnly(t *testing.T) {
 	if imports[0].Path != bookMessage.File.GoPkg.Path {
 		t.Fatalf("import path mismatch: got %q want %q", imports[0].Path, bookMessage.File.GoPkg.Path)
 	}
+}
+
+func TestGenerateResponseBodyImportsResponseTypePackage(t *testing.T) {
+	const responsePkg = "example.com/sub"
+
+	for _, tc := range []struct {
+		name         string
+		responseBody bool
+		wantImport   bool
+	}{
+		{name: "ResponseBodySet", responseBody: true, wantImport: true},
+		{name: "ResponseBodyUnset", responseBody: false, wantImport: false},
+	} {
+		for _, useOpaqueAPI := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%s/UseOpaqueAPI=%t", tc.name, useOpaqueAPI), func(t *testing.T) {
+				reg, file := buildResponseBodyImportTestFile(t)
+				m := file.Services[0].Methods[0]
+				binding := &descriptor.Binding{HTTPMethod: "GET"}
+				if tc.responseBody {
+					nameField := m.ResponseType.Fields[0]
+					binding.ResponseBody = &descriptor.Body{
+						FieldPath: descriptor.FieldPath{
+							{Name: nameField.GetName(), Target: nameField},
+						},
+					}
+				}
+				m.Bindings = []*descriptor.Binding{binding}
+				crossLinkFixture(file)
+
+				g := New(reg, false, "Handler", false, false, useOpaqueAPI)
+				result, err := g.Generate([]*descriptor.File{file})
+				if err != nil {
+					t.Fatalf("failed to generate stubs: %v", err)
+				}
+				if len(result) != 1 {
+					t.Fatalf("expected to generate one file, got: %d", len(result))
+				}
+
+				got := strings.Contains(result[0].GetContent(), strconv.Quote(responsePkg))
+				if got != tc.wantImport {
+					t.Errorf("import of %q present = %t, want %t\n%s", responsePkg, got, tc.wantImport, result[0].GetContent())
+				}
+			})
+		}
+	}
+}
+
+func buildResponseBodyImportTestFile(t *testing.T) (*descriptor.Registry, *descriptor.File) {
+	t.Helper()
+
+	subFile := &descriptorpb.FileDescriptorProto{
+		Name:    proto.String("sub.proto"),
+		Package: proto.String("example.sub"),
+		Syntax:  proto.String("proto3"),
+		Options: &descriptorpb.FileOptions{
+			GoPackage: proto.String("example.com/sub;subpb"),
+		},
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: proto.String("Book"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:   proto.String("name"),
+						Number: proto.Int32(1),
+						Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+						Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					},
+				},
+			},
+		},
+	}
+
+	mainFile := &descriptorpb.FileDescriptorProto{
+		Name:       proto.String("svc.proto"),
+		Package:    proto.String("example.svc"),
+		Syntax:     proto.String("proto3"),
+		Dependency: []string{"sub.proto"},
+		Options: &descriptorpb.FileOptions{
+			GoPackage: proto.String("example.com/svc;svcpb"),
+		},
+		MessageType: []*descriptorpb.DescriptorProto{
+			{
+				Name: proto.String("GetBookRequest"),
+			},
+		},
+		Service: []*descriptorpb.ServiceDescriptorProto{
+			{
+				Name: proto.String("LibraryService"),
+				Method: []*descriptorpb.MethodDescriptorProto{
+					{
+						Name:       proto.String("GetBook"),
+						InputType:  proto.String(".example.svc.GetBookRequest"),
+						OutputType: proto.String(".example.sub.Book"),
+					},
+				},
+			},
+		},
+	}
+
+	req := &pluginpb.CodeGeneratorRequest{
+		ProtoFile:      []*descriptorpb.FileDescriptorProto{subFile, mainFile},
+		FileToGenerate: []string{"svc.proto"},
+		CompilerVersion: &pluginpb.Version{
+			Major: proto.Int32(3),
+			Minor: proto.Int32(21),
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load failed: %v", err)
+	}
+
+	file, err := reg.LookupFile("svc.proto")
+	if err != nil {
+		t.Fatalf("lookup svc file: %v", err)
+	}
+	return reg, crossLinkFixture(file)
 }
 
 func buildBodyImportTestFile(t *testing.T) (*descriptor.Registry, *descriptor.File) {

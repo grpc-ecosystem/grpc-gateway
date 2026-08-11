@@ -10,6 +10,7 @@ go_library(
         "examplepb_response_body_out_response.go",
         "examplepb_response_body_value.go",
         "google_rpc_status.go",
+        "proto_sub2_status.go",
         "protobuf_any.go",
         "response_response_type.go",
     ],

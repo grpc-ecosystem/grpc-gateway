@@ -4,6 +4,8 @@ go_library(
     name = "response_body_service",
     srcs = [
         "response_body_service_client.go",
+        "response_body_service_get_response_body_imported_type_parameters.go",
+        "response_body_service_get_response_body_imported_type_responses.go",
         "response_body_service_get_response_body_parameters.go",
         "response_body_service_get_response_body_responses.go",
         "response_body_service_get_response_body_same_name_parameters.go",

@@ -50,6 +50,36 @@
         ]
       }
     },
+    "/responsebody/importedtype/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_GetResponseBodyImportedType",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googleRpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
     "/responsebody/samename/{data}": {
       "get": {
         "operationId": "ResponseBodyService_GetResponseBodySameName",
@@ -274,6 +304,22 @@
         }
       },
       "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https://cloud.google.com/apis/design/errors)."
+    },
+    "protoSub2Status": {
+      "type": "object",
+      "properties": {
+        "errorCode": {
+          "type": "string"
+        },
+        "errorMessage": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "Status message in sub2 package (different structure from sub.Status)"
     },
     "protobufAny": {
       "type": "object",
