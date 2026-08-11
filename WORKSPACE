@@ -27,9 +27,9 @@ py_repositories()
 
 http_archive(
     name = "com_google_googletest",
-    sha256 = "40d4ec942217dcc84a9ebe2a68584ada7d4a33a8ee958755763278ea1c5e18ff",
-    strip_prefix = "googletest-1.17.0",
-    urls = ["https://github.com/google/googletest/archive/v1.17.0.zip"],
+    sha256 = "63b9c77751a5b8f492486005f67533fdc58682b67476fcb91650be5958d5195a",
+    strip_prefix = "googletest-1.18.0",
+    urls = ["https://github.com/google/googletest/archive/v1.18.0.zip"],
 )
 
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
