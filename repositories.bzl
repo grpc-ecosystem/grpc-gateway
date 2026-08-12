@@ -2542,8 +2542,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_mod",
         importpath = "golang.org/x/mod",
-        sum = "h1:vF1DjpVEshcIqoEaauuHebaLk1O1forxjxBaVn884JQ=",
-        version = "v0.37.0",
+        sum = "h1:MECBjubtXD7yj4HrhIUcywNaGeNVUdfVnxmPajOk4yk=",
+        version = "v0.38.0",
     )
     go_repository(
         name = "org_golang_x_net",
@@ -2578,8 +2578,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_text",
         importpath = "golang.org/x/text",
-        sum = "h1:Ub2Z6/xjgF1WrYQz2nuITOEegKFtiIy+rieRJ5lHZKs=",
-        version = "v0.40.0",
+        sum = "h1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=",
+        version = "v0.41.0",
     )
     go_repository(
         name = "org_golang_x_time",
@@ -2590,8 +2590,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_tools",
         importpath = "golang.org/x/tools",
-        sum = "h1:7Kn5x/d1svx/PzryTsqeoZN4TZwqeH5pGWjefhLi/1Q=",
-        version = "v0.47.0",
+        sum = "h1:3+hClM1aLL5mjMKm5ovokw9epgRXPuu2tILgismM6RE=",
+        version = "v0.48.0",
     )
     go_repository(
         name = "org_golang_x_xerrors",
