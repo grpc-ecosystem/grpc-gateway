@@ -437,6 +437,15 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 	if extDocs["url"] != "https://example.com/external" {
 		t.Errorf("externalDocs mismatch: %v", extDocs)
 	}
+	// 1a. Document-level and info-level extensions render as top-level "x-*"
+	// keys on the document and info objects respectively.
+	if doc["x-api-id"] != "abc-123" {
+		t.Errorf("doc[x-api-id]: want %q, got %v", "abc-123", doc["x-api-id"])
+	}
+	infoLogo, _ := info["x-logo"].(map[string]any)
+	if infoLogo["url"] != "https://example.com/logo.png" {
+		t.Errorf("info[x-logo]: want logo url, got %v", info["x-logo"])
+	}
 
 	// 2. Method-level openapiv3_operation overrides summary/description,
 	// replaces tags with the annotated list, sets operationId and externalDocs,
@@ -475,6 +484,15 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 	if opServer["url"] != "https://api.example.com/widgets" || opServer["description"] != "Widget shard." {
 		t.Errorf("operation.servers[0] mismatch: %v", opServer)
 	}
+	// 2a. A valid "x-*" extension on the operation renders inline; an entry
+	// whose key is missing the "x-" prefix is dropped rather than failing
+	// generation.
+	if got, want := op["x-rate-limit"], float64(100); got != want {
+		t.Errorf("operation[x-rate-limit]: want %v, got %v", want, got)
+	}
+	if _, ok := op["rate-limit-invalid"]; ok {
+		t.Errorf("operation: extension key without \"x-\" prefix must be dropped, got %v", op["rate-limit-invalid"])
+	}
 
 	// 3. Message-level openapiv3_schema sets title and description on the
 	// Widget component schema.
@@ -489,6 +507,9 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 	}
 	if widget["description"] != "A widget, annotated." {
 		t.Errorf("Widget.description: want annotated value, got %v", widget["description"])
+	}
+	if got, want := widget["x-internal"], true; got != want {
+		t.Errorf("Widget[x-internal]: want %v, got %v", want, got)
 	}
 
 	detail, _ := schemas["ann.v1.WidgetDetail"].(map[string]any)
@@ -509,6 +530,9 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 	countProp, _ := widgetProps["count"].(map[string]any)
 	if countProp["title"] != "Count" {
 		t.Errorf("Widget.count.title: want annotated value, got %v", countProp["title"])
+	}
+	if countProp["x-count-unit"] != "items" {
+		t.Errorf("Widget.count[x-count-unit]: want %q, got %v", "items", countProp["x-count-unit"])
 	}
 
 	// 5. Field annotation on a $ref-typed field (detail) carries description
@@ -580,6 +604,26 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 		t.Errorf("Widget.legacyRef.allOf[0]: want $ref to WidgetDetail, got %v", legacyRefEntry)
 	}
 
+	// 7c. A field annotation that sets only `extensions` on a $ref-typed
+	// field forces an allOf wrapper too — extensions can't sit as a $ref
+	// sibling any more than title or deprecated can — and the extension
+	// itself renders on the wrapper.
+	extendedProp, _ := widgetProps["extended"].(map[string]any)
+	if _, isDirectRef := extendedProp["$ref"]; isDirectRef {
+		t.Errorf("Widget.extended: want allOf wrapper since annotation sets extensions, got bare $ref: %v", extendedProp)
+	}
+	if extendedProp["x-extra"] != "field-level extension" {
+		t.Errorf("Widget.extended[x-extra]: want annotated value on wrapper, got %v", extendedProp["x-extra"])
+	}
+	extendedAllOf, _ := extendedProp["allOf"].([]any)
+	if len(extendedAllOf) != 1 {
+		t.Fatalf("Widget.extended.allOf: want 1 entry, got %v", extendedProp["allOf"])
+	}
+	extendedEntry, _ := extendedAllOf[0].(map[string]any)
+	if extendedEntry["$ref"] != "#/components/schemas/ann.v1.WidgetDetail" {
+		t.Errorf("Widget.extended.allOf[0]: want $ref to WidgetDetail, got %v", extendedEntry)
+	}
+
 	// 8. Document-level tags merge with service-derived tags. The fixture
 	// declares three tags ("Widgets", "Inventory", "WidgetService"); the
 	// last collides with the service name and must suppress the default
@@ -627,6 +671,11 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 	widgetsExt, _ := widgetsTag["externalDocs"].(map[string]any)
 	if widgetsExt["url"] != "https://example.com/docs/widgets" {
 		t.Errorf("doc.tags[Widgets].externalDocs: want annotated URL, got %v", widgetsExt)
+	}
+	// The "Inventory" tag carries an "x-*" extension from the annotation.
+	inventoryTag := byName["Inventory"]
+	if inventoryTag["x-tag-color"] != "blue" {
+		t.Errorf("doc.tags[Inventory][x-tag-color]: want %q, got %v", "blue", inventoryTag["x-tag-color"])
 	}
 }
 

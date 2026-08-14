@@ -2,10 +2,15 @@ package genopenapi
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
+	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 // Annotation lookups. Each returns (nil, false) when the extension is not
@@ -56,6 +61,37 @@ func fieldSchemaAnnotation(field *descriptor.Field) (*options.Schema, bool) {
 	return s, true
 }
 
+// processExtensions converts a proto options extensions map (as attached to
+// openapiv3_document, openapiv3_operation, openapiv3_schema, and
+// openapiv3_field annotations) into the sorted, JSON-ready form the
+// generator's internal types render inline.
+//
+// Per the OpenAPI 3.1.0 spec, extension keys must start with "x-"; an entry
+// that doesn't is dropped with a log line rather than failing generation,
+// consistent with how this generator degrades other malformed annotation
+// input (e.g. an unresolvable field type) elsewhere. where identifies the
+// annotation site in that log line, e.g. "openapiv3_operation".
+func processExtensions(where string, exts map[string]*structpb.Value) []extension {
+	if len(exts) == 0 {
+		return nil
+	}
+	out := make([]extension, 0, len(exts))
+	for k, v := range exts {
+		if !strings.HasPrefix(k, "x-") {
+			grpclog.Infof("protoc-gen-openapiv3: %s extension key %q does not start with \"x-\"; skipping", where, k)
+			continue
+		}
+		data, err := protojson.Marshal(v)
+		if err != nil {
+			grpclog.Infof("protoc-gen-openapiv3: %s extension %q: %v; skipping", where, k, err)
+			continue
+		}
+		out = append(out, extension{key: k, value: data})
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].key < out[j].key })
+	return out
+}
+
 // applyDocumentOverride applies file-level Document overrides onto the
 // generated OpenAPI document. Non-empty fields replace defaults; empty fields
 // leave the current value untouched. Returns an error if the annotation is
@@ -99,6 +135,7 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 				URL:        l.GetUrl(),
 			}
 		}
+		doc.Info.Extensions = processExtensions("openapiv3_document.info", info.GetExtensions())
 	}
 	for i, s := range d.GetServers() {
 		if err := validateServer(s); err != nil {
@@ -135,8 +172,10 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 				URL:         ed.GetUrl(),
 			}
 		}
+		tag.Extensions = processExtensions(fmt.Sprintf("openapiv3_document.tags[%d]", i), t.GetExtensions())
 		doc.Tags = append(doc.Tags, tag)
 	}
+	doc.Extensions = processExtensions("openapiv3_document", d.GetExtensions())
 	return nil
 }
 
@@ -203,6 +242,7 @@ func applyOperationOverride(op *Operation, o *options.Operation) error {
 			Description: s.GetDescription(),
 		})
 	}
+	op.Extensions = processExtensions("openapiv3_operation", o.GetExtensions())
 	return nil
 }
 
@@ -221,6 +261,11 @@ func applySchemaBodyOverride(s *Schema, o *options.Schema) {
 		s.Title = v
 	}
 	s.Deprecated = s.Deprecated || o.GetDeprecated()
+	if len(o.GetExtensions()) > 0 {
+		// Shared by openapiv3_schema (message-level) and openapiv3_field
+		// (field-level) annotations; the generic label covers both.
+		s.Extensions = processExtensions("openapiv3_schema/openapiv3_field", o.GetExtensions())
+	}
 }
 
 // applyMessageSchemaOverride applies a message-level Schema annotation onto
@@ -236,13 +281,13 @@ func applyMessageSchemaOverride(s *Schema, o *options.Schema) {
 }
 
 // annotationNeedsSchemaBody reports whether a field annotation sets anything
-// that cannot be expressed as a $ref sibling in OpenAPI 3.1.0. `title` and
-// `deprecated` both require a real schema body; `description` can sit as a
-// $ref sibling directly. Used by propertySchema to decide when a referenced
-// field needs an allOf wrapper.
+// that cannot be expressed as a $ref sibling in OpenAPI 3.1.0. `title`,
+// `deprecated`, and `extensions` all require a real schema body;
+// `description` can sit as a $ref sibling directly. Used by propertySchema
+// to decide when a referenced field needs an allOf wrapper.
 func annotationNeedsSchemaBody(o *options.Schema) bool {
 	if o == nil {
 		return false
 	}
-	return o.GetTitle() != "" || o.GetDeprecated()
+	return o.GetTitle() != "" || o.GetDeprecated() || len(o.GetExtensions()) > 0
 }

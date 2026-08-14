@@ -8,6 +8,55 @@ import (
 	"sort"
 )
 
+// extension is a single "x-*" OpenAPI specification extension: a key
+// (already validated to start with "x-") paired with its already-marshaled
+// JSON value. See processExtensions in annotations.go for how these are
+// derived from a proto options extensions map.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#specification-extensions
+type extension struct {
+	key   string
+	value json.RawMessage
+}
+
+// marshalWithExtensions marshals v (typically a type-aliased copy of a
+// struct so its own MarshalJSON is not re-entered) and splices the given
+// extensions into the resulting JSON object as additional top-level
+// "x-*" keys. extensions must already be sorted by key; processExtensions
+// guarantees this.
+//
+// This avoids hand-maintaining a parallel struct definition per extension-
+// bearing type: it marshals the real fields via the normal struct tags,
+// then does a small amount of byte-level surgery to append the extension
+// keys before the closing brace.
+func marshalWithExtensions(v any, extensions []extension) ([]byte, error) {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	if len(extensions) == 0 {
+		return data, nil
+	}
+	var buf bytes.Buffer
+	buf.Write(data[:len(data)-1]) // drop the trailing '}'
+	needsComma := len(data) > len("{}")
+	for _, ext := range extensions {
+		if needsComma {
+			buf.WriteByte(',')
+		}
+		needsComma = true
+		key, err := json.Marshal(ext.key)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(key)
+		buf.WriteByte(':')
+		buf.Write(ext.value)
+	}
+	buf.WriteByte('}')
+	return buf.Bytes(), nil
+}
+
 // Document is the root OpenAPI 3.1.0 object.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#openapi-object
@@ -20,6 +69,18 @@ type Document struct {
 	Security     []SecurityRequirement `json:"security,omitempty"`
 	Tags         []*Tag                `json:"tags,omitempty"`
 	ExternalDocs *ExternalDocs         `json:"externalDocs,omitempty"`
+
+	// Extensions holds "x-*" specification extensions set via the
+	// openapiv3_document annotation. Rendered inline at the top level of
+	// the document by MarshalJSON.
+	Extensions []extension `json:"-"`
+}
+
+// MarshalJSON renders the document with any "x-*" extensions inlined at
+// the top level, alongside the regular fields.
+func (d *Document) MarshalJSON() ([]byte, error) {
+	type alias Document
+	return marshalWithExtensions((*alias)(d), d.Extensions)
 }
 
 // NewDocument returns a Document populated with the required fields.
@@ -48,6 +109,18 @@ type Info struct {
 	Contact        *Contact `json:"contact,omitempty"`
 	License        *License `json:"license,omitempty"`
 	Version        string   `json:"version"`
+
+	// Extensions holds "x-*" specification extensions set via the
+	// openapiv3_document annotation's info field. Rendered inline by
+	// MarshalJSON.
+	Extensions []extension `json:"-"`
+}
+
+// MarshalJSON renders the info object with any "x-*" extensions inlined
+// alongside the regular fields.
+func (i *Info) MarshalJSON() ([]byte, error) {
+	type alias Info
+	return marshalWithExtensions((*alias)(i), i.Extensions)
 }
 
 // Contact is the API contact info.
@@ -209,6 +282,17 @@ type Operation struct {
 	Deprecated   bool                  `json:"deprecated,omitempty"`
 	Security     []SecurityRequirement `json:"security,omitempty"`
 	Servers      []*Server             `json:"servers,omitempty"`
+
+	// Extensions holds "x-*" specification extensions set via the
+	// openapiv3_operation annotation. Rendered inline by MarshalJSON.
+	Extensions []extension `json:"-"`
+}
+
+// MarshalJSON renders the operation with any "x-*" extensions inlined
+// alongside the regular fields.
+func (o *Operation) MarshalJSON() ([]byte, error) {
+	type alias Operation
+	return marshalWithExtensions((*alias)(o), o.Extensions)
 }
 
 // Parameter describes one operation parameter.
@@ -440,6 +524,18 @@ type Schema struct {
 	ReadOnly   bool `json:"readOnly,omitempty"`
 	WriteOnly  bool `json:"writeOnly,omitempty"`
 	Deprecated bool `json:"deprecated,omitempty"`
+
+	// Extensions holds "x-*" specification extensions set via an
+	// openapiv3_schema or openapiv3_field annotation. Rendered inline by
+	// MarshalJSON.
+	Extensions []extension `json:"-"`
+}
+
+// MarshalJSON renders the schema with any "x-*" extensions inlined
+// alongside the regular fields.
+func (s *Schema) MarshalJSON() ([]byte, error) {
+	type alias Schema
+	return marshalWithExtensions((*alias)(s), s.Extensions)
 }
 
 // AdditionalProperties is the union of a boolean and a schema. JSON Schema
@@ -618,6 +714,18 @@ type Tag struct {
 	Name         string        `json:"name"`
 	Description  string        `json:"description,omitempty"`
 	ExternalDocs *ExternalDocs `json:"externalDocs,omitempty"`
+
+	// Extensions holds "x-*" specification extensions set via the
+	// openapiv3_document annotation's tags field. Rendered inline by
+	// MarshalJSON.
+	Extensions []extension `json:"-"`
+}
+
+// MarshalJSON renders the tag with any "x-*" extensions inlined alongside
+// the regular fields.
+func (t *Tag) MarshalJSON() ([]byte, error) {
+	type alias Tag
+	return marshalWithExtensions((*alias)(t), t.Extensions)
 }
 
 // ExternalDocs is a link to external documentation.

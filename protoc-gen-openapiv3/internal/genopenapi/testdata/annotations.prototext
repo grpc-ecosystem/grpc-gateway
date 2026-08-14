@@ -42,6 +42,10 @@ proto_file: {
       options: {
         [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
           title: "Count"
+          extensions: {
+            key: "x-count-unit"
+            value: { string_value: "items" }
+          }
         }
       }
     }
@@ -105,10 +109,30 @@ proto_file: {
         }
       }
     }
+    field: {
+      name: "extended"
+      number: 8
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".ann.v1.WidgetDetail"
+      json_name: "extended"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          extensions: {
+            key: "x-extra"
+            value: { string_value: "field-level extension" }
+          }
+        }
+      }
+    }
     options: {
       [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
         title: "Widget"
         description: "A widget, annotated."
+        extensions: {
+          key: "x-internal"
+          value: { bool_value: true }
+        }
       }
     }
   }
@@ -147,6 +171,14 @@ proto_file: {
             url: "https://api.example.com/widgets"
             description: "Widget shard."
           }
+          extensions: {
+            key: "x-rate-limit"
+            value: { number_value: 100 }
+          }
+          extensions: {
+            key: "rate-limit-invalid"
+            value: { string_value: "missing x- prefix, must be skipped" }
+          }
         }
       }
     }
@@ -169,6 +201,17 @@ proto_file: {
           name: "Apache-2.0"
           identifier: "Apache-2.0"
         }
+        extensions: {
+          key: "x-logo"
+          value: {
+            struct_value: {
+              fields: {
+                key: "url"
+                value: { string_value: "https://example.com/logo.png" }
+              }
+            }
+          }
+        }
       }
       servers: {
         url: "https://api.example.com/v1"
@@ -189,10 +232,18 @@ proto_file: {
       tags: {
         name: "Inventory"
         description: "Inventory tracking."
+        extensions: {
+          key: "x-tag-color"
+          value: { string_value: "blue" }
+        }
       }
       tags: {
         name: "WidgetService"
         description: "Override for the service-derived tag."
+      }
+      extensions: {
+        key: "x-api-id"
+        value: { string_value: "abc-123" }
       }
     }
   }
