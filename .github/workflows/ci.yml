@@ -109,7 +109,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.30.0
+      - run: go tool gorelease -base=v2.30.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
