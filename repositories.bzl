@@ -4,8 +4,8 @@ def go_repositories():
     go_repository(
         name = "co_honnef_go_tools",
         importpath = "honnef.co/go/tools",
-        sum = "h1:/hemPrYIhOhy8zYrNj+069zDB68us2sMGsfkFJO0iZs=",
-        version = "v0.0.0-20190523083050-ea95bdfd59fc",
+        sum = "h1:TAODvD3knlq75WCp2nyGJtT4LeRV/o7NN9nYPeVJXf8=",
+        version = "v0.6.0",
     )
     go_repository(
         name = "com_github_alecthomas_template",
@@ -103,8 +103,8 @@ def go_repositories():
     go_repository(
         name = "com_github_burntsushi_toml",
         importpath = "github.com/BurntSushi/toml",
-        sum = "h1:o7IhLm0Msx3BaB+n3Ag7L8EVlByGnpq14C4YWiu/gL8=",
-        version = "v1.3.2",
+        sum = "h1:pxW6RcqyfI9/kWtOwnv/G+AzdKuy2ZrqINhenH4HyNs=",
+        version = "v1.4.1-0.20240526193622-a339e1f7089c",
     )
 
     go_repository(
@@ -1522,7 +1522,6 @@ def go_repositories():
         sum = "h1:tUkIP/BLdKqrlrPwcmH0shwEEhTRHoGnc1wFIWmaBUA=",
         version = "v0.0.5",
     )
-
     go_repository(
         name = "com_github_yuin_goldmark",
         importpath = "github.com/yuin/goldmark",
@@ -2516,8 +2515,14 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_exp",
         importpath = "golang.org/x/exp",
-        sum = "h1:985EYyeCOxTpcgOTJpflJUwOeEz0CQOdPt73OzpE9F8=",
-        version = "v0.0.0-20240404231335-c0f41cb1a7a0",
+        sum = "h1:R84qjqJb5nVJMxqWYb3np9L5ZsaDtB+a39EqjV0JSUM=",
+        version = "v0.0.0-20250408133849-7e4ce0ab07d0",
+    )
+    go_repository(
+        name = "org_golang_x_exp_typeparams",
+        importpath = "golang.org/x/exp/typeparams",
+        sum = "h1:1P7xPZEwZMoBoz0Yze5Nx2/4pxj6nw9ZqHWXqP0iRgQ=",
+        version = "v0.0.0-20231108232855-2478ac86f678",
     )
 
     go_repository(
@@ -2570,6 +2575,12 @@ def go_repositories():
         version = "v0.47.0",
     )
     go_repository(
+        name = "org_golang_x_telemetry",
+        importpath = "golang.org/x/telemetry",
+        sum = "h1:RJhm5l6Fo4rmEIcndxDllNhhf/fAx8qIm4t6A7vpm2A=",
+        version = "v0.0.0-20260708182218-49f421fb7959",
+    )
+    go_repository(
         name = "org_golang_x_term",
         importpath = "golang.org/x/term",
         sum = "h1:NwWyBmoJCbfTHpxrWoZ9C6/VxOf7ic219I8xZZFdrf0=",
@@ -2594,7 +2605,19 @@ def go_repositories():
         version = "v0.48.0",
     )
     go_repository(
-        name = "org_golang_x_xerrors",
+        name = "org_golang_x_tools_go_expect",
+        importpath = "golang.org/x/tools/go/expect",
+        sum = "h1:jpBZDwmgPhXsKZC6WhL20P4b/wmnpsEAGHaNy0n/rJM=",
+        version = "v0.1.1-deprecated",
+    )
+    go_repository(
+        name = "org_golang_x_tools_go_packages_packagestest",
+        importpath = "golang.org/x/tools/go/packages/packagestest",
+        sum = "h1:1h2MnaIAIXISqTFKdENegdpAgUXz6NrPEsbIeWaBRvM=",
+        version = "v0.1.1-deprecated",
+    )
+
+    go_repository(
         importpath = "golang.org/x/xerrors",
         sum = "h1:GGU+dLjvlC3qDwqYgL6UgRmHXhOOgns0bZu2Ty5mm6U=",
         version = "v0.0.0-20220411194840-2f41105eb62f",
