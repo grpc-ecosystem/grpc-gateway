@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package grpc.gateway.examples.internal.proto.examplepb;
 
+import "examples/internal/proto/sub2/message.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
@@ -72,6 +73,13 @@ service ResponseBodyService {
     option (google.api.http) = {
       get: "/responsebody/samename/{data}"
       response_body: "response_body_value"
+    };
+  }
+
+  rpc GetResponseBodyImportedType(ResponseBodyIn) returns (grpc.gateway.examples.internal.proto.sub2.Status) {
+    option (google.api.http) = {
+      get: "/responsebody/importedtype/{data}"
+      response_body: "error_message"
     };
   }
 }

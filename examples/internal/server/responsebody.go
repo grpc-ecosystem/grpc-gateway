@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
 )
 
 // Implements of ResponseBodyServiceServer
@@ -63,5 +64,11 @@ func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn,
 func (s *responseBodyServer) GetResponseBodySameName(ctx context.Context, req *examples.ResponseBodyIn) (*examples.ResponseBodyValue, error) {
 	return &examples.ResponseBodyValue{
 		ResponseBodyValue: req.Data,
+	}, nil
+}
+
+func (s *responseBodyServer) GetResponseBodyImportedType(ctx context.Context, req *examples.ResponseBodyIn) (*sub2.Status, error) {
+	return &sub2.Status{
+		ErrorMessage: req.Data,
 	}, nil
 }

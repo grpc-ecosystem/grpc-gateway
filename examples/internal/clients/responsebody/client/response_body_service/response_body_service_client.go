@@ -53,6 +53,8 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	ResponseBodyServiceGetResponseBody(params *ResponseBodyServiceGetResponseBodyParams, opts ...ClientOption) (*ResponseBodyServiceGetResponseBodyOK, error)
 
+	ResponseBodyServiceGetResponseBodyImportedType(params *ResponseBodyServiceGetResponseBodyImportedTypeParams, opts ...ClientOption) (*ResponseBodyServiceGetResponseBodyImportedTypeOK, error)
+
 	ResponseBodyServiceGetResponseBodySameName(params *ResponseBodyServiceGetResponseBodySameNameParams, opts ...ClientOption) (*ResponseBodyServiceGetResponseBodySameNameOK, error)
 
 	ResponseBodyServiceGetResponseBodyStream(params *ResponseBodyServiceGetResponseBodyStreamParams, opts ...ClientOption) (*ResponseBodyServiceGetResponseBodyStreamOK, error)
@@ -102,6 +104,48 @@ func (a *Client) ResponseBodyServiceGetResponseBody(params *ResponseBodyServiceG
 	//
 	// a default response is provided: fill this and return an error
 	unexpectedSuccess := result.(*ResponseBodyServiceGetResponseBodyDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+ResponseBodyServiceGetResponseBodyImportedType response body service get response body imported type API
+*/
+func (a *Client) ResponseBodyServiceGetResponseBodyImportedType(params *ResponseBodyServiceGetResponseBodyImportedTypeParams, opts ...ClientOption) (*ResponseBodyServiceGetResponseBodyImportedTypeOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewResponseBodyServiceGetResponseBodyImportedTypeParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ResponseBodyService_GetResponseBodyImportedType",
+		Method:             "GET",
+		PathPattern:        "/responsebody/importedtype/{data}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http"},
+		Params:             params,
+		Reader:             &ResponseBodyServiceGetResponseBodyImportedTypeReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*ResponseBodyServiceGetResponseBodyImportedTypeOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*ResponseBodyServiceGetResponseBodyImportedTypeDefault)
 
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
