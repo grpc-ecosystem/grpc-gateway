@@ -109,7 +109,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.30.0
+      - run: go tool gorelease -base=v2.30.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
@@ -131,9 +131,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - uses: dominikh/staticcheck-action@9716614d4101e79b4340dd97b10e54d68234e431 # v1.4.1
-        with:
-          install-go: false
+      - run: go tool staticcheck ./...
   fuzz:
     runs-on: ubuntu-latest
     steps:
