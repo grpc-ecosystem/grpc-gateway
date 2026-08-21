@@ -2938,7 +2938,7 @@ func TestRequestParseForm(t *testing.T) {
 	}
 
 	if got, want := msg.Num, int64(1); got != want {
-		t.Errorf("msg.Num = %q; want %q", got, want)
+		t.Errorf("msg.Num = %d; want %d", got, want)
 		return
 	}
 }
