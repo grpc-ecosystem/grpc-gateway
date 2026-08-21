@@ -109,7 +109,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.30.0
+      - run: go tool gorelease -base=v2.30.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
@@ -131,21 +131,19 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - uses: dominikh/staticcheck-action@9716614d4101e79b4340dd97b10e54d68234e431 # v1.4.1
-        with:
-          install-go: false
+      - run: go tool staticcheck ./...
   fuzz:
     runs-on: ubuntu-latest
     steps:
       - name: Build Fuzzers
         id: build
-        uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@4fc61fbdf5f0c262d2c39309e3b5ca6a35349740 # master
+        uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@955c6866c152471d78c7472c0f1f354343548b9f # master
         with:
           oss-fuzz-project-name: "grpc-gateway"
           dry-run: false
           language: go
       - name: Run Fuzzers
-        uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@4fc61fbdf5f0c262d2c39309e3b5ca6a35349740 # master
+        uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@955c6866c152471d78c7472c0f1f354343548b9f # master
         with:
           oss-fuzz-project-name: "grpc-gateway"
           fuzz-seconds: 600
