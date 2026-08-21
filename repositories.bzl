@@ -9,8 +9,8 @@ def go_repositories():
     go_repository(
         name = "co_honnef_go_tools",
         importpath = "honnef.co/go/tools",
-        sum = "h1:TAODvD3knlq75WCp2nyGJtT4LeRV/o7NN9nYPeVJXf8=",
-        version = "v0.6.0",
+        sum = "h1:UacpzPr7D6i5BAjTkA7sNVcx4kIbhAZcQ4zYtKiXx68=",
+        version = "v0.8.0",
     )
     go_repository(
         name = "com_github_alecthomas_template",
