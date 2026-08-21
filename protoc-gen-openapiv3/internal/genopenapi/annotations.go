@@ -66,11 +66,13 @@ func fieldSchemaAnnotation(field *descriptor.Field) (*options.Schema, bool) {
 // openapiv3_field annotations) into the sorted, JSON-ready form the
 // generator's internal types render inline.
 //
-// Per the OpenAPI 3.1.0 spec, extension keys must start with "x-"; an entry
-// that doesn't is dropped with a log line rather than failing generation,
-// consistent with how this generator degrades other malformed annotation
-// input (e.g. an unresolvable field type) elsewhere. where identifies the
-// annotation site in that log line, e.g. "openapiv3_operation".
+// Per the OpenAPI 3.1.0 spec
+// (https://spec.openapis.org/oas/v3.1.0#specification-extensions), extension
+// keys must start with "x-"; an entry that doesn't is dropped with a log
+// line rather than failing generation, consistent with how this generator
+// degrades other malformed annotation input (e.g. an unresolvable field
+// type) elsewhere. where identifies the annotation site in that log line,
+// e.g. "openapiv3_operation".
 func processExtensions(where string, exts map[string]*structpb.Value) []extension {
 	if len(exts) == 0 {
 		return nil

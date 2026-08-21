@@ -19,10 +19,31 @@ type extension struct {
 	value json.RawMessage
 }
 
+// MarshalJSON renders the extension as a single-key JSON object, e.g.
+// {"x-foo":"bar"}. It is a complete, valid JSON value on its own — even
+// though marshalWithExtensions only ever uses it as a fragment, stripping
+// the surrounding braces to splice multiple extensions inline as
+// top-level siblings of a parent object's own fields (OpenAPI extensions
+// are not nested under an "extensions" key in the rendered document).
+func (e extension) MarshalJSON() ([]byte, error) {
+	key, err := json.Marshal(e.key)
+	if err != nil {
+		return nil, err
+	}
+	buf := make([]byte, 0, len(key)+len(e.value)+2)
+	buf = append(buf, '{')
+	buf = append(buf, key...)
+	buf = append(buf, ':')
+	buf = append(buf, e.value...)
+	buf = append(buf, '}')
+	return buf, nil
+}
+
 // marshalWithExtensions marshals v (typically a type-aliased copy of a
 // struct so its own MarshalJSON is not re-entered) and splices the given
 // extensions into the resulting JSON object as additional top-level
-// "x-*" keys. extensions must already be sorted by key; processExtensions
+// "x-*" keys, using each extension's own MarshalJSON for the key/value
+// encoding. extensions must already be sorted by key; processExtensions
 // guarantees this.
 //
 // This avoids hand-maintaining a parallel struct definition per extension-
@@ -41,17 +62,15 @@ func marshalWithExtensions(v any, extensions []extension) ([]byte, error) {
 	buf.Write(data[:len(data)-1]) // drop the trailing '}'
 	needsComma := len(data) > len("{}")
 	for _, ext := range extensions {
+		pair, err := ext.MarshalJSON()
+		if err != nil {
+			return nil, err
+		}
 		if needsComma {
 			buf.WriteByte(',')
 		}
 		needsComma = true
-		key, err := json.Marshal(ext.key)
-		if err != nil {
-			return nil, err
-		}
-		buf.Write(key)
-		buf.WriteByte(':')
-		buf.Write(ext.value)
+		buf.Write(pair[1 : len(pair)-1]) // strip the extension's own '{' '}'
 	}
 	buf.WriteByte('}')
 	return buf.Bytes(), nil
