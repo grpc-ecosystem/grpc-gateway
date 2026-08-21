@@ -2514,14 +2514,14 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_crypto",
         importpath = "golang.org/x/crypto",
-        sum = "h1:YLIA59K4fiNzHzjnZt2tUJQjQtUWfWbeHBqKtk3eScw=",
-        version = "v0.54.0",
+        sum = "h1:+KWHjbgOaAQ66dh/YlkZKHlz9ZUlq61AFirAR9ntP8M=",
+        version = "v0.55.0",
     )
     go_repository(
         name = "org_golang_x_exp",
         importpath = "golang.org/x/exp",
-        sum = "h1:R84qjqJb5nVJMxqWYb3np9L5ZsaDtB+a39EqjV0JSUM=",
-        version = "v0.0.0-20250408133849-7e4ce0ab07d0",
+        sum = "h1:01Ju2A/fZKkci4zqx0eZxw//DnRYOnBiGJG14hFBhO8=",
+        version = "v0.0.0-20260820142414-ca536658362e",
     )
     go_repository(
         name = "org_golang_x_exp_typeparams",
@@ -2552,14 +2552,14 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_mod",
         importpath = "golang.org/x/mod",
-        sum = "h1:MECBjubtXD7yj4HrhIUcywNaGeNVUdfVnxmPajOk4yk=",
-        version = "v0.38.0",
+        sum = "h1:UF5zwQdCRRUpHfyPwr7d4UrGiVeldIsogtzWVnczL74=",
+        version = "v0.39.0",
     )
     go_repository(
         name = "org_golang_x_net",
         importpath = "golang.org/x/net",
-        sum = "h1:K5+3DljvIuDG9/Jv9rvyMywYNFCQ9RSUY6OOTTkT+tE=",
-        version = "v0.57.0",
+        sum = "h1:ynWG7rqYi4ccpTEuPZ2QGWHktVEM9DMCj9yzDE0Q7To=",
+        version = "v0.58.0",
     )
     go_repository(
         name = "org_golang_x_oauth2",
@@ -2582,8 +2582,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_telemetry",
         importpath = "golang.org/x/telemetry",
-        sum = "h1:RJhm5l6Fo4rmEIcndxDllNhhf/fAx8qIm4t6A7vpm2A=",
-        version = "v0.0.0-20260708182218-49f421fb7959",
+        sum = "h1:ZUSxONxc981v7AW7QUg+I9WwZzSTTJ019ENBYr5pV/Q=",
+        version = "v0.0.0-20260811182544-a038080d80e5",
     )
     go_repository(
         name = "org_golang_x_term",
@@ -2606,8 +2606,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_tools",
         importpath = "golang.org/x/tools",
-        sum = "h1:3+hClM1aLL5mjMKm5ovokw9epgRXPuu2tILgismM6RE=",
-        version = "v0.48.0",
+        sum = "h1:3NI7VXzL9+1WZD52Dx2ttoPwD5DWrFGpl9mFZDlmisI=",
+        version = "v0.49.0",
     )
     go_repository(
         name = "org_golang_x_tools_go_expect",
