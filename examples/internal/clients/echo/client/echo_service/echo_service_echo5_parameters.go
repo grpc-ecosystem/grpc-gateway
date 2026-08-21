@@ -58,11 +58,6 @@ EchoServiceEcho5Params contains all the parameters to send to the API endpoint
 */
 type EchoServiceEcho5Params struct {
 
-	// En.
-	//
-	// Format: int64
-	En *string
-
 	/* ID.
 
 	   Id represents the message identifier.
@@ -155,17 +150,6 @@ func (o *EchoServiceEcho5Params) WithHTTPClient(client *http.Client) *EchoServic
 // SetHTTPClient adds the HTTPClient to the echo service echo5 params
 func (o *EchoServiceEcho5Params) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
-}
-
-// WithEn adds the en to the echo service echo5 params
-func (o *EchoServiceEcho5Params) WithEn(en *string) *EchoServiceEcho5Params {
-	o.SetEn(en)
-	return o
-}
-
-// SetEn adds the en to the echo service echo5 params
-func (o *EchoServiceEcho5Params) SetEn(en *string) {
-	o.En = en
 }
 
 // WithID adds the id to the echo service echo5 params
@@ -285,23 +269,6 @@ func (o *EchoServiceEcho5Params) WriteToRequest(r runtime.ClientRequest, reg str
 		return err
 	}
 	var res []error
-
-	if o.En != nil {
-
-		// query param en
-		var qrEn string
-
-		if o.En != nil {
-			qrEn = *o.En
-		}
-		qEn := qrEn
-		if qEn != "" {
-
-			if err := r.SetQueryParam("en", qEn); err != nil {
-				return err
-			}
-		}
-	}
 
 	if o.ID != nil {
 

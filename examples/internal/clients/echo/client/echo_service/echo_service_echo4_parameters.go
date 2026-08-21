@@ -69,9 +69,6 @@ type EchoServiceEcho4Params struct {
 	*/
 	ID string
 
-	// Lang.
-	Lang *string
-
 	// LineNum.
 	//
 	// Format: int64
@@ -177,17 +174,6 @@ func (o *EchoServiceEcho4Params) WithID(id string) *EchoServiceEcho4Params {
 // SetID adds the id to the echo service echo4 params
 func (o *EchoServiceEcho4Params) SetID(id string) {
 	o.ID = id
-}
-
-// WithLang adds the lang to the echo service echo4 params
-func (o *EchoServiceEcho4Params) WithLang(lang *string) *EchoServiceEcho4Params {
-	o.SetLang(lang)
-	return o
-}
-
-// SetLang adds the lang to the echo service echo4 params
-func (o *EchoServiceEcho4Params) SetLang(lang *string) {
-	o.Lang = lang
 }
 
 // WithLineNum adds the lineNum to the echo service echo4 params
@@ -306,23 +292,6 @@ func (o *EchoServiceEcho4Params) WriteToRequest(r runtime.ClientRequest, reg str
 	// path param id
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
-	}
-
-	if o.Lang != nil {
-
-		// query param lang
-		var qrLang string
-
-		if o.Lang != nil {
-			qrLang = *o.Lang
-		}
-		qLang := qrLang
-		if qLang != "" {
-
-			if err := r.SetQueryParam("lang", qLang); err != nil {
-				return err
-			}
-		}
 	}
 
 	// path param lineNum
