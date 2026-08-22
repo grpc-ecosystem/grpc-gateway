@@ -355,7 +355,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 					// This will generate a query in the format map_name[key_type]
 					fName := fmt.Sprintf("%s[%s]", *field.Name, kType)
 					field.Name = proto.String(fName)
-					schema.Type = schema.AdditionalProperties.schemaCore.Type
+					schema.Type = schema.AdditionalProperties.schema.schemaCore.Type
 				}
 			}
 		}
@@ -882,7 +882,7 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 
 	for _, property := range *schema.Properties {
 		if property.Key == typeFieldName {
-			schema.AdditionalProperties = &openapiSchemaObject{}
+			schema.AdditionalProperties = &openapiAdditionalProperties{allowed: true}
 			schema.Properties = &openapiSchemaObjectProperties{keyVal{
 				Key:   "@type",
 				Value: property.Value,
@@ -1044,7 +1044,9 @@ func schemaOfFieldBase(f *descriptor.Field, reg *descriptor.Registry, refs refMa
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			AdditionalProperties: &openapiSchemaObject{Properties: props, schemaCore: core},
+			AdditionalProperties: &openapiAdditionalProperties{
+				schema: &openapiSchemaObject{Properties: props, schemaCore: core},
+			},
 		}
 	default:
 		ret = openapiSchemaObject{
