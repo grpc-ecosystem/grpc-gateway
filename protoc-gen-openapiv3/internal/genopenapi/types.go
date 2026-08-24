@@ -6,6 +6,7 @@ import (
 	"maps"
 	"slices"
 	"sort"
+	"strconv"
 )
 
 // extension is a single "x-*" OpenAPI specification extension: a key
@@ -26,10 +27,13 @@ type extension struct {
 // top-level siblings of a parent object's own fields (OpenAPI extensions
 // are not nested under an "extensions" key in the rendered document).
 func (e extension) MarshalJSON() ([]byte, error) {
-	key, err := json.Marshal(e.key)
-	if err != nil {
-		return nil, err
-	}
+	// The key is a plain Go string, already validated by processExtensions
+	// to start with "x-", so quoting it is just wrapping it in double
+	// quotes with any embedded quotes/backslashes/control characters
+	// escaped — strconv.Quote does exactly that without going through the
+	// full json.Marshal machinery (and its error return, which quoting a
+	// string can never actually trigger).
+	key := strconv.Quote(e.key)
 	buf := make([]byte, 0, len(key)+len(e.value)+2)
 	buf = append(buf, '{')
 	buf = append(buf, key...)
