@@ -405,8 +405,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_analysis",
         importpath = "github.com/go-openapi/analysis",
-        sum = "h1:1xECln1iMMmQnTjgcknC1vi1hA4KISt6IHpSwnqcuwI=",
-        version = "v0.26.0",
+        sum = "h1:Q6wOwXW8mcVAkpDFMshj/F4PlK2Fx86tmLJjZW4vyEs=",
+        version = "v0.26.2",
     )
     go_repository(
         name = "com_github_go_openapi_errors",
@@ -423,14 +423,14 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_jsonreference",
         importpath = "github.com/go-openapi/jsonreference",
-        sum = "h1:jlmTr6torcd1YgDQvSfNmRtKzYDO4FGBkrAdlAVWnpY=",
-        version = "v1.0.0",
+        sum = "h1:4zJ7AmYDKNmD3aSpfPnFNCFA5E80/xMHUNKgydaLh38=",
+        version = "v1.0.1",
     )
     go_repository(
         name = "com_github_go_openapi_loads",
         importpath = "github.com/go-openapi/loads",
-        sum = "h1:toKQdIDLxlqfKLLGUUmUsiTd5/X0Chzvde9EGYQP/Ac=",
-        version = "v0.25.1",
+        sum = "h1:+uNsDlRQfYtZTrh+3pdwampcAqZVPuBJW0IA82aZHII=",
+        version = "v0.25.2",
     )
     go_repository(
         name = "com_github_go_openapi_runtime",
@@ -447,8 +447,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_spec",
         importpath = "github.com/go-openapi/spec",
-        sum = "h1:/vKIFDcGKp0ktZWGbym/tJEWbk6/XOEmAVU0kqKMH+w=",
-        version = "v0.22.9",
+        sum = "h1:/ZW28n4PCghbBpwjmvoMeyCeDwd6pIe715Ov8T3kAaQ=",
+        version = "v0.22.11",
     )
     go_repository(
         name = "com_github_go_openapi_strfmt",
@@ -549,14 +549,14 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_testify_v2",
         importpath = "github.com/go-openapi/testify/v2",
-        sum = "h1:6CNJhTjMzgaeaH8WhshcsZNPIvRemiOcFpU7seO/y7Q=",
-        version = "v2.6.1",
+        sum = "h1:bycOreEj6wfBvijg3YFogZ/sFjTCDmQnwSodSzHa3X8=",
+        version = "v2.7.0",
     )
     go_repository(
         name = "com_github_go_openapi_validate",
         importpath = "github.com/go-openapi/validate",
-        sum = "h1:OkfZgLvLDnGP2hrRGD+42WBiPWWkoHomTJ+IVI+KaDc=",
-        version = "v0.26.3",
+        sum = "h1:Vm02dSmhevDx/4v4m8KAtMwffHGfq9wRLqICeebE/D4=",
+        version = "v0.26.5",
     )
     go_repository(
         name = "com_github_go_playground_locales",
