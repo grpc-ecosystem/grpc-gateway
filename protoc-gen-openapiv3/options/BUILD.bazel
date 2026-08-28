@@ -9,7 +9,10 @@ proto_library(
         "openapiv3.proto",
     ],
     visibility = ["//visibility:public"],
-    deps = ["@com_google_protobuf//:descriptor_proto"],
+    deps = [
+        "@com_google_protobuf//:descriptor_proto",
+        "@com_google_protobuf//:struct_proto",
+    ],
 )
 
 go_proto_library(

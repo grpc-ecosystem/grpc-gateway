@@ -4,6 +4,8 @@ syntax = "proto3";
 // OpenAPI 3.1.0 override messages consumed by protoc-gen-openapiv3.
 package grpc.gateway.protoc_gen_openapiv3.options;
 
+import "google/protobuf/struct.proto";
+
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options";
 
 // Document is a file-level override applied to the top of the generated
@@ -29,6 +31,11 @@ message Document {
   // method-level `openapiv3_operation.tags` override, since those tags
   // would otherwise appear in the document with no metadata.
   repeated Tag tags = 4;
+  // Custom specification extensions rendered at the root of the OpenAPI
+  // document. Keys MUST start with "x-".
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
+  map<string, google.protobuf.Value> extensions = 5;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -53,6 +60,11 @@ message Info {
   // The version of the OpenAPI document (which is distinct from the OpenAPI
   // Specification version or the API implementation version).
   string version = 7;
+  // Custom specification extensions rendered on the Info object. Keys MUST
+  // start with "x-".
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
+  map<string, google.protobuf.Value> extensions = 8;
 }
 
 // Contact information for the exposed API.
@@ -129,6 +141,11 @@ message Operation {
   // array is specified at the Path Item Object or OpenAPI Object level, it
   // will be overridden by this value.
   repeated Server servers = 7;
+  // Custom specification extensions rendered on the Operation object. Keys
+  // MUST start with "x-".
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
+  map<string, google.protobuf.Value> extensions = 8;
 }
 
 // Schema is a message- or field-level override applied to the generated
@@ -152,6 +169,13 @@ message Schema {
   // false does not un-deprecate a schema that is marked deprecated in proto
   // (`option deprecated = true` on the message, field, or file).
   bool deprecated = 3;
+  // Custom specification extensions rendered on the Schema object. Keys
+  // MUST start with "x-". Setting this on a field-level annotation forces
+  // a schema body (like `title`), so a $ref-typed field carrying extensions
+  // is wrapped in `allOf`.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
+  map<string, google.protobuf.Value> extensions = 4;
 }
 
 // ExternalDocs is a link to external documentation.
@@ -178,4 +202,9 @@ message Tag {
   string description = 2;
   // Additional external documentation for this tag.
   ExternalDocs external_docs = 3;
+  // Custom specification extensions rendered on the Tag object. Keys MUST
+  // start with "x-".
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
+  map<string, google.protobuf.Value> extensions = 4;
 }
