@@ -2385,14 +2385,14 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc",
         importpath = "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc",
-        sum = "h1:oECp5f+hN7nkwjU/8BxQ/q23bGPb8FIrD839owX222E=",
-        version = "v0.70.0",
+        sum = "h1:B2h3uqicet1CT2N5TOFhS+Gq++9i0/CLmaxvhmhtP5s=",
+        version = "v0.71.0",
     )
     go_repository(
         name = "io_opentelemetry_go_contrib_instrumentation_net_http_otelhttp",
         importpath = "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
-        sum = "h1:LMuyCAyfalSjDyjdC65nK6N0zoTT63+E/u95X0JovZI=",
-        version = "v0.70.0",
+        sum = "h1:3g7B90UzBltIDKq1/5mrTGxTnOFDV0ICOhLoxiZ8jlg=",
+        version = "v0.71.0",
     )
     go_repository(
         name = "io_opentelemetry_go_otel",
@@ -2483,8 +2483,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto_googleapis_rpc",
         importpath = "google.golang.org/genproto/googleapis/rpc",
-        sum = "h1:cYNAzI2sUwhmCcoj9TxvihSrqsxt6uIkj3rDRhSDmW4=",
-        version = "v0.0.0-20260819154853-08b0e4226688",
+        sum = "h1:1VUiZAXyC+zmiFYi+WLtBzr68Cj8wOofHjjrA/kkizc=",
+        version = "v0.0.0-20260825221802-da73d73af1c5",
     )
     go_repository(
         name = "org_golang_google_grpc",
