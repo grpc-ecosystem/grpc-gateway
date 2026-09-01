@@ -361,7 +361,7 @@
             "type": "boolean"
           },
           {
-            "name": "order.shippingAddress.metadata",
+            "name": "order.shippingAddress.metadata[string]",
             "in": "query",
             "required": false,
             "type": "string"
@@ -409,7 +409,7 @@
             "type": "boolean"
           },
           {
-            "name": "order.billingAddress.metadata",
+            "name": "order.billingAddress.metadata[string]",
             "in": "query",
             "required": false,
             "type": "string"
@@ -483,7 +483,7 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "order.metadata",
+            "name": "order.metadata[string]",
             "in": "query",
             "required": false,
             "type": "string"
@@ -718,7 +718,7 @@
             "type": "string"
           },
           {
-            "name": "filters",
+            "name": "filters[string]",
             "in": "query",
             "required": false,
             "type": "string"
