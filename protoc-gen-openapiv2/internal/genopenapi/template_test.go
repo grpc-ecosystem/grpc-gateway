@@ -4536,6 +4536,8 @@ func TestApplyTemplateWithRequestAndBodyParameters(t *testing.T) {
 func TestApplyTemplateProtobufAny(t *testing.T) {
 	// checkProtobufAnyFormat verifies the only property should be @type and additional properties are allowed
 	checkProtobufAnyFormat := func(t *testing.T, protobufAny openapiSchemaObject) {
+		t.Helper()
+
 		anyPropsJSON, err := protobufAny.Properties.MarshalJSON()
 		if err != nil {
 			t.Errorf("protobufAny.Properties.MarshalJSON(), got error = %v", err)
@@ -4558,6 +4560,26 @@ func TestApplyTemplateProtobufAny(t *testing.T) {
 		// protobufAny should have additionalProperties allowed
 		if protobufAny.AdditionalProperties == nil {
 			t.Errorf("protobufAny.AdditionalProperties = nil, want not-nil")
+		}
+
+		protobufAnyJSON, err := json.Marshal(protobufAny)
+		if err != nil {
+			t.Fatalf("json.Marshal(protobufAny), got error = %v", err)
+		}
+		if !bytes.Contains(protobufAnyJSON, []byte(`"additionalProperties":true`)) {
+			t.Errorf("json.Marshal(protobufAny) = %s, want additionalProperties true", protobufAnyJSON)
+		}
+
+		var protobufAnyYAML bytes.Buffer
+		encoder, err := FormatYAML.NewEncoder(&protobufAnyYAML)
+		if err != nil {
+			t.Fatalf("FormatYAML.NewEncoder(), got error = %v", err)
+		}
+		if err := encoder.Encode(protobufAny); err != nil {
+			t.Fatalf("encoder.Encode(protobufAny), got error = %v", err)
+		}
+		if !strings.Contains(protobufAnyYAML.String(), "additionalProperties: true") {
+			t.Errorf("encoder.Encode(protobufAny) = %s, want additionalProperties true", protobufAnyYAML.String())
 		}
 	}
 
@@ -5560,8 +5582,10 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Type: "object",
 				},
-				AdditionalProperties: &openapiSchemaObject{
-					schemaCore: schemaCore{Type: "string"},
+				AdditionalProperties: &openapiAdditionalProperties{
+					schema: &openapiSchemaObject{
+						schemaCore: schemaCore{Type: "string"},
+					},
 				},
 				Title:       "field title",
 				Description: "field description",
@@ -5648,8 +5672,10 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Type: "object",
 				},
-				AdditionalProperties: &openapiSchemaObject{
-					schemaCore: schemaCore{Type: "string"},
+				AdditionalProperties: &openapiAdditionalProperties{
+					schema: &openapiSchemaObject{
+						schemaCore: schemaCore{Type: "string"},
+					},
 				},
 				Title:       "field title",
 				Description: "field description",
@@ -6135,14 +6161,14 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	boolTrue := true
 
 	tests := []struct {
-		descr                 string
-		msgDescs              []*descriptorpb.DescriptorProto
-		schema                map[string]*openapi_options.Schema // per-message schema to add
-		defs                  openapiDefinitionsObject
-		openAPIOptions        *openapiconfig.OpenAPIOptions
-		pathParams            []descriptor.Parameter
-		UseJSONNamesForFields bool
-		UseAllOfForRefs       bool
+		descr                  string
+		msgDescs               []*descriptorpb.DescriptorProto
+		schema                 map[string]*openapi_options.Schema // per-message schema to add
+		defs                   openapiDefinitionsObject
+		openAPIOptions         *openapiconfig.OpenAPIOptions
+		pathParams             []descriptor.Parameter
+		UseJSONNamesForFields  bool
+		UseAllOfForRefs        bool
 		Proto3OptionalNullable bool
 	}{
 		{
@@ -11347,7 +11373,7 @@ func TestArrayMessageItemsType(t *testing.T) {
 					},
 				},
 			},
-			AdditionalProperties: &openapiSchemaObject{},
+			AdditionalProperties: &openapiAdditionalProperties{allowed: true},
 		},
 	}
 
@@ -11588,7 +11614,7 @@ func TestArrayMessageItemsTypeOmitWhenRefSibling(t *testing.T) {
 					},
 				},
 			},
-			AdditionalProperties: &openapiSchemaObject{},
+			AdditionalProperties: &openapiAdditionalProperties{allowed: true},
 		},
 	}
 
