@@ -1938,6 +1938,191 @@ func TestMessageToQueryParametersWithDeprecatedField(t *testing.T) {
 	}
 }
 
+func TestMessageToQueryParametersWithMapField(t *testing.T) {
+	mapEntry := func(name string, keyType, valueType descriptorpb.FieldDescriptorProto_Type, valueTypeName string) *descriptorpb.DescriptorProto {
+		value := &descriptorpb.FieldDescriptorProto{
+			Name:   proto.String("value"),
+			Number: proto.Int32(2),
+			Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+			Type:   valueType.Enum(),
+		}
+		if valueTypeName != "" {
+			value.TypeName = proto.String(valueTypeName)
+		}
+		return &descriptorpb.DescriptorProto{
+			Name:    proto.String(name),
+			Options: &descriptorpb.MessageOptions{MapEntry: proto.Bool(true)},
+			Field: []*descriptorpb.FieldDescriptorProto{
+				{
+					Name:   proto.String("key"),
+					Number: proto.Int32(1),
+					Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:   keyType.Enum(),
+				},
+				value,
+			},
+		}
+	}
+	mapField := func(name, jsonName, entry string, number int32) *descriptorpb.FieldDescriptorProto {
+		return &descriptorpb.FieldDescriptorProto{
+			Name:     proto.String(name),
+			JsonName: proto.String(jsonName),
+			Number:   proto.Int32(number),
+			Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+			Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+			TypeName: proto.String(".example.ExampleMessage." + entry),
+		}
+	}
+
+	nestedDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("Nested"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("a"),
+				JsonName: proto.String("a"),
+				Number:   proto.Int32(1),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+			},
+		},
+	}
+	msgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			mapField("string_map", "stringMap", "StringMapEntry", 1),
+			mapField("int_key_map", "intKeyMap", "IntKeyMapEntry", 2),
+			mapField("enum_map", "enumMap", "EnumMapEntry", 3),
+			mapField("message_map", "messageMap", "MessageMapEntry", 4),
+		},
+		NestedType: []*descriptorpb.DescriptorProto{
+			mapEntry("StringMapEntry", descriptorpb.FieldDescriptorProto_TYPE_STRING, descriptorpb.FieldDescriptorProto_TYPE_STRING, ""),
+			mapEntry("IntKeyMapEntry", descriptorpb.FieldDescriptorProto_TYPE_INT32, descriptorpb.FieldDescriptorProto_TYPE_STRING, ""),
+			mapEntry("EnumMapEntry", descriptorpb.FieldDescriptorProto_TYPE_STRING, descriptorpb.FieldDescriptorProto_TYPE_ENUM, ".example.ExampleMessage.Kind"),
+			mapEntry("MessageMapEntry", descriptorpb.FieldDescriptorProto_TYPE_STRING, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, ".example.Nested"),
+		},
+		EnumType: []*descriptorpb.EnumDescriptorProto{
+			{
+				Name: proto.String("Kind"),
+				Value: []*descriptorpb.EnumValueDescriptorProto{
+					{Name: proto.String("KIND_A"), Number: proto.Int32(0)},
+					{Name: proto.String("KIND_B"), Number: proto.Int32(1)},
+				},
+			},
+		},
+	}
+
+	// The parameter name carries the key type of the map, whichever naming the
+	// document uses for fields. Maps of messages are left out entirely: they have
+	// no primitive representation to put in a query string.
+	tests := []struct {
+		name                  string
+		useJSONNamesForFields bool
+		enumsAsInts           bool
+		params                []openapiParameterObject
+	}{
+		{
+			name:                  "proto field names",
+			useJSONNamesForFields: false,
+			params: []openapiParameterObject{
+				{Name: "string_map[string]", In: "query", Type: "string"},
+				{Name: "int_key_map[integer]", In: "query", Type: "string"},
+				{Name: "enum_map[string]", In: "query", Type: "string"},
+			},
+		},
+		{
+			name:                  "JSON field names",
+			useJSONNamesForFields: true,
+			params: []openapiParameterObject{
+				{Name: "stringMap[string]", In: "query", Type: "string"},
+				{Name: "intKeyMap[integer]", In: "query", Type: "string"},
+				{Name: "enumMap[string]", In: "query", Type: "string"},
+			},
+		},
+		{
+			name:                  "enums as ints",
+			useJSONNamesForFields: true,
+			enumsAsInts:           true,
+			params: []openapiParameterObject{
+				{Name: "stringMap[string]", In: "query", Type: "string"},
+				{Name: "intKeyMap[integer]", In: "query", Type: "string"},
+				{Name: "enumMap[string]", In: "query", Type: "integer"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			reg.SetUseJSONNamesForFields(tt.useJSONNamesForFields)
+			reg.SetEnumsAsInts(tt.enumsAsInts)
+			msgs := []*descriptor.Message{
+				{DescriptorProto: msgDesc},
+				{DescriptorProto: nestedDesc},
+			}
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					Dependency:     []string{},
+					MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nestedDesc},
+					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: msgs,
+			}
+			if err := reg.Load(&pluginpb.CodeGeneratorRequest{
+				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+			}); err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
+
+			message, err := reg.LookupMsg("", ".example.ExampleMessage")
+			if err != nil {
+				t.Fatalf("failed to lookup message: %s", err)
+			}
+			params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
+			if err != nil {
+				t.Fatalf("failed to convert message to query parameters: %s", err)
+			}
+			if !reflect.DeepEqual(params, tt.params) {
+				t.Errorf("expected %v, got %v", tt.params, params)
+			}
+
+			// Rendering the query parameters must not rename the fields of the
+			// message: the same descriptor is used for the rest of the document.
+			want := []string{"string_map", "int_key_map", "enum_map", "message_map"}
+			var got []string
+			for _, f := range message.Fields {
+				got = append(got, f.GetName())
+			}
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("field names after messageToQueryParameters: got %v, want %v", got, want)
+			}
+			schema, err := renderMessageAsDefinition(message, reg, map[string]struct{}{}, nil)
+			if err != nil {
+				t.Fatalf("failed to render message as definition: %s", err)
+			}
+			var properties []string
+			for _, kv := range *schema.Properties {
+				properties = append(properties, kv.Key)
+			}
+			wantProperties := want
+			if tt.useJSONNamesForFields {
+				wantProperties = []string{"stringMap", "intKeyMap", "enumMap", "messageMap"}
+			}
+			if !reflect.DeepEqual(properties, wantProperties) {
+				t.Errorf("definition properties: got %v, want %v", properties, wantProperties)
+			}
+		})
+	}
+}
+
 func TestMessageToQueryParametersWithEnumFieldOption(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
@@ -6135,14 +6320,14 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	boolTrue := true
 
 	tests := []struct {
-		descr                 string
-		msgDescs              []*descriptorpb.DescriptorProto
-		schema                map[string]*openapi_options.Schema // per-message schema to add
-		defs                  openapiDefinitionsObject
-		openAPIOptions        *openapiconfig.OpenAPIOptions
-		pathParams            []descriptor.Parameter
-		UseJSONNamesForFields bool
-		UseAllOfForRefs       bool
+		descr                  string
+		msgDescs               []*descriptorpb.DescriptorProto
+		schema                 map[string]*openapi_options.Schema // per-message schema to add
+		defs                   openapiDefinitionsObject
+		openAPIOptions         *openapiconfig.OpenAPIOptions
+		pathParams             []descriptor.Parameter
+		UseJSONNamesForFields  bool
+		UseAllOfForRefs        bool
 		Proto3OptionalNullable bool
 	}{
 		{

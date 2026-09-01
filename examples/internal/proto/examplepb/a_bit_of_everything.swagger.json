@@ -353,22 +353,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -999,22 +995,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -1453,22 +1445,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -1894,22 +1882,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -2361,22 +2345,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -2849,22 +2829,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "timestampValue",
@@ -3338,22 +3314,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -3780,22 +3752,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -4246,22 +4214,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -4712,22 +4676,18 @@
             "type": "string"
           },
           {
-            "name": "mapValue",
+            "name": "mapValue[string]",
             "description": "map of numeric enum",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "mappedStringValue",
-            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "mappedNestedValue",
+            "name": "mappedStringValue[string]",
+            "description": "Map of string title\n\nMap of string description.",
             "in": "query",
-            "required": false
+            "required": false,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
