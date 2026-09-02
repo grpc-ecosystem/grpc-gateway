@@ -339,6 +339,12 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 
 	isEnum := field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM
 	items := schema.Items
+	// mapKeySuffix spells out the key of a map field in the parameter name, as in
+	// "filters[string]". It is appended to the parameter name rather than to the
+	// field name so that it is emitted whichever naming the parameter uses, and so
+	// that the field descriptor, which is shared with the rest of the generated
+	// document, is left alone.
+	var mapKeySuffix string
 	if schema.Type != "" || isEnum {
 		if schema.Type == "object" {
 			location := ""
@@ -352,10 +358,23 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 					if err != nil {
 						return nil, err
 					}
+					v := m.GetField()[1]
+					switch {
+					case v.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM:
+						schema.Type = "string"
+						if reg.GetEnumsAsInts() {
+							schema.Type = "integer"
+						}
+					case schema.AdditionalProperties != nil:
+						schema.Type = schema.AdditionalProperties.schemaCore.Type
+					}
+					if schema.Type == "" || schema.Type == "object" {
+						// The map value has no primitive representation, so there is no
+						// way to spell it in a query parameter.
+						return nil, nil
+					}
 					// This will generate a query in the format map_name[key_type]
-					fName := fmt.Sprintf("%s[%s]", *field.Name, kType)
-					field.Name = proto.String(fName)
-					schema.Type = schema.AdditionalProperties.schemaCore.Type
+					mapKeySuffix = "[" + kType + "]"
 				}
 			}
 		}
@@ -407,7 +426,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			param.CollectionFormat = "multi"
 		}
 
-		param.Name = prefix + reg.FieldName(field)
+		param.Name = prefix + reg.FieldName(field) + mapKeySuffix
 
 		if isEnum {
 			enum, err := reg.LookupEnum("", fieldType)

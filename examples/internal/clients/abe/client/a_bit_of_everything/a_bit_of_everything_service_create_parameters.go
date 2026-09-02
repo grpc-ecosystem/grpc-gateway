@@ -115,22 +115,19 @@ type ABitOfEverythingServiceCreateParams struct {
 	// Format: int64
 	Int64Value string
 
-	/* MapValue.
+	/* MapValueString.
 
 	   map of numeric enum
 	*/
-	MapValue *string
+	MapValueString *string
 
-	// MappedNestedValue.
-	MappedNestedValue *string
-
-	/* MappedStringValue.
+	/* MappedStringValueString.
 
 	     Map of string title
 
 	Map of string description.
 	*/
-	MappedStringValue *string
+	MappedStringValueString *string
 
 	// NestedAnnotationAmount.
 	//
@@ -536,37 +533,26 @@ func (o *ABitOfEverythingServiceCreateParams) SetInt64Value(int64Value string) {
 	o.Int64Value = int64Value
 }
 
-// WithMapValue adds the mapValue to the a bit of everything service create params
-func (o *ABitOfEverythingServiceCreateParams) WithMapValue(mapValue *string) *ABitOfEverythingServiceCreateParams {
-	o.SetMapValue(mapValue)
+// WithMapValueString adds the mapValueString to the a bit of everything service create params
+func (o *ABitOfEverythingServiceCreateParams) WithMapValueString(mapValueString *string) *ABitOfEverythingServiceCreateParams {
+	o.SetMapValueString(mapValueString)
 	return o
 }
 
-// SetMapValue adds the mapValue to the a bit of everything service create params
-func (o *ABitOfEverythingServiceCreateParams) SetMapValue(mapValue *string) {
-	o.MapValue = mapValue
+// SetMapValueString adds the mapValueString to the a bit of everything service create params
+func (o *ABitOfEverythingServiceCreateParams) SetMapValueString(mapValueString *string) {
+	o.MapValueString = mapValueString
 }
 
-// WithMappedNestedValue adds the mappedNestedValue to the a bit of everything service create params
-func (o *ABitOfEverythingServiceCreateParams) WithMappedNestedValue(mappedNestedValue *string) *ABitOfEverythingServiceCreateParams {
-	o.SetMappedNestedValue(mappedNestedValue)
+// WithMappedStringValueString adds the mappedStringValueString to the a bit of everything service create params
+func (o *ABitOfEverythingServiceCreateParams) WithMappedStringValueString(mappedStringValueString *string) *ABitOfEverythingServiceCreateParams {
+	o.SetMappedStringValueString(mappedStringValueString)
 	return o
 }
 
-// SetMappedNestedValue adds the mappedNestedValue to the a bit of everything service create params
-func (o *ABitOfEverythingServiceCreateParams) SetMappedNestedValue(mappedNestedValue *string) {
-	o.MappedNestedValue = mappedNestedValue
-}
-
-// WithMappedStringValue adds the mappedStringValue to the a bit of everything service create params
-func (o *ABitOfEverythingServiceCreateParams) WithMappedStringValue(mappedStringValue *string) *ABitOfEverythingServiceCreateParams {
-	o.SetMappedStringValue(mappedStringValue)
-	return o
-}
-
-// SetMappedStringValue adds the mappedStringValue to the a bit of everything service create params
-func (o *ABitOfEverythingServiceCreateParams) SetMappedStringValue(mappedStringValue *string) {
-	o.MappedStringValue = mappedStringValue
+// SetMappedStringValueString adds the mappedStringValueString to the a bit of everything service create params
+func (o *ABitOfEverythingServiceCreateParams) SetMappedStringValueString(mappedStringValueString *string) {
+	o.MappedStringValueString = mappedStringValueString
 }
 
 // WithNestedAnnotationAmount adds the nestedAnnotationAmount to the a bit of everything service create params
@@ -1074,52 +1060,35 @@ func (o *ABitOfEverythingServiceCreateParams) WriteToRequest(r runtime.ClientReq
 		return err
 	}
 
-	if o.MapValue != nil {
+	if o.MapValueString != nil {
 
-		// query param mapValue
-		var qrMapValue string
+		// query param mapValue[string]
+		var qrMapValueString string
 
-		if o.MapValue != nil {
-			qrMapValue = *o.MapValue
+		if o.MapValueString != nil {
+			qrMapValueString = *o.MapValueString
 		}
-		qMapValue := qrMapValue
-		if qMapValue != "" {
+		qMapValueString := qrMapValueString
+		if qMapValueString != "" {
 
-			if err := r.SetQueryParam("mapValue", qMapValue); err != nil {
+			if err := r.SetQueryParam("mapValue[string]", qMapValueString); err != nil {
 				return err
 			}
 		}
 	}
 
-	if o.MappedNestedValue != nil {
+	if o.MappedStringValueString != nil {
 
-		// query param mappedNestedValue
-		var qrMappedNestedValue string
+		// query param mappedStringValue[string]
+		var qrMappedStringValueString string
 
-		if o.MappedNestedValue != nil {
-			qrMappedNestedValue = *o.MappedNestedValue
+		if o.MappedStringValueString != nil {
+			qrMappedStringValueString = *o.MappedStringValueString
 		}
-		qMappedNestedValue := qrMappedNestedValue
-		if qMappedNestedValue != "" {
+		qMappedStringValueString := qrMappedStringValueString
+		if qMappedStringValueString != "" {
 
-			if err := r.SetQueryParam("mappedNestedValue", qMappedNestedValue); err != nil {
-				return err
-			}
-		}
-	}
-
-	if o.MappedStringValue != nil {
-
-		// query param mappedStringValue
-		var qrMappedStringValue string
-
-		if o.MappedStringValue != nil {
-			qrMappedStringValue = *o.MappedStringValue
-		}
-		qMappedStringValue := qrMappedStringValue
-		if qMappedStringValue != "" {
-
-			if err := r.SetQueryParam("mappedStringValue", qMappedStringValue); err != nil {
+			if err := r.SetQueryParam("mappedStringValue[string]", qMappedStringValueString); err != nil {
 				return err
 			}
 		}
