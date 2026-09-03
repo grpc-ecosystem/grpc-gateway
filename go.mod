@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/go-openapi/errors v0.22.8
 	github.com/go-openapi/runtime v0.33.1
-	github.com/go-openapi/strfmt v0.27.0
+	github.com/go-openapi/strfmt v0.27.1
 	github.com/go-openapi/swag v0.29.1
 	github.com/go-openapi/validate v0.26.5
 	github.com/google/go-cmp v0.7.0
