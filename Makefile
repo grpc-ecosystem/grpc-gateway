@@ -181,8 +181,8 @@ openapiv3-clients: proto
 generate: proto swagger-clients openapiv3-clients
 
 test: proto
-	go test -short -race ./...
-	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
+	find . -name go.mod -execdir go test -short -race ./... ;
+	go -C examples test -race ./internal/integration -args -network=unix -endpoint=test.sock
 
 clean:
 	find . -type f -name '*.pb.go' -delete

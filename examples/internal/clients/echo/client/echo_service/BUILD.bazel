@@ -35,10 +35,10 @@ go_library(
     visibility = ["//examples:__subpackages__"],
     deps = [
         "//examples/internal/clients/echo/models",
-        "@com_github_go_openapi_errors//:errors",
-        "@com_github_go_openapi_runtime//:runtime",
-        "@com_github_go_openapi_runtime//client",
-        "@com_github_go_openapi_strfmt//:strfmt",
+        "@com_github_go_openapi_errors//:go_default_library",
+        "@com_github_go_openapi_runtime//:go_default_library",
+        "@com_github_go_openapi_runtime//client:go_default_library",
+        "@com_github_go_openapi_strfmt//:go_default_library",
     ],
 )
 
