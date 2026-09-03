@@ -3039,13 +3039,13 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		if want, is, name := []extension{
 			{key: "x-security-baz", value: json.RawMessage("true")},
 		}, scheme.extensions, "SecurityScheme.Extensions"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+			t.Errorf("applyTemplate(%#v).%s = %#v want to be %#v", file, name, is, want)
 		}
 
 		if want, is, name := []extension{
 			{key: "x-info-extension", value: json.RawMessage("\"bar\"")},
 		}, result.Info.extensions, "Info.Extensions"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+			t.Errorf("applyTemplate(%#v).%s = %#v want to be %#v", file, name, is, want)
 		}
 
 		var operation *openapiOperationObject
@@ -3057,12 +3057,12 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		if want, is, name := []extension{
 			{key: "x-op-foo", value: json.RawMessage("\"baz\"")},
 		}, operation.extensions, "operation.Extensions"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+			t.Errorf("applyTemplate(%#v).%s = %#v want to be %#v", file, name, is, want)
 		}
 		if want, is, name := []extension{
 			{key: "x-resp-id", value: json.RawMessage("\"resp1000\"")},
 		}, response.extensions, "response.Extensions"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+			t.Errorf("applyTemplate(%#v).%s = %#v want to be %#v", file, name, is, want)
 		}
 
 		if len(result.Tags) == 0 {
@@ -3073,7 +3073,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		if want, is, name := []extension{
 			{key: "x-traitTag", value: json.RawMessage("true")},
 		}, tag.extensions, "Tags[0].Extensions"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+			t.Errorf("applyTemplate(%#v).%s = %#v want to be %#v", file, name, is, want)
 		}
 	}
 	t.Run("verify template options set via proto options", func(t *testing.T) {
