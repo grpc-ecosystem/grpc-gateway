@@ -4,10 +4,10 @@ go 1.26.0
 
 require (
 	github.com/go-openapi/errors v0.22.8
-	github.com/go-openapi/runtime v0.33.1
-	github.com/go-openapi/strfmt v0.27.1
+	github.com/go-openapi/runtime v0.33.2
+	github.com/go-openapi/strfmt v0.27.2
 	github.com/go-openapi/swag v0.29.1
-	github.com/go-openapi/validate v0.26.5
+	github.com/go-openapi/validate v1.0.0
 	github.com/google/go-cmp v0.7.0
 	github.com/oapi-codegen/runtime v1.7.0
 	github.com/rogpeppe/fastuuid v1.2.0
@@ -31,12 +31,12 @@ require (
 	github.com/felixge/httpsnoop v1.1.0 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-openapi/analysis v0.26.2 // indirect
+	github.com/go-openapi/analysis v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v1.0.0 // indirect
 	github.com/go-openapi/jsonreference v1.0.1 // indirect
 	github.com/go-openapi/loads v0.25.2 // indirect
-	github.com/go-openapi/runtime/server-middleware v0.33.1 // indirect
-	github.com/go-openapi/spec v0.22.11 // indirect
+	github.com/go-openapi/runtime/server-middleware v0.33.2 // indirect
+	github.com/go-openapi/spec v1.0.0 // indirect
 	github.com/go-openapi/swag/cmdutils v0.29.1 // indirect
 	github.com/go-openapi/swag/conv v0.29.1 // indirect
 	github.com/go-openapi/swag/fileutils v0.29.1 // indirect
