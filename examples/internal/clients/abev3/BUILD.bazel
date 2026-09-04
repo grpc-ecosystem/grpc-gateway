@@ -5,7 +5,7 @@ go_library(
     srcs = ["abev3.go"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abev3",
     visibility = ["//examples:__subpackages__"],
-    deps = ["@com_github_oapi_codegen_runtime//:runtime"],
+    deps = ["@com_github_oapi_codegen_runtime//:go_default_library"],
 )
 
 alias(

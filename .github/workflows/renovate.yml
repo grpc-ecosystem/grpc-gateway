@@ -79,7 +79,7 @@ jobs:
       - run: make clean
       - run: make generate
       - run: bazel run //:gazelle
-      - run: go mod tidy
+      - run: find -name go.mod -execdir go tidy \;
       - run: |
           git add .
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then

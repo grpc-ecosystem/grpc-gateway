@@ -10,9 +10,9 @@ go_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/generateunboundmethods/models",
     visibility = ["//examples:__subpackages__"],
     deps = [
-        "@com_github_go_openapi_errors//:errors",
-        "@com_github_go_openapi_strfmt//:strfmt",
-        "@com_github_go_openapi_swag//:swag",
+        "@com_github_go_openapi_errors//:go_default_library",
+        "@com_github_go_openapi_strfmt//:go_default_library",
+        "@com_github_go_openapi_swag//:go_default_library",
     ],
 )
 

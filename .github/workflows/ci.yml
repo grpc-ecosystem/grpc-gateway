@@ -16,6 +16,7 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: go build ./...
+      - run: go -C examples build ./...
   test:
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +25,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go test ./...
+      - run: find -name go.mod -execdir go test ./... \;
   node_test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -54,7 +55,7 @@ jobs:
       - run: make install
       - run: make clean
       - run: make generate
-      - run: go mod tidy
+      - run: find -name go.mod -execdir go mod tidy \;
       - run: git add -N . && git diff --exit-code
   bazel:
     container:
