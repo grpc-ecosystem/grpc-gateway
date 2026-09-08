@@ -55,6 +55,7 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
+      - run: go -C examples mod tidy
       - run: git add -N . && git diff --exit-code
   bazel:
     container:
