@@ -2159,6 +2159,20 @@ func testRequestQueryParams(t *testing.T, port int) {
 			},
 		},
 		{
+			name:        "get oneof of empty url query value",
+			httpMethod:  "GET",
+			contentType: "application/json",
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?oneof_empty=", port),
+			wantContent: &examplepb.ABitOfEverything{
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name: "foo",
+				},
+				OneofValue: &examplepb.ABitOfEverything_OneofEmpty{
+					OneofEmpty: &emptypb.Empty{},
+				},
+			},
+		},
+		{
 			name:        "post url query values",
 			httpMethod:  "POST",
 			contentType: "application/json",
