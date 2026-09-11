@@ -14,6 +14,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
 	field_mask "google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -543,6 +544,62 @@ func TestPopulateParameters(t *testing.T) {
 			}
 			if diff := cmp.Diff(spec.want, msg, protocmp.Transform()); diff != "" {
 				t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v): %s", spec.values, spec.filter, diff)
+			}
+		})
+	}
+}
+
+func TestPopulateParametersEmptyMessage(t *testing.T) {
+	for _, spec := range []struct {
+		name    string
+		values  url.Values
+		want    proto.Message
+		wanterr error
+	}{
+		{
+			name:   "empty value",
+			values: url.Values{"oneof_empty": {""}},
+			want: &examplepb.ABitOfEverything{
+				OneofValue: &examplepb.ABitOfEverything_OneofEmpty{OneofEmpty: &emptypb.Empty{}},
+			},
+		},
+		{
+			name:   "empty JSON object",
+			values: url.Values{"oneof_empty": {"{}"}},
+			want: &examplepb.ABitOfEverything{
+				OneofValue: &examplepb.ABitOfEverything_OneofEmpty{OneofEmpty: &emptypb.Empty{}},
+			},
+		},
+		{
+			name:   "JSON name",
+			values: url.Values{"oneofEmpty": {""}},
+			want: &examplepb.ABitOfEverything{
+				OneofValue: &examplepb.ABitOfEverything_OneofEmpty{OneofEmpty: &emptypb.Empty{}},
+			},
+		},
+		{
+			name:    "value with content",
+			values:  url.Values{"oneof_empty": {"true"}},
+			want:    &examplepb.ABitOfEverything{},
+			wanterr: errors.New(`parsing field "oneof_empty": expected an empty value or "{}", got "true"`),
+		},
+	} {
+		t.Run(spec.name, func(t *testing.T) {
+			msg := spec.want.ProtoReflect().New().Interface()
+			err := runtime.PopulateQueryParameters(msg, spec.values, utilities.NewDoubleArray(nil))
+			if spec.wanterr != nil {
+				if err == nil || err.Error() != spec.wanterr.Error() {
+					t.Errorf("runtime.PopulateQueryParameters(msg, %v, _) failed with %q; want error %q", spec.values, err, spec.wanterr)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("runtime.PopulateQueryParameters(msg, %v, _) failed with %v; want success", spec.values, err)
+				return
+			}
+			if diff := cmp.Diff(spec.want, msg, protocmp.Transform()); diff != "" {
+				t.Errorf("runtime.PopulateQueryParameters(msg, %v, _): %s", spec.values, diff)
 			}
 		})
 	}

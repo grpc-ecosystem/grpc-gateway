@@ -1592,6 +1592,53 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 				},
 			},
 		},
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("an_empty"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".google.protobuf.Empty"),
+							Number:   proto.Int32(1),
+						},
+						{
+							Name:     proto.String("a_struct"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".google.protobuf.Struct"),
+							Number:   proto.Int32(2),
+						},
+					},
+				},
+			},
+			WellKnownMsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Empty"),
+				},
+				{
+					Name: proto.String("Struct"),
+				},
+			},
+			Message: "ExampleMessage",
+			// Empty and Struct are objects as schemas, but a parameter that is not in
+			// the body has to have a primitive type. Both are read from the query
+			// string as text.
+			Params: []openapiParameterObject{
+				{
+					Name:     "an_empty",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				{
+					Name:     "a_struct",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {

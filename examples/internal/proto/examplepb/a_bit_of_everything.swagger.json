@@ -344,7 +344,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -986,7 +986,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -1436,7 +1436,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -1873,7 +1873,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -2336,7 +2336,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -2820,7 +2820,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -3305,7 +3305,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -3743,7 +3743,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -4205,7 +4205,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",
@@ -4667,7 +4667,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "required": false,
-            "type": "object"
+            "type": "string"
           },
           {
             "name": "oneofString",

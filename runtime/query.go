@@ -16,6 +16,7 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
 	field_mask "google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -370,6 +371,14 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 			return protoreflect.Value{}, err
 		}
 		msg = &v
+	case "google.protobuf.Empty":
+		// An Empty carries nothing, so the only thing the value can say is that the
+		// field is present. Accept the two spellings of "no content" and reject
+		// anything else, rather than silently ignoring it.
+		if value != "" && value != "{}" {
+			return protoreflect.Value{}, fmt.Errorf("expected an empty value or %q, got %q", "{}", value)
+		}
+		msg = &emptypb.Empty{}
 	default:
 		return protoreflect.Value{}, fmt.Errorf("unsupported message type: %q", string(msgDescriptor.FullName()))
 	}

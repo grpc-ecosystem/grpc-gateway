@@ -377,6 +377,13 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 					mapKeySuffix = "[" + kType + "]"
 				}
 			}
+			if _, ok := wktSchemas[fieldType]; ok && schema.Type == "object" {
+				// Empty and Struct are rendered as "object", which is not a valid type
+				// for a parameter that is not in the body. Both are read from the query
+				// string as text: Struct as its JSON encoding, Empty as an empty value
+				// or as "{}".
+				schema.Type = "string"
+			}
 		}
 		if items != nil && (items.Type == "" || items.Type == "object") && !isEnum {
 			return nil, nil // TODO: currently, mapping object in query parameter is not supported

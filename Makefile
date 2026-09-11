@@ -17,24 +17,17 @@ GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC=examples/internal/proto/examplepb/generate
 # Targets are PHONY because the file set isn't fully predictable from the
 # spec without parsing it.
 #
-# The jq pass coerces non-body parameters with no `type`/`schema` (map<K,V>
-# request fields) and non-body parameters typed as `object` (oneof-of-empty
-# fields) to `string`. They can't round-trip through a query string in a
-# meaningful way, but go-swagger needs *some* primitive to chew on. The
-# accompanying default-value rewrite turns string defaults on numeric/integer
-# parameters into the corresponding number — protoc-gen-openapiv2 emits e.g.
-# `"default": "0"` on integer params, which go-swagger refuses.
+# The jq pass turns string defaults on numeric/integer parameters into the
+# corresponding number — protoc-gen-openapiv2 emits e.g. `"default": "0"` on
+# integer params, which go-swagger refuses.
 define swagger_client
 	rm -rf $(1)/client $(1)/models
 	mkdir -p $(1)
 	jq 'walk( \
-		if type == "object" and has("in") and (.in != "body") then \
-			(if (has("type") | not) and (has("schema") | not) then . + {type: "string"} \
-			 elif .type == "object" then . + {type: "string"} \
-			 else . end) \
-			| (if (.type == "number" or .type == "integer") and (.default | type) == "string" \
-			   then .default |= tonumber else . end) \
-		else . end \
+		if type == "object" and has("in") and (.in != "body") \
+		   and (.type == "number" or .type == "integer") \
+		   and (.default | type) == "string" \
+		then .default |= tonumber else . end \
 	)' $(2) > $(1)/.spec.json
 	swagger generate client -q -f $(1)/.spec.json -t $(1) \
 		--client-package=client --model-package=models --skip-validation
