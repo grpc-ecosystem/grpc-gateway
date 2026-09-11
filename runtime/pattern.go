@@ -263,6 +263,38 @@ func (p Pattern) String() string {
 	return "/" + segs
 }
 
+// GetPathPattern generates path pattern from the Pattern.
+// It does mostly the same as Pattern.String except it excludes
+// utilities.OpPush and utilities.OpPushM operands from the result.
+func (p Pattern) GetPathPattern() string {
+	var stack []string
+	for _, op := range p.ops {
+		switch op.code {
+		case utilities.OpNop:
+			continue
+		case utilities.OpPush:
+			stack = append(stack, "*")
+		case utilities.OpLitPush:
+			stack = append(stack, p.pool[op.operand])
+		case utilities.OpPushM:
+			stack = append(stack, "**")
+		case utilities.OpConcatN:
+			n := op.operand
+			l := len(stack) - n
+			stack = append(stack[:l], strings.Join(stack[l:], "/"))
+		case utilities.OpCapture:
+			n := len(stack) - 1
+			// just leave the operand and skip everything else
+			stack[n] = fmt.Sprintf("{%s}", p.vars[op.operand])
+		}
+	}
+	segs := strings.Join(stack, "/")
+	if p.verb != "" {
+		return fmt.Sprintf("/%s:%s", segs, p.verb)
+	}
+	return "/" + segs
+}
+
 /*
  * The following code is adopted and modified from Go's standard library
  * and carries the attached license.
