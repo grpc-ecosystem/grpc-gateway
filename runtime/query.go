@@ -225,7 +225,7 @@ func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (pro
 		// Look for enum by name
 		v := enum.Descriptor().Values().ByName(protoreflect.Name(value))
 		if v == nil {
-			i, err := strconv.Atoi(value)
+			i, err := strconv.ParseInt(value, 10, 32)
 			if err != nil {
 				return protoreflect.Value{}, fmt.Errorf("%q is not a valid value", value)
 			}
