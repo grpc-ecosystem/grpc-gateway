@@ -527,6 +527,16 @@ func TestPopulateParameters(t *testing.T) {
 			want:    &examplepb.Proto3Message{},
 			wanterr: errors.New(`parsing field "timestamp_value": 0000-01-01T00:00:00.00Z before 0001-01-01`),
 		},
+		{
+			// Reject numeric enum values outside the int32 range instead of
+			// truncating them to an in-range value (e.g. 2^32 -> 0).
+			values: url.Values{
+				"enum_value": {"4294967296"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "enum_value": "4294967296" is not a valid value`),
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			msg := spec.want.ProtoReflect().New().Interface()
