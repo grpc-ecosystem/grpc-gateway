@@ -1,0 +1,99 @@
+file_to_generate: "binding/v1/binding.proto"
+proto_file: {
+  name: "google/protobuf/empty.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Empty"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/emptypb;emptypb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "binding/v1/binding.proto"
+  package: "binding.v1"
+  dependency: "google/protobuf/empty.proto"
+  message_type: {
+    name: "Item"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "ListItemResponse"
+    field: {
+      name: "items"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".binding.v1.Item"
+      json_name: "items"
+    }
+  }
+  message_type: {
+    name: "GetItemNameResponse"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "GetItemResponse"
+    field: {
+      name: "item"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".binding.v1.Item"
+      json_name: "item"
+    }
+  }
+  service: {
+    name: "ItemService"
+    method: {
+      name: "ListItem"
+      input_type: ".google.protobuf.Empty"
+      output_type: ".binding.v1.ListItemResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items"
+          response_body: "items"
+        }
+      }
+    }
+    method: {
+      name: "GetItemName"
+      input_type: ".google.protobuf.Empty"
+      output_type: ".binding.v1.GetItemNameResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/name"
+          response_body: "name"
+        }
+      }
+    }
+    method: {
+      name: "GetItem"
+      input_type: ".google.protobuf.Empty"
+      output_type: ".binding.v1.GetItemResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/single"
+          response_body: "item"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/binding/v1;bindingv1"
+  }
+  syntax: "proto3"
+}
