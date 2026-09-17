@@ -275,7 +275,7 @@
   "moduleExtensions": {
     "//:non_module_deps.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "D2DPRoiY9zjZGnqZB89C+n61gH+V+MLWPx38VHspfpw=",
+        "bzlTransitiveDigest": "r+b34dLCQOFOv3YVD55lPTVI75N/+r4Eh+ePJNR+AfU=",
         "usagesDigest": "iXvfBtzAbLvbLe9kllQpE1XGaenkPW3Qmggx56ZxOoQ=",
         "recordedInputs": [
           "REPO_MAPPING:,bazel_tools bazel_tools"
@@ -284,10 +284,23 @@
           "com_github_bazelbuild_buildtools": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
-              "sha256": "f3b800e9f6ca60bdef3709440f393348f7c18a29f30814288a7326285c80aab9",
-              "strip_prefix": "buildtools-8.5.1",
+              "sha256": "f495fe290cf2a009e80b20d5623c7756890a8a45d83fc93d44a31ab92060c752",
+              "strip_prefix": "buildtools-10.0.0",
               "urls": [
-                "https://github.com/bazelbuild/buildtools/archive/v8.5.1.tar.gz"
+                "https://github.com/bazelbuild/buildtools/archive/v10.0.0.tar.gz"
+              ]
+            }
+          },
+          "com_github_google_safeopen": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "patch_cmds": [
+                "find . -name BUILD.bazel -type f -print0 | xargs -0 sed -i 's|@go_sys//|@org_golang_x_sys//|g'"
+              ],
+              "sha256": "0f10a4457d47fef681d60b88b2f771b0248ca37ee22b448ce6c46920faf9d1cd",
+              "strip_prefix": "safeopen-43626d6f468560fc611ad54f1f17f3a455dbe92d",
+              "urls": [
+                "https://github.com/google/safeopen/archive/43626d6f468560fc611ad54f1f17f3a455dbe92d.zip"
               ]
             }
           }

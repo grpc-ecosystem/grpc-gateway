@@ -696,6 +696,12 @@ def go_repositories():
         version = "v0.1.9",
     )
     go_repository(
+        name = "com_github_google_safeopen",
+        importpath = "github.com/google/safeopen",
+        sum = "h1:NcJjfIYRDHuboRtptwjtdQflVDKgXSqTIfwu9PpE9uo=",
+        version = "v0.0.0-20260327150837-43626d6f4685",
+    )
+    go_repository(
         name = "com_github_google_uuid",
         importpath = "github.com/google/uuid",
         sum = "h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=",
