@@ -294,20 +294,14 @@
           "com_github_google_safeopen": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
+              "patch_cmds": [
+                "find . -name BUILD.bazel -type f -print0 | xargs -0 sed -i 's|@go_sys//|@org_golang_x_sys//|g'"
+              ],
               "sha256": "0f10a4457d47fef681d60b88b2f771b0248ca37ee22b448ce6c46920faf9d1cd",
               "strip_prefix": "safeopen-43626d6f468560fc611ad54f1f17f3a455dbe92d",
               "urls": [
                 "https://github.com/google/safeopen/archive/43626d6f468560fc611ad54f1f17f3a455dbe92d.zip"
               ]
-            }
-          },
-          "go_sys": {
-            "repoRuleId": "@@gazelle+//:deps.bzl%go_repository",
-            "attributes": {
-              "build_file_proto_mode": "disable_global",
-              "importpath": "golang.org/x/sys",
-              "sum": "h1:bbX/i/6MgT9BVLM9RT1thmxL04yeTAhbEz4SyadbXoo=",
-              "version": "v0.48.0"
             }
           }
         }
