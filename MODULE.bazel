@@ -50,6 +50,10 @@ go_deps.module(
     sum = "h1:vU5i/LfpvrRCpgM/VPfJLg5KjxD3E+hfT1SH+d9zLwg=",
     version = "v0.21.1-0.20240508182429-e35e4ccd0d2d",
 )
+go_deps.module_override(
+    path = "golang.org/x/sys",
+    repo_name = "go_sys",
+)
 use_repo(
     go_deps,
     "co_honnef_go_tools",
@@ -74,8 +78,8 @@ use_repo(
     "org_golang_google_grpc",
     "org_golang_google_grpc_cmd_protoc_gen_go_grpc",
     "org_golang_google_protobuf",
+    "go_sys",
     "org_golang_x_exp",
-    "org_golang_x_sys",
     "org_golang_x_text",
     "org_golang_x_tools",
 )

@@ -294,9 +294,6 @@
           "com_github_google_safeopen": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
-              "repo_mapping": {
-                "@go_sys": "@org_golang_x_sys"
-              },
               "sha256": "0f10a4457d47fef681d60b88b2f771b0248ca37ee22b448ce6c46920faf9d1cd",
               "strip_prefix": "safeopen-43626d6f468560fc611ad54f1f17f3a455dbe92d",
               "urls": [
