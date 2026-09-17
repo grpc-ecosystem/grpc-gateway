@@ -38,7 +38,7 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, m *descriptor.Met
 		op.RequestBody = buildRequestBody(b, m, binding)
 	}
 
-	op.Responses = buildResponses(b, m)
+	op.Responses = buildResponses(b, m, binding)
 	if o, ok := methodOperationAnnotation(m); ok {
 		if err := applyOperationOverride(op, o); err != nil {
 			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
@@ -347,7 +347,7 @@ func buildRequestBody(b *schemaBuilder, m *descriptor.Method, binding *descripto
 // schema rather than the HTTP-conventional 204 No Content. The grpc-gateway
 // runtime writes `{}` on success regardless of the response type, so the
 // spec has to match that or generated clients will reject valid responses.
-func buildResponses(b *schemaBuilder, m *descriptor.Method) *Responses {
+func buildResponses(b *schemaBuilder, m *descriptor.Method, binding *descriptor.Binding) *Responses {
 	resp := NewResponses()
 
 	if m.ResponseType != nil {
@@ -356,7 +356,10 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method) *Responses {
 			desc = "A successful response."
 		}
 		var schema *SchemaOrRef
-		if wkt := wellKnownTypeSchema(m.ResponseType.FQMN()); wkt != nil {
+		if binding.ResponseBody != nil && len(binding.ResponseBody.FieldPath) > 0 {
+			lastField := binding.ResponseBody.FieldPath[len(binding.ResponseBody.FieldPath)-1]
+			schema = b.fieldSchema(lastField.Target)
+		} else if wkt := wellKnownTypeSchema(m.ResponseType.FQMN()); wkt != nil {
 			schema = &SchemaOrRef{Value: wkt}
 		} else {
 			b.ensureMessageSchema(m.ResponseType)

@@ -900,6 +900,78 @@ func TestGenerate_DisableDefaultErrors(t *testing.T) {
 	}
 }
 
+// TestGenerate_Binding exercises google.api.http binding options, such as
+// `response_body`.
+func TestGenerate_Binding(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/binding.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// 1. The response_body binding maps the response schema to the
+	//    specified field of the output message.
+	paths, _ := doc["paths"].(map[string]any)
+
+	// Array field binding.
+	listOp, ok := paths["/v1/items"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected /v1/items path, got: %v", paths)
+	}
+	get, _ := listOp["get"].(map[string]any)
+	if get == nil {
+		t.Fatalf("expected GET operation under /v1/items")
+	}
+
+	getResponses, _ := get["responses"].(map[string]any)
+	okResponse, ok := getResponses["200"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected 200 response under /v1/items")
+	}
+
+	content, _ := okResponse["content"].(map[string]any)
+	appJSON, _ := content["application/json"].(map[string]any)
+	bodySchema, _ := appJSON["schema"].(map[string]any)
+	typ, _ := bodySchema["type"].(string)
+	if typ != "array" {
+		t.Fatalf("expected type array under /v1/items, got %v", typ)
+	}
+
+	if bodySchema["items"].(map[string]any)["$ref"] != "#/components/schemas/binding.v1.Item" {
+		t.Errorf("want schema $ref to Item, got %v", bodySchema)
+	}
+
+	// Scalar field binding.
+	nameOp, ok := paths["/v1/items/name"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected /v1/items/name path")
+	}
+	nameGet, _ := nameOp["get"].(map[string]any)
+	nameResp, _ := nameGet["responses"].(map[string]any)["200"].(map[string]any)
+	nameContent, _ := nameResp["content"].(map[string]any)["application/json"].(map[string]any)
+	nameSchema, _ := nameContent["schema"].(map[string]any)
+	if nameSchema["type"] != "string" {
+		t.Errorf("want type string for /v1/items/name, got %v", nameSchema["type"])
+	}
+
+	// Message field binding.
+	singleOp, ok := paths["/v1/items/single"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected /v1/items/single path")
+	}
+	singleGet, _ := singleOp["get"].(map[string]any)
+	singleResp, _ := singleGet["responses"].(map[string]any)["200"].(map[string]any)
+	singleContent, _ := singleResp["content"].(map[string]any)["application/json"].(map[string]any)
+	singleSchema, _ := singleContent["schema"].(map[string]any)
+	if singleSchema["$ref"] != "#/components/schemas/binding.v1.Item" {
+		t.Errorf("want schema $ref to Item for /v1/items/single, got %v", singleSchema)
+	}
+}
+
 // loadRequest reads a prototext-encoded CodeGeneratorRequest from disk.
 func loadRequest(t *testing.T, path string) *pluginpb.CodeGeneratorRequest {
 	t.Helper()
