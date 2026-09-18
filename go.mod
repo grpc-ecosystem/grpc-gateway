@@ -20,7 +20,7 @@ require (
 	golang.org/x/text v0.42.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20260917231906-eeb232e0883d
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260904194346-d0f1323225a4
-	google.golang.org/grpc v1.83.2
+	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
 )
 
