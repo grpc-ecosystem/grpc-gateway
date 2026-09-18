@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"math"
 	"net"
 	"net/http"
 	"net/textproto"
@@ -302,9 +303,15 @@ func timeoutDecode(s string) (time.Duration, error) {
 	if !ok {
 		return 0, fmt.Errorf("timeout unit is not recognized: %q", s)
 	}
-	t, err := strconv.ParseInt(s[:size-1], 10, 64)
+	t, err := strconv.ParseUint(s[:size-1], 10, 64)
 	if err != nil {
 		return 0, err
+	}
+	// Guard against overflowing time.Duration, which is an int64 nanosecond
+	// count: without this a large value wraps to a bogus (often negative)
+	// deadline instead of the long timeout the client asked for.
+	if t > uint64(math.MaxInt64)/uint64(d) {
+		return time.Duration(math.MaxInt64), nil
 	}
 	return d * time.Duration(t), nil
 }
