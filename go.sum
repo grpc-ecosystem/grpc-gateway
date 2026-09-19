@@ -132,10 +132,10 @@ golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated h1:1h2MnaIAIXISqTF
 golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated/go.mod h1:RVAQXBGNv1ib0J382/DPCRS/BPnsGebyM1Gj5VSDpG8=
 gonum.org/v1/gonum v0.17.0 h1:VbpOemQlsSMrYmn7T2OUvQ4dqxQXU+ouZFQsZOx50z4=
 gonum.org/v1/gonum v0.17.0/go.mod h1:El3tOrEuMpv2UdMrbNlKEh9vd86bmQ6vqIcDwxEOc1E=
-google.golang.org/genproto/googleapis/api v0.0.0-20260917231906-eeb232e0883d h1:/9LpSFSe+gfp9SQOAkheborv5745Puiy5eHCZqCahGY=
-google.golang.org/genproto/googleapis/api v0.0.0-20260917231906-eeb232e0883d/go.mod h1:+To63Bl+R71zXOxsr6X8nYMy4KytqWMFFpOb6W278qo=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20260904194346-d0f1323225a4 h1:5t+ZydAFj5kGVLrgCvLmpmCf9ylGRd64hpEronfRaws=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20260904194346-d0f1323225a4/go.mod h1:DjtHYE8FKJLivXcBEjGwndXfIC23G0VpXiXKqG179uA=
+google.golang.org/genproto/googleapis/api v0.0.0-20260918162117-cecb64721679 h1:FEp7JNE32DTAwbnI/ixagnmj7Xm1eTONofGEUXFjZ4w=
+google.golang.org/genproto/googleapis/api v0.0.0-20260918162117-cecb64721679/go.mod h1:52bV8FLAQ9Qmcqaq9ECLmuEHZthk+6OPV45aKBBrsNw=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20260917231906-eeb232e0883d h1:cDmz0iu+zm7SfyudwKqfExdDAxoJWhT2VtYJ+pLi7GQ=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20260917231906-eeb232e0883d/go.mod h1:OaIUM3+LpYcK2GXM4FTmhWoIq371Owdr+Cc7/BsYHHc=
 google.golang.org/grpc v1.84.0 h1:soMyaPJ8pAak5PIQ0DGBUir0XRo2fRoMqhNWMLlLxO0=
 google.golang.org/grpc v1.84.0/go.mod h1:ljCht0DrxQrXBDRTZp52Qxh3Ffk8CdYm2sj4O2QN2C0=
 google.golang.org/protobuf v1.36.12 h1:pJOKDDOyeXErUroCihFAd5LQuwXBSpVnKGrj5o/fwxc=
