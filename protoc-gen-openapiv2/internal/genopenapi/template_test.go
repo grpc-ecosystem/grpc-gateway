@@ -10662,6 +10662,185 @@ func TestPathAndQueryParametersIncludeFieldSchemaExampleAndPattern(t *testing.T)
 	)
 }
 
+func TestQueryParametersIncludeRepeatedFieldMinMaxItems(t *testing.T) {
+	tagsFieldOptions := &descriptorpb.FieldOptions{}
+	proto.SetExtension(proto.Message(tagsFieldOptions), openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+		MinItems:    1,
+		MaxItems:    10,
+		UniqueItems: true,
+	})
+
+	reqMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ListItemsRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:    proto.String("tags"),
+				Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number:  proto.Int32(1),
+				Label:   descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Options: tagsFieldOptions,
+			},
+			{
+				Name:   proto.String("categories"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+			},
+		},
+	}
+	respMsgDesc := &descriptorpb.DescriptorProto{Name: proto.String("ListItemsResponse")}
+
+	reqMsg := &descriptor.Message{DescriptorProto: reqMsgDesc}
+	respMsg := &descriptor.Message{DescriptorProto: respMsgDesc}
+	tagsField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsgDesc.GetField()[0],
+	}
+	categoriesField := &descriptor.Field{
+		Message:              reqMsg,
+		FieldDescriptorProto: reqMsgDesc.GetField()[1],
+	}
+	reqMsg.Fields = []*descriptor.Field{tagsField, categoriesField}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("ListItems"),
+		InputType:  proto.String("ListItemsRequest"),
+		OutputType: proto.String("ListItemsResponse"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ItemService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("items.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{reqMsgDesc, respMsgDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/example/items;items"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/items/items.pb",
+			Name: "items_pb",
+		},
+		Messages: []*descriptor.Message{reqMsg, respMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           reqMsg,
+						ResponseType:          respMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/items",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(reqFromFile(fileCL)); err != nil {
+		t.Fatalf("reg.Load(%#v) failed with %v; want success", file, err)
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	parameters := result.getPathItemObject("/v1/items").Get.Parameters
+	if len(parameters) != 2 {
+		t.Fatalf("expected 2 parameters, got %d", len(parameters))
+	}
+	findParameter := func(name string) openapiParameterObject {
+		t.Helper()
+		for _, parameter := range parameters {
+			if parameter.Name == name {
+				return parameter
+			}
+		}
+		t.Fatalf("parameter %s not found in %#v", name, parameters)
+		return openapiParameterObject{}
+	}
+
+	tagsParam := findParameter("tags")
+	if tagsParam.In != "query" {
+		t.Errorf("expected param in 'query', got %q", tagsParam.In)
+	}
+	if tagsParam.Type != "array" {
+		t.Errorf("expected param type 'array', got %q", tagsParam.Type)
+	}
+	if tagsParam.CollectionFormat != "multi" {
+		t.Errorf("expected collectionFormat 'multi', got %q", tagsParam.CollectionFormat)
+	}
+	if !tagsParam.UniqueItems {
+		t.Errorf("expected uniqueItems true, got false")
+	}
+	if tagsParam.MinItems == nil || *tagsParam.MinItems != 1 {
+		t.Errorf("expected minItems 1, got %v", tagsParam.MinItems)
+	}
+	if tagsParam.MaxItems == nil || *tagsParam.MaxItems != 10 {
+		t.Errorf("expected maxItems 10, got %v", tagsParam.MaxItems)
+	}
+
+	encodedTags, err := json.Marshal(tagsParam)
+	if err != nil {
+		t.Fatalf("json.Marshal failed: %v", err)
+	}
+	var gotTags map[string]any
+	if err := json.Unmarshal(encodedTags, &gotTags); err != nil {
+		t.Fatalf("json.Unmarshal failed: %v", err)
+	}
+	if gotTags["minItems"] != float64(1) {
+		t.Errorf("marshaled minItems = %v; want 1", gotTags["minItems"])
+	}
+	if gotTags["maxItems"] != float64(10) {
+		t.Errorf("marshaled maxItems = %v; want 10", gotTags["maxItems"])
+	}
+	if gotTags["uniqueItems"] != true {
+		t.Errorf("marshaled uniqueItems = %v; want true", gotTags["uniqueItems"])
+	}
+
+	catParam := findParameter("categories")
+	if catParam.Type != "array" {
+		t.Errorf("expected param type 'array', got %q", catParam.Type)
+	}
+	if catParam.MinItems != nil {
+		t.Errorf("expected minItems nil, got %v", catParam.MinItems)
+	}
+	if catParam.MaxItems != nil {
+		t.Errorf("expected maxItems nil, got %v", catParam.MaxItems)
+	}
+	encodedCat, err := json.Marshal(catParam)
+	if err != nil {
+		t.Fatalf("json.Marshal failed: %v", err)
+	}
+	var gotCat map[string]any
+	if err := json.Unmarshal(encodedCat, &gotCat); err != nil {
+		t.Fatalf("json.Unmarshal failed: %v", err)
+	}
+	if _, ok := gotCat["minItems"]; ok {
+		t.Errorf("unexpected minItems in marshaled JSON: %v", gotCat["minItems"])
+	}
+	if _, ok := gotCat["maxItems"]; ok {
+		t.Errorf("unexpected maxItems in marshaled JSON: %v", gotCat["maxItems"])
+	}
+}
+
 func GetPaths(req *openapiSwaggerObject) []string {
 	paths := make([]string, len(req.Paths))
 	i := 0
