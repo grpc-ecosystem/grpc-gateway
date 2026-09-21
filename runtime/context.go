@@ -158,7 +158,7 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 
 		for _, val := range vals {
 			// For backwards-compatibility, pass through 'authorization' header with no prefix.
-			if key == "Authorization" {
+			if key == "Authorization" && isValidGRPCMetadataTextValue(val) {
 				pairs = append(pairs, "authorization", val)
 			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
@@ -183,9 +183,9 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 			}
 		}
 	}
-	if host := req.Header.Get(xForwardedHost); host != "" {
+	if host := req.Header.Get(xForwardedHost); host != "" && isValidGRPCMetadataTextValue(host) {
 		pairs = append(pairs, strings.ToLower(xForwardedHost), host)
-	} else if req.Host != "" {
+	} else if req.Host != "" && isValidGRPCMetadataTextValue(req.Host) {
 		pairs = append(pairs, strings.ToLower(xForwardedHost), req.Host)
 	}
 
@@ -196,7 +196,9 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 		}
 	}
 	if len(xff) > 0 {
-		pairs = append(pairs, strings.ToLower(xForwardedFor), strings.Join(xff, ", "))
+		if value := strings.Join(xff, ", "); isValidGRPCMetadataTextValue(value) {
+			pairs = append(pairs, strings.ToLower(xForwardedFor), value)
+		}
 	}
 
 	if timeout != 0 {

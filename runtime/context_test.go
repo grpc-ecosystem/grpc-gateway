@@ -211,6 +211,41 @@ func TestAnnotateContext_AppendsToExistingXForwardedHeaders(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_SkipsInvalidForwardedValues(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	request, err := http.NewRequestWithContext(ctx, "GET", "http://bar.foo.example.com/v1", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://bar.foo.example.com/v1", err)
+	}
+	// 0x7f (DEL) and 0x01 are outside the printable ASCII range gRPC allows for
+	// metadata values, so these must not be forwarded, matching how the regular
+	// header loop already skips such values.
+	request.Header.Set("Authorization", "tok\x01en")
+	request.Header.Set("X-Forwarded-Host", "bad\x7fhost")
+	request.Header.Set("X-Forwarded-For", "192.0.2.100\x7f")
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok {
+		t.Fatal("metadata.FromOutgoingContext failed")
+	}
+	if got := md["authorization"]; got != nil {
+		t.Errorf(`md["authorization"] = %q; want no value for a non-ASCII header`, got)
+	}
+	// The invalid X-Forwarded-Host is dropped, so the value falls back to the request Host.
+	if got, want := md["x-forwarded-host"], []string{"bar.foo.example.com"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["x-forwarded-host"] = %q; want %q`, got, want)
+	}
+	if got := md["x-forwarded-for"]; got != nil {
+		t.Errorf(`md["x-forwarded-for"] = %q; want no value for a non-ASCII header`, got)
+	}
+}
+
 func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
