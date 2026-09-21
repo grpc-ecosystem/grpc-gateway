@@ -428,7 +428,9 @@
             "type": "string"
           },
           "description": "Repeated string description.",
-          "title": "Repeated string title"
+          "title": "Repeated string title",
+          "maxItems": 5,
+          "minItems": 1
         },
         "repeatedNestedAnnotation": {
           "type": "array",
