@@ -598,6 +598,8 @@ type ABitOfEverythingServiceUpdateV2Body struct {
 	// Repeated string title
 	//
 	// Repeated string description.
+	// Max Items: 5
+	// Min Items: 1
 	RepeatedStringAnnotation []string `json:"repeatedStringAnnotation"`
 
 	// repeated string value
@@ -734,6 +736,10 @@ func (o *ABitOfEverythingServiceUpdateV2Body) Validate(formats strfmt.Registry) 
 	}
 
 	if err := o.validateRepeatedNestedAnnotation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRepeatedStringAnnotation(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -1116,6 +1122,24 @@ func (o *ABitOfEverythingServiceUpdateV2Body) validateRepeatedNestedAnnotation(f
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (o *ABitOfEverythingServiceUpdateV2Body) validateRepeatedStringAnnotation(formats strfmt.Registry) error {
+	if swag.IsZero(o.RepeatedStringAnnotation) { // not required
+		return nil
+	}
+
+	iRepeatedStringAnnotationSize := int64(len(o.RepeatedStringAnnotation))
+
+	if err := validate.MinItems("abe"+"."+"repeatedStringAnnotation", "body", iRepeatedStringAnnotationSize, 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxItems("abe"+"."+"repeatedStringAnnotation", "body", iRepeatedStringAnnotationSize, 5); err != nil {
+		return err
 	}
 
 	return nil
