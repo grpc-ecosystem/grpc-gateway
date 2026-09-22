@@ -252,6 +252,34 @@ func TestJSONPbUnmarshal(t *testing.T) {
 	}
 }
 
+func TestJSONPbUnmarshalEnumNonProto(t *testing.T) {
+	// A body bound directly to an enum (or repeated enum) field decodes through
+	// decodeNonProtoField rather than protojson. Numeric values there must be
+	// validated the same way protojson validates them: integral and within
+	// int32 range, otherwise they get silently truncated/wrapped into a bogus
+	// enum value.
+	var m runtime.JSONPb
+
+	for _, data := range []string{"4294967297", "-4294967297", "1.9"} {
+		var got examplepb.NumericEnum
+		if err := m.Unmarshal([]byte(data), &got); err == nil {
+			t.Errorf("m.Unmarshal(%q, enum) = %d; want error", data, int32(got))
+		}
+	}
+
+	var gotSlice []examplepb.NumericEnum
+	if err := m.Unmarshal([]byte(`[4294967297]`), &gotSlice); err == nil {
+		t.Errorf("m.Unmarshal([4294967297], []enum) = %v; want error", gotSlice)
+	}
+
+	var valid examplepb.NumericEnum
+	if err := m.Unmarshal([]byte("1"), &valid); err != nil {
+		t.Errorf("m.Unmarshal(1, enum) failed with %v; want success", err)
+	} else if valid != examplepb.NumericEnum_ONE {
+		t.Errorf("m.Unmarshal(1, enum) = %d; want %d", int32(valid), int32(examplepb.NumericEnum_ONE))
+	}
+}
+
 func TestJSONPbUnmarshalFields(t *testing.T) {
 	var m runtime.JSONPb
 	for _, fixt := range fieldFixtures {
