@@ -16,9 +16,9 @@ bazel_features_deps()
 
 http_archive(
     name = "rules_python",
-    sha256 = "f700c75859a827a2e3e3ba4c9c0ec2d796e191bf0438ac3fee0b7851d83a3d4c",
-    strip_prefix = "rules_python-2.3.3",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/2.3.3/rules_python-2.3.3.tar.gz",
+    sha256 = "a535712f12ba25253d73975ba2932994b5e53773f94b58fb3f8fa7827de8b6b7",
+    strip_prefix = "rules_python-2.3.4",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/2.3.4/rules_python-2.3.4.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "py_repositories")
