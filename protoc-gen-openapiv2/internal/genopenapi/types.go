@@ -158,6 +158,7 @@ type openapiParameterObject struct {
 	CollectionFormat string              `json:"collectionFormat,omitempty" yaml:"collectionFormat,omitempty"`
 	Default          interface{}         `json:"default,omitempty" yaml:"default,omitempty"`
 	MinItems         *int                `json:"minItems,omitempty" yaml:"minItems,omitempty"`
+	MaxItems         *int                `json:"maxItems,omitempty" yaml:"maxItems,omitempty"`
 	Pattern          string              `json:"pattern,omitempty" yaml:"pattern,omitempty"`
 	XExample         RawExample          `json:"x-example,omitempty" yaml:"x-example,omitempty"`
 

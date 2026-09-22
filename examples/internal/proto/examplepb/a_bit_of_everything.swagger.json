@@ -430,7 +430,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -1072,7 +1074,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -1522,7 +1526,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.amount",
@@ -1959,7 +1965,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -2422,7 +2430,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -2888,7 +2898,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -3391,7 +3403,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -3829,7 +3843,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -4291,7 +4307,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -4753,7 +4771,9 @@
             "items": {
               "type": "string"
             },
-            "collectionFormat": "multi"
+            "collectionFormat": "multi",
+            "minItems": 1,
+            "maxItems": 5
           },
           {
             "name": "nestedAnnotation.name",
@@ -5919,7 +5939,9 @@
                     "type": "string"
                   },
                   "description": "Repeated string description.",
-                  "title": "Repeated string title"
+                  "title": "Repeated string title",
+                  "maxItems": 5,
+                  "minItems": 1
                 },
                 "repeatedNestedAnnotation": {
                   "type": "array",
@@ -6245,7 +6267,9 @@
                     "type": "string"
                   },
                   "description": "Repeated string description.",
-                  "title": "Repeated string title"
+                  "title": "Repeated string title",
+                  "maxItems": 5,
+                  "minItems": 1
                 },
                 "repeatedNestedAnnotation": {
                   "type": "array",
@@ -7242,7 +7266,9 @@
             "type": "string"
           },
           "description": "Repeated string description.",
-          "title": "Repeated string title"
+          "title": "Repeated string title",
+          "maxItems": 5,
+          "minItems": 1
         },
         "repeatedNestedAnnotation": {
           "type": "array",
@@ -7516,7 +7542,9 @@
                 "type": "string"
               },
               "description": "Repeated string description.",
-              "title": "Repeated string title"
+              "title": "Repeated string title",
+              "maxItems": 5,
+              "minItems": 1
             },
             "repeatedNestedAnnotation": {
               "type": "array",
@@ -7805,7 +7833,9 @@
             "type": "string"
           },
           "description": "Repeated string description.",
-          "title": "Repeated string title"
+          "title": "Repeated string title",
+          "maxItems": 5,
+          "minItems": 1
         },
         "repeatedNestedAnnotation": {
           "type": "array",
@@ -8193,7 +8223,9 @@
             "type": "string"
           },
           "description": "Repeated string description.",
-          "title": "Repeated string title"
+          "title": "Repeated string title",
+          "maxItems": 5,
+          "minItems": 1
         },
         "repeatedNestedAnnotation": {
           "type": "array",

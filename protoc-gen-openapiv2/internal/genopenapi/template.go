@@ -431,6 +431,14 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		}
 		if param.Type == "array" {
 			param.CollectionFormat = "multi"
+			if schema.MinItems > 0 {
+				minItems := int(schema.MinItems)
+				param.MinItems = &minItems
+			}
+			if schema.MaxItems > 0 {
+				maxItems := int(schema.MaxItems)
+				param.MaxItems = &maxItems
+			}
 		}
 
 		param.Name = prefix + reg.FieldName(field) + mapKeySuffix

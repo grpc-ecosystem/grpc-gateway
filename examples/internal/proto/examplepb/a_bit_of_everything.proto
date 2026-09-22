@@ -331,6 +331,8 @@ message ABitOfEverything {
   repeated string repeated_string_annotation = 34 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     title: "Repeated string title"
     description: "Repeated string description."
+    min_items: 1
+    max_items: 5
   }];
 
   // repeated nested object comment (This comment is overridden by the field annotation)
