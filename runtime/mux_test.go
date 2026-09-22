@@ -669,6 +669,12 @@ var defaultHeaderMatcherTests = []struct {
 		"",
 		false,
 	},
+	{
+		"key stripping into the reserved grpcgateway- namespace should not return",
+		"Grpc-Metadata-grpcgateway-Host",
+		"",
+		false,
+	},
 }
 
 func TestDefaultHeaderMatcher(t *testing.T) {
