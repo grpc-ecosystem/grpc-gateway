@@ -137,13 +137,13 @@ jobs:
     steps:
       - name: Build Fuzzers
         id: build
-        uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@8f634126459ac994f47076ee3ba0be6b348d75e2 # master
+        uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@e3b9558f4c6126c1228b7f20a0270d4ff1f0f2fd # master
         with:
           oss-fuzz-project-name: "grpc-gateway"
           dry-run: false
           language: go
       - name: Run Fuzzers
-        uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@8f634126459ac994f47076ee3ba0be6b348d75e2 # master
+        uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@e3b9558f4c6126c1228b7f20a0270d4ff1f0f2fd # master
         with:
           oss-fuzz-project-name: "grpc-gateway"
           fuzz-seconds: 600
