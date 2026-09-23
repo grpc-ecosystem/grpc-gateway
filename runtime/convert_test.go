@@ -257,6 +257,9 @@ func TestConvertInt64Slice(t *testing.T) {
 		{name: "valid values", input: "1,-2,3", sep: ",", output: []int64{1, -2, 3}},
 		{name: "single value", input: "42", sep: ",", output: []int64{42}},
 		{name: "invalid element", input: "1,notanint", sep: ",", wanterr: true},
+		{name: "hex not accepted", input: "0x10", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0", sep: ",", wanterr: true},
+		{name: "leading zero is decimal not octal", input: "010", sep: ",", output: []int64{10}},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
@@ -285,6 +288,9 @@ func TestConvertInt32Slice(t *testing.T) {
 		{name: "single value", input: "42", sep: ",", output: []int32{42}},
 		{name: "invalid element", input: "1,notanint", sep: ",", wanterr: true},
 		{name: "overflows int32", input: "2147483648", sep: ",", wanterr: true},
+		{name: "hex not accepted", input: "0x10", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0", sep: ",", wanterr: true},
+		{name: "leading zero is decimal not octal", input: "010", sep: ",", output: []int32{10}},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
@@ -312,6 +318,9 @@ func TestConvertUint64Slice(t *testing.T) {
 		{name: "valid values", input: "1,2,3", sep: ",", output: []uint64{1, 2, 3}},
 		{name: "single value", input: "42", sep: ",", output: []uint64{42}},
 		{name: "invalid element", input: "1,-2", sep: ",", wanterr: true},
+		{name: "hex not accepted", input: "0x10", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0", sep: ",", wanterr: true},
+		{name: "leading zero is decimal not octal", input: "010", sep: ",", output: []uint64{10}},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
@@ -340,6 +349,9 @@ func TestConvertUint32Slice(t *testing.T) {
 		{name: "single value", input: "42", sep: ",", output: []uint32{42}},
 		{name: "invalid element", input: "1,-2", sep: ",", wanterr: true},
 		{name: "overflows uint32", input: "4294967296", sep: ",", wanterr: true},
+		{name: "hex not accepted", input: "0x10", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0", sep: ",", wanterr: true},
+		{name: "leading zero is decimal not octal", input: "010", sep: ",", output: []uint32{10}},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
@@ -398,6 +410,8 @@ func TestConvertEnumSlice(t *testing.T) {
 		{name: "mixed name and value", input: "A,1", sep: ",", output: []int32{0, 1}},
 		{name: "unknown name", input: "A,Z", sep: ",", wanterr: true},
 		{name: "numeric value out of range", input: "0,9", sep: ",", wanterr: true},
+		{name: "hex numeric not accepted", input: "0x2", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0", sep: ",", wanterr: true},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
