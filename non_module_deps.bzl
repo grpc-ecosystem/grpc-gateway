@@ -8,9 +8,9 @@ def _non_module_deps_impl(
     # TODO(bazelbuild/buildtools#1204): Remove when available as module.
     http_archive(
         name = "com_github_bazelbuild_buildtools",
-        sha256 = "7914e09ee966e7498c4a0c365590f555c741c24b1dee022f60a2284036c2653a",
-        strip_prefix = "buildtools-10.0.1",
-        urls = ["https://github.com/bazelbuild/buildtools/archive/v10.0.1.tar.gz"],
+        sha256 = "fa0b905032d49a621679e7318875736e451895a1417d992fbbebd27f82b83c38",
+        strip_prefix = "buildtools-10.1.0",
+        urls = ["https://github.com/bazelbuild/buildtools/archive/v10.1.0.tar.gz"],
     )
 
 non_module_deps = module_extension(
