@@ -13,6 +13,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -48,6 +49,12 @@ type Registry struct {
 
 	// allowMerge generation one OpenAPI file out of multiple protos
 	allowMerge bool
+
+	// ignoreGoPackageOption, when set, causes Load to synthesize a placeholder
+	// go_package option for any proto file that doesn't declare one, instead of
+	// erroring. Safe only for generators, like protoc-gen-openapiv2, that never
+	// emit Go source and don't depend on the Go import path's actual value.
+	ignoreGoPackageOption bool
 
 	// mergeFileName target OpenAPI file name after merge
 	mergeFileName string
@@ -229,6 +236,9 @@ func NewRegistry() *Registry {
 
 // Load loads definitions of services, methods, messages, enumerations and fields from "req".
 func (r *Registry) Load(req *pluginpb.CodeGeneratorRequest) error {
+	if r.ignoreGoPackageOption {
+		fillGoPackageOptionIfMissing(req)
+	}
 	gen, err := protogen.Options{}.New(req)
 	if err != nil {
 		return err
@@ -238,6 +248,36 @@ func (r *Registry) Load(req *pluginpb.CodeGeneratorRequest) error {
 	// The support for features must be set on the pluginpb.CodeGeneratorResponse.
 	codegenerator.SetSupportedFeaturesOnPluginGen(gen)
 	return r.load(gen)
+}
+
+// fillGoPackageOptionIfMissing synthesizes a placeholder go_package option for
+// any proto file in req that doesn't declare one, so protogen.Options.New does
+// not error with "unable to determine Go import path". The synthesized path
+// always contains both a "." and a "/" ("generated.invalid/..."), satisfying
+// protogen's own import-path validation, and uses the RFC 2606 reserved
+// ".invalid" TLD convention to make clear it is a placeholder, never a real Go
+// module path.
+//
+// This never overrides an explicit "M<file>=<path>" command-line parameter:
+// protogen.Options.New parses M-flags into its own importPaths map before
+// falling back to each file's go_package option, and only uses go_package
+// when no M-flag already supplied a path for that file — so an M-flag the
+// caller supplies always takes precedence over whatever is synthesized here,
+// regardless of order.
+func fillGoPackageOptionIfMissing(req *pluginpb.CodeGeneratorRequest) {
+	for _, fdesc := range req.GetProtoFile() {
+		if fdesc.GetOptions().GetGoPackage() != "" {
+			continue
+		}
+		pkgPath := strings.ReplaceAll(fdesc.GetPackage(), ".", "/")
+		if pkgPath == "" {
+			pkgPath = strings.TrimSuffix(strings.ReplaceAll(fdesc.GetName(), "/", "_"), ".proto")
+		}
+		if fdesc.Options == nil {
+			fdesc.Options = &descriptorpb.FileOptions{}
+		}
+		fdesc.Options.GoPackage = proto.String("generated.invalid/" + pkgPath)
+	}
 }
 
 func (r *Registry) LoadFromPlugin(gen *protogen.Plugin) error {
@@ -528,6 +568,16 @@ func (r *Registry) SetAllowDeleteBody(allow bool) {
 // SetAllowMerge controls whether generation one OpenAPI file out of multiple protos
 func (r *Registry) SetAllowMerge(allow bool) {
 	r.allowMerge = allow
+}
+
+// SetIgnoreGoPackageOption controls whether Load tolerates proto files that
+// don't declare a go_package option, by synthesizing a placeholder import
+// path instead of erroring. Intended for protoc-gen-openapiv2, which never
+// emits Go source and has no real use for the Go import path; it must not be
+// enabled for protoc-gen-grpc-gateway, which does emit a Go library and
+// genuinely needs a correct go_package.
+func (r *Registry) SetIgnoreGoPackageOption(ignore bool) {
+	r.ignoreGoPackageOption = ignore
 }
 
 // IsAllowMerge whether generation one OpenAPI file out of multiple protos

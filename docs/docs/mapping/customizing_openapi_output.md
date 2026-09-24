@@ -767,6 +767,26 @@ paths:
       operationId: EchoService_Hello
 ```
 
+### Allow proto files without a go_package option
+
+By default, `protoc-gen-openapiv2` requires every proto file to declare a `go_package` option, even though the generator never emits Go source and has no real use for the value. Set `ignore_go_package_option=true` to tolerate proto files that don't declare one — a placeholder import path is synthesized instead of erroring. Note: if `generate_x_go_type` is also enabled, the synthesized placeholder (not a real Go import path) will appear in the generated `x-go-type` extension for any file that used this fallback.
+
+For example, if you are using `buf`:
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - ignore_go_package_option=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=ignore_go_package_option=true ./path/to/file.proto
+```
+
 ### Disable default responses
 
 By default a 200 OK response is rendered for each service operation. But it is possible to disable this and explicitly define your service's responses, using the `disable_default_responses` option. Allowed values are: `true`, `false`.

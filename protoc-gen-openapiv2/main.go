@@ -55,6 +55,7 @@ var (
 	expandSlashedPathPatterns       = flag.Bool("expand_slashed_path_patterns", false, "if set, expands path parameters with URI sub-paths into the URI. For example, \"/v1/{name=projects/*}/resource\" becomes \"/v1/projects/{project}/resource\".")
 	useProto3FieldSemantics         = flag.Bool("use_proto3_field_semantics", false, "if set, uses proto3 field semantics for the OpenAPI schema. This means that fields are required by default.")
 	generateXGoType                 = flag.Bool("generate_x_go_type", false, "if set, generates x-go-type extension using the go_package option from proto files")
+	ignoreGoPackageOption           = flag.Bool("ignore_go_package_option", false, "if set, tolerates proto files that don't declare a go_package option by synthesizing a placeholder import path instead of erroring. protoc-gen-openapiv2 never emits Go source, so this is normally safe; the one exception is when generate_x_go_type is also enabled, in which case the synthesized placeholder (not a real Go import path) will appear in the generated x-go-type extension for files that used this fallback.")
 
 	_ = flag.Bool("logtostderr", false, "Legacy glog compatibility. This flag is a no-op, you can safely remove it")
 )
@@ -120,6 +121,7 @@ func main() {
 	reg.SetPrefix(*importPrefix)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowMerge(*allowMerge)
+	reg.SetIgnoreGoPackageOption(*ignoreGoPackageOption)
 	reg.SetMergeFileName(*mergeFileName)
 	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
 	reg.SetUseProto3FieldSemantics(*useProto3FieldSemantics)
