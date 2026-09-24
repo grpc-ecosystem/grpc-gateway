@@ -470,6 +470,80 @@ func TestLoadWithInconsistentTargetPackage(t *testing.T) {
 	}
 }
 
+func TestLoadIgnoreGoPackageOption(t *testing.T) {
+	const src = `
+		file_to_generate: 'a.proto'
+		proto_file <
+			name: 'a.proto'
+			package: 'your.service.v1'
+			message_type < name: 'StringMessage' >
+			service <
+				name: "YourService"
+				method <
+					name: "Echo"
+					input_type: "StringMessage"
+					output_type: "StringMessage"
+				>
+			>
+		>
+	`
+
+	var reqWithoutOption pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(src), &reqWithoutOption); err != nil {
+		t.Fatalf("prototext.Unmarshal(%s) failed with %v; want success", src, err)
+	}
+	reg := NewRegistry()
+	if err := reg.Load(&reqWithoutOption); err == nil {
+		t.Fatalf("reg.Load() succeeded for a proto file with no go_package option and SetIgnoreGoPackageOption not set; want an error (this pins today's documented, intentional behavior for protoc-gen-grpc-gateway; see issue #2127)")
+	}
+
+	var reqWithOption pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(src), &reqWithOption); err != nil {
+		t.Fatalf("prototext.Unmarshal(%s) failed with %v; want success", src, err)
+	}
+	regWithOption := NewRegistry()
+	regWithOption.SetIgnoreGoPackageOption(true)
+	if err := regWithOption.Load(&reqWithOption); err != nil {
+		t.Fatalf("reg.Load() failed with %v after SetIgnoreGoPackageOption(true) for a proto file with no go_package option; want success", err)
+	}
+}
+
+func TestLoadIgnoreGoPackageOptionRespectsMFlag(t *testing.T) {
+	const src = `
+		file_to_generate: 'a.proto'
+		parameter: 'Ma.proto=explicit/override/path'
+		proto_file <
+			name: 'a.proto'
+			package: 'your.service.v1'
+			message_type < name: 'StringMessage' >
+			service <
+				name: "YourService"
+				method <
+					name: "Echo"
+					input_type: "StringMessage"
+					output_type: "StringMessage"
+				>
+			>
+		>
+	`
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(src), &req); err != nil {
+		t.Fatalf("prototext.Unmarshal(%s) failed with %v; want success", src, err)
+	}
+	reg := NewRegistry()
+	reg.SetIgnoreGoPackageOption(true)
+	if err := reg.Load(&req); err != nil {
+		t.Fatalf("reg.Load() failed with %v after SetIgnoreGoPackageOption(true) with an explicit M-flag present; want success", err)
+	}
+	f, err := reg.LookupFile("a.proto")
+	if err != nil {
+		t.Fatalf("reg.LookupFile(\"a.proto\") failed with %v; want success", err)
+	}
+	if got, want := f.GoPkg.Path, "explicit/override/path"; got != want {
+		t.Errorf("f.GoPkg.Path = %q; want %q (the explicit M-flag override must win over the synthesized placeholder)", got, want)
+	}
+}
+
 func TestLoadOverriddenPackageName(t *testing.T) {
 	reg := NewRegistry()
 	loadFile(t, reg, `
