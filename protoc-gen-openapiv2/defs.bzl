@@ -82,7 +82,8 @@ def _run_proto_gen_openapi(
         enable_field_deprecation,
         expand_slashed_path_patterns,
         preserve_rpc_order,
-        generate_x_go_type):
+        generate_x_go_type,
+        ignore_go_package_option):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -172,6 +173,8 @@ def _run_proto_gen_openapi(
         args.add("--openapiv2_opt", "preserve_rpc_order=true")
     if generate_x_go_type:
         args.add("--openapiv2_opt", "generate_x_go_type=true")
+    if ignore_go_package_option:
+        args.add("--openapiv2_opt", "ignore_go_package_option=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -286,6 +289,7 @@ def _proto_gen_openapi_impl(ctx):
                     expand_slashed_path_patterns = ctx.attr.expand_slashed_path_patterns,
                     preserve_rpc_order = ctx.attr.preserve_rpc_order,
                     generate_x_go_type = ctx.attr.generate_x_go_type,
+                    ignore_go_package_option = ctx.attr.ignore_go_package_option,
                 ),
             ),
         ),
@@ -481,6 +485,13 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "Generate x-go-type extension using the go_package option from proto files",
+        ),
+        "ignore_go_package_option": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, tolerates proto files that don't declare a go_package option by" +
+                  " synthesizing a placeholder import path instead of erroring. See the" +
+                  " ignore_go_package_option flag in protoc-gen-openapiv2 for details.",
         ),
         "_well_known_protos": attr.label(
             default = "@com_google_protobuf//:well_known_type_protos",
