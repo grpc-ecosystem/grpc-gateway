@@ -411,8 +411,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_errors",
         importpath = "github.com/go-openapi/errors",
-        sum = "h1:oP7sW7TWc3wFFjrzzj0nI83H2qMBkNjNfSd+XRejk/I=",
-        version = "v0.22.8",
+        sum = "h1:HI9+SyVYiRzyeBQGv0CbWbQa+u2S0nny7G7AhY+UMiM=",
+        version = "v0.22.9",
     )
     go_repository(
         name = "com_github_go_openapi_jsonpointer",
@@ -549,8 +549,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_testify_v2",
         importpath = "github.com/go-openapi/testify/v2",
-        sum = "h1:bycOreEj6wfBvijg3YFogZ/sFjTCDmQnwSodSzHa3X8=",
-        version = "v2.7.0",
+        sum = "h1:19QDx5b57p8KjO2E4sgs/woL4Akp+FGLRlVm2xn0Rho=",
+        version = "v2.8.0",
     )
     go_repository(
         name = "com_github_go_openapi_validate",

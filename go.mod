@@ -3,7 +3,7 @@ module github.com/grpc-ecosystem/grpc-gateway/v2
 go 1.26.0
 
 require (
-	github.com/go-openapi/errors v0.22.8
+	github.com/go-openapi/errors v0.22.9
 	github.com/go-openapi/runtime v0.33.2
 	github.com/go-openapi/strfmt v0.27.2
 	github.com/go-openapi/swag v0.29.2
