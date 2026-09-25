@@ -997,3 +997,59 @@ func TestServeHTTP_WithDisableHTTPMethodOverride(t *testing.T) {
 		t.Errorf("w.Body = %q; want %q", got, want)
 	}
 }
+
+func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
+	// Regression test for https://github.com/grpc-ecosystem/grpc-gateway/issues/5771:
+	// registering both /v3/files (literal) and /v3/files/{path=**} (deep wildcard)
+	// must route a bare GET /v3/files to the literal handler, not the wildcard one.
+	mux := runtime.NewServeMux()
+
+	var shortHandlerCalled, wildcardHandlerCalled bool
+	var wildcardPath string
+
+	shortPat, err := runtime.NewPattern(1,
+		[]int{int(utilities.OpLitPush), 0, int(utilities.OpLitPush), 1},
+		[]string{"v3", "files"}, "")
+	if err != nil {
+		t.Fatalf("runtime.NewPattern (short) failed: %v", err)
+	}
+	mux.Handle("GET", shortPat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		shortHandlerCalled = true
+	})
+
+	wildcardPat, err := runtime.NewPattern(1,
+		[]int{
+			int(utilities.OpLitPush), 0, int(utilities.OpLitPush), 1,
+			int(utilities.OpPushM), 0,
+			int(utilities.OpConcatN), 1,
+			int(utilities.OpCapture), 2,
+		},
+		[]string{"v3", "files", "path"}, "")
+	if err != nil {
+		t.Fatalf("runtime.NewPattern (wildcard) failed: %v", err)
+	}
+	mux.Handle("GET", wildcardPat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		wildcardHandlerCalled = true
+		wildcardPath = pathParams["path"]
+	})
+
+	// GET /v3/files (no trailing segment) must hit the literal handler, not the wildcard one.
+	r := httptest.NewRequest("GET", "/v3/files", nil)
+	w := httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+	if !shortHandlerCalled || wildcardHandlerCalled {
+		t.Errorf("GET /v3/files: shortHandlerCalled=%v wildcardHandlerCalled=%v; want true, false",
+			shortHandlerCalled, wildcardHandlerCalled)
+	}
+
+	shortHandlerCalled, wildcardHandlerCalled = false, false
+
+	// GET /v3/files/a.txt must hit the wildcard handler with path=a.txt.
+	r = httptest.NewRequest("GET", "/v3/files/a.txt", nil)
+	w = httptest.NewRecorder()
+	mux.ServeHTTP(w, r)
+	if shortHandlerCalled || !wildcardHandlerCalled || wildcardPath != "a.txt" {
+		t.Errorf("GET /v3/files/a.txt: shortHandlerCalled=%v wildcardHandlerCalled=%v wildcardPath=%q; want false, true, %q",
+			shortHandlerCalled, wildcardHandlerCalled, wildcardPath, "a.txt")
+	}
+}
