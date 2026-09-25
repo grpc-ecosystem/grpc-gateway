@@ -198,11 +198,12 @@ func (p Pattern) MatchAndEscape(components []string, verb string, unescapingMode
 			end -= p.tailLen
 			if pos > 0 && pos == end {
 				// A deep wildcard ("**") is allowed to match zero path segments when it is
-				// the first thing being matched in the pattern (there's no preceding "/"
-				// that needs a real segment to bind to). But once a literal or variable
-				// segment has already consumed a component, "**" cannot also silently
-				// absorb that segment's own trailing "/" with nothing left in the actual
-				// request path — see https://github.com/grpc-ecosystem/grpc-gateway/issues/5771.
+				// the first thing being matched in the pattern (pos == 0). But once a literal
+				// or variable segment has already consumed a component, "**" needs the request
+				// path to continue past that segment — it cannot succeed with nothing left to
+				// consume at all (though an empty trailing segment, e.g. from a trailing slash,
+				// still counts as a real component and is fine).
+				// See https://github.com/grpc-ecosystem/grpc-gateway/issues/5771.
 				return nil, ErrNotMatch
 			}
 			c := strings.Join(components[pos:end], "/")

@@ -302,11 +302,10 @@ func TestMatch(t *testing.T) {
 			notMatch: []string{
 				"",
 				"v1",
-				// "v1/o" (bare, no trailing segment) must NOT match — see
+				// "v1/o" (bare, with nothing after the literal) must NOT match — see
 				// https://github.com/grpc-ecosystem/grpc-gateway/issues/5771: a deep
-				// wildcard preceded by a literal segment requires an actual path
-				// component to bind to, it cannot silently absorb the literal's own
-				// trailing "/".
+				// wildcard preceded by a literal segment needs an actual path
+				// component to bind to, it cannot succeed with nothing left to consume.
 				"v1/o",
 				"v2/o/my-bucket",
 				"v1/b/my-bucket",
@@ -333,6 +332,28 @@ func TestMatch(t *testing.T) {
 				"",
 				"v3",
 				"v3/files",
+			},
+		},
+		{
+			// Same pattern as above (/v3/files/{path=**}:get) but with a verb suffix.
+			// The guard clause in OpPushM is verb-agnostic, so /v3/files:get (no
+			// segment for the wildcard) must still NOT match, even with the verb suffix.
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 2,
+			},
+			pool: []string{"v3", "files", "path"},
+			verb: "get",
+			match: []string{
+				"v3/files/:get",
+				"v3/files/a.txt:get",
+				"v3/files/dir/a.txt:get",
+			},
+			notMatch: []string{
+				"v3/files:get",
 			},
 		},
 		{
