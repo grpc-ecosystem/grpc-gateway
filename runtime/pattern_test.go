@@ -245,6 +245,11 @@ func TestMatch(t *testing.T) {
 			notMatch: []string{"", "v2"},
 		},
 		{
+			// Bare "**" (nothing precedes it) legitimately matches zero segments —
+			// this must keep working; see
+			// https://github.com/grpc-ecosystem/grpc-gateway/issues/5771: only a
+			// "**" *preceded* by a literal or variable segment needs a real path
+			// component to bind to, not a bare one.
 			ops:   []int{int(utilities.OpPushM), anything},
 			match: []string{"", "abc", "abc/def", "abc/def/ghi"},
 		},
@@ -288,7 +293,6 @@ func TestMatch(t *testing.T) {
 			},
 			pool: []string{"v1", "o", "name"},
 			match: []string{
-				"v1/o",
 				"v1/o/my-bucket",
 				"v1/o/our-bucket",
 				"v1/o/my-bucket/dir",
@@ -298,9 +302,72 @@ func TestMatch(t *testing.T) {
 			notMatch: []string{
 				"",
 				"v1",
+				// "v1/o" (bare, no trailing segment) must NOT match — see
+				// https://github.com/grpc-ecosystem/grpc-gateway/issues/5771: a deep
+				// wildcard preceded by a literal segment requires an actual path
+				// component to bind to, it cannot silently absorb the literal's own
+				// trailing "/".
+				"v1/o",
 				"v2/o/my-bucket",
 				"v1/b/my-bucket",
 			},
+		},
+		{
+			// Mirrors grpc-gateway#5771: /v3/files/{path=**} must not match bare
+			// /v3/files — the deep wildcard is preceded by two literal segments and
+			// needs an actual path component of its own to bind to.
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 2,
+			},
+			pool: []string{"v3", "files", "path"},
+			match: []string{
+				"v3/files/",
+				"v3/files/a.txt",
+				"v3/files/dir/a.txt",
+			},
+			notMatch: []string{
+				"",
+				"v3",
+				"v3/files",
+			},
+		},
+		{
+			// Preceded "**" with a trailing literal ("{a}/{path=**}/edit"): needs a
+			// real segment for "path", same pos>0 rule as above, just with a
+			// non-empty tailLen — see https://github.com/grpc-ecosystem/grpc-gateway/issues/5771.
+			ops: []int{
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 1,
+				int(utilities.OpLitPush), 2,
+			},
+			pool: []string{"a", "path", "edit"},
+			match: []string{
+				"x/y/edit",
+			},
+			notMatch: []string{
+				"x/edit",
+			},
+		},
+		{
+			// Bare "**" with a trailing literal ("{path=**}/edit"): nothing precedes
+			// the wildcard, so zero segments is still legitimate (the pos == 0
+			// exemption applies here too, not just when tailLen is zero).
+			ops: []int{
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
+				int(utilities.OpLitPush), 1,
+			},
+			pool:  []string{"path", "edit"},
+			match: []string{"edit"},
 		},
 		{
 			ops: []int{
