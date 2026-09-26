@@ -366,7 +366,9 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 							schema.Type = "integer"
 						}
 					case schema.AdditionalProperties != nil:
-						schema.Type = schema.AdditionalProperties.schemaCore.Type
+						if mapValueSchema, ok := schema.AdditionalProperties.(*openapiSchemaObject); ok {
+							schema.Type = mapValueSchema.Type
+						}
 					}
 					if schema.Type == "" || schema.Type == "object" {
 						// The map value has no primitive representation, so there is no
@@ -916,7 +918,7 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 
 	for _, property := range *schema.Properties {
 		if property.Key == typeFieldName {
-			schema.AdditionalProperties = &openapiSchemaObject{}
+			schema.AdditionalProperties = openapiAdditionalPropertiesAllowed(true)
 			schema.Properties = &openapiSchemaObjectProperties{keyVal{
 				Key:   "@type",
 				Value: property.Value,

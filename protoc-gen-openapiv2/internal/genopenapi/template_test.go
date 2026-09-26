@@ -17,6 +17,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"go.yaml.in/yaml/v3"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -4768,6 +4769,8 @@ func TestApplyTemplateWithRequestAndBodyParameters(t *testing.T) {
 func TestApplyTemplateProtobufAny(t *testing.T) {
 	// checkProtobufAnyFormat verifies the only property should be @type and additional properties are allowed
 	checkProtobufAnyFormat := func(t *testing.T, protobufAny openapiSchemaObject) {
+		t.Helper()
+
 		anyPropsJSON, err := protobufAny.Properties.MarshalJSON()
 		if err != nil {
 			t.Errorf("protobufAny.Properties.MarshalJSON(), got error = %v", err)
@@ -4790,6 +4793,32 @@ func TestApplyTemplateProtobufAny(t *testing.T) {
 		// protobufAny should have additionalProperties allowed
 		if protobufAny.AdditionalProperties == nil {
 			t.Errorf("protobufAny.AdditionalProperties = nil, want not-nil")
+		}
+
+		for _, format := range []Format{FormatJSON, FormatYAML} {
+			t.Run(string(format), func(t *testing.T) {
+				var output bytes.Buffer
+				encoder, err := format.NewEncoder(&output)
+				if err != nil {
+					t.Fatalf("creating %s encoder: %v", format, err)
+				}
+				if err := encoder.Encode(protobufAny); err != nil {
+					t.Fatalf("encoding protobuf Any as %s: %v", format, err)
+				}
+
+				var definition map[string]interface{}
+				if format == FormatJSON {
+					err = json.Unmarshal(output.Bytes(), &definition)
+				} else {
+					err = yaml.Unmarshal(output.Bytes(), &definition)
+				}
+				if err != nil {
+					t.Fatalf("decoding protobuf Any as %s: %v", format, err)
+				}
+				if got := definition["additionalProperties"]; got != true {
+					t.Errorf("protobuf Any additionalProperties = %#v, want true", got)
+				}
+			})
 		}
 	}
 
@@ -11758,7 +11787,7 @@ func TestArrayMessageItemsType(t *testing.T) {
 					},
 				},
 			},
-			AdditionalProperties: &openapiSchemaObject{},
+			AdditionalProperties: openapiAdditionalPropertiesAllowed(true),
 		},
 	}
 
@@ -11999,7 +12028,7 @@ func TestArrayMessageItemsTypeOmitWhenRefSibling(t *testing.T) {
 					},
 				},
 			},
-			AdditionalProperties: &openapiSchemaObject{},
+			AdditionalProperties: openapiAdditionalPropertiesAllowed(true),
 		},
 	}
 

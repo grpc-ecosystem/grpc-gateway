@@ -18,8 +18,8 @@ type ProtobufAny struct {
 	// at type
 	AtType string `json:"@type,omitempty"`
 
-	// protobuf any
-	ProtobufAny map[string]any `json:"-"`
+	// protobuf any additional properties
+	ProtobufAnyAdditionalProperties map[string]any `json:"-"`
 }
 
 // UnmarshalJSON unmarshals this object with additional properties from JSON
@@ -55,7 +55,7 @@ func (m *ProtobufAny) UnmarshalJSON(data []byte) error {
 			}
 			result[k] = toadd
 		}
-		m.ProtobufAny = result
+		m.ProtobufAnyAdditionalProperties = result
 	}
 
 	return nil
@@ -77,12 +77,12 @@ func (m ProtobufAny) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 
-	if len(m.ProtobufAny) == 0 { // no additional properties
+	if len(m.ProtobufAnyAdditionalProperties) == 0 { // no additional properties
 		return props, nil
 	}
 
 	// make JSON object for the additional properties
-	additional, err := json.Marshal(m.ProtobufAny)
+	additional, err := json.Marshal(m.ProtobufAnyAdditionalProperties)
 	if err != nil {
 		return nil, err
 	}

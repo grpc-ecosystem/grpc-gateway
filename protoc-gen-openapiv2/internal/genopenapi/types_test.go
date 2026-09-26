@@ -2,11 +2,59 @@ package genopenapi
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 
 	"go.yaml.in/yaml/v3"
 )
+
+func TestOpenapiSchemaAdditionalPropertiesEncoding(t *testing.T) {
+	tests := []struct {
+		name       string
+		value      openapiAdditionalProperties
+		want       interface{}
+		wantExists bool
+	}{
+		{name: "omitted"},
+		{name: "allowed", value: openapiAdditionalPropertiesAllowed(true), want: true, wantExists: true},
+		{name: "disallowed", value: openapiAdditionalPropertiesAllowed(false), want: false, wantExists: true},
+		{name: "schema", value: &openapiSchemaObject{schemaCore: schemaCore{Type: "string"}}, want: map[string]interface{}{"type": "string"}, wantExists: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			schema := openapiSchemaObject{AdditionalProperties: tt.value}
+			for _, format := range []string{"json", "yaml"} {
+				t.Run(format, func(t *testing.T) {
+					var data []byte
+					var err error
+					if format == "json" {
+						data, err = json.Marshal(schema)
+					} else {
+						data, err = yaml.Marshal(schema)
+					}
+					if err != nil {
+						t.Fatalf("marshal schema: %v", err)
+					}
+					var document map[string]interface{}
+					if format == "json" {
+						err = json.Unmarshal(data, &document)
+					} else {
+						err = yaml.Unmarshal(data, &document)
+					}
+					if err != nil {
+						t.Fatalf("unmarshal schema: %v", err)
+					}
+					got, exists := document["additionalProperties"]
+					if exists != tt.wantExists || !reflect.DeepEqual(got, tt.want) {
+						t.Errorf("additionalProperties = %#v (exists %t), want %#v (exists %t)", got, exists, tt.want, tt.wantExists)
+					}
+				})
+			}
+		})
+	}
+}
 
 func newSpaceReplacer() *strings.Replacer {
 	return strings.NewReplacer(" ", "", "\n", "", "\t", "")

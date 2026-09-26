@@ -316,12 +316,21 @@ func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// openapiAdditionalProperties is either a boolean or a schema object.
+type openapiAdditionalProperties interface {
+	isOpenapiAdditionalProperties()
+}
+
+type openapiAdditionalPropertiesAllowed bool
+
+func (openapiAdditionalPropertiesAllowed) isOpenapiAdditionalProperties() {}
+
 // http://swagger.io/specification/#schemaObject
 type openapiSchemaObject struct {
 	schemaCore `yaml:",inline"`
 	// Properties can be recursively defined
 	Properties           *openapiSchemaObjectProperties `json:"properties,omitempty" yaml:"properties,omitempty"`
-	AdditionalProperties *openapiSchemaObject           `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
+	AdditionalProperties openapiAdditionalProperties    `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`
 
 	Description string `json:"description,omitempty" yaml:"description,omitempty"`
 	Title       string `json:"title,omitempty" yaml:"title,omitempty"`
@@ -348,6 +357,8 @@ type openapiSchemaObject struct {
 
 	AllOf []allOfEntry `json:"allOf,omitempty" yaml:"allOf,omitempty"`
 }
+
+func (*openapiSchemaObject) isOpenapiAdditionalProperties() {}
 
 // http://swagger.io/specification/#definitionsObject
 type openapiDefinitionsObject map[string]openapiSchemaObject
