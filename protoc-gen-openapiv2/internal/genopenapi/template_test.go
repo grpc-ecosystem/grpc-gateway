@@ -14134,6 +14134,70 @@ func TestFieldCommentsWithNewlines(t *testing.T) {
 	}
 }
 
+func TestMethodProtoCommentsLineEndings(t *testing.T) {
+	tests := []struct {
+		name            string
+		leading         *string
+		trailing        *string
+		wantSummary     string
+		wantDescription string
+	}{
+		{
+			name:            "LF",
+			leading:         proto.String(" Summary.\n\n Description line one.\n Description line two.\n"),
+			trailing:        proto.String(" Trailing.\n"),
+			wantSummary:     "Summary.",
+			wantDescription: "Description line one.\nDescription line two.\n\nTrailing.",
+		},
+		{
+			name:            "CRLF",
+			leading:         proto.String(" Summary.\r\n\r\n Description line one.\r\n Description line two.\r\n"),
+			trailing:        proto.String(" Trailing.\r\n"),
+			wantSummary:     "Summary.",
+			wantDescription: "Description line one.\nDescription line two.\n\nTrailing.",
+		},
+		{
+			name:            "CRLF trailing only",
+			trailing:        proto.String(" Summary.\r\n\r\n Description.\r\n"),
+			wantSummary:     "Summary.",
+			wantDescription: "Description.",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			file := &descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					Name:    proto.String("example.proto"),
+					Package: proto.String("example"),
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+						Location: []*descriptorpb.SourceCodeInfo_Location{
+							{
+								Path:             []int32{serviceProtoPath, 0, methodProtoPath, 0},
+								LeadingComments:  tt.leading,
+								TrailingComments: tt.trailing,
+							},
+						},
+					},
+				},
+			}
+			reg := descriptor.NewRegistry()
+			comments := protoComments(reg, file, nil, "Service", 0, methodProtoPath, 0)
+
+			operation := &openapiOperationObject{}
+			if err := updateOpenAPIDataFromComments(reg, operation, nil, comments, false); err != nil {
+				t.Fatalf("updateOpenAPIDataFromComments() failed: %v", err)
+			}
+			if operation.Summary != tt.wantSummary {
+				t.Errorf("Summary = %q, want %q", operation.Summary, tt.wantSummary)
+			}
+			if operation.Description != tt.wantDescription {
+				t.Errorf("Description = %q, want %q", operation.Description, tt.wantDescription)
+			}
+		})
+	}
+}
+
 func TestRenderServiceTagsWithProtoComments(t *testing.T) {
 	svc := &descriptorpb.ServiceDescriptorProto{
 		Name: proto.String("ExampleService"),
