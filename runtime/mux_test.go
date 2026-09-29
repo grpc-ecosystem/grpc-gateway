@@ -1053,3 +1053,24 @@ func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
 			shortHandlerCalled, wildcardHandlerCalled, wildcardPath, "a.txt")
 	}
 }
+
+// BenchmarkMuxServeHTTP routes a request whose path splits into many
+// components against a mux with many registered patterns, none of which match.
+// The routing cost has to stay proportional to the path, not to the path
+// multiplied by the number of handlers.
+func BenchmarkMuxServeHTTP(b *testing.B) {
+	mux := runtime.NewServeMux()
+	for i := 0; i < 100; i++ {
+		err := mux.HandlePath(http.MethodGet, fmt.Sprintf("/v1/svc%d/{name}", i), func(http.ResponseWriter, *http.Request, map[string]string) {})
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+	req := httptest.NewRequest(http.MethodGet, "/"+strings.Repeat("/", 1<<20-1), nil)
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		mux.ServeHTTP(httptest.NewRecorder(), req)
+	}
+}

@@ -473,10 +473,14 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		comps := make([]string, len(pathComponents))
-		copy(comps, pathComponents)
-
+		// Only copy the components when the verb has to be split off the last
+		// one. MatchAndEscape never mutates its input, so sharing the slice
+		// across handlers is safe, and copying it per handler otherwise costs
+		// len(pathComponents) allocations for every registered pattern.
+		comps := pathComponents
 		if idx > 0 {
+			comps = make([]string, len(pathComponents))
+			copy(comps, pathComponents)
 			comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 		}
 
@@ -516,10 +520,10 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				idx = len(lastPathComponent) - len(patVerb) - 1
 			}
 
-			comps := make([]string, len(pathComponents))
-			copy(comps, pathComponents)
-
+			comps := pathComponents
 			if idx > 0 {
+				comps = make([]string, len(pathComponents))
+				copy(comps, pathComponents)
 				comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 			}
 
