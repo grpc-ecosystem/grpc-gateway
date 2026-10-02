@@ -65,14 +65,16 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 				}
 
 				if isProtobufAnyMessage(fd.Message()) && !fd.IsList() {
-					_, hasTypeField := v.(map[string]interface{})["@type"]
-					if hasTypeField {
-						queue = append(queue, fieldMaskPathItem{path: k})
-						continue
-					} else {
+					vm, _ := v.(map[string]interface{})
+					if _, hasTypeField := vm["@type"]; !hasTypeField {
 						return nil, fmt.Errorf("could not find field @type in %q in message %q", k, item.msg.Descriptor().FullName())
 					}
-
+					newPath := string(fd.FullName().Name())
+					if item.path != "" {
+						newPath = item.path + "." + newPath
+					}
+					queue = append(queue, fieldMaskPathItem{path: newPath})
+					continue
 				}
 
 				child := fieldMaskPathItem{

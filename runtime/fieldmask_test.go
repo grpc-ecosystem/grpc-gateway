@@ -182,6 +182,12 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			input:    `{"repeated_anytype":[{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}]}`,
 			expected: newFieldMask("repeated_anytype"), //going deeper makes no sense
 		},
+		{
+			name:     "nested-protobuf-any",
+			msg:      &examplepb.UpdateMessage{},
+			input:    `{"a_bit_of_everything":{"anytype":{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}}}`,
+			expected: newFieldMask("a_bit_of_everything.anytype"),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			actual, err := FieldMaskFromRequestBody(bytes.NewReader([]byte(tc.input)), tc.msg)
@@ -271,6 +277,16 @@ func TestFieldMaskErrors(t *testing.T) {
 			name:        "object under scalar",
 			input:       `{"uuid": {"a": "x"}}`,
 			expectedErr: errors.New("JSON structure did not match request type"),
+		},
+		{
+			name:        "null under protobuf-any",
+			input:       `{"anytype": null}`,
+			expectedErr: errors.New(`could not find field @type in "anytype" in message "grpc.gateway.runtime.internal.examplepb.ABitOfEverything"`),
+		},
+		{
+			name:        "scalar under protobuf-any",
+			input:       `{"anytype": "xx.xx/examplepb.NestedOuter"}`,
+			expectedErr: errors.New(`could not find field @type in "anytype" in message "grpc.gateway.runtime.internal.examplepb.ABitOfEverything"`),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
