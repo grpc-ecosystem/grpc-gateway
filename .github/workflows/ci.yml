@@ -55,6 +55,12 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
+        # Make newly generated files visible with intent-to-add, and diff against HEAD
+        # so staged and unstaged changes are both checked.
+        # Lowercase "d" excludes deletions, so the first diff rejects all other changes.
+        # Uppercase "D" selects only deletions. Allow deleted client BUILD.bazel files,
+        # which generation removes and the separate Bazel job regenerates with Gazelle.
+        # Added or modified client BUILD.bazel files still fail the first diff.
       - run: >-
           git add -N . &&
           git diff --exit-code HEAD --diff-filter=d &&
