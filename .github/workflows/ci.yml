@@ -55,7 +55,17 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
-      - run: git add -N . && git diff --exit-code
+        # Make newly generated files visible with intent-to-add, and diff against HEAD
+        # so staged and unstaged changes are both checked.
+        # Lowercase "d" excludes deletions, so the first diff rejects all other changes.
+        # Uppercase "D" selects only deletions. Allow deleted client BUILD.bazel files,
+        # which generation removes and the separate Bazel job regenerates with Gazelle.
+        # Added or modified client BUILD.bazel files still fail the first diff.
+      - run: >-
+          git add -N . &&
+          git diff --exit-code HEAD --diff-filter=d &&
+          git diff --exit-code HEAD --diff-filter=D -- .
+          ':(glob,exclude)examples/internal/clients/**/BUILD.bazel'
   bazel:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest
@@ -92,13 +102,13 @@ jobs:
           build --local_cpu_resources=2    # Github runners have 2 vCPU
           EOF
       - name: Check that Bazel BUILD files are up-to-date
-        run: bazel run //:gazelle && git add -N . && git diff --exit-code
+        run: bazel run //:gazelle && git add -N . && git diff --exit-code HEAD
       - name: Check that repositories.bzl is up-to-date
         run: |
           bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories &&
-          git add -N . && git diff --exit-code
+          git add -N . && git diff --exit-code HEAD
       - name: Check formatting of Bazel BUILD files
-        run: bazel run //:buildifier && git add -N . && git diff --exit-code
+        run: bazel run //:buildifier && git add -N . && git diff --exit-code HEAD
       - name: Run tests with Bazel
         run: bazel test //...
   gorelease:
@@ -121,7 +131,7 @@ jobs:
       - run: make install
       - run: PATH=$PATH:~/go/bin buf build
       - run: PATH=$PATH:~/go/bin buf lint
-      - run: PATH=$PATH:~/go/bin buf format -w && git add -N . && git diff --exit-code
+      - run: PATH=$PATH:~/go/bin buf format -w && git add -N . && git diff --exit-code HEAD
       - run: PATH=$PATH:~/go/bin buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=main'
   lint:
     runs-on: ubuntu-latest
