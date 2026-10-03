@@ -63,7 +63,9 @@ func extractComments(file *descriptor.File, path []int32) string {
 		}
 		var comment string
 		if loc.LeadingComments != nil {
-			comment = strings.TrimRight(*loc.LeadingComments, "\n")
+			// Comments from a proto file with CRLF line endings keep the \r.
+			comment = strings.ReplaceAll(*loc.LeadingComments, "\r\n", "\n")
+			comment = strings.TrimRight(comment, "\n")
 			// Strip a single leading space from continuation lines. This
 			// handles the common protoc output shape but not tabs, deeper
 			// indentation, or doxygen-style "\n *" prefixes; comments using

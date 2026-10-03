@@ -3076,7 +3076,9 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 		}
 		comments := ""
 		if loc.LeadingComments != nil {
-			comments = strings.TrimRight(*loc.LeadingComments, "\n")
+			// Comments from a proto file with CRLF line endings keep the \r.
+			comments = strings.ReplaceAll(*loc.LeadingComments, "\r\n", "\n")
+			comments = strings.TrimRight(comments, "\n")
 			comments = strings.TrimSpace(comments)
 			// TODO(ivucica): this is a hack to fix "// " being interpreted as "//".
 			// perhaps we should:
@@ -3088,7 +3090,7 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 			comments = removeInternalComments(comments)
 		}
 		if loc.TrailingComments != nil {
-			trailing := strings.TrimSpace(*loc.TrailingComments)
+			trailing := strings.TrimSpace(strings.ReplaceAll(*loc.TrailingComments, "\r\n", "\n"))
 			if comments == "" {
 				comments = trailing
 			} else {

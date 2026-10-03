@@ -1,6 +1,11 @@
 package genopenapi
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/protobuf/types/descriptorpb"
+)
 
 func TestSplitSummaryDescription(t *testing.T) {
 	t.Parallel()
@@ -61,6 +66,45 @@ func TestSplitSummaryDescription(t *testing.T) {
 			}
 			if desc != tc.wantDesc {
 				t.Errorf("description = %q, want %q", desc, tc.wantDesc)
+			}
+		})
+	}
+}
+
+func TestExtractCommentsLineEndings(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		name    string
+		leading string
+	}{
+		{
+			name:    "LF",
+			leading: " Creates a book.\n\n Long description.\n Second line.\n",
+		},
+		{
+			name:    "CRLF",
+			leading: " Creates a book.\r\n\r\n Long description.\r\n Second line.\r\n",
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			path := []int32{serviceProtoPath, 0, methodProtoPath, 0}
+			file := &descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+						Location: []*descriptorpb.SourceCodeInfo_Location{
+							{Path: path, LeadingComments: &tc.leading},
+						},
+					},
+				},
+			}
+			summary, desc := splitSummaryDescription(extractComments(file, path))
+			if want := "Creates a book."; summary != want {
+				t.Errorf("summary = %q, want %q", summary, want)
+			}
+			if want := "Long description.\nSecond line."; desc != want {
+				t.Errorf("description = %q, want %q", desc, want)
 			}
 		})
 	}
