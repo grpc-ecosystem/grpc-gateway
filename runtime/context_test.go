@@ -246,6 +246,37 @@ func TestAnnotateContext_SkipsInvalidForwardedValues(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_DropsSpoofedXForwardedHeaders(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	request, err := http.NewRequestWithContext(ctx, "GET", "http://bar.foo.example.com", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://bar.foo.example.com", err)
+	}
+	request.RemoteAddr = "192.0.2.100:12345" // real client, gateway-set
+	// DefaultHeaderMatcher strips the Grpc-Metadata- prefix, so these would
+	// otherwise map to x-forwarded-for / x-forwarded-host and land ahead of the
+	// gateway-set values, letting a client spoof the host/IP a backend trusts.
+	request.Header.Set("Grpc-Metadata-X-Forwarded-For", "66.66.66.66")
+	request.Header.Set("Grpc-Metadata-X-Forwarded-Host", "evil.example.com")
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok {
+		t.Fatal("metadata.FromOutgoingContext failed")
+	}
+	if got, want := md["x-forwarded-for"], []string{"192.0.2.100"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["x-forwarded-for"] = %q; want %q`, got, want)
+	}
+	if got, want := md["x-forwarded-host"], []string{"bar.foo.example.com"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["x-forwarded-host"] = %q; want %q`, got, want)
+	}
+}
+
 func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
