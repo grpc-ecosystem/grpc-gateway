@@ -423,8 +423,17 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO(v3): remove UnescapingModeLegacy
-	if s.unescapingMode != UnescapingModeLegacy && r.URL.RawPath != "" {
-		path = r.URL.RawPath
+	unescapingMode := s.unescapingMode
+	if unescapingMode != UnescapingModeLegacy {
+		if r.URL.RawPath != "" {
+			path = r.URL.RawPath
+		} else {
+			// net/url only sets RawPath when the request path is not in its
+			// default encoding. Without it, Path is all there is and it has
+			// already been unescaped once, so unescaping it again while matching
+			// would decode a sequence like %252F twice.
+			unescapingMode = UnescapingModeLegacy
+		}
 	}
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && !s.disableHTTPMethodOverride && s.isPathLengthFallback(r) {
@@ -442,7 +451,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// in this escaping mode we would be double unescaping but in UnescapingModeAllCharacters, we still do as the
 	// path is the RawPath (i.e. unescaped). That does mean that the behavior of this function will change its default
 	// behavior when the UnescapingModeDefault gets changed from UnescapingModeLegacy to UnescapingModeAllExceptReserved
-	if s.unescapingMode == UnescapingModeAllCharacters {
+	if unescapingMode == UnescapingModeAllCharacters {
 		pathComponents = encodedPathSplitter.Split(path[1:], -1)
 	} else {
 		pathComponents = strings.Split(path[1:], "/")
@@ -484,7 +493,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 		}
 
-		pathParams, err := h.pat.MatchAndEscape(comps, verb, s.unescapingMode)
+		pathParams, err := h.pat.MatchAndEscape(comps, verb, unescapingMode)
 		if err != nil {
 			var mse MalformedSequenceError
 			if ok := errors.As(err, &mse); ok {
@@ -527,7 +536,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 			}
 
-			pathParams, err := h.pat.MatchAndEscape(comps, verb, s.unescapingMode)
+			pathParams, err := h.pat.MatchAndEscape(comps, verb, unescapingMode)
 			if err != nil {
 				var mse MalformedSequenceError
 				if ok := errors.As(err, &mse); ok {
