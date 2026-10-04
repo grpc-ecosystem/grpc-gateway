@@ -423,38 +423,38 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_jsonreference",
         importpath = "github.com/go-openapi/jsonreference",
-        sum = "h1:4zJ7AmYDKNmD3aSpfPnFNCFA5E80/xMHUNKgydaLh38=",
-        version = "v1.0.1",
+        sum = "h1:oS4et8FOf3p3UQxEo4Xt0esijmBUM+F259Xl72OSZsc=",
+        version = "v1.0.2",
     )
     go_repository(
         name = "com_github_go_openapi_loads",
         importpath = "github.com/go-openapi/loads",
-        sum = "h1:+uNsDlRQfYtZTrh+3pdwampcAqZVPuBJW0IA82aZHII=",
-        version = "v0.25.2",
+        sum = "h1:V+jKy/thXWdLJUuYC8sZX2dICyAa8M3DokF70jj34P0=",
+        version = "v0.25.3",
     )
     go_repository(
         name = "com_github_go_openapi_runtime",
         importpath = "github.com/go-openapi/runtime",
-        sum = "h1:HSxskMs0WmpCdQvBWVxHt2t2mXMwn8DDav3VtVidwig=",
-        version = "v0.33.2",
+        sum = "h1:qVgTDaFH+pzO8UqlwYNVmx2DD+nwVK3rB65V29ednD0=",
+        version = "v0.33.3",
     )
     go_repository(
         name = "com_github_go_openapi_runtime_server_middleware",
         importpath = "github.com/go-openapi/runtime/server-middleware",
-        sum = "h1:BVFjAaW4Jh/kZ4QSsgDrGzLuSuaKzSiyvappUFKxgUk=",
-        version = "v0.33.2",
+        sum = "h1:Td5UBla/J/KCjlsD0tmZYWQWxnT4gHpfXbueLQv9Umw=",
+        version = "v0.33.3",
     )
     go_repository(
         name = "com_github_go_openapi_spec",
         importpath = "github.com/go-openapi/spec",
-        sum = "h1:JtB/GHOj+eetjse6YvxqLze88oEekl/4uPBethvzRrA=",
-        version = "v1.0.0",
+        sum = "h1:lj2vdGpNDcVgwRc6qXdw6qt/KQpCtSa9tnUH6vpDPDk=",
+        version = "v1.0.1",
     )
     go_repository(
         name = "com_github_go_openapi_strfmt",
         importpath = "github.com/go-openapi/strfmt",
-        sum = "h1:SG32SlbwNy92s0KJiVxt2joJeFdqIYHvwrA0OU6HqzQ=",
-        version = "v0.27.2",
+        sum = "h1:cyf4J5Wjpd6bFpAs44MF8PsbWF/mWXhn82Ck/hgQZgw=",
+        version = "v0.27.3",
     )
     go_repository(
         name = "com_github_go_openapi_swag",
@@ -543,8 +543,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_testify_enable_yaml_v2",
         importpath = "github.com/go-openapi/testify/enable/yaml/v2",
-        sum = "h1:wPW6YRgx3+SID1yUy/Xwa17L8kFEaEKod2VRbJDZNUs=",
-        version = "v2.7.0",
+        sum = "h1:dvOQNZ2ovOdogn902NYq7i6jUI9Dma4qyjTXABY5YTY=",
+        version = "v2.8.0",
     )
     go_repository(
         name = "com_github_go_openapi_testify_v2",
