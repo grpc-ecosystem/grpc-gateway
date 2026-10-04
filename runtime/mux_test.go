@@ -35,6 +35,9 @@ func TestMuxServeHTTP(t *testing.T) {
 		reqPath   string
 		headers   map[string]string
 
+		// reqRawPath, if set, replaces the RawPath net/url derived from reqPath.
+		reqRawPath string
+
 		respStatus  int
 		respContent string
 
@@ -576,6 +579,26 @@ func TestMuxServeHTTP(t *testing.T) {
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllExceptReserved,
+			respContent:    "GET /foo/*",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1},
+					pool:   []string{"foo", "id"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/%25",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			// net/url rejects a malformed escape before the request gets to the
+			// mux, so the only way to reach one is a RawPath set by hand.
+			reqRawPath:     "/foo/%",
 			respStatus:     http.StatusBadRequest,
 			unescapingMode: runtime.UnescapingModeAllExceptReserved,
 			respContent:    `{"code":2,"message":"malformed path escape \"%\"","details":[]}`,
@@ -610,6 +633,9 @@ func TestMuxServeHTTP(t *testing.T) {
 			}
 			for name, value := range spec.headers {
 				r.Header.Set(name, value)
+			}
+			if spec.reqRawPath != "" {
+				r.URL.RawPath = spec.reqRawPath
 			}
 			w := httptest.NewRecorder()
 			mux.ServeHTTP(w, r)
@@ -1051,6 +1077,47 @@ func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
 	if shortHandlerCalled || !wildcardHandlerCalled || wildcardPath != "a.txt" {
 		t.Errorf("GET /v3/files/a.txt: shortHandlerCalled=%v wildcardHandlerCalled=%v wildcardPath=%q; want false, true, %q",
 			shortHandlerCalled, wildcardHandlerCalled, wildcardPath, "a.txt")
+	}
+}
+
+func TestServeMux_PathParamUnescapedOnce(t *testing.T) {
+	// net/url leaves RawPath empty when the request path is in its default
+	// encoding, which is the case when its only escapes are %25. The mux then
+	// routes on Path, which is unescaped already, and must not unescape it a
+	// second time: %2541 is the literal "%41", not "A", and %252F is the
+	// literal "%2F", not a path separator.
+	for _, mode := range []runtime.UnescapingMode{
+		runtime.UnescapingModeLegacy,
+		runtime.UnescapingModeAllExceptReserved,
+		runtime.UnescapingModeAllExceptSlash,
+		runtime.UnescapingModeAllCharacters,
+	} {
+		for _, tt := range []struct {
+			reqPath string
+			want    string
+		}{
+			{"/v1/items/100%25", "100%"},
+			{"/v1/items/a%2541", "a%41"},
+			{"/v1/items/a%252Fb", "a%2Fb"},
+			{"/v1/items/%252e%252e%252fadmin", "%2e%2e%2fadmin"},
+		} {
+			mux := runtime.NewServeMux(runtime.WithUnescapingMode(mode))
+			var got string
+			err := mux.HandlePath("GET", "/v1/items/{id}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+				got = pathParams["id"]
+			})
+			if err != nil {
+				t.Fatalf("mux.HandlePath failed: %v", err)
+			}
+
+			r := httptest.NewRequest("GET", tt.reqPath, nil)
+			w := httptest.NewRecorder()
+			mux.ServeHTTP(w, r)
+			if w.Code != http.StatusOK || got != tt.want {
+				t.Errorf("unescaping mode %d, GET %s: w.Code=%d id=%q; want %d, %q",
+					mode, tt.reqPath, w.Code, got, http.StatusOK, tt.want)
+			}
+		}
 	}
 }
 
