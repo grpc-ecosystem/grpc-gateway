@@ -436,3 +436,30 @@ func TestParseSegmentsWithErrors(t *testing.T) {
 		}
 	}
 }
+
+func TestParseVerb(t *testing.T) {
+	// Valid verbs must keep parsing.
+	for _, tmpl := range []string{
+		"/v1/{name}:cancel",
+		"/v1/{name}:batchGet",
+		"/v1/{name}:b:c",
+	} {
+		if _, err := Parse(tmpl); err != nil {
+			t.Errorf("Parse(%q) failed with %v; want success", tmpl, err)
+		}
+	}
+
+	// A verb is embedded verbatim into generated Go code, so characters that
+	// cannot be safely represented in a Go string literal (quotes, backslashes,
+	// whitespace, ...) must be rejected at parse time.
+	for _, tmpl := range []string{
+		`/v1/{name}:x")); panic("pwned")`,
+		`/v1/{name}:pwn\"`,
+		`/v1/{name}:back\slash`,
+		`/v1/{name}:bad verb`,
+	} {
+		if _, err := Parse(tmpl); err == nil {
+			t.Errorf("Parse(%q) succeeded; want error", tmpl)
+		}
+	}
+}
