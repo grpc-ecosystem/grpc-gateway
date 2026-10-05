@@ -339,6 +339,28 @@ func TestAdd(t *testing.T) {
 				// 9: ^qux.foo$
 			},
 		},
+		{
+			tokens: [][]string{
+				{"foo", "bar", "baz"},
+				{"foo", "baz"},
+			},
+			want: utilities.DoubleArray{
+				Encoding: map[string]int{
+					"foo": 0,
+					"bar": 1,
+					"baz": 2,
+				},
+				Base:  []int{1, 1, 2, 3, 2, 0, 0},
+				Check: []int{0, 1, 2, 2, 3, 5, 4},
+				// 0: ^
+				// 1: ^foo
+				// 2: ^foo.bar
+				// 3: ^foo.baz
+				// 4: ^foo.bar.baz
+				// 5: ^foo.bar.baz$
+				// 6: ^foo.baz$
+			},
+		},
 	} {
 		da := utilities.NewDoubleArray(spec.tokens)
 		if got, want := da.Encoding, spec.want.Encoding; !reflect.DeepEqual(got, want) {
@@ -349,6 +371,60 @@ func TestAdd(t *testing.T) {
 		}
 		if got, want := da.Check, spec.want.Check; !compareArray(got, want) {
 			t.Errorf("da.Check = %v; want %v; tokens = %#v", got, want, spec.tokens)
+		}
+	}
+}
+
+func TestAddHasCommonPrefix(t *testing.T) {
+	for _, spec := range []struct {
+		seqs   [][]string
+		tokens []string
+		want   bool
+	}{
+		{
+			seqs:   [][]string{{"foo", "bar", "baz"}, {"foo", "baz"}},
+			tokens: []string{"foo", "bar", "baz"},
+			want:   true,
+		},
+		{
+			seqs:   [][]string{{"foo", "bar", "baz"}, {"foo", "baz"}},
+			tokens: []string{"foo", "baz"},
+			want:   true,
+		},
+		{
+			seqs:   [][]string{{"foo", "bar", "baz"}, {"foo", "baz"}},
+			tokens: []string{"foo", "bar"},
+			want:   false,
+		},
+		{
+			seqs:   [][]string{{"foo", "bar"}, {"foo", "baz"}, {"bar"}},
+			tokens: []string{"foo", "bar"},
+			want:   true,
+		},
+		{
+			seqs:   [][]string{{"foo", "bar"}, {"foo", "baz"}, {"bar"}},
+			tokens: []string{"foo", "baz", "qux"},
+			want:   true,
+		},
+		{
+			seqs:   [][]string{{"foo", "bar"}, {"foo", "baz"}, {"bar"}},
+			tokens: []string{"foo", "qux"},
+			want:   false,
+		},
+		{
+			seqs:   [][]string{{"foo"}, {"foo", "bar", "baz"}},
+			tokens: []string{"foo", "bar", "qux"},
+			want:   true,
+		},
+		{
+			seqs:   [][]string{{"foo"}, {"foo", "bar", "baz"}},
+			tokens: []string{"foo", "foo"},
+			want:   true,
+		},
+	} {
+		da := utilities.NewDoubleArray(spec.seqs)
+		if got := da.HasCommonPrefix(spec.tokens); got != spec.want {
+			t.Errorf("NewDoubleArray(%v).HasCommonPrefix(%v) = %v; want %v", spec.seqs, spec.tokens, got, spec.want)
 		}
 	}
 }
