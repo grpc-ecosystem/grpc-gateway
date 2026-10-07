@@ -279,7 +279,7 @@ func request_OpaqueEcommerceService_OpaqueStreamCustomerActivity_0(ctx context.C
 	return stream, metadata, nil
 }
 
-var filter_OpaqueEcommerceService_OpaqueUpdateProduct_0 = &utilities.DoubleArray{Encoding: map[string]int{"product": 0, "product_id": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+var filter_OpaqueEcommerceService_OpaqueUpdateProduct_0 = &utilities.DoubleArray{Encoding: map[string]int{"product": 0, "product_id": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 2, 3}}
 
 func request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Context, marshaler runtime.Marshaler, client OpaqueEcommerceServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (

@@ -522,7 +522,7 @@ func local_request_ABitOfEverythingService_CreateBook_0(ctx context.Context, mar
 	return msg, metadata, err
 }
 
-var filter_ABitOfEverythingService_UpdateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+var filter_ABitOfEverythingService_UpdateBook_0 = &utilities.DoubleArray{Encoding: map[string]int{"book": 0, "name": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 2, 3}}
 
 func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
@@ -846,7 +846,7 @@ func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshal
 	return msg, metadata, err
 }
 
-var filter_ABitOfEverythingService_UpdateV2_0 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+var filter_ABitOfEverythingService_UpdateV2_0 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 2, 3}}
 
 func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
@@ -905,7 +905,7 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 	return msg, metadata, err
 }
 
-var filter_ABitOfEverythingService_UpdateV2_1 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
+var filter_ABitOfEverythingService_UpdateV2_1 = &utilities.DoubleArray{Encoding: map[string]int{"abe": 0, "uuid": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 2, 2, 3}}
 
 func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
