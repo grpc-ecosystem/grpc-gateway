@@ -368,6 +368,41 @@ func TestConvertUint32Slice(t *testing.T) {
 	}
 }
 
+func TestConvertBytes(t *testing.T) {
+	// 0xfb, 0xff encodes to "+/8=" in standard base64 and "-_8=" in URL-safe base64.
+	specs := []struct {
+		name    string
+		input   string
+		output  []byte
+		wanterr bool
+	}{
+		{name: "standard padded", input: "+/8=", output: []byte{0xfb, 0xff}},
+		{name: "standard unpadded", input: "+/8", output: []byte{0xfb, 0xff}},
+		{name: "URL-safe padded", input: "-_8=", output: []byte{0xfb, 0xff}},
+		{name: "URL-safe unpadded", input: "-_8", output: []byte{0xfb, 0xff}},
+		{name: "no padding needed", input: "Zm9v", output: []byte("foo")},
+		{name: "single byte unpadded", input: "AQ", output: []byte{0x01}},
+		{name: "empty", input: "", output: []byte{}},
+		{name: "mixed alphabets", input: "+_8=", wanterr: true},
+		{name: "partial padding", input: "AQ=", wanterr: true},
+		{name: "invalid length", input: "A", wanterr: true},
+		{name: "invalid characters", input: "!!!!", wanterr: true},
+	}
+	for _, spec := range specs {
+		t.Run(spec.name, func(t *testing.T) {
+			got, err := runtime.Bytes(spec.input)
+			switch {
+			case err != nil && !spec.wanterr:
+				t.Errorf("got error %v, want nil", err)
+			case err == nil && spec.wanterr:
+				t.Errorf("got nil error, want an error")
+			case !spec.wanterr && !reflect.DeepEqual(got, spec.output):
+				t.Errorf("got %v, want %v", got, spec.output)
+			}
+		})
+	}
+}
+
 func TestConvertBytesSlice(t *testing.T) {
 	// "Zm9v" and "YmFy" are base64 for "foo" and "bar".
 	specs := []struct {
@@ -379,6 +414,7 @@ func TestConvertBytesSlice(t *testing.T) {
 	}{
 		{name: "valid values", input: "Zm9v,YmFy", sep: ",", output: [][]byte{[]byte("foo"), []byte("bar")}},
 		{name: "single value", input: "Zm9v", sep: ",", output: [][]byte{[]byte("foo")}},
+		{name: "unpadded URL-safe values", input: "-_8,AQ", sep: ",", output: [][]byte{{0xfb, 0xff}, {0x01}}},
 		{name: "invalid base64 element", input: "Zm9v,!!!!", sep: ",", wanterr: true},
 	}
 	for _, spec := range specs {

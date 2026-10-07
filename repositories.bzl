@@ -2532,8 +2532,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_exp",
         importpath = "golang.org/x/exp",
-        sum = "h1:qUp3i6M39kccSm3OMMIE3tvs7YQWO9rFeCKdk1sSaFk=",
-        version = "v0.0.0-20261005173118-76772065c9b0",
+        sum = "h1:O2sHJIBRAPO4dMDKlJJOqRPAr9trpikttgK+aL7rg/8=",
+        version = "v0.0.0-20261007180756-3d68b386da03",
     )
     go_repository(
         name = "org_golang_x_exp_typeparams",
