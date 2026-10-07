@@ -322,12 +322,16 @@ type Document_builder struct {
 	// See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
 	Extensions map[string]*structpb.Value
 	// Reusable objects rendered under the document's `components` section.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oasComponents
 	Components *Components
 	// A declaration of which security mechanisms can be used across the API.
 	// The list of values includes alternative security requirement objects
 	// that can be used. Only one of the security requirement objects needs to
 	// be satisfied to authorize a request. Individual operations can override
 	// this definition with `openapiv3_operation.security`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oasSecurity
 	Security []*SecurityRequirement
 }
 
@@ -398,6 +402,8 @@ type Components_builder struct {
 
 	// Security schemes that can be referenced by name from security
 	// requirements, keyed by scheme name.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#componentsSecuritySchemes
 	SecuritySchemes map[string]*SecurityScheme
 }
 
@@ -1162,6 +1168,8 @@ type Operation_builder struct {
 	// objects that can be used. When set, this replaces the document-level
 	// `security` for this operation. To make security optional for this
 	// operation, add an empty security requirement (`security: {}`).
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#operationSecurity
 	Security []*SecurityRequirement
 }
 
@@ -1649,27 +1657,43 @@ type SecurityScheme_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	// The type of the security scheme. Required.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeType
 	Type SecurityScheme_Type
 	// A description for the security scheme. CommonMark syntax MAY be used for
 	// rich text representation.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeDescription
 	Description string
 	// The name of the header, query or cookie parameter to be used. Required
 	// when `type` is `TYPE_API_KEY`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeName
 	Name string
 	// The location of the API key. Required when `type` is `TYPE_API_KEY`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeIn
 	In SecurityScheme_In
 	// The name of the HTTP Authorization scheme to be used in the
 	// Authorization header as defined in RFC 7235, for example "basic" or
 	// "bearer". Required when `type` is `TYPE_HTTP`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeScheme
 	Scheme string
 	// A hint to the client to identify how the bearer token is formatted.
 	// Only used when `type` is `TYPE_HTTP` and `scheme` is "bearer".
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeBearerFormat
 	BearerFormat string
 	// Configuration information for the flow types supported. Required when
 	// `type` is `TYPE_OAUTH2`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeFlows
 	Flows *OAuthFlows
 	// OpenID Connect URL to discover OAuth2 configuration values. This MUST be
 	// in the form of a URL. Required when `type` is `TYPE_OPEN_ID_CONNECT`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeOpenIdConnectUrl
 	OpenIdConnectUrl string
 }
 
@@ -1818,12 +1842,20 @@ type OAuthFlows_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	// Configuration for the OAuth Implicit flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsImplicit
 	Implicit *OAuthFlow
 	// Configuration for the OAuth Resource Owner Password flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsPassword
 	Password *OAuthFlow
 	// Configuration for the OAuth Client Credentials flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsClientCredentials
 	ClientCredentials *OAuthFlow
 	// Configuration for the OAuth Authorization Code flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsAuthorizationCode
 	AuthorizationCode *OAuthFlow
 }
 
@@ -1925,14 +1957,22 @@ type OAuthFlow_builder struct {
 
 	// The authorization URL to be used for this flow. Required for the
 	// implicit and authorization code flows.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowAuthorizationUrl
 	AuthorizationUrl string
 	// The token URL to be used for this flow. Required for the password,
 	// client credentials and authorization code flows.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowTokenUrl
 	TokenUrl string
 	// The URL to be used for obtaining refresh tokens.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowRefreshUrl
 	RefreshUrl string
 	// The available scopes for the OAuth2 security scheme. A map between the
 	// scope name and a short description for it. The map MAY be empty.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowScopes
 	Scopes map[string]string
 }
 
@@ -2000,6 +2040,8 @@ type SecurityRequirement_builder struct {
 
 	// Maps the name of a security scheme declared in
 	// `Document.components.security_schemes` to the scopes it requires.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securityRequirementsName
 	Schemes map[string]*SecurityRequirement_Scopes
 }
 

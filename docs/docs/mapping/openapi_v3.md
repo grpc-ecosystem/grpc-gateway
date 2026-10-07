@@ -309,6 +309,115 @@ component schema named `google.rpc.Status` with the standard `code`,
 on error paths. Use the `disable_default_errors` plugin option to suppress
 this behaviour when using a custom error handler.
 
+## Security schemes
+
+Security schemes are declared once in the file-level `openapiv3_document`
+annotation, under `components.security_schemes`, and referenced by name from
+`security` requirements. A document-level `security` list applies to every
+operation in the file; an operation-level `security` list replaces it for that
+operation. Each entry in a `security` list is an alternative, and all schemes
+named within one entry must be satisfied together.
+
+The fields map to the OpenAPI
+[Security Scheme Object](https://spec.openapis.org/oas/v3.1.0#security-scheme-object)
+and [Security Requirement Object](https://spec.openapis.org/oas/v3.1.0#security-requirement-object).
+Generation fails if a scheme is missing a field the spec requires for its type,
+or if a requirement names a scheme that isn't declared in the same file.
+
+```protobuf
+import "protoc-gen-openapiv3/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
+  components: {
+    security_schemes: {
+      key: "BearerAuth"
+      value: {
+        type: TYPE_HTTP
+        scheme: "bearer"
+        bearer_format: "JWT"
+      }
+    }
+    security_schemes: {
+      key: "ApiKeyAuth"
+      value: {
+        type: TYPE_API_KEY
+        name: "X-API-Key"
+        in: IN_HEADER
+      }
+    }
+    security_schemes: {
+      key: "OAuth2"
+      value: {
+        type: TYPE_OAUTH2
+        flows: {
+          authorization_code: {
+            authorization_url: "https://example.com/oauth/authorize"
+            token_url: "https://example.com/oauth/token"
+            scopes: {
+              key: "read"
+              value: "Read access"
+            }
+            scopes: {
+              key: "write"
+              value: "Write access"
+            }
+          }
+        }
+      }
+    }
+  }
+  // Every operation requires a bearer token unless it says otherwise.
+  security: {
+    schemes: {
+      key: "BearerAuth"
+      value: {}
+    }
+  }
+};
+```
+
+An operation can require different schemes, ask for OAuth2 scopes, or accept
+any of several alternatives:
+
+```protobuf
+rpc UpdateBook(UpdateBookRequest) returns (Book) {
+  option (google.api.http) = {
+    patch: "/v1/books/{book.id}"
+    body: "book"
+  };
+  // Either an OAuth2 token with the "write" scope, or an API key.
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    security: {
+      schemes: {
+        key: "OAuth2"
+        value: {scopes: "write"}
+      }
+    }
+    security: {
+      schemes: {
+        key: "ApiKeyAuth"
+        value: {}
+      }
+    }
+  };
+}
+```
+
+To make authentication optional for an operation, add an empty requirement.
+It renders as `{}` in the operation's `security` list:
+
+```protobuf
+rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+  option (google.api.http) = {get: "/v1/books"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    security: {}
+  };
+}
+```
+
+Mutual TLS (`TYPE_MUTUAL_TLS`) needs no other fields, and OpenID Connect
+(`TYPE_OPEN_ID_CONNECT`) needs `open_id_connect_url`.
+
 ## Example
 
 Given:

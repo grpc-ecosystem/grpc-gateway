@@ -167,12 +167,16 @@ type Document struct {
 	// See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
 	Extensions map[string]*structpb.Value `protobuf:"bytes,5,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Reusable objects rendered under the document's `components` section.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oasComponents
 	Components *Components `protobuf:"bytes,6,opt,name=components,proto3" json:"components,omitempty"`
 	// A declaration of which security mechanisms can be used across the API.
 	// The list of values includes alternative security requirement objects
 	// that can be used. Only one of the security requirement objects needs to
 	// be satisfied to authorize a request. Individual operations can override
 	// this definition with `openapiv3_operation.security`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oasSecurity
 	Security      []*SecurityRequirement `protobuf:"bytes,7,rep,name=security,proto3" json:"security,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -339,12 +343,16 @@ type Document_builder struct {
 	// See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
 	Extensions map[string]*structpb.Value
 	// Reusable objects rendered under the document's `components` section.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oasComponents
 	Components *Components
 	// A declaration of which security mechanisms can be used across the API.
 	// The list of values includes alternative security requirement objects
 	// that can be used. Only one of the security requirement objects needs to
 	// be satisfied to authorize a request. Individual operations can override
 	// this definition with `openapiv3_operation.security`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oasSecurity
 	Security []*SecurityRequirement
 }
 
@@ -371,6 +379,8 @@ type Components struct {
 	state protoimpl.MessageState `protogen:"hybrid.v1"`
 	// Security schemes that can be referenced by name from security
 	// requirements, keyed by scheme name.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#componentsSecuritySchemes
 	SecuritySchemes map[string]*SecurityScheme `protobuf:"bytes,1,rep,name=security_schemes,json=securitySchemes,proto3" json:"security_schemes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -417,6 +427,8 @@ type Components_builder struct {
 
 	// Security schemes that can be referenced by name from security
 	// requirements, keyed by scheme name.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#componentsSecuritySchemes
 	SecuritySchemes map[string]*SecurityScheme
 }
 
@@ -1065,6 +1077,8 @@ type Operation struct {
 	// objects that can be used. When set, this replaces the document-level
 	// `security` for this operation. To make security optional for this
 	// operation, add an empty security requirement (`security: {}`).
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#operationSecurity
 	Security      []*SecurityRequirement `protobuf:"bytes,9,rep,name=security,proto3" json:"security,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -1240,6 +1254,8 @@ type Operation_builder struct {
 	// objects that can be used. When set, this replaces the document-level
 	// `security` for this operation. To make security optional for this
 	// operation, add an empty security requirement (`security: {}`).
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#operationSecurity
 	Security []*SecurityRequirement
 }
 
@@ -1613,27 +1629,43 @@ func (b0 Tag_builder) Build() *Tag {
 type SecurityScheme struct {
 	state protoimpl.MessageState `protogen:"hybrid.v1"`
 	// The type of the security scheme. Required.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeType
 	Type SecurityScheme_Type `protobuf:"varint,1,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme_Type" json:"type,omitempty"`
 	// A description for the security scheme. CommonMark syntax MAY be used for
 	// rich text representation.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeDescription
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// The name of the header, query or cookie parameter to be used. Required
 	// when `type` is `TYPE_API_KEY`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeName
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// The location of the API key. Required when `type` is `TYPE_API_KEY`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeIn
 	In SecurityScheme_In `protobuf:"varint,4,opt,name=in,proto3,enum=grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme_In" json:"in,omitempty"`
 	// The name of the HTTP Authorization scheme to be used in the
 	// Authorization header as defined in RFC 7235, for example "basic" or
 	// "bearer". Required when `type` is `TYPE_HTTP`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeScheme
 	Scheme string `protobuf:"bytes,5,opt,name=scheme,proto3" json:"scheme,omitempty"`
 	// A hint to the client to identify how the bearer token is formatted.
 	// Only used when `type` is `TYPE_HTTP` and `scheme` is "bearer".
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeBearerFormat
 	BearerFormat string `protobuf:"bytes,6,opt,name=bearer_format,json=bearerFormat,proto3" json:"bearer_format,omitempty"`
 	// Configuration information for the flow types supported. Required when
 	// `type` is `TYPE_OAUTH2`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeFlows
 	Flows *OAuthFlows `protobuf:"bytes,7,opt,name=flows,proto3" json:"flows,omitempty"`
 	// OpenID Connect URL to discover OAuth2 configuration values. This MUST be
 	// in the form of a URL. Required when `type` is `TYPE_OPEN_ID_CONNECT`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeOpenIdConnectUrl
 	OpenIdConnectUrl string `protobuf:"bytes,8,opt,name=open_id_connect_url,json=openIdConnectUrl,proto3" json:"open_id_connect_url,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -1767,27 +1799,43 @@ type SecurityScheme_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	// The type of the security scheme. Required.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeType
 	Type SecurityScheme_Type
 	// A description for the security scheme. CommonMark syntax MAY be used for
 	// rich text representation.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeDescription
 	Description string
 	// The name of the header, query or cookie parameter to be used. Required
 	// when `type` is `TYPE_API_KEY`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeName
 	Name string
 	// The location of the API key. Required when `type` is `TYPE_API_KEY`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeIn
 	In SecurityScheme_In
 	// The name of the HTTP Authorization scheme to be used in the
 	// Authorization header as defined in RFC 7235, for example "basic" or
 	// "bearer". Required when `type` is `TYPE_HTTP`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeScheme
 	Scheme string
 	// A hint to the client to identify how the bearer token is formatted.
 	// Only used when `type` is `TYPE_HTTP` and `scheme` is "bearer".
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeBearerFormat
 	BearerFormat string
 	// Configuration information for the flow types supported. Required when
 	// `type` is `TYPE_OAUTH2`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeFlows
 	Flows *OAuthFlows
 	// OpenID Connect URL to discover OAuth2 configuration values. This MUST be
 	// in the form of a URL. Required when `type` is `TYPE_OPEN_ID_CONNECT`.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeOpenIdConnectUrl
 	OpenIdConnectUrl string
 }
 
@@ -1812,12 +1860,20 @@ func (b0 SecurityScheme_builder) Build() *SecurityScheme {
 type OAuthFlows struct {
 	state protoimpl.MessageState `protogen:"hybrid.v1"`
 	// Configuration for the OAuth Implicit flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsImplicit
 	Implicit *OAuthFlow `protobuf:"bytes,1,opt,name=implicit,proto3" json:"implicit,omitempty"`
 	// Configuration for the OAuth Resource Owner Password flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsPassword
 	Password *OAuthFlow `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	// Configuration for the OAuth Client Credentials flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsClientCredentials
 	ClientCredentials *OAuthFlow `protobuf:"bytes,3,opt,name=client_credentials,json=clientCredentials,proto3" json:"client_credentials,omitempty"`
 	// Configuration for the OAuth Authorization Code flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsAuthorizationCode
 	AuthorizationCode *OAuthFlow `protobuf:"bytes,4,opt,name=authorization_code,json=authorizationCode,proto3" json:"authorization_code,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -1940,12 +1996,20 @@ type OAuthFlows_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	// Configuration for the OAuth Implicit flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsImplicit
 	Implicit *OAuthFlow
 	// Configuration for the OAuth Resource Owner Password flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsPassword
 	Password *OAuthFlow
 	// Configuration for the OAuth Client Credentials flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsClientCredentials
 	ClientCredentials *OAuthFlow
 	// Configuration for the OAuth Authorization Code flow.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowsAuthorizationCode
 	AuthorizationCode *OAuthFlow
 }
 
@@ -1967,14 +2031,22 @@ type OAuthFlow struct {
 	state protoimpl.MessageState `protogen:"hybrid.v1"`
 	// The authorization URL to be used for this flow. Required for the
 	// implicit and authorization code flows.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowAuthorizationUrl
 	AuthorizationUrl string `protobuf:"bytes,1,opt,name=authorization_url,json=authorizationUrl,proto3" json:"authorization_url,omitempty"`
 	// The token URL to be used for this flow. Required for the password,
 	// client credentials and authorization code flows.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowTokenUrl
 	TokenUrl string `protobuf:"bytes,2,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
 	// The URL to be used for obtaining refresh tokens.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowRefreshUrl
 	RefreshUrl string `protobuf:"bytes,3,opt,name=refresh_url,json=refreshUrl,proto3" json:"refresh_url,omitempty"`
 	// The available scopes for the OAuth2 security scheme. A map between the
 	// scope name and a short description for it. The map MAY be empty.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowScopes
 	Scopes        map[string]string `protobuf:"bytes,4,rep,name=scopes,proto3" json:"scopes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2054,14 +2126,22 @@ type OAuthFlow_builder struct {
 
 	// The authorization URL to be used for this flow. Required for the
 	// implicit and authorization code flows.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowAuthorizationUrl
 	AuthorizationUrl string
 	// The token URL to be used for this flow. Required for the password,
 	// client credentials and authorization code flows.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowTokenUrl
 	TokenUrl string
 	// The URL to be used for obtaining refresh tokens.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowRefreshUrl
 	RefreshUrl string
 	// The available scopes for the OAuth2 security scheme. A map between the
 	// scope name and a short description for it. The map MAY be empty.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#oauthFlowScopes
 	Scopes map[string]string
 }
 
@@ -2085,6 +2165,8 @@ type SecurityRequirement struct {
 	state protoimpl.MessageState `protogen:"hybrid.v1"`
 	// Maps the name of a security scheme declared in
 	// `Document.components.security_schemes` to the scopes it requires.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securityRequirementsName
 	Schemes       map[string]*SecurityRequirement_Scopes `protobuf:"bytes,1,rep,name=schemes,proto3" json:"schemes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2131,6 +2213,8 @@ type SecurityRequirement_builder struct {
 
 	// Maps the name of a security scheme declared in
 	// `Document.components.security_schemes` to the scopes it requires.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#securityRequirementsName
 	Schemes map[string]*SecurityRequirement_Scopes
 }
 

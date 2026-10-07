@@ -214,8 +214,14 @@ func convertSecuritySchemes(schemes map[string]*options.SecurityScheme) (map[str
 	return out, nil
 }
 
+// convertSecurityScheme converts a single security scheme. The type and in
+// values and the fields required for each type are the ones listed in the
+// Security Scheme Object's fixed fields.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#security-scheme-object
 func convertSecurityScheme(s *options.SecurityScheme) (*SecurityScheme, error) {
 	out := &SecurityScheme{Description: s.GetDescription()}
+	// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeType
 	switch s.GetType() {
 	case options.SecurityScheme_TYPE_API_KEY:
 		out.Type = "apiKey"
@@ -223,6 +229,7 @@ func convertSecurityScheme(s *options.SecurityScheme) (*SecurityScheme, error) {
 			return nil, fmt.Errorf("name is required for apiKey security schemes")
 		}
 		out.Name = s.GetName()
+		// See: https://spec.openapis.org/oas/v3.1.0#securitySchemeIn
 		switch s.GetIn() {
 		case options.SecurityScheme_IN_QUERY:
 			out.In = "query"
@@ -261,6 +268,11 @@ func convertSecurityScheme(s *options.SecurityScheme) (*SecurityScheme, error) {
 	return out, nil
 }
 
+// convertOAuthFlows converts the flows of an oauth2 security scheme. Which
+// URLs are required depends on the flow, as listed in the OAuth Flow Object's
+// fixed fields.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#oauth-flows-object
 func convertOAuthFlows(f *options.OAuthFlows) (*OAuthFlows, error) {
 	if f == nil {
 		return nil, fmt.Errorf("flows is required for oauth2 security schemes")
@@ -287,6 +299,8 @@ func convertOAuthFlows(f *options.OAuthFlows) (*OAuthFlows, error) {
 // convertOAuthFlow converts a single OAuth flow, enforcing the URLs the
 // OpenAPI 3.1.0 spec requires for that flow type. A nil flow is not
 // supported by the scheme and converts to nil.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#oauth-flow-object
 func convertOAuthFlow(name string, f *options.OAuthFlow, needAuthorizationURL, needTokenURL bool) (*OAuthFlow, error) {
 	if f == nil {
 		return nil, nil
