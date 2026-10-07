@@ -344,6 +344,10 @@ the [generation strategy](https://docs.buf.build/configuration/v1/buf-gen-yaml/#
     opt: allow_merge=true,merge_file_name=foo
 ```
 
+File-level options of the merged output (such as `info`, `host` or `tags`) are taken from the first input file that has
+an `openapiv2_swagger` option, either as an annotation or in the `openapi_configuration` file. File-level options set
+on any other input file are ignored.
+
 ### Enums as integers
 
 To generate enums as integers instead of strings, use `enums_as_ints`.

@@ -12,7 +12,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
-	openapioptions "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"go.yaml.in/yaml/v3"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/grpclog"
@@ -398,9 +397,14 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	}
 	if g.reg.IsAllowMerge() {
 		var mergedTarget *descriptor.File
-		// try to find proto leader
+		// try to find proto leader: the first file with file-level OpenAPI
+		// options, either from an annotation or from openapi_configuration.
 		for _, f := range targets {
-			if proto.HasExtension(f.Options, openapioptions.E_Openapiv2Swagger) {
+			opts, err := getFileOpenAPIOption(g.reg, f)
+			if err != nil {
+				return nil, err
+			}
+			if opts != nil {
 				mergedTarget = f
 				break
 			}
