@@ -40,6 +40,7 @@ alias(
 go_test(
     name = "genopenapi_test",
     srcs = [
+        "annotations_test.go",
         "comments_test.go",
         "generator_test.go",
         "operation_test.go",
@@ -51,6 +52,7 @@ go_test(
     embed = [":genopenapi"],
     deps = [
         "//internal/descriptor",
+        "//protoc-gen-openapiv3/options",
         "@com_github_google_go_cmp//cmp",
         "@org_golang_google_genproto_googleapis_api//visibility",
         "@org_golang_google_protobuf//encoding/prototext",

@@ -36,6 +36,25 @@ message Document {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
   map<string, google.protobuf.Value> extensions = 5;
+  // Reusable objects rendered under the document's `components` section.
+  Components components = 6;
+  // A declaration of which security mechanisms can be used across the API.
+  // The list of values includes alternative security requirement objects
+  // that can be used. Only one of the security requirement objects needs to
+  // be satisfied to authorize a request. Individual operations can override
+  // this definition with `openapiv3_operation.security`.
+  repeated SecurityRequirement security = 7;
+}
+
+// Components holds reusable objects for the document. Entries declared here
+// are added to the `components` section the generator builds from the proto
+// types.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#components-object
+message Components {
+  // Security schemes that can be referenced by name from security
+  // requirements, keyed by scheme name.
+  map<string, SecurityScheme> security_schemes = 1;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -146,6 +165,12 @@ message Operation {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
   map<string, google.protobuf.Value> extensions = 8;
+  // A declaration of which security mechanisms can be used for this
+  // operation. The list of values includes alternative security requirement
+  // objects that can be used. When set, this replaces the document-level
+  // `security` for this operation. To make security optional for this
+  // operation, add an empty security requirement (`security: {}`).
+  repeated SecurityRequirement security = 9;
 }
 
 // Schema is a message- or field-level override applied to the generated
@@ -207,4 +232,112 @@ message Tag {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
   map<string, google.protobuf.Value> extensions = 4;
+}
+
+// SecurityScheme defines a security scheme that can be used by the
+// operations.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#security-scheme-object
+message SecurityScheme {
+  // The type of the security scheme.
+  enum Type {
+    // Not a valid security scheme type. Setting `type` is required.
+    TYPE_UNSPECIFIED = 0;
+    // An API key sent in a header, query parameter or cookie.
+    TYPE_API_KEY = 1;
+    // HTTP authentication, for example basic or bearer.
+    TYPE_HTTP = 2;
+    // Mutual TLS.
+    TYPE_MUTUAL_TLS = 3;
+    // OAuth2.
+    TYPE_OAUTH2 = 4;
+    // OpenID Connect Discovery.
+    TYPE_OPEN_ID_CONNECT = 5;
+  }
+
+  // The location of an API key.
+  enum In {
+    // Not set. Required when `type` is `TYPE_API_KEY`.
+    IN_UNSPECIFIED = 0;
+    // The API key is sent as a query parameter.
+    IN_QUERY = 1;
+    // The API key is sent as a header.
+    IN_HEADER = 2;
+    // The API key is sent as a cookie.
+    IN_COOKIE = 3;
+  }
+
+  // The type of the security scheme. Required.
+  Type type = 1;
+  // A description for the security scheme. CommonMark syntax MAY be used for
+  // rich text representation.
+  string description = 2;
+  // The name of the header, query or cookie parameter to be used. Required
+  // when `type` is `TYPE_API_KEY`.
+  string name = 3;
+  // The location of the API key. Required when `type` is `TYPE_API_KEY`.
+  In in = 4;
+  // The name of the HTTP Authorization scheme to be used in the
+  // Authorization header as defined in RFC 7235, for example "basic" or
+  // "bearer". Required when `type` is `TYPE_HTTP`.
+  string scheme = 5;
+  // A hint to the client to identify how the bearer token is formatted.
+  // Only used when `type` is `TYPE_HTTP` and `scheme` is "bearer".
+  string bearer_format = 6;
+  // Configuration information for the flow types supported. Required when
+  // `type` is `TYPE_OAUTH2`.
+  OAuthFlows flows = 7;
+  // OpenID Connect URL to discover OAuth2 configuration values. This MUST be
+  // in the form of a URL. Required when `type` is `TYPE_OPEN_ID_CONNECT`.
+  string open_id_connect_url = 8;
+}
+
+// OAuthFlows allows configuration of the supported OAuth flows.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#oauth-flows-object
+message OAuthFlows {
+  // Configuration for the OAuth Implicit flow.
+  OAuthFlow implicit = 1;
+  // Configuration for the OAuth Resource Owner Password flow.
+  OAuthFlow password = 2;
+  // Configuration for the OAuth Client Credentials flow.
+  OAuthFlow client_credentials = 3;
+  // Configuration for the OAuth Authorization Code flow.
+  OAuthFlow authorization_code = 4;
+}
+
+// OAuthFlow is the configuration details for a supported OAuth flow.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#oauth-flow-object
+message OAuthFlow {
+  // The authorization URL to be used for this flow. Required for the
+  // implicit and authorization code flows.
+  string authorization_url = 1;
+  // The token URL to be used for this flow. Required for the password,
+  // client credentials and authorization code flows.
+  string token_url = 2;
+  // The URL to be used for obtaining refresh tokens.
+  string refresh_url = 3;
+  // The available scopes for the OAuth2 security scheme. A map between the
+  // scope name and a short description for it. The map MAY be empty.
+  map<string, string> scopes = 4;
+}
+
+// SecurityRequirement lists the security schemes required to execute an
+// operation. When multiple schemes are listed, all of them must be
+// satisfied. An empty security requirement allows anonymous access.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#security-requirement-object
+message SecurityRequirement {
+  // Scopes lists the scopes required by a single security scheme.
+  message Scopes {
+    // For `TYPE_OAUTH2` and `TYPE_OPEN_ID_CONNECT` schemes, the scope names
+    // required for the execution. For other scheme types, a list of role
+    // names, which MAY be empty.
+    repeated string scopes = 1;
+  }
+
+  // Maps the name of a security scheme declared in
+  // `Document.components.security_schemes` to the scopes it requires.
+  map<string, Scopes> schemes = 1;
 }

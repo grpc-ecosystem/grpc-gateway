@@ -2,6 +2,8 @@ package genopenapi
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"sort"
 	"strings"
 
@@ -99,7 +101,8 @@ func processExtensions(where string, exts map[string]*structpb.Value) []extensio
 // leave the current value untouched. Returns an error if the annotation is
 // invalid — for example, a License with no name, a Server with no url, a Tag
 // with no name, or any ExternalDocs without a url. All four are spec-required
-// fields per OpenAPI 3.1.0.
+// fields per OpenAPI 3.1.0. Security schemes are validated the same way, and
+// document-level security requirements must name a declared scheme.
 func applyDocumentOverride(doc *Document, d *options.Document) error {
 	if d == nil {
 		return nil
@@ -177,7 +180,163 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 		tag.Extensions = processExtensions(fmt.Sprintf("openapiv3_document.tags[%d]", i), t.GetExtensions())
 		doc.Tags = append(doc.Tags, tag)
 	}
+	if c := d.GetComponents(); c != nil {
+		schemes, err := convertSecuritySchemes(c.GetSecuritySchemes())
+		if err != nil {
+			return fmt.Errorf("openapiv3 document components: %w", err)
+		}
+		doc.Components.SecuritySchemes = schemes
+	}
+	doc.Security = convertSecurityRequirements(d.GetSecurity())
+	if err := checkSecurityRequirements(doc.Security, doc.Components.SecuritySchemes); err != nil {
+		return fmt.Errorf("openapiv3 document %w", err)
+	}
 	doc.Extensions = processExtensions("openapiv3_document", d.GetExtensions())
+	return nil
+}
+
+// convertSecuritySchemes converts the security schemes of a document-level
+// Components annotation. Returns an error if a scheme is missing a field the
+// OpenAPI 3.1.0 spec requires for its type.
+func convertSecuritySchemes(schemes map[string]*options.SecurityScheme) (map[string]*SecurityScheme, error) {
+	if len(schemes) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*SecurityScheme, len(schemes))
+	// Iterate in sorted order so that error messages are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(schemes)) {
+		s, err := convertSecurityScheme(schemes[name])
+		if err != nil {
+			return nil, fmt.Errorf("security_schemes[%q]: %w", name, err)
+		}
+		out[name] = s
+	}
+	return out, nil
+}
+
+func convertSecurityScheme(s *options.SecurityScheme) (*SecurityScheme, error) {
+	out := &SecurityScheme{Description: s.GetDescription()}
+	switch s.GetType() {
+	case options.SecurityScheme_TYPE_API_KEY:
+		out.Type = "apiKey"
+		if s.GetName() == "" {
+			return nil, fmt.Errorf("name is required for apiKey security schemes")
+		}
+		out.Name = s.GetName()
+		switch s.GetIn() {
+		case options.SecurityScheme_IN_QUERY:
+			out.In = "query"
+		case options.SecurityScheme_IN_HEADER:
+			out.In = "header"
+		case options.SecurityScheme_IN_COOKIE:
+			out.In = "cookie"
+		default:
+			return nil, fmt.Errorf("in is required for apiKey security schemes")
+		}
+	case options.SecurityScheme_TYPE_HTTP:
+		out.Type = "http"
+		if s.GetScheme() == "" {
+			return nil, fmt.Errorf("scheme is required for http security schemes")
+		}
+		out.Scheme = s.GetScheme()
+		out.BearerFormat = s.GetBearerFormat()
+	case options.SecurityScheme_TYPE_MUTUAL_TLS:
+		out.Type = "mutualTLS"
+	case options.SecurityScheme_TYPE_OAUTH2:
+		out.Type = "oauth2"
+		flows, err := convertOAuthFlows(s.GetFlows())
+		if err != nil {
+			return nil, err
+		}
+		out.Flows = flows
+	case options.SecurityScheme_TYPE_OPEN_ID_CONNECT:
+		out.Type = "openIdConnect"
+		if s.GetOpenIdConnectUrl() == "" {
+			return nil, fmt.Errorf("open_id_connect_url is required for openIdConnect security schemes")
+		}
+		out.OpenIDConnectURL = s.GetOpenIdConnectUrl()
+	default:
+		return nil, fmt.Errorf("type is required")
+	}
+	return out, nil
+}
+
+func convertOAuthFlows(f *options.OAuthFlows) (*OAuthFlows, error) {
+	if f == nil {
+		return nil, fmt.Errorf("flows is required for oauth2 security schemes")
+	}
+	var (
+		out OAuthFlows
+		err error
+	)
+	if out.Implicit, err = convertOAuthFlow("implicit", f.GetImplicit(), true, false); err != nil {
+		return nil, err
+	}
+	if out.Password, err = convertOAuthFlow("password", f.GetPassword(), false, true); err != nil {
+		return nil, err
+	}
+	if out.ClientCredentials, err = convertOAuthFlow("client_credentials", f.GetClientCredentials(), false, true); err != nil {
+		return nil, err
+	}
+	if out.AuthorizationCode, err = convertOAuthFlow("authorization_code", f.GetAuthorizationCode(), true, true); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// convertOAuthFlow converts a single OAuth flow, enforcing the URLs the
+// OpenAPI 3.1.0 spec requires for that flow type. A nil flow is not
+// supported by the scheme and converts to nil.
+func convertOAuthFlow(name string, f *options.OAuthFlow, needAuthorizationURL, needTokenURL bool) (*OAuthFlow, error) {
+	if f == nil {
+		return nil, nil
+	}
+	if needAuthorizationURL && f.GetAuthorizationUrl() == "" {
+		return nil, fmt.Errorf("flows.%s: authorization_url is required", name)
+	}
+	if needTokenURL && f.GetTokenUrl() == "" {
+		return nil, fmt.Errorf("flows.%s: token_url is required", name)
+	}
+	out := &OAuthFlow{
+		AuthorizationURL: f.GetAuthorizationUrl(),
+		TokenURL:         f.GetTokenUrl(),
+		RefreshURL:       f.GetRefreshUrl(),
+		// scopes is required by the spec, even when empty.
+		Scopes: make(map[string]string, len(f.GetScopes())),
+	}
+	maps.Copy(out.Scopes, f.GetScopes())
+	return out, nil
+}
+
+// convertSecurityRequirements converts security requirements from a
+// Document or Operation annotation. An empty requirement is kept, since it
+// renders as {} and marks security as optional.
+func convertSecurityRequirements(reqs []*options.SecurityRequirement) []SecurityRequirement {
+	if len(reqs) == 0 {
+		return nil
+	}
+	out := make([]SecurityRequirement, 0, len(reqs))
+	for _, r := range reqs {
+		req := make(SecurityRequirement, len(r.GetSchemes()))
+		for name, scopes := range r.GetSchemes() {
+			// The scopes array is required, even when empty.
+			req[name] = append([]string{}, scopes.GetScopes()...)
+		}
+		out = append(out, req)
+	}
+	return out
+}
+
+// checkSecurityRequirements verifies that every scheme named by reqs is
+// declared in schemes, as required by the OpenAPI 3.1.0 spec.
+func checkSecurityRequirements(reqs []SecurityRequirement, schemes map[string]*SecurityScheme) error {
+	for i, req := range reqs {
+		for _, name := range slices.Sorted(maps.Keys(req)) {
+			if _, ok := schemes[name]; !ok {
+				return fmt.Errorf("security[%d]: references undeclared security scheme %q; add it to openapiv3_document.components.security_schemes", i, name)
+			}
+		}
+	}
 	return nil
 }
 
@@ -203,7 +362,8 @@ func validateExternalDocs(ed *options.ExternalDocs) error {
 // applyOperationOverride applies method-level Operation overrides onto the
 // generated operation. Annotation values replace comment-derived summary and
 // description; a non-empty tag list replaces the default (the service name);
-// servers from the annotation are appended to any defaults. The annotation
+// servers from the annotation are appended to any defaults; security
+// requirements replace the document-level ones. The annotation
 // `deprecated` flag is one-way: it can flip deprecation on, but cannot
 // clear a flag inherited from the proto cascade.
 //
@@ -244,6 +404,7 @@ func applyOperationOverride(op *Operation, o *options.Operation) error {
 			Description: s.GetDescription(),
 		})
 	}
+	op.Security = convertSecurityRequirements(o.GetSecurity())
 	op.Extensions = processExtensions("openapiv3_operation", o.GetExtensions())
 	return nil
 }
