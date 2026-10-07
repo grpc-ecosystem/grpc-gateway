@@ -1,0 +1,89 @@
+file_to_generate: "shop/v1/shop.proto"
+proto_file: {
+  name: "shop/v1/shop.proto"
+  package: "shop.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "WidgetService"
+    method: {
+      name: "GetWidget"
+      input_type: ".shop.v1.GetRequest"
+      output_type: ".shop.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/widgets/{id}"
+        }
+      }
+    }
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_tag]: {
+        name: "Widgets"
+        description: "Widget operations."
+        external_docs: {
+          description: "Widget guide."
+          url: "https://example.com/docs/widgets"
+        }
+        extensions: {
+          key: "x-tag-color"
+          value: {
+            string_value: "blue"
+          }
+        }
+      }
+    }
+  }
+  service: {
+    name: "GadgetService"
+    method: {
+      name: "GetGadget"
+      input_type: ".shop.v1.GetRequest"
+      output_type: ".shop.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/gadgets/{id}"
+        }
+      }
+    }
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_tag]: {
+        description: "Gadget operations."
+      }
+    }
+  }
+  service: {
+    name: "OrderService"
+    method: {
+      name: "GetOrder"
+      input_type: ".shop.v1.GetRequest"
+      output_type: ".shop.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/orders/{id}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/shop/v1;shopv1"
+  }
+  syntax: "proto3"
+}

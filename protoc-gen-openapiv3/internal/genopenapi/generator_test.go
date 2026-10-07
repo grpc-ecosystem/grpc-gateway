@@ -3,6 +3,7 @@ package genopenapi
 import (
 	"encoding/json"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
@@ -679,6 +680,47 @@ func TestGenerate_CustomAnnotations(t *testing.T) {
 	}
 }
 
+// TestGenerate_ServiceTagAnnotation covers the service-level openapiv3_tag
+// annotation: it overrides the name and metadata of the tag generated for a
+// service, and operations of that service default to the overridden name.
+func TestGenerate_ServiceTagAnnotation(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/service_tag.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Tags  json.RawMessage `json:"tags"`
+		Paths map[string]map[string]struct {
+			Tags []string `json:"tags"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	assertJSONEqual(t, doc.Tags, []byte(`[
+		{
+			"name": "Widgets",
+			"description": "Widget operations.",
+			"externalDocs": {"description": "Widget guide.", "url": "https://example.com/docs/widgets"},
+			"x-tag-color": "blue"
+		},
+		{"name": "GadgetService", "description": "Gadget operations."},
+		{"name": "OrderService"}
+	]`))
+
+	for path, want := range map[string]string{
+		"/v1/widgets/{id}": "Widgets",
+		"/v1/gadgets/{id}": "GadgetService",
+		"/v1/orders/{id}":  "OrderService",
+	} {
+		if got := doc.Paths[path]["get"].Tags; !slices.Equal(got, []string{want}) {
+			t.Errorf("GET %s tags: want [%s], got %v", path, want, got)
+		}
+	}
+}
+
 // TestGenerate_AnnotationErrors covers the spec-required-field validations
 // and the cross-operation invariants (operationId uniqueness, tag references
 // resolving). One sub-case per failure mode keeps the error messages
@@ -721,6 +763,11 @@ func TestGenerate_AnnotationErrors(t *testing.T) {
 			name:    "operation references undeclared tag",
 			fixture: "testdata/orphan_operation_tag.prototext",
 			wantErr: `references undeclared tag "Undeclared"`,
+		},
+		{
+			name:    "service tag external_docs missing url",
+			fixture: "testdata/service_tag_external_docs_missing_url.prototext",
+			wantErr: "openapiv3 service BadService: external_docs: url is required",
 		},
 	}
 	for _, tc := range cases {

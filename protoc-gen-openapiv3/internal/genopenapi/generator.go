@@ -78,7 +78,15 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 			continue
 		}
 
-		tag := svc.GetName()
+		tag := &Tag{
+			Name:        svc.GetName(),
+			Description: serviceComments(svc),
+		}
+		if t, ok := serviceTagAnnotation(svc); ok {
+			if err := applyTagOverride(tag, t); err != nil {
+				return nil, false, fmt.Errorf("openapiv3 service %s: %w", svc.GetName(), err)
+			}
+		}
 		// Track whether any methods of this service are visible,
 		// to avoid emitting a tag for a service with only hidden methods.
 		hasVisibleMethod := false
@@ -90,7 +98,7 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 			}
 			for i, binding := range method.Bindings {
 				urlPath, pathParams := convertPathTemplate(binding.PathTmpl.Template)
-				op, err := buildOperation(b, svc, method, binding, i, pathParams)
+				op, err := buildOperation(b, svc, tag.Name, method, binding, i, pathParams)
 				if err != nil {
 					return nil, false, err
 				}
@@ -117,12 +125,9 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 
 		// Emit the service's tag if it has any visible
 		// methods and the tag hasn't already been emitted.
-		if hasVisibleMethod && !seenTags[tag] {
-			seenTags[tag] = true
-			doc.Tags = append(doc.Tags, &Tag{
-				Name:        tag,
-				Description: serviceComments(svc),
-			})
+		if hasVisibleMethod && !seenTags[tag.Name] {
+			seenTags[tag.Name] = true
+			doc.Tags = append(doc.Tags, tag)
 		}
 	}
 
