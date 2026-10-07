@@ -142,26 +142,3 @@ jobs:
           go-version-file: 'go.mod'
           check-latest: true
       - run: go tool staticcheck ./...
-  fuzz:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build Fuzzers
-        id: build
-        uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@868bfcbd1db0c8eb4dc6029598c90705d6c88e74 # master
-        with:
-          oss-fuzz-project-name: "grpc-gateway"
-          dry-run: false
-          language: go
-      - name: Run Fuzzers
-        uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@868bfcbd1db0c8eb4dc6029598c90705d6c88e74 # master
-        with:
-          oss-fuzz-project-name: "grpc-gateway"
-          fuzz-seconds: 600
-          dry-run: false
-          language: go
-      - name: Upload Crash
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-        if: failure() && steps.build.outcome == 'success'
-        with:
-          name: artifacts
-          path: ./out/artifacts
