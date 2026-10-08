@@ -1708,6 +1708,10 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 	fieldOption := &descriptorpb.FieldOptions{}
 	proto.SetExtension(fieldOption, openapi_options.E_Openapiv2Field, fieldSchema)
 
+	repeatedFieldSchema := &openapi_options.JSONSchema{Required: []string{"d"}}
+	repeatedFieldOption := &descriptorpb.FieldOptions{}
+	proto.SetExtension(repeatedFieldOption, openapi_options.E_Openapiv2Field, repeatedFieldSchema)
+
 	// TODO(makdon): is nested field's test case necessary here?
 	tests := []test{
 		{
@@ -1732,6 +1736,13 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 							Label:  descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
 							Number: proto.Int32(3),
 						},
+						{
+							Name:    proto.String("d"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Label:   descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number:  proto.Int32(4),
+							Options: repeatedFieldOption,
+						},
 					},
 					Options: messageOption,
 				},
@@ -1755,6 +1766,13 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 					Name:             "c",
 					In:               "query",
 					Required:         false,
+					Type:             "array",
+					CollectionFormat: "multi",
+				},
+				{
+					Name:             "d",
+					In:               "query",
+					Required:         true,
 					Type:             "array",
 					CollectionFormat: "multi",
 				},
@@ -6109,12 +6127,12 @@ func TestSchemaOfField(t *testing.T) {
 						Pattern:          "[a-z]+",
 						MaxProperties:    33,
 						MinProperties:    22,
-						Required:         []string{"req"},
 						ReadOnly:         true,
 					},
 				},
 				Title:       "field title",
 				Description: "field description",
+				Required:    []string{"req"},
 				UniqueItems: true,
 				MaxItems:    20,
 				MinItems:    2,
@@ -6155,12 +6173,12 @@ func TestSchemaOfField(t *testing.T) {
 						Pattern:          "[a-z]+",
 						MaxProperties:    33,
 						MinProperties:    22,
-						Required:         []string{"req"},
 						ReadOnly:         true,
 					},
 				},
 				Title:       "field title",
 				Description: "field description",
+				Required:    []string{"req"},
 				UniqueItems: true,
 				MaxItems:    20,
 				MinItems:    2,
@@ -6376,6 +6394,11 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 	requiredField := new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredField, openapi_options.E_Openapiv2Field, jsonSchema)
+
+	requiredRepeatedField := new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredRepeatedField, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+		Required: []string{"aRequiredRepeatedField"},
+	})
 
 	fieldBehaviorRequired := []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
 	requiredFieldOptions := new(descriptorpb.FieldOptions)
@@ -6803,6 +6826,46 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			descr: "JSONSchema with required repeated field",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("aRequiredRepeatedField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Label:   descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number:  proto.Int32(1),
+							Options: requiredRepeatedField,
+						},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Required: []string{"aRequiredRepeatedField"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "aRequiredRepeatedField",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "array",
+									Items: &openapiItemsObject{
+										schemaCore: schemaCore{
+											Type: "string",
+										},
+									},
 								},
 							},
 						},
