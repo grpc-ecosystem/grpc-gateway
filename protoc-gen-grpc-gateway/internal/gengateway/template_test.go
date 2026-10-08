@@ -298,12 +298,22 @@ func TestApplyTemplateOpaquePathParams(t *testing.T) {
 	enumField.Type = descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum()
 	enumField.TypeName = proto.String(".example.Color")
 
+	oneofField := proto.Clone(baseField).(*descriptorpb.FieldDescriptorProto)
+	oneofField.OneofIndex = proto.Int32(0)
+
 	tcs := map[string]struct {
 		field      *descriptorpb.FieldDescriptorProto
 		enumDesc   *descriptorpb.EnumDescriptorProto
 		httpMethod string
 		expect     string
+		notExpect  string
 	}{
+		"oneof scalar GET": {
+			field:      oneofField,
+			httpMethod: "GET",
+			expect:     "protoReq.SetKind(convertedKind)",
+			notExpect:  "protoReq.Kind",
+		},
 		"scalar GET": {
 			field:      baseField,
 			httpMethod: "GET",
@@ -324,6 +334,9 @@ func TestApplyTemplateOpaquePathParams(t *testing.T) {
 				Field: []*descriptorpb.FieldDescriptorProto{
 					proto.Clone(tc.field).(*descriptorpb.FieldDescriptorProto),
 				},
+			}
+			if tc.field.OneofIndex != nil {
+				msgdesc.OneofDecl = []*descriptorpb.OneofDescriptorProto{{Name: proto.String("kind_oneof")}}
 			}
 			if tc.enumDesc != nil {
 				msgdesc.EnumType = []*descriptorpb.EnumDescriptorProto{proto.Clone(tc.enumDesc).(*descriptorpb.EnumDescriptorProto)}
@@ -423,6 +436,9 @@ func TestApplyTemplateOpaquePathParams(t *testing.T) {
 
 			if !strings.Contains(got, tc.expect) {
 				t.Fatalf("generated code missing %q: %s", tc.expect, got)
+			}
+			if tc.notExpect != "" && strings.Contains(got, tc.notExpect) {
+				t.Fatalf("generated code unexpectedly contains %q: %s", tc.notExpect, got)
 			}
 		})
 	}
