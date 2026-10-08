@@ -3527,7 +3527,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Items.Default = j.GetDefault()
 		s.Items.MaxProperties = j.GetMaxProperties()
 		s.Items.MinProperties = j.GetMinProperties()
-		s.Items.Required = j.GetRequired()
 		s.Items.Minimum = j.GetMinimum()
 		s.Items.Maximum = j.GetMaximum()
 		s.Items.ReadOnly = j.GetReadOnly()
@@ -3552,7 +3551,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Default = j.GetDefault()
 		s.MaxProperties = j.GetMaxProperties()
 		s.MinProperties = j.GetMinProperties()
-		s.Required = j.GetRequired()
 		s.Minimum = j.GetMinimum()
 		s.Maximum = j.GetMaximum()
 		s.ReadOnly = j.GetReadOnly()
@@ -3571,6 +3569,11 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 			s.Format = j.GetFormat()
 		}
 	}
+	// Required is not a constraint on the values, so for repeated fields it is
+	// kept on the field's schema rather than its items. That is where it is
+	// read from to mark the field as required in the parent message and as a
+	// query parameter.
+	s.Required = j.GetRequired()
 	s.UniqueItems = j.GetUniqueItems()
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
