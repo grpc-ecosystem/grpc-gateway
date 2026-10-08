@@ -44,7 +44,9 @@ const (
 	UnescapingModeDefault = UnescapingModeLegacy
 )
 
-var encodedPathSplitter = regexp.MustCompile("(/|%2F)")
+// Percent-encoding is case insensitive (RFC 3986, section 6.2.2.1), so an
+// escaped path separator has to be recognized in either spelling.
+var encodedPathSplitter = regexp.MustCompile("(/|%2[fF])")
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)

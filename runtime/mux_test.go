@@ -1121,6 +1121,53 @@ func TestServeMux_PathParamUnescapedOnce(t *testing.T) {
 	}
 }
 
+func TestServeMux_EscapedPathSeparatorHexCase(t *testing.T) {
+	// Percent-encoding is case insensitive (RFC 3986, section 6.2.2.1), so %2f
+	// and %2F are the same escaped path separator. UnescapingModeAllCharacters
+	// splits the request path on an escaped separator, so both spellings have
+	// to split it. Otherwise the lowercase form stays inside a component and a
+	// single segment capture is handed a value containing a separator.
+	for _, escaped := range []string{"%2F", "%2f"} {
+		mux := runtime.NewServeMux(runtime.WithUnescapingMode(runtime.UnescapingModeAllCharacters))
+		var got string
+		err := mux.HandlePath("GET", "/v1/items/{id}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+			got = pathParams["id"]
+		})
+		if err != nil {
+			t.Fatalf("mux.HandlePath failed: %v", err)
+		}
+
+		reqPath := "/v1/items/%2e%2e" + escaped + "admin"
+		r := httptest.NewRequest("GET", reqPath, nil)
+		w := httptest.NewRecorder()
+		mux.ServeHTTP(w, r)
+		if w.Code != http.StatusNotFound {
+			t.Errorf("GET %s: w.Code=%d id=%q; want %d", reqPath, w.Code, got, http.StatusNotFound)
+		}
+	}
+
+	// The components an escaped separator splits off are matched literally, in
+	// either spelling.
+	for _, escaped := range []string{"%2F", "%2f"} {
+		mux := runtime.NewServeMux(runtime.WithUnescapingMode(runtime.UnescapingModeAllCharacters))
+		var called bool
+		err := mux.HandlePath("GET", "/v1/shelves/s1/books", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+			called = true
+		})
+		if err != nil {
+			t.Fatalf("mux.HandlePath failed: %v", err)
+		}
+
+		reqPath := "/v1/shelves" + escaped + "s1" + escaped + "books"
+		r := httptest.NewRequest("GET", reqPath, nil)
+		w := httptest.NewRecorder()
+		mux.ServeHTTP(w, r)
+		if w.Code != http.StatusOK || !called {
+			t.Errorf("GET %s: w.Code=%d called=%v; want %d, true", reqPath, w.Code, called, http.StatusOK)
+		}
+	}
+}
+
 // BenchmarkMuxServeHTTP routes a request whose path splits into many
 // components against a mux with many registered patterns, none of which match.
 // The routing cost has to stay proportional to the path, not to the path
