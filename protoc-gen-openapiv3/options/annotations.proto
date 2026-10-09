@@ -15,6 +15,14 @@ extend google.protobuf.FileOptions {
   Document openapiv3_document = 1295;
 }
 
+extend google.protobuf.ServiceOptions {
+  // ID 1295 assigned by protobuf-global-extension-registry@google.com for the
+  // gRPC-Gateway OpenAPI v3 generator. All extensions in this file share the
+  // same ID because they each extend a different descriptor message.
+  // Ref: https://github.com/protocolbuffers/protobuf/commit/5e0f68530ae6ad47b78714e60861321e1d1c04ae
+  Tag openapiv3_tag = 1295;
+}
+
 extend google.protobuf.MethodOptions {
   // ID 1295 assigned by protobuf-global-extension-registry@google.com for the
   // gRPC-Gateway OpenAPI v3 generator. All extensions in this file share the

@@ -739,8 +739,8 @@ type Tag struct {
 	ExternalDocs *ExternalDocs `json:"externalDocs,omitempty"`
 
 	// Extensions holds "x-*" specification extensions set via the
-	// openapiv3_document annotation's tags field. Rendered inline by
-	// MarshalJSON.
+	// openapiv3_document annotation's tags field or the openapiv3_tag
+	// annotation. Rendered inline by MarshalJSON.
 	Extensions []extension `json:"-"`
 }
 

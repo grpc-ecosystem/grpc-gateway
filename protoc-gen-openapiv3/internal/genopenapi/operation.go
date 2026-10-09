@@ -15,20 +15,21 @@ const statusSchemaName = "google.rpc.Status"
 
 // buildOperation produces an OpenAPI Operation for one HTTP binding of an
 // RPC method, registering any referenced schemas with the schema builder.
+// `tag` is the name of the service's tag, used as the operation's default tag.
 //
 // `bindingIdx` disambiguates operationId when a method has multiple bindings;
 // the first binding gets the bare ID, subsequent bindings append `_<idx>`.
 // `pathParams` is the synthetic OpenAPI path parameter list produced by
 // convertPathTemplate; it may be longer than binding.PathParams when a
 // single proto field expanded into multiple wildcards.
-func buildOperation(b *schemaBuilder, svc *descriptor.Service, m *descriptor.Method, binding *descriptor.Binding, bindingIdx int, pathParams []pathParam) (*Operation, error) {
+func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *descriptor.Method, binding *descriptor.Binding, bindingIdx int, pathParams []pathParam) (*Operation, error) {
 	summary, description := splitSummaryDescription(methodComments(m))
 
 	op := &Operation{
 		Summary:     summary,
 		Description: description,
 		OperationID: operationID(svc, m, bindingIdx),
-		Tags:        []string{svc.GetName()},
+		Tags:        []string{tag},
 		Deprecated:  methodDeprecated(m),
 	}
 

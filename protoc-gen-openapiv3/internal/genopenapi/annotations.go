@@ -30,6 +30,17 @@ func fileDocumentAnnotation(file *descriptor.File) (*options.Document, bool) {
 	return d, true
 }
 
+func serviceTagAnnotation(svc *descriptor.Service) (*options.Tag, bool) {
+	if svc.Options == nil || !proto.HasExtension(svc.Options, options.E_Openapiv3Tag) {
+		return nil, false
+	}
+	t, ok := proto.GetExtension(svc.Options, options.E_Openapiv3Tag).(*options.Tag)
+	if !ok || t == nil {
+		return nil, false
+	}
+	return t, true
+}
+
 func methodOperationAnnotation(m *descriptor.Method) (*options.Operation, bool) {
 	if m.Options == nil || !proto.HasExtension(m.Options, options.E_Openapiv3Operation) {
 		return nil, false
@@ -64,8 +75,8 @@ func fieldSchemaAnnotation(field *descriptor.Field) (*options.Schema, bool) {
 }
 
 // processExtensions converts a proto options extensions map (as attached to
-// openapiv3_document, openapiv3_operation, openapiv3_schema, and
-// openapiv3_field annotations) into the sorted, JSON-ready form the
+// openapiv3_document, openapiv3_tag, openapiv3_operation, openapiv3_schema,
+// and openapiv3_field annotations) into the sorted, JSON-ready form the
 // generator's internal types render inline.
 //
 // Per the OpenAPI 3.1.0 spec
@@ -370,6 +381,36 @@ func validateExternalDocs(ed *options.ExternalDocs) error {
 	if ed.GetUrl() == "" {
 		return fmt.Errorf("external_docs: url is required")
 	}
+	return nil
+}
+
+// applyTagOverride applies a service-level Tag annotation onto the tag
+// generated for the service. Non-empty fields replace the defaults (the
+// service name and its leading comment). Returns an error if the annotation
+// contains an external_docs without a url, which is spec-required per
+// OpenAPI 3.1.0.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#tag-object
+func applyTagOverride(tag *Tag, t *options.Tag) error {
+	if t == nil {
+		return nil
+	}
+	if v := t.GetName(); v != "" {
+		tag.Name = v
+	}
+	if v := t.GetDescription(); v != "" {
+		tag.Description = v
+	}
+	if ed := t.GetExternalDocs(); ed != nil {
+		if err := validateExternalDocs(ed); err != nil {
+			return err
+		}
+		tag.ExternalDocs = &ExternalDocs{
+			Description: ed.GetDescription(),
+			URL:         ed.GetUrl(),
+		}
+	}
+	tag.Extensions = processExtensions("openapiv3_tag", t.GetExtensions())
 	return nil
 }
 
