@@ -188,6 +188,34 @@ The default `operationId` is `<Service>_<Method>`. When a method has multiple
 HTTP bindings, the first uses the bare ID and subsequent bindings append
 `_1`, `_2`, ... so the spec remains valid.
 
+The service's tag is named after the service and described by its leading
+comment. The service-level `openapiv3_tag` annotation overrides it: a
+non-empty `name` renames the tag, which the service's operations then use by
+default, and `description`, `external_docs` and `extensions` set the
+corresponding fields of the OpenAPI
+[Tag Object](https://spec.openapis.org/oas/v3.1.0#tag-object). An
+operation-level `openapiv3_operation.tags` list still replaces the default for
+that operation.
+
+```protobuf
+import "protoc-gen-openapiv3/options/annotations.proto";
+
+service BookService {
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_tag) = {
+    name: "Books"
+    description: "Manage the books in the library."
+    external_docs: {
+      description: "Library guide"
+      url: "https://example.com/docs/books"
+    }
+  };
+
+  rpc GetBook(GetBookRequest) returns (Book) {
+    option (google.api.http) = {get: "/v1/books/{id}"};
+  }
+}
+```
+
 ### Parameters
 
 - Path parameters from the `google.api.http` URL template become `in: path`

@@ -389,6 +389,8 @@ func validateExternalDocs(ed *options.ExternalDocs) error {
 // service name and its leading comment). Returns an error if the annotation
 // contains an external_docs without a url, which is spec-required per
 // OpenAPI 3.1.0.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#tag-object
 func applyTagOverride(tag *Tag, t *options.Tag) error {
 	if t == nil {
 		return nil
