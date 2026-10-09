@@ -1076,6 +1076,44 @@ func TestGenerate_Binding(t *testing.T) {
 	}
 }
 
+// TestGenerate_NestedPathParam checks that a nested field bound to a path
+// parameter ({id.value}) is not also emitted as a query parameter, while its
+// sibling fields and other fields of the same message type still are.
+func TestGenerate_NestedPathParam(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/nested_path_param.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	paths, _ := doc["paths"].(map[string]any)
+	item, _ := paths["/v1/entities/{id.value}"].(map[string]any)
+	get, _ := item["get"].(map[string]any)
+	if get == nil {
+		t.Fatalf("expected GET operation under /v1/entities/{id.value}, got: %v", paths)
+	}
+
+	var gotParams []string
+	for _, p := range get["parameters"].([]any) {
+		m, _ := p.(map[string]any)
+		gotParams = append(gotParams, m["in"].(string)+":"+m["name"].(string))
+	}
+	want := []string{
+		"path:id.value",
+		"query:id.kind",
+		"query:parentId.value",
+		"query:parentId.kind",
+		"query:view",
+	}
+	if diff := cmp.Diff(want, gotParams); diff != "" {
+		t.Errorf("parameters mismatch (-want +got):\n%s", diff)
+	}
+}
+
 // loadRequest reads a prototext-encoded CodeGeneratorRequest from disk.
 func loadRequest(t *testing.T, path string) *pluginpb.CodeGeneratorRequest {
 	t.Helper()

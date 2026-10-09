@@ -1,0 +1,75 @@
+file_to_generate: "entity/v1/entity.proto"
+proto_file: {
+  name: "entity/v1/entity.proto"
+  package: "entity.v1"
+  message_type: {
+    name: "EntityId"
+    field: {
+      name: "value"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "value"
+    }
+    field: {
+      name: "kind"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "kind"
+    }
+  }
+  message_type: {
+    name: "Entity"
+    field: {
+      name: "display_name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "displayName"
+    }
+  }
+  message_type: {
+    name: "GetEntityRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".entity.v1.EntityId"
+      json_name: "id"
+    }
+    field: {
+      name: "parent_id"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".entity.v1.EntityId"
+      json_name: "parentId"
+    }
+    field: {
+      name: "view"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "view"
+    }
+  }
+  service: {
+    name: "EntityService"
+    method: {
+      name: "GetEntity"
+      input_type: ".entity.v1.GetEntityRequest"
+      output_type: ".entity.v1.Entity"
+      options: {
+        [google.api.http]: {
+          get: "/v1/entities/{id.value}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/entity/v1;entityv1"
+  }
+  syntax: "proto3"
+}

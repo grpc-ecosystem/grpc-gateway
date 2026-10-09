@@ -111,7 +111,7 @@ func buildParameters(b *schemaBuilder, m *descriptor.Method, binding *descriptor
 			// This field is part of the request body, skip.
 			continue
 		}
-		params = append(params, b.queryParameters(field, "", false, cycle)...)
+		params = append(params, b.queryParameters(field, "", false, subPathParams(field.GetName(), binding.PathParams), cycle)...)
 	}
 	return params
 }
@@ -141,7 +141,11 @@ func buildParameters(b *schemaBuilder, m *descriptor.Method, binding *descriptor
 //
 // Unlike deprecation, google.api.field_behavior = REQUIRED is not inherited:
 // only the field's own annotation is considered, matching protoc-gen-openapiv2 behavior
-func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, parentDeprecated bool, cycle *queryCycleChecker) []*ParameterRef {
+//
+// pathParams are the path parameters nested under field, relative to field's
+// message (see subPathParams). Nested fields bound to one of them are already
+// emitted as path parameters, so they are skipped.
+func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, parentDeprecated bool, pathParams []descriptor.Parameter, cycle *queryCycleChecker) []*ParameterRef {
 	name := prefix + jsonName(field)
 	deprecated := parentDeprecated || fieldDeprecated(field)
 
@@ -178,7 +182,11 @@ func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, 
 					// Field is hidden by visibility rules, skip.
 					continue
 				}
-				out = append(out, b.queryParameters(nested, name+".", deprecated, cycle)...)
+				if isPathParam(nested, pathParams) {
+					// Already handled as a path parameter, skip.
+					continue
+				}
+				out = append(out, b.queryParameters(nested, name+".", deprecated, subPathParams(nested.GetName(), pathParams), cycle)...)
 			}
 			return out
 		}

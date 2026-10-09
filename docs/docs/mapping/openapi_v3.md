@@ -241,7 +241,9 @@ service BookService {
   matched substring at request time.
 
 - Fields that are neither path parameters nor part of the request body
-  become `in: query` parameters.
+  become `in: query` parameters. This also applies to nested fields: with
+  `/v1/{id.value}`, `id.value` is only a path parameter, while the other
+  fields of `id` are still flattened into query parameters.
 - `body="*"` synthesises an inline object schema that includes every request
   field **except** path parameters.
 - `body="field"` uses that single field's type as the request body.
