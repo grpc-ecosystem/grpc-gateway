@@ -823,3 +823,74 @@ func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
 		}
 	}
 }
+
+func TestPopulateQueryParametersWithDuplicateFieldNames(t *testing.T) {
+	// A field is addressable by both its proto name and its JSON name, so a
+	// request that spells one field both ways sets it twice. protojson refuses
+	// that in a body ("duplicate field"), and here the value that survived
+	// depended on map iteration order, so the query parser refuses it too.
+	for _, spec := range []struct {
+		values  url.Values
+		wantErr string
+	}{
+		{
+			values:  url.Values{"string_value": {"a"}, "stringValue": {"b"}},
+			wantErr: `duplicate field "string_value"`,
+		},
+		{
+			values:  url.Values{"repeated_value": {"a"}, "repeatedValue": {"b"}},
+			wantErr: `duplicate field "repeated_value"`,
+		},
+		{
+			values:  url.Values{"nested.string_value": {"a"}, "nested.stringValue": {"b"}},
+			wantErr: `duplicate field "nested.string_value"`,
+		},
+		{
+			values:  url.Values{"map_value[key]": {"a"}, "mapValue[key]": {"b"}},
+			wantErr: `duplicate field "map_value[key]"`,
+		},
+	} {
+		msg := &examplepb.Proto3Message{}
+		err := runtime.PopulateQueryParameters(msg, spec.values, utilities.NewDoubleArray(nil))
+		if err == nil || err.Error() != spec.wantErr {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, nil) = %v; want %v", spec.values, err, spec.wantErr)
+		}
+	}
+
+	// Separate keys of one map, keys naming different fields, and a field the
+	// filter drops under either name are not duplicates.
+	for _, spec := range []struct {
+		values url.Values
+		filter *utilities.DoubleArray
+		want   proto.Message
+	}{
+		{
+			values: url.Values{"map_value[one]": {"a"}, "mapValue[two]": {"b"}},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Message{
+				MapValue: map[string]string{"one": "a", "two": "b"},
+			},
+		},
+		{
+			values: url.Values{"string_value": {"a"}, "stringValue": {"b"}, "bool_value": {"true"}},
+			filter: utilities.NewDoubleArray([][]string{{"string_value"}}),
+			want: &examplepb.Proto3Message{
+				BoolValue: true,
+			},
+		},
+		{
+			values: url.Values{"not_a_field": {"a"}, "notAField": {"b"}},
+			filter: utilities.NewDoubleArray(nil),
+			want:   &examplepb.Proto3Message{},
+		},
+	} {
+		msg := &examplepb.Proto3Message{}
+		if err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter); err != nil {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
+			continue
+		}
+		if diff := cmp.Diff(spec.want, msg, protocmp.Transform()); diff != "" {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v): %s", spec.values, spec.filter, diff)
+		}
+	}
+}
