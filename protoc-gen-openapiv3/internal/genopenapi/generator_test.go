@@ -721,6 +721,58 @@ func TestGenerate_ServiceTagAnnotation(t *testing.T) {
 	}
 }
 
+// TestGenerate_Security covers security schemes declared through
+// openapiv3_document.components and security requirements set on the
+// document and on individual operations.
+func TestGenerate_Security(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/security.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			SecuritySchemes json.RawMessage `json:"securitySchemes"`
+		} `json:"components"`
+		Security json.RawMessage `json:"security"`
+		Paths    map[string]map[string]struct {
+			Security json.RawMessage `json:"security"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	assertJSONEqual(t, doc.Components.SecuritySchemes, []byte(`{
+		"api_key": {"type": "apiKey", "name": "X-API-Key", "in": "header"},
+		"bearer": {"type": "http", "description": "JWT bearer token.", "scheme": "bearer", "bearerFormat": "JWT"},
+		"mtls": {"type": "mutualTLS"},
+		"oauth": {
+			"type": "oauth2",
+			"flows": {
+				"clientCredentials": {"tokenUrl": "https://auth.example.com/token", "scopes": {}},
+				"authorizationCode": {
+					"authorizationUrl": "https://auth.example.com/authorize",
+					"tokenUrl": "https://auth.example.com/token",
+					"scopes": {"things:read": "Read things.", "things:write": "Modify things."}
+				}
+			}
+		},
+		"oidc": {"type": "openIdConnect", "openIdConnectUrl": "https://auth.example.com/.well-known/openid-configuration"}
+	}`))
+	assertJSONEqual(t, doc.Security, []byte(`[{"bearer": []}]`))
+
+	// Without an override, the operation inherits the document-level
+	// requirement, so it must not repeat it.
+	if sec := doc.Paths["/v1/things/{id}"]["get"].Security; sec != nil {
+		t.Errorf("GET /v1/things/{id} security: want none, got %s", sec)
+	}
+	assertJSONEqual(t, doc.Paths["/v1/things/{id}"]["put"].Security,
+		[]byte(`[{"oauth": ["things:read", "things:write"]}, {"api_key": []}]`))
+	// An empty requirement makes security optional for the operation.
+	assertJSONEqual(t, doc.Paths["/v1/health"]["get"].Security, []byte(`[{}]`))
+}
+
 // TestGenerate_AnnotationErrors covers the spec-required-field validations
 // and the cross-operation invariants (operationId uniqueness, tag references
 // resolving). One sub-case per failure mode keeps the error messages
@@ -763,6 +815,11 @@ func TestGenerate_AnnotationErrors(t *testing.T) {
 			name:    "operation references undeclared tag",
 			fixture: "testdata/orphan_operation_tag.prototext",
 			wantErr: `references undeclared tag "Undeclared"`,
+		},
+		{
+			name:    "operation references undeclared security scheme",
+			fixture: "testdata/undeclared_security_scheme.prototext",
+			wantErr: `security[0]: references undeclared security scheme "undeclared"`,
 		},
 		{
 			name:    "service tag external_docs missing url",

@@ -2,6 +2,7 @@ package genopenapi_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"reflect"
 	"sort"
@@ -10,7 +11,9 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"go.yaml.in/yaml/v3"
 
 	"google.golang.org/protobuf/encoding/prototext"
@@ -2210,6 +2213,145 @@ func TestGenerateMergeFilesWithBodyAndPathParams(t *testing.T) {
 
 	if !foundService {
 		t.Error("service.proto output not found in response")
+	}
+}
+
+func TestGenerateMergeFilesUsesOpenAPIConfigurationFileOptions(t *testing.T) {
+	t.Parallel()
+
+	const in = `
+	file_to_generate: "example/a.proto"
+	file_to_generate: "example/b.proto"
+	proto_file: {
+		name: "example/a.proto"
+		package: "example"
+		message_type: {
+			name: "Empty"
+		}
+		service: {
+			name: "AService"
+			method: {
+				name: "Get"
+				input_type: ".example.Empty"
+				output_type: ".example.Empty"
+				options: {
+					[google.api.http]: {
+						get: "/v1/a"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/example/v1;example"
+		}
+	}
+	proto_file: {
+		name: "example/b.proto"
+		package: "example"
+		dependency: "example/a.proto"
+		service: {
+			name: "BService"
+			method: {
+				name: "Get"
+				input_type: ".example.Empty"
+				output_type: ".example.Empty"
+				options: {
+					[google.api.http]: {
+						get: "/v1/b"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "github.com/example/v1;example"
+		}
+	}`
+
+	bOption := &openapi_options.Swagger{
+		Info: &openapi_options.Info{
+			Title:   "Merged API",
+			Version: "v1",
+		},
+	}
+
+	tests := []struct {
+		name string
+		opts *openapiconfig.OpenAPIOptions
+	}{
+		{
+			name: "only second file configured",
+			opts: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
+					{File: "example/b.proto", Option: bOption},
+				},
+			},
+		},
+		{
+			name: "first file listed without options",
+			opts: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
+					{File: "example/a.proto"},
+					{File: "example/b.proto", Option: bOption},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var req pluginpb.CodeGeneratorRequest
+			if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+				t.Fatalf("failed to unmarshal request: %s", err)
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetAllowMerge(true)
+			reg.SetMergeFileName("apidocs")
+			if err := reg.Load(&req); err != nil {
+				t.Fatalf("failed to load request: %s", err)
+			}
+			if err := reg.RegisterOpenAPIOptions(tt.opts); err != nil {
+				t.Fatalf("failed to register OpenAPI options: %s", err)
+			}
+
+			var targets []*descriptor.File
+			for _, target := range req.FileToGenerate {
+				f, err := reg.LookupFile(target)
+				if err != nil {
+					t.Fatalf("failed to lookup file: %s", err)
+				}
+				targets = append(targets, f)
+			}
+
+			resp, err := genopenapi.New(reg, genopenapi.FormatJSON).Generate(targets)
+			if err != nil {
+				t.Fatalf("failed to generate targets: %s", err)
+			}
+			if len(resp) != 1 {
+				t.Fatalf("expected 1 response file, got %d", len(resp))
+			}
+
+			var got struct {
+				Info struct {
+					Title   string `json:"title"`
+					Version string `json:"version"`
+				} `json:"info"`
+				Paths map[string]any `json:"paths"`
+			}
+			if err := json.Unmarshal([]byte(resp[0].GetContent()), &got); err != nil {
+				t.Fatalf("failed to unmarshal output: %s", err)
+			}
+			if got.Info.Title != "Merged API" || got.Info.Version != "v1" {
+				t.Errorf("info = %+v, want title %q and version %q", got.Info, "Merged API", "v1")
+			}
+			for _, path := range []string{"/v1/a", "/v1/b"} {
+				if _, ok := got.Paths[path]; !ok {
+					t.Errorf("path %q missing from merged output", path)
+				}
+			}
+		})
 	}
 }
 

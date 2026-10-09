@@ -1,0 +1,146 @@
+file_to_generate: "secure/v1/secure.proto"
+proto_file: {
+  name: "secure/v1/secure.proto"
+  package: "secure.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "SecureService"
+    method: {
+      name: "Get"
+      input_type: ".secure.v1.GetRequest"
+      output_type: ".secure.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/things/{id}"
+        }
+      }
+    }
+    method: {
+      name: "Update"
+      input_type: ".secure.v1.GetRequest"
+      output_type: ".secure.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          put: "/v1/things/{id}"
+          body: "*"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          security: {
+            schemes: {
+              key: "oauth"
+              value: {
+                scopes: "things:read"
+                scopes: "things:write"
+              }
+            }
+          }
+          security: {
+            schemes: {
+              key: "api_key"
+              value: {}
+            }
+          }
+        }
+      }
+    }
+    method: {
+      name: "Health"
+      input_type: ".secure.v1.GetRequest"
+      output_type: ".secure.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/health"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          security: {}
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/secure/v1;securev1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      components: {
+        security_schemes: {
+          key: "bearer"
+          value: {
+            type: TYPE_HTTP
+            description: "JWT bearer token."
+            scheme: "bearer"
+            bearer_format: "JWT"
+          }
+        }
+        security_schemes: {
+          key: "api_key"
+          value: {
+            type: TYPE_API_KEY
+            name: "X-API-Key"
+            in: IN_HEADER
+          }
+        }
+        security_schemes: {
+          key: "oauth"
+          value: {
+            type: TYPE_OAUTH2
+            flows: {
+              authorization_code: {
+                authorization_url: "https://auth.example.com/authorize"
+                token_url: "https://auth.example.com/token"
+                scopes: {
+                  key: "things:read"
+                  value: "Read things."
+                }
+                scopes: {
+                  key: "things:write"
+                  value: "Modify things."
+                }
+              }
+              client_credentials: {
+                token_url: "https://auth.example.com/token"
+              }
+            }
+          }
+        }
+        security_schemes: {
+          key: "mtls"
+          value: {
+            type: TYPE_MUTUAL_TLS
+          }
+        }
+        security_schemes: {
+          key: "oidc"
+          value: {
+            type: TYPE_OPEN_ID_CONNECT
+            open_id_connect_url: "https://auth.example.com/.well-known/openid-configuration"
+          }
+        }
+      }
+      security: {
+        schemes: {
+          key: "bearer"
+          value: {}
+        }
+      }
+    }
+  }
+  syntax: "proto3"
+}

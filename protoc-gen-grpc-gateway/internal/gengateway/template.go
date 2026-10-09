@@ -477,10 +477,12 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
 	}
 {{- else -}}
+	{{- if not $UseOpaqueAPI }}
 	{{- $protoReq := $param.AssignableExprPrep "protoReq" $binding.Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{ printf "%s" $protoReq }}
 	{{- end}}
+	{{- end }}
 	{{- if $UseOpaqueAPI }}
 	converted{{ $param.FieldPath.String | camelIdentifier }}, err := {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
 	if err != nil {
@@ -711,10 +713,12 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{ $param | printf "%q"}}, err)
 	}
 {{- else}}
+	{{- if not $UseOpaqueAPI }}
 	{{- $protoReq := $param.AssignableExprPrep "protoReq" $binding.Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{ printf "%s" $protoReq }}
 	{{- end}}
+	{{- end }}
 	{{- if $UseOpaqueAPI }}
 	converted{{ $param.FieldPath.String | camelIdentifier }}, err := {{ $param.ConvertFuncExpr }}(val{{ if $param.IsRepeated }}, {{ $binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q" }}{{ end }})
 	if err != nil {

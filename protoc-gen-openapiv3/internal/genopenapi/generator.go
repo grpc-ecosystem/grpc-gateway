@@ -107,6 +107,9 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 						op.OperationID, prev, svc.GetName(), method.GetName())
 				}
 				seenOpIDs[op.OperationID] = svc.GetName() + "." + method.GetName()
+				if err := checkSecurityRequirements(op.Security, doc.Components.SecuritySchemes); err != nil {
+					return nil, false, fmt.Errorf("openapiv3: operation %q: %w", op.OperationID, err)
+				}
 				for _, t := range op.Tags {
 					opTagRefs = append(opTagRefs, opTagRef{operationID: op.OperationID, tag: t})
 				}

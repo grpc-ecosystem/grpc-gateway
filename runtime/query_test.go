@@ -685,6 +685,33 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 				StringValue: "str",
 			},
 		},
+		{
+			values: url.Values{
+				"nested.bool_value":   {"true"},
+				"nested.string_value": {"str"},
+				"bool_value":          {"true"},
+				"string_value":        {"str"},
+			},
+			filter: utilities.NewDoubleArray([][]string{
+				{"nested", "bool_value"}, {"nested", "string_value"}, {"bool_value"},
+			}),
+			want: &examplepb.Proto3Message{
+				StringValue: "str",
+			},
+		},
+		{
+			values: url.Values{
+				"nested.nested.string_value": {"str"},
+				"nested.string_value":        {"str"},
+				"string_value":               {"str"},
+			},
+			filter: utilities.NewDoubleArray([][]string{
+				{"nested", "nested", "string_value"}, {"nested", "string_value"},
+			}),
+			want: &examplepb.Proto3Message{
+				StringValue: "str",
+			},
+		},
 	} {
 		msg := spec.want.ProtoReflect().New().Interface()
 		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
