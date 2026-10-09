@@ -5461,14 +5461,6 @@
             }
           },
           {
-            "name": "singleNested.name",
-            "in": "query",
-            "description": "name is nested field.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "singleNested.amount",
             "in": "query",
             "schema": {
@@ -5936,14 +5928,6 @@
             "schema": {
               "type": "integer",
               "format": "int64"
-            }
-          },
-          {
-            "name": "singleNested.ok",
-            "in": "query",
-            "description": "DeepEnum comment.",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested.DeepEnum"
             }
           },
           {

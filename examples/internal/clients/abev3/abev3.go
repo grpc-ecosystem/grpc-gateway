@@ -596,33 +596,30 @@ type ABitOfEverythingServiceCreateNestedBodyOneofJSONBody = string
 // ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams defines parameters for ABitOfEverythingServiceCheckNestedEnumGetQueryParams.
 type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
 	// SingleNestedName name is nested field.
-	SingleNestedName   *string `form:"singleNested.name,omitempty" json:"singleNested.name,omitempty"`
-	SingleNestedAmount *int64  `form:"singleNested.amount,omitempty" json:"singleNested.amount,omitempty"`
-
-	// SingleNestedOk DeepEnum comment.
-	SingleNestedOk      *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNestedDeepEnum `form:"singleNested.ok,omitempty" json:"singleNested.ok,omitempty"`
-	Uuid                *string                                                                  `form:"uuid,omitempty" json:"uuid,omitempty"`
-	FloatValue          *float32                                                                 `form:"floatValue,omitempty" json:"floatValue,omitempty"`
-	DoubleValue         *float64                                                                 `form:"doubleValue,omitempty" json:"doubleValue,omitempty"`
-	Int64Value          *string                                                                  `form:"int64Value,omitempty" json:"int64Value,omitempty"`
-	Uint64Value         *string                                                                  `form:"uint64Value,omitempty" json:"uint64Value,omitempty"`
-	Int32Value          *int32                                                                   `form:"int32Value,omitempty" json:"int32Value,omitempty"`
-	Fixed64Value        *string                                                                  `form:"fixed64Value,omitempty" json:"fixed64Value,omitempty"`
-	Fixed32Value        *int64                                                                   `form:"fixed32Value,omitempty" json:"fixed32Value,omitempty"`
-	BoolValue           *bool                                                                    `form:"boolValue,omitempty" json:"boolValue,omitempty"`
-	StringValue         *string                                                                  `form:"stringValue,omitempty" json:"stringValue,omitempty"`
-	BytesValue          *[]byte                                                                  `form:"bytesValue,omitempty" json:"bytesValue,omitempty"`
-	Uint32Value         *int64                                                                   `form:"uint32Value,omitempty" json:"uint32Value,omitempty"`
-	EnumValue           *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum                    `form:"enumValue,omitempty" json:"enumValue,omitempty"`
-	PathEnumValue       *GrpcGatewayExamplesInternalPathenumPathEnum                             `form:"pathEnumValue,omitempty" json:"pathEnumValue,omitempty"`
-	NestedPathEnumValue *GrpcGatewayExamplesInternalPathenumMessagePathEnumNestedPathEnum        `form:"nestedPathEnumValue,omitempty" json:"nestedPathEnumValue,omitempty"`
-	Sfixed32Value       *int32                                                                   `form:"sfixed32Value,omitempty" json:"sfixed32Value,omitempty"`
-	Sfixed64Value       *string                                                                  `form:"sfixed64Value,omitempty" json:"sfixed64Value,omitempty"`
-	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
-	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
-	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
-	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
+	SingleNestedName    *string                                                           `form:"singleNested.name,omitempty" json:"singleNested.name,omitempty"`
+	SingleNestedAmount  *int64                                                            `form:"singleNested.amount,omitempty" json:"singleNested.amount,omitempty"`
+	Uuid                *string                                                           `form:"uuid,omitempty" json:"uuid,omitempty"`
+	FloatValue          *float32                                                          `form:"floatValue,omitempty" json:"floatValue,omitempty"`
+	DoubleValue         *float64                                                          `form:"doubleValue,omitempty" json:"doubleValue,omitempty"`
+	Int64Value          *string                                                           `form:"int64Value,omitempty" json:"int64Value,omitempty"`
+	Uint64Value         *string                                                           `form:"uint64Value,omitempty" json:"uint64Value,omitempty"`
+	Int32Value          *int32                                                            `form:"int32Value,omitempty" json:"int32Value,omitempty"`
+	Fixed64Value        *string                                                           `form:"fixed64Value,omitempty" json:"fixed64Value,omitempty"`
+	Fixed32Value        *int64                                                            `form:"fixed32Value,omitempty" json:"fixed32Value,omitempty"`
+	BoolValue           *bool                                                             `form:"boolValue,omitempty" json:"boolValue,omitempty"`
+	StringValue         *string                                                           `form:"stringValue,omitempty" json:"stringValue,omitempty"`
+	BytesValue          *[]byte                                                           `form:"bytesValue,omitempty" json:"bytesValue,omitempty"`
+	Uint32Value         *int64                                                            `form:"uint32Value,omitempty" json:"uint32Value,omitempty"`
+	EnumValue           *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum             `form:"enumValue,omitempty" json:"enumValue,omitempty"`
+	PathEnumValue       *GrpcGatewayExamplesInternalPathenumPathEnum                      `form:"pathEnumValue,omitempty" json:"pathEnumValue,omitempty"`
+	NestedPathEnumValue *GrpcGatewayExamplesInternalPathenumMessagePathEnumNestedPathEnum `form:"nestedPathEnumValue,omitempty" json:"nestedPathEnumValue,omitempty"`
+	Sfixed32Value       *int32                                                            `form:"sfixed32Value,omitempty" json:"sfixed32Value,omitempty"`
+	Sfixed64Value       *string                                                           `form:"sfixed64Value,omitempty" json:"sfixed64Value,omitempty"`
+	Sint32Value         *int32                                                            `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
+	Sint64Value         *string                                                           `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
+	RepeatedStringValue *[]string                                                         `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
+	OneofEmpty          *map[string]interface{}                                           `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofString         *string                                                           `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
@@ -688,9 +685,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
 
 // ABitOfEverythingServiceCheckGetQueryParamsParams defines parameters for ABitOfEverythingServiceCheckGetQueryParams.
 type ABitOfEverythingServiceCheckGetQueryParamsParams struct {
-	// SingleNestedName name is nested field.
-	SingleNestedName   *string `form:"singleNested.name,omitempty" json:"singleNested.name,omitempty"`
-	SingleNestedAmount *int64  `form:"singleNested.amount,omitempty" json:"singleNested.amount,omitempty"`
+	SingleNestedAmount *int64 `form:"singleNested.amount,omitempty" json:"singleNested.amount,omitempty"`
 
 	// SingleNestedOk DeepEnum comment.
 	SingleNestedOk      *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNestedDeepEnum `form:"singleNested.ok,omitempty" json:"singleNested.ok,omitempty"`
@@ -4626,22 +4621,6 @@ func NewABitOfEverythingServiceCheckNestedEnumGetQueryParamsRequest(server strin
 
 		}
 
-		if params.SingleNestedOk != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "singleNested.ok", *params.SingleNestedOk, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.Uuid != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "uuid", *params.Uuid, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -5449,22 +5428,6 @@ func NewABitOfEverythingServiceCheckGetQueryParamsRequest(server string, singleN
 
 	if params != nil {
 		queryValues := queryURL.Query()
-
-		if params.SingleNestedName != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "singleNested.name", *params.SingleNestedName, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
 
 		if params.SingleNestedAmount != nil {
 
