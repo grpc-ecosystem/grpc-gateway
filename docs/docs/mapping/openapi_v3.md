@@ -46,6 +46,9 @@ The generator is deliberately opinionated. The following are **not** supported t
   fully-qualified proto name with the leading dot stripped
   (e.g. `lib.v1.Book`).
 - Integer enums. Enums are always rendered as strings.
+- Custom HTTP methods that OpenAPI 3.1 has no operation for. A `custom`
+  binding whose `kind` is not one of `GET`, `PUT`, `POST`, `DELETE`,
+  `OPTIONS`, `HEAD`, `PATCH` or `TRACE` is skipped.
 
 Features can be added back as concrete needs emerge — if you want one of the
 above, please open an issue describing your use case.
