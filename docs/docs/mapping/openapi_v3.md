@@ -82,6 +82,13 @@ protoc -I. \
 When set, neither the `default` response entry nor the `google.rpc.Status`
 component schema are emitted.
 
+### `allow_delete_body`
+
+By default, a `delete` binding with a `body` is rejected, the same as in
+`protoc-gen-grpc-gateway` and `protoc-gen-openapiv2`. If you generate the
+gateway with `allow_delete_body=true`, pass the same option to this
+generator. The body is then emitted as the operation's `requestBody`.
+
 ### `visibility_restriction_selectors`
 
 See [Hiding fields, methods, services and enum values](#hiding-fields-methods-services-and-enum-values) below.

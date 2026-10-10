@@ -1004,6 +1004,74 @@ func TestGenerate_DisableDefaultErrors(t *testing.T) {
 	}
 }
 
+// TestGenerate_AllowDeleteBody verifies that with allow_delete_body set, a
+// DELETE binding with a body gets a requestBody, and that so does a custom
+// method with a body. The body fields must not leak into the query
+// parameters.
+func TestGenerate_AllowDeleteBody(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/delete_body.prototext")
+
+	reg := descriptor.NewRegistry()
+	reg.SetAllowDeleteBody(true)
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+
+	var targets []*descriptor.File
+	for _, name := range req.FileToGenerate {
+		f, err := reg.LookupFile(name)
+		if err != nil {
+			t.Fatalf("lookup %s: %v", name, err)
+		}
+		targets = append(targets, f)
+	}
+	out, err := Generate(reg, targets)
+	if err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+	if len(out) != 1 {
+		t.Fatalf("expected 1 output file, got %d", len(out))
+	}
+
+	var doc map[string]any
+	if err := json.Unmarshal([]byte(out[0].GetContent()), &doc); err != nil {
+		t.Fatalf("unmarshal output: %v", err)
+	}
+
+	paths, _ := doc["paths"].(map[string]any)
+	item, _ := paths["/v1/books/{name}"].(map[string]any)
+	for _, method := range []string{"delete", "options"} {
+		op, _ := item[method].(map[string]any)
+		if op == nil {
+			t.Fatalf("expected %s operation under /v1/books/{name}, got: %v", method, paths)
+		}
+
+		var gotParams []string
+		for _, p := range op["parameters"].([]any) {
+			m, _ := p.(map[string]any)
+			gotParams = append(gotParams, m["in"].(string)+":"+m["name"].(string))
+		}
+		if diff := cmp.Diff([]string{"path:name"}, gotParams); diff != "" {
+			t.Errorf("%s: parameters mismatch (-want +got):\n%s", method, diff)
+		}
+
+		requestBody, _ := op["requestBody"].(map[string]any)
+		content, _ := requestBody["content"].(map[string]any)
+		appJSON, _ := content["application/json"].(map[string]any)
+		schema, _ := appJSON["schema"].(map[string]any)
+		props, _ := schema["properties"].(map[string]any)
+		var gotProps []string
+		for name := range props {
+			gotProps = append(gotProps, name)
+		}
+		if diff := cmp.Diff([]string{"reason"}, gotProps); diff != "" {
+			t.Errorf("%s: request body properties mismatch (-want +got):\n%s", method, diff)
+		}
+	}
+}
+
 // TestGenerate_Binding exercises google.api.http binding options, such as
 // `response_body`.
 func TestGenerate_Binding(t *testing.T) {
