@@ -38,7 +38,8 @@ const xForwardedFor = "X-Forwarded-For"
 const xForwardedHost = "X-Forwarded-Host"
 
 // DefaultContextTimeout is used for gRPC call context.WithTimeout whenever a Grpc-Timeout inbound
-// header isn't present. If the value is 0 the sent `context` will not have a timeout.
+// header isn't present and the ServeMux carries no default of its own (see
+// WithDefaultContextTimeout). If the value is 0 the sent `context` will not have a timeout.
 var DefaultContextTimeout = 0 * time.Second
 
 // malformedHTTPHeaders lists the headers that the gRPC server may reject outright as malformed.
@@ -140,6 +141,9 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 		ctx = o(ctx)
 	}
 	timeout := DefaultContextTimeout
+	if mux.defaultContextTimeout != nil {
+		timeout = *mux.defaultContextTimeout
+	}
 	if tm := req.Header.Get(metadataGrpcTimeout); tm != "" {
 		var err error
 		timeout, err = timeoutDecode(tm)
