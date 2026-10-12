@@ -9,6 +9,7 @@ import (
 	"net/textproto"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc"
@@ -79,6 +80,9 @@ type ServeMux struct {
 	writeContentLength        bool
 	disableChunkedEncoding    bool
 	strictDeepWildcard        bool
+	// defaultContextTimeout overrides DefaultContextTimeout for requests
+	// handled by this mux when set; nil keeps the global fallback.
+	defaultContextTimeout *time.Duration
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -151,6 +155,25 @@ func WithDisableChunkedEncoding() ServeMuxOption {
 func WithStrictDeepWildcardMatching() ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.strictDeepWildcard = true
+	}
+}
+
+// WithDefaultContextTimeout sets the default timeout for gRPC calls made by
+// this ServeMux when the request has no Grpc-Timeout header. It overrides the
+// package-level DefaultContextTimeout for the mux only.
+//
+// Leaving the option unset keeps the existing behavior: the global
+// DefaultContextTimeout applies and is read at request time, so changing it
+// later still affects the mux. An explicit duration of 0 disables the default
+// timeout for this mux. A negative duration is rejected at construct time,
+// like other invalid runtime configuration. A Grpc-Timeout header keeps
+// taking precedence over the selected default.
+func WithDefaultContextTimeout(d time.Duration) ServeMuxOption {
+	if d < 0 {
+		panic(fmt.Sprintf("runtime: invalid default context timeout %v; must not be negative", d))
+	}
+	return func(mux *ServeMux) {
+		mux.defaultContextTimeout = &d
 	}
 }
 
