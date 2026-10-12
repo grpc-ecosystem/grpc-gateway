@@ -1,6 +1,7 @@
 package runtime_test
 
 import (
+	"math"
 	"reflect"
 	"testing"
 
@@ -203,6 +204,10 @@ func TestConvertFloat64Slice(t *testing.T) {
 		{name: "valid values", input: "1.5,2,-3.25", sep: ",", output: []float64{1.5, 2, -3.25}},
 		{name: "single value", input: "1.5", sep: ",", output: []float64{1.5}},
 		{name: "invalid element", input: "1.5,notafloat", sep: ",", wanterr: true},
+		{name: "hex not accepted", input: "0x1p4", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0.5", sep: ",", wanterr: true},
+		{name: "alternate infinity spelling not accepted", input: "Inf", sep: ",", wanterr: true},
+		{name: "canonical infinity accepted", input: "Infinity", sep: ",", output: []float64{math.Inf(1)}},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
@@ -230,6 +235,10 @@ func TestConvertFloat32Slice(t *testing.T) {
 		{name: "valid values", input: "1.5,2,-3.25", sep: ",", output: []float32{1.5, 2, -3.25}},
 		{name: "single value", input: "1.5", sep: ",", output: []float32{1.5}},
 		{name: "invalid element", input: "1.5,notafloat", sep: ",", wanterr: true},
+		{name: "hex not accepted", input: "0x1p4", sep: ",", wanterr: true},
+		{name: "underscores not accepted", input: "1_0.5", sep: ",", wanterr: true},
+		{name: "alternate infinity spelling not accepted", input: "Inf", sep: ",", wanterr: true},
+		{name: "canonical infinity accepted", input: "Infinity", sep: ",", output: []float32{float32(math.Inf(1))}},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {

@@ -271,13 +271,13 @@ func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (pro
 		}
 		return protoreflect.ValueOfUint64(v), nil
 	case protoreflect.FloatKind:
-		v, err := strconv.ParseFloat(value, 32)
+		v, err := parseFloat(value, 32)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
 		return protoreflect.ValueOfFloat32(float32(v)), nil
 	case protoreflect.DoubleKind:
-		v, err := strconv.ParseFloat(value, 64)
+		v, err := parseFloat(value, 64)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
@@ -317,13 +317,13 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		}
 		msg = durationpb.New(d)
 	case "google.protobuf.DoubleValue":
-		v, err := strconv.ParseFloat(value, 64)
+		v, err := parseFloat(value, 64)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
 		msg = wrapperspb.Double(v)
 	case "google.protobuf.FloatValue":
-		v, err := strconv.ParseFloat(value, 32)
+		v, err := parseFloat(value, 32)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
