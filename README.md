@@ -666,6 +666,11 @@ gRPC-Gateway, and a gRPC server, see
 
 [This example by neiro.ai](https://github.com/mynalabsai/grpc_gateway_media_example) (and its accompanying [blog post](https://medium.com/neiro-ai/grpc-gateway-for-media-api-by-neiro-9033caab12c8)) shows how mediafiles using `multipart/form-data` can be integrated into rpc messages using a middleware.
 
+See also these community example repositories:
+
+- [grpc-gateway-boilerplate](https://github.com/johanbrandhorst/grpc-gateway-boilerplate): a starter/boilerplate for new gRPC-Gateway projects.
+- [grpc-template](https://github.com/cosmotek/grpc-template): an example using Chi as the HTTP router, a custom base path, and embedded Swagger UI.
+
 ## Features
 
 ### Supported
