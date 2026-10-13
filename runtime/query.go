@@ -69,7 +69,7 @@ func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 			return fmt.Errorf("duplicate field %q", field)
 		}
 		seen[field] = struct{}{}
-		if err := populateFieldValueFromPath(msgValue, fieldPath, values); err != nil {
+		if err := populateFieldValueFromPath(msgValue, fieldPath, values, mapKey != ""); err != nil {
 			return err
 		}
 	}
@@ -79,7 +79,7 @@ func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 // PopulateFieldFromPath sets a value in a nested Protobuf structure.
 func PopulateFieldFromPath(msg proto.Message, fieldPathString string, value string) error {
 	fieldPath := strings.Split(fieldPathString, ".")
-	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value})
+	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value}, false)
 }
 
 func normalizeFieldPath(msgValue protoreflect.Message, fieldPath []string) []string {
@@ -114,7 +114,7 @@ func normalizeFieldPath(msgValue protoreflect.Message, fieldPath []string) []str
 	return newFieldPath
 }
 
-func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
+func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string, hasMapKey bool) error {
 	if len(fieldPath) < 1 {
 		return errors.New("no field path")
 	}
@@ -159,6 +159,14 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 
 		// Get the nested message
 		msgValue = msgValue.Mutable(fieldDescriptor).Message()
+	}
+
+	// A key using the map syntax (field[key]=value) must name a map field.
+	// Otherwise the bracket content would be bound as if it were a regular
+	// value: appended as a phantom element of a repeated field, or counted
+	// as a second value for a singular one.
+	if hasMapKey && !fieldDescriptor.IsMap() {
+		return fmt.Errorf("field %q is not a map", fieldDescriptor.FullName().Name())
 	}
 
 	switch {
