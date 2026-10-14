@@ -32,6 +32,7 @@ var (
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
 	omitPackageDoc             = flag.Bool("omit_package_doc", false, "if true, no package comment will be included in the generated code")
+	strictDeepWildcard         = flag.Bool("strict_deep_wildcard", false, "if true, a deep wildcard (**) preceded by a segment must match at least one path segment, e.g. /v1/files/{path=**} no longer matches /v1/files")
 	standalone                 = flag.Bool("standalone", false, "generates a standalone gateway package, which imports the target service package")
 	versionFlag                = flag.Bool("version", false, "print the current version")
 	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
@@ -144,6 +145,7 @@ func applyFlags(reg *descriptor.Registry) error {
 	})
 
 	reg.SetOmitPackageDoc(*omitPackageDoc)
+	reg.SetStrictDeepWildcard(*strictDeepWildcard)
 	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
 	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
 	return reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator)

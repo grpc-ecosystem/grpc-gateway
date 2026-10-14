@@ -140,6 +140,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 	}
 	if g.reg != nil {
 		params.OmitPackageDoc = g.reg.GetOmitPackageDoc()
+		params.StrictDeepWildcard = g.reg.GetStrictDeepWildcard()
 	}
 	return applyTemplate(params, g.reg)
 }
