@@ -13,6 +13,7 @@ gRPC-Gateway supports 2 ways of dealing with these situations:
 
 - [gRPC API Configuration](#grpc-api-configuration)
   - [`generate_unbound_methods`](#generate_unbound_methods)
+  - [`strict_deep_wildcard`](#strict_deep_wildcard)
   - [Using an external configuration file](#using-an-external-configuration-file)
     - [Usage of gRPC API Configuration YAML files](#usage-of-grpc-api-configuration-yaml-files)
 
@@ -25,6 +26,16 @@ Providing this parameter to the `protoc` plugin will make it produce the HTTP ma
 - HTTP body is the serialized protobuf message.
 
 NOTE: the same option is also supported by the `gen-openapiv2` plugin.
+
+## `strict_deep_wildcard`
+
+By default a deep wildcard (`**`) that follows another path segment may match zero path segments, so `/v3/files/{path=**}` also matches `/v3/files` with an empty `path`. Providing `strict_deep_wildcard=true` to the `protoc-gen-grpc-gateway` plugin makes such patterns require at least one remaining path segment, so `/v3/files` no longer matches and can be routed to a separately registered `/v3/files` handler. A request with a trailing slash (`/v3/files/`) still matches with an empty capture, and a bare `**` with nothing before it still matches zero segments.
+
+```sh
+protoc --grpc-gateway_out=. --grpc-gateway_opt=strict_deep_wildcard=true ...
+```
+
+The generated code requires a version of the `runtime` package that includes `runtime.NewPatternWithOptions`. With Bazel, use the `//protoc-gen-grpc-gateway:go_gen_grpc_gateway_strict_deep_wildcard` compiler in place of `//protoc-gen-grpc-gateway:go_gen_grpc_gateway`.
 
 ## Using an external configuration file
 
