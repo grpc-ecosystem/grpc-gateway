@@ -35,7 +35,7 @@ By default a deep wildcard (`**`) that follows another path segment may match ze
 protoc --grpc-gateway_out=. --grpc-gateway_opt=strict_deep_wildcard=true ...
 ```
 
-The generated code requires a version of the `runtime` package that includes `runtime.NewPatternWithOptions`. With Bazel, use the `//protoc-gen-grpc-gateway:go_gen_grpc_gateway_strict_deep_wildcard` compiler in place of `//protoc-gen-grpc-gateway:go_gen_grpc_gateway`.
+The generated code requires a version of the `runtime` package that includes `runtime.NewPatternWithOptions`.
 
 ## Using an external configuration file
 
