@@ -1050,7 +1050,7 @@ func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
 			int(utilities.OpConcatN), 1,
 			int(utilities.OpCapture), 2,
 		},
-		[]string{"v3", "files", "path"}, "")
+		[]string{"v3", "files", "path"}, "", runtime.WithStrictDeepWildcard())
 	if err != nil {
 		t.Fatalf("runtime.NewPattern (wildcard) failed: %v", err)
 	}

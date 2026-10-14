@@ -23,6 +23,7 @@ type param struct {
 	AllowPatchFeature  bool
 	OmitPackageDoc     bool
 	UseOpaqueAPI       bool
+	StrictDeepWildcard bool
 }
 
 type binding struct {
@@ -174,6 +175,7 @@ type trailerParams struct {
 	UseRequestContext  bool
 	RegisterFuncSuffix string
 	UseOpaqueAPI       bool
+	StrictDeepWildcard bool
 }
 
 func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
@@ -238,6 +240,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		UseRequestContext:  p.UseRequestContext,
 		RegisterFuncSuffix: p.RegisterFuncSuffix,
 		UseOpaqueAPI:       p.UseOpaqueAPI,
+		StrictDeepWildcard: p.StrictDeepWildcard,
 	}
 	// Local
 	if err := localTrailerTemplate.Execute(w, tp); err != nil {
@@ -940,7 +943,7 @@ func (m response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}) XXX_Respons
 var (
 	{{- range $m := $svc.Methods }}
 	{{- range $b := $m.Bindings }}
-	pattern_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} = runtime.MustPattern(runtime.NewPattern({{ $b.PathTmpl.Version }}, {{ $b.PathTmpl.OpCodes | printf "%#v" }}, {{ $b.PathTmpl.Pool | printf "%#v" }}, {{ $b.PathTmpl.Verb | printf "%q" }}))
+	pattern_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} = runtime.MustPattern(runtime.NewPattern({{ $b.PathTmpl.Version }}, {{ $b.PathTmpl.OpCodes | printf "%#v" }}, {{ $b.PathTmpl.Pool | printf "%#v" }}, {{ $b.PathTmpl.Verb | printf "%q" }}{{ if $.StrictDeepWildcard }}, runtime.WithStrictDeepWildcard(){{ end }}))
 	{{- end }}
 	{{- end }}
 )
