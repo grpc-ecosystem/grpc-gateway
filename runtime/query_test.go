@@ -537,6 +537,26 @@ func TestPopulateParameters(t *testing.T) {
 			want:    &examplepb.Proto3Message{},
 			wanterr: errors.New(`parsing field "enum_value": "4294967296" is not a valid value`),
 		},
+		{
+			// Reject hexadecimal float spellings that strconv.ParseFloat accepts
+			// but proto3 JSON (the request body) does not.
+			values: url.Values{
+				"double_value": {"0x1p4"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "double_value": invalid syntax "0x1p4"`),
+		},
+		{
+			// Reject the alternate infinity spelling; only "Infinity",
+			// "-Infinity" and "NaN" are valid per the proto3 JSON mapping.
+			values: url.Values{
+				"float_value": {"Inf"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "float_value": invalid syntax "Inf"`),
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			msg := spec.want.ProtoReflect().New().Interface()
