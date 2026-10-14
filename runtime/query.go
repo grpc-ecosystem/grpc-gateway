@@ -220,7 +220,7 @@ func populateMapField(fieldDescriptor protoreflect.FieldDescriptor, mp protorefl
 func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (protoreflect.Value, error) {
 	switch fieldDescriptor.Kind() {
 	case protoreflect.BoolKind:
-		v, err := strconv.ParseBool(value)
+		v, err := parseBool(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
@@ -353,7 +353,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		}
 		msg = wrapperspb.UInt32(uint32(v))
 	case "google.protobuf.BoolValue":
-		v, err := strconv.ParseBool(value)
+		v, err := parseBool(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}

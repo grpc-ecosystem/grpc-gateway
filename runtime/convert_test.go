@@ -165,6 +165,37 @@ func TestConvertStringSlice(t *testing.T) {
 	}
 }
 
+func TestConvertBool(t *testing.T) {
+	specs := []struct {
+		name    string
+		input   string
+		output  bool
+		wanterr bool
+	}{
+		{name: "true", input: "true", output: true},
+		{name: "false", input: "false", output: false},
+		{name: "numeric spelling not accepted", input: "1", wanterr: true},
+		{name: "numeric spelling not accepted", input: "0", wanterr: true},
+		{name: "short spelling not accepted", input: "t", wanterr: true},
+		{name: "uppercase spelling not accepted", input: "TRUE", wanterr: true},
+		{name: "capitalized spelling not accepted", input: "True", wanterr: true},
+		{name: "not a bool", input: "notabool", wanterr: true},
+	}
+	for _, spec := range specs {
+		t.Run(spec.name, func(t *testing.T) {
+			got, err := runtime.Bool(spec.input)
+			switch {
+			case err != nil && !spec.wanterr:
+				t.Errorf("got error %v, want nil", err)
+			case err == nil && spec.wanterr:
+				t.Errorf("got nil error, want an error")
+			case !spec.wanterr && got != spec.output:
+				t.Errorf("got %v, want %v", got, spec.output)
+			}
+		})
+	}
+}
+
 func TestConvertBoolSlice(t *testing.T) {
 	specs := []struct {
 		name    string
@@ -173,9 +204,11 @@ func TestConvertBoolSlice(t *testing.T) {
 		output  []bool
 		wanterr bool
 	}{
-		{name: "valid values", input: "true,false,1,0", sep: ",", output: []bool{true, false, true, false}},
+		{name: "valid values", input: "true,false,true,false", sep: ",", output: []bool{true, false, true, false}},
 		{name: "single value", input: "true", sep: ",", output: []bool{true}},
 		{name: "invalid element", input: "true,notabool", sep: ",", wanterr: true},
+		{name: "numeric spelling not accepted", input: "true,1", sep: ",", wanterr: true},
+		{name: "capitalized spelling not accepted", input: "true,True", sep: ",", wanterr: true},
 	}
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {

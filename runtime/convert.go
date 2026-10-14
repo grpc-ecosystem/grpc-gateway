@@ -26,7 +26,23 @@ func StringSlice(val, sep string) ([]string, error) {
 
 // Bool converts the given string representation of a boolean value into bool.
 func Bool(val string) (bool, error) {
-	return strconv.ParseBool(val)
+	return parseBool(val)
+}
+
+// parseBool converts the proto3 JSON spellings of a boolean, "true" and
+// "false", into a bool. Unlike strconv.ParseBool it rejects the alternate
+// spellings 1, 0, t, f, T, F, TRUE, FALSE, True and False, none of which
+// protojson accepts in a request body, so a bool bound from a query or path
+// parameter parses the same as the same field sent in the body.
+func parseBool(val string) (bool, error) {
+	switch val {
+	case "true":
+		return true, nil
+	case "false":
+		return false, nil
+	default:
+		return false, fmt.Errorf("invalid bool value %q, expected \"true\" or \"false\"", val)
+	}
 }
 
 // BoolSlice converts 'val' where individual booleans are separated by

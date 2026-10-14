@@ -472,6 +472,16 @@ func TestPopulateParameters(t *testing.T) {
 			wanterr: errors.New(`parsing field "duration_value": time: invalid duration "null"`),
 		},
 		{
+			// Reject bool spellings protojson does not accept in a body (here
+			// "1"); only "true" and "false" are valid.
+			values: url.Values{
+				"bool_value": {"1"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "bool_value": invalid bool value "1", expected "true" or "false"`),
+		},
+		{
 			// Don't allow setting a oneof more than once
 			values: url.Values{
 				"oneof_bool_value":   {"true"},
