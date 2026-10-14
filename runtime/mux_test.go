@@ -1043,7 +1043,7 @@ func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
 		shortHandlerCalled = true
 	})
 
-	wildcardPat, err := runtime.NewPattern(1,
+	wildcardPat, err := runtime.NewPatternWithOptions(1,
 		[]int{
 			int(utilities.OpLitPush), 0, int(utilities.OpLitPush), 1,
 			int(utilities.OpPushM), 0,

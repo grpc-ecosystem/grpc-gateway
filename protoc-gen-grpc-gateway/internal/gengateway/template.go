@@ -943,7 +943,7 @@ func (m response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}) XXX_Respons
 var (
 	{{- range $m := $svc.Methods }}
 	{{- range $b := $m.Bindings }}
-	pattern_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} = runtime.MustPattern(runtime.NewPattern({{ $b.PathTmpl.Version }}, {{ $b.PathTmpl.OpCodes | printf "%#v" }}, {{ $b.PathTmpl.Pool | printf "%#v" }}, {{ $b.PathTmpl.Verb | printf "%q" }}{{ if $.StrictDeepWildcard }}, runtime.WithStrictDeepWildcard(){{ end }}))
+	pattern_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} = runtime.MustPattern(runtime.NewPattern{{ if $.StrictDeepWildcard }}WithOptions{{ end }}({{ $b.PathTmpl.Version }}, {{ $b.PathTmpl.OpCodes | printf "%#v" }}, {{ $b.PathTmpl.Pool | printf "%#v" }}, {{ $b.PathTmpl.Verb | printf "%q" }}{{ if $.StrictDeepWildcard }}, runtime.WithStrictDeepWildcard(){{ end }}))
 	{{- end }}
 	{{- end }}
 )

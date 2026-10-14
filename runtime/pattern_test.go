@@ -739,7 +739,7 @@ func TestMatchStrictDeepWildcard(t *testing.T) {
 			notMatch: []string{"v1/o"},
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, WithStrictDeepWildcard())
+		pat, err := NewPatternWithOptions(validVersion, spec.ops, spec.pool, spec.verb, WithStrictDeepWildcard())
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue

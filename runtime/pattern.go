@@ -63,9 +63,14 @@ func WithStrictDeepWildcard() PatternOpt {
 // "ops" is a sequence of op codes. "pool" is a constant pool.
 // "verb" is the verb part of the pattern. It is empty if the pattern does not have the part.
 // "version" must be 1 for now.
-// "opts" are optional behavior modifiers, e.g. WithStrictDeepWildcard.
 // It returns an error if the given definition is invalid.
-func NewPattern(version int, ops []int, pool []string, verb string, opts ...PatternOpt) (Pattern, error) {
+func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, error) {
+	return NewPatternWithOptions(version, ops, pool, verb)
+}
+
+// NewPatternWithOptions is like NewPattern but additionally accepts options that modify
+// the matching behavior of the returned Pattern, e.g. WithStrictDeepWildcard.
+func NewPatternWithOptions(version int, ops []int, pool []string, verb string, opts ...PatternOpt) (Pattern, error) {
 	if version != 1 {
 		grpclog.Errorf("unsupported version: %d", version)
 		return Pattern{}, ErrInvalidPattern
