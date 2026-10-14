@@ -1,14 +1,14 @@
 # One way to run the example
 
 ```bash
-# Handle dependencies
-$ dep init
+# Handle dependencies (this repository uses Go modules)
+$ go mod download
 ```
 
 Follow the guides from this [README.md](./browser/README.md) to run the server and gateway.
 ```bash
 # Make sure you are in the correct directory: 
-# $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/v2/examples
+# $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 $ cd examples/internal/browser
 $ pwd
 
