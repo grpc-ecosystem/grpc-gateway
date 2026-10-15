@@ -414,6 +414,39 @@ func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_CustomAnnotatorsOverrideForwardedMetadata(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	annotator := func(ctx context.Context, _ *http.Request) metadata.MD {
+		method, _ := runtime.RPCMethod(ctx)
+		return metadata.Pairs("method", method)
+	}
+	request, err := http.NewRequestWithContext(ctx, "GET", "http://example.com", nil)
+	if err != nil {
+		t.Fatalf(`http.NewRequestWithContext(ctx, "GET", "http://example.com", nil) failed with %v; want success`, err)
+	}
+	// DefaultHeaderMatcher strips the Grpc-Metadata- prefix, so this would
+	// otherwise land ahead of the value the annotator sets for the same key.
+	request.Header.Set("Grpc-Metadata-Method", "/example.Admin/Delete")
+	request.Header.Set("Grpc-Metadata-Other", "kept")
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithMetadata(annotator)), request, expectedRPCName)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok {
+		t.Fatal("metadata.FromOutgoingContext failed")
+	}
+	if got, want := md["method"], []string{expectedRPCName}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["method"] = %q; want %q`, got, want)
+	}
+	if got, want := md["other"], []string{"kept"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["other"] = %q; want %q`, got, want)
+	}
+}
+
 func TestAnnotateIncomingContext_WorksWithEmpty(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
