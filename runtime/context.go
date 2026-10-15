@@ -199,16 +199,22 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 		pairs = append(pairs, strings.ToLower(xForwardedHost), req.Host)
 	}
 
-	xff := req.Header.Values(xForwardedFor)
+	// Validate each X-Forwarded-For value on its own, so that an invalid
+	// client-supplied value is dropped without also dropping the remote
+	// address the gateway appends.
+	var xff []string
+	for _, value := range req.Header.Values(xForwardedFor) {
+		if isValidGRPCMetadataTextValue(value) {
+			xff = append(xff, value)
+		}
+	}
 	if addr := req.RemoteAddr; addr != "" {
-		if remoteIP, _, err := net.SplitHostPort(addr); err == nil {
+		if remoteIP, _, err := net.SplitHostPort(addr); err == nil && isValidGRPCMetadataTextValue(remoteIP) {
 			xff = append(xff, remoteIP)
 		}
 	}
 	if len(xff) > 0 {
-		if value := strings.Join(xff, ", "); isValidGRPCMetadataTextValue(value) {
-			pairs = append(pairs, strings.ToLower(xForwardedFor), value)
-		}
+		pairs = append(pairs, strings.ToLower(xForwardedFor), strings.Join(xff, ", "))
 	}
 
 	if timeout != 0 {

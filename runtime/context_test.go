@@ -246,6 +246,34 @@ func TestAnnotateContext_SkipsInvalidForwardedValues(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_KeepsRemoteAddrWithInvalidXForwardedFor(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	request, err := http.NewRequestWithContext(ctx, "GET", "http://bar.foo.example.com", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://bar.foo.example.com", err)
+	}
+	// net/http accepts non-ASCII header values, but they are not valid gRPC
+	// metadata. Dropping the client-supplied value must not also drop the
+	// remote address the gateway appends.
+	request.Header.Add("X-Forwarded-For", "é")
+	request.Header.Add("X-Forwarded-For", "192.0.2.101")
+	request.RemoteAddr = "192.0.2.200:12345"
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok {
+		t.Fatal("metadata.FromOutgoingContext failed")
+	}
+	if got, want := md["x-forwarded-for"], []string{"192.0.2.101, 192.0.2.200"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["x-forwarded-for"] = %q; want %q`, got, want)
+	}
+}
+
 func TestAnnotateContext_DropsSpoofedXForwardedHeaders(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
