@@ -221,9 +221,18 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 		ctx, _ = context.WithTimeout(ctx, timeout)
 	}
 	md := metadata.Pairs(pairs...)
+	var annotated metadata.MD
 	for _, mda := range mux.metadataAnnotators {
-		md = metadata.Join(md, mda(ctx, req))
+		annotated = metadata.Join(annotated, mda(ctx, req))
 	}
+	// Annotators are the gateway's own code, so their values replace whatever
+	// the request headers put under the same key. Joining them after the
+	// header values would let a client send Grpc-Metadata-<key> and have its
+	// value read first by a backend that trusts the annotator.
+	for k := range annotated {
+		delete(md, strings.ToLower(k))
+	}
+	md = metadata.Join(md, annotated)
 	if len(md) == 0 {
 		return ctx, nil, nil
 	}
