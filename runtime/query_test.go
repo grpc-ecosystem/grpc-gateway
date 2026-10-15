@@ -557,6 +557,25 @@ func TestPopulateParameters(t *testing.T) {
 			want:    &examplepb.Proto3Message{},
 			wanterr: errors.New(`parsing field "float_value": invalid syntax "Inf"`),
 		},
+		{
+			// Reject the map syntax on a repeated field instead of binding the
+			// bracket content as an extra element (["a"], not ["0", "a"]).
+			values: url.Values{
+				"repeated_value[0]": {"a"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`field "repeated_value" is not a map`),
+		},
+		{
+			// Reject the map syntax on a singular field
+			values: url.Values{
+				"string_value[key]": {"value"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`field "string_value" is not a map`),
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			msg := spec.want.ProtoReflect().New().Interface()
