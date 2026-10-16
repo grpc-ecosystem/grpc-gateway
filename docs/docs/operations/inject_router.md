@@ -9,6 +9,17 @@ parent: Operations
 
 The gRPC-Gateway allows you to add custom routes to the serve mux, for example, if you want to support a use case that isn't supported by the gRPC-Gateway, like file uploads.
 
+By default, a deep wildcard in a custom route can match zero path segments, so `/v3/files/{path=**}` also matches `/v3/files`.
+To require a remaining path component after `/v3/files`, configure the mux with `runtime.WithStrictDeepWildcardMatching()`:
+
+```go
+mux := runtime.NewServeMux(runtime.WithStrictDeepWildcardMatching())
+```
+
+The option applies to both generated routes and routes registered with `HandlePath`.
+A trailing slash still supplies an empty component, so `/v3/files/` continues to match.
+The `strict_deep_wildcard` generator flag remains available when strict matching should be encoded only in generated patterns.
+
 ## Example
 
 ```go

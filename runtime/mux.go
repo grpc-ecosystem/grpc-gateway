@@ -77,6 +77,7 @@ type ServeMux struct {
 	unescapingMode            UnescapingMode
 	writeContentLength        bool
 	disableChunkedEncoding    bool
+	strictDeepWildcard        bool
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -136,6 +137,19 @@ func WithMiddlewares(middlewares ...Middleware) ServeMuxOption {
 func WithDisableChunkedEncoding() ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.disableChunkedEncoding = true
+	}
+}
+
+// WithStrictDeepWildcardMatching makes deep wildcards ("**") require at least
+// one path segment when preceded by another segment. For example,
+// "/v3/files/{path=**}" will not match "/v3/files". A trailing slash still
+// provides an empty segment, so "/v3/files/" continues to match.
+//
+// This option applies to all patterns registered with the ServeMux, including
+// generated routes and routes registered with HandlePath.
+func WithStrictDeepWildcardMatching() ServeMuxOption {
+	return func(mux *ServeMux) {
+		mux.strictDeepWildcard = true
 	}
 }
 
@@ -495,7 +509,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 		}
 
-		pathParams, err := h.pat.MatchAndEscape(comps, verb, unescapingMode)
+		pathParams, err := h.pat.matchAndEscape(comps, verb, unescapingMode, s.strictDeepWildcard)
 		if err != nil {
 			var mse MalformedSequenceError
 			if ok := errors.As(err, &mse); ok {
@@ -538,7 +552,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 			}
 
-			pathParams, err := h.pat.MatchAndEscape(comps, verb, unescapingMode)
+			pathParams, err := h.pat.matchAndEscape(comps, verb, unescapingMode, s.strictDeepWildcard)
 			if err != nil {
 				var mse MalformedSequenceError
 				if ok := errors.As(err, &mse); ok {
