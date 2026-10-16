@@ -772,6 +772,64 @@ func TestServeMux_HandlePath(t *testing.T) {
 	}
 }
 
+func TestServeMux_HandlePathStrictDeepWildcard(t *testing.T) {
+	tests := []struct {
+		name       string
+		opts       []runtime.ServeMuxOption
+		path       string
+		wantStatus int
+		wantParam  string
+	}{
+		{
+			name:       "default permits zero segments",
+			path:       "/v3/files",
+			wantStatus: http.StatusNoContent,
+		},
+		{
+			name:       "strict rejects zero segments",
+			opts:       []runtime.ServeMuxOption{runtime.WithStrictDeepWildcardMatching()},
+			path:       "/v3/files",
+			wantStatus: http.StatusNotFound,
+		},
+		{
+			name:       "strict permits trailing empty segment",
+			opts:       []runtime.ServeMuxOption{runtime.WithStrictDeepWildcardMatching()},
+			path:       "/v3/files/",
+			wantStatus: http.StatusNoContent,
+		},
+		{
+			name:       "strict permits non-empty segment",
+			opts:       []runtime.ServeMuxOption{runtime.WithStrictDeepWildcardMatching()},
+			path:       "/v3/files/a.txt",
+			wantStatus: http.StatusNoContent,
+			wantParam:  "a.txt",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mux := runtime.NewServeMux(tt.opts...)
+			var gotParam string
+			if err := mux.HandlePath(http.MethodGet, "/v3/files/{path=**}", func(w http.ResponseWriter, _ *http.Request, pathParams map[string]string) {
+				gotParam = pathParams["path"]
+				w.WriteHeader(http.StatusNoContent)
+			}); err != nil {
+				t.Fatalf("mux.HandlePath failed: %v", err)
+			}
+
+			w := httptest.NewRecorder()
+			mux.ServeHTTP(w, httptest.NewRequest(http.MethodGet, tt.path, nil))
+
+			if got, want := w.Code, tt.wantStatus; got != want {
+				t.Errorf("status = %d; want %d", got, want)
+			}
+			if got, want := gotParam, tt.wantParam; got != want {
+				t.Errorf("path parameter = %q; want %q", got, want)
+			}
+		})
+	}
+}
+
 var healthCheckTests = []struct {
 	name           string
 	code           codes.Code
@@ -1028,7 +1086,7 @@ func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
 	// Regression test for https://github.com/grpc-ecosystem/grpc-gateway/issues/5771:
 	// registering both /v3/files (literal) and /v3/files/{path=**} (deep wildcard)
 	// must route a bare GET /v3/files to the literal handler, not the wildcard one.
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithStrictDeepWildcardMatching())
 
 	var shortHandlerCalled, wildcardHandlerCalled bool
 	var wildcardPath string
@@ -1043,14 +1101,14 @@ func TestServeMux_DeepWildcardDoesNotShadowShorterLiteralRoute(t *testing.T) {
 		shortHandlerCalled = true
 	})
 
-	wildcardPat, err := runtime.NewPatternWithOptions(1,
+	wildcardPat, err := runtime.NewPattern(1,
 		[]int{
 			int(utilities.OpLitPush), 0, int(utilities.OpLitPush), 1,
 			int(utilities.OpPushM), 0,
 			int(utilities.OpConcatN), 1,
 			int(utilities.OpCapture), 2,
 		},
-		[]string{"v3", "files", "path"}, "", runtime.WithStrictDeepWildcard())
+		[]string{"v3", "files", "path"}, "")
 	if err != nil {
 		t.Fatalf("runtime.NewPattern (wildcard) failed: %v", err)
 	}
