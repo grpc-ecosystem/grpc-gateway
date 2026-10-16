@@ -1,0 +1,75 @@
+file_to_generate: "document/v1/document.proto"
+proto_file: {
+  name: "document/v1/document.proto"
+  package: "document.v1"
+  message_type: {
+    name: "Document"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "GetDocumentRequest"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "LockDocumentRequest"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "Lock"
+    field: {
+      name: "token"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "token"
+    }
+  }
+  service: {
+    name: "DocumentService"
+    method: {
+      name: "GetDocument"
+      input_type: ".document.v1.GetDocumentRequest"
+      output_type: ".document.v1.Document"
+      options: {
+        [google.api.http]: {
+          get: "/v1/documents/{name}"
+        }
+      }
+    }
+    method: {
+      name: "LockDocument"
+      input_type: ".document.v1.LockDocumentRequest"
+      output_type: ".document.v1.Lock"
+      options: {
+        [google.api.http]: {
+          custom: {
+            kind: "LOCK"
+            path: "/v1/documents/{name}:lock"
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/document/v1;documentv1"
+  }
+  syntax: "proto3"
+}

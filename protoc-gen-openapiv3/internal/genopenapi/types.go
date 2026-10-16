@@ -290,6 +290,17 @@ func (p *PathItem) SetOperation(method string, op *Operation) {
 	}
 }
 
+// isPathItemMethod reports whether a PathItem has an operation slot for the
+// given HTTP method. OpenAPI 3.1 cannot describe any other method, such as a
+// custom HttpRule kind like "REPORT".
+func isPathItemMethod(method string) bool {
+	switch method {
+	case "GET", "PUT", "POST", "DELETE", "OPTIONS", "HEAD", "PATCH", "TRACE":
+		return true
+	}
+	return false
+}
+
 // Operation describes a single API operation on a path.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#operation-object

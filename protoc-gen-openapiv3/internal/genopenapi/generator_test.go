@@ -1114,6 +1114,37 @@ func TestGenerate_NestedPathParam(t *testing.T) {
 	}
 }
 
+// TestGenerate_UnsupportedMethod checks that a binding using a custom HTTP
+// method that OpenAPI 3.1 cannot describe (here "LOCK") is skipped, instead
+// of leaving an empty path item and unused component schemas behind.
+func TestGenerate_UnsupportedMethod(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/unsupported_method.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	paths, _ := doc["paths"].(map[string]any)
+	var gotPaths []string
+	for p := range paths {
+		gotPaths = append(gotPaths, p)
+	}
+	slices.Sort(gotPaths)
+	if diff := cmp.Diff([]string{"/v1/documents/{name}"}, gotPaths); diff != "" {
+		t.Errorf("paths mismatch (-want +got):\n%s", diff)
+	}
+
+	components, _ := doc["components"].(map[string]any)
+	schemas, _ := components["schemas"].(map[string]any)
+	if _, ok := schemas["document.v1.Lock"]; ok {
+		t.Errorf("component schema %q is only used by the skipped binding and must not be emitted", "document.v1.Lock")
+	}
+}
+
 // loadRequest reads a prototext-encoded CodeGeneratorRequest from disk.
 func loadRequest(t *testing.T, path string) *pluginpb.CodeGeneratorRequest {
 	t.Helper()

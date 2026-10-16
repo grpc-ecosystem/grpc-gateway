@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -97,6 +98,11 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 				continue
 			}
 			for i, binding := range method.Bindings {
+				if !isPathItemMethod(binding.HTTPMethod) {
+					grpclog.Warningf("protoc-gen-openapiv3: skipping binding of %s.%s: HTTP method %q cannot be described in OpenAPI 3.1",
+						svc.GetName(), method.GetName(), binding.HTTPMethod)
+					continue
+				}
 				urlPath, pathParams := convertPathTemplate(binding.PathTmpl.Template)
 				op, err := buildOperation(b, svc, tag.Name, method, binding, i, pathParams)
 				if err != nil {
