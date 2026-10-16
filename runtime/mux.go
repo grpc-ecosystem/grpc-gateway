@@ -518,11 +518,24 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Note we are not eagerly checking the request here as we want to return the
 	// right HTTP status code, and we need to process the fallback candidates in
 	// order to do that.
-	for m, handlers := range s.handlers {
+	// GET is tried first when the request is subject to path length fallback:
+	// map iteration order is random, and a match for another method would
+	// otherwise return 405 before the GET handler is reached.
+	methods := make([]string, 0, len(s.handlers))
+	if s.isPathLengthFallback(r) {
+		methods = append(methods, http.MethodGet)
+	}
+	for m := range s.handlers {
+		if m == http.MethodGet && s.isPathLengthFallback(r) {
+			continue
+		}
+		methods = append(methods, m)
+	}
+	for _, m := range methods {
 		if m == r.Method {
 			continue
 		}
-		for _, h := range handlers {
+		for _, h := range s.handlers[m] {
 			var verb string
 			patVerb := h.pat.Verb()
 

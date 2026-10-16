@@ -671,6 +671,34 @@ func TestServeHTTP_WithMethodOverrideAndFormParsing(t *testing.T) {
 	}
 }
 
+func TestServeHTTP_PathLengthFallbackPrefersGET(t *testing.T) {
+	mux := runtime.NewServeMux()
+	for _, m := range []string{"GET", "DELETE", "PUT", "PATCH"} {
+		m := m
+		if err := mux.HandlePath(m, "/foo", func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
+			_, _ = fmt.Fprint(w, m)
+		}); err != nil {
+			t.Fatalf("mux.HandlePath(%q, %q) failed with %v; want success", m, "/foo", err)
+		}
+	}
+
+	// The other methods are searched in map order, so repeat to make a
+	// lucky ordering unlikely to hide a regression.
+	for i := 0; i < 100; i++ {
+		r := httptest.NewRequest("POST", "/foo", strings.NewReader("bar=hoge"))
+		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		w := httptest.NewRecorder()
+		mux.ServeHTTP(w, r)
+
+		if got, want := w.Code, http.StatusOK; got != want {
+			t.Fatalf("w.Code = %d; want %d; body=%q", got, want, w.Body.String())
+		}
+		if got, want := w.Body.String(), "GET"; got != want {
+			t.Fatalf("w.Body = %q; want %q", got, want)
+		}
+	}
+}
+
 var defaultHeaderMatcherTests = []struct {
 	name     string
 	in       string
