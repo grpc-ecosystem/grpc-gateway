@@ -1,0 +1,64 @@
+file_to_generate: "book/v1/book.proto"
+proto_file: {
+  name: "book/v1/book.proto"
+  package: "book.v1"
+  message_type: {
+    name: "Book"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "DeleteBookRequest"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+    field: {
+      name: "reason"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "reason"
+    }
+  }
+  service: {
+    name: "BookService"
+    method: {
+      name: "DeleteBook"
+      input_type: ".book.v1.DeleteBookRequest"
+      output_type: ".book.v1.Book"
+      options: {
+        [google.api.http]: {
+          delete: "/v1/books/{name}"
+          body: "*"
+        }
+      }
+    }
+    method: {
+      name: "CheckBook"
+      input_type: ".book.v1.DeleteBookRequest"
+      output_type: ".book.v1.Book"
+      options: {
+        [google.api.http]: {
+          custom: {
+            kind: "OPTIONS"
+            path: "/v1/books/{name}"
+          }
+          body: "*"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/book/v1;bookv1"
+  }
+  syntax: "proto3"
+}

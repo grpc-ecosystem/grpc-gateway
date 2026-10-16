@@ -35,7 +35,10 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 
 	op.Parameters = buildParameters(b, m, binding, pathParams)
 
-	if needsRequestBody(binding.HTTPMethod) && binding.Body != nil {
+	// The registry rejects a body on GET, and on DELETE unless
+	// allow_delete_body is set, so any binding with a body gets one here,
+	// including custom methods.
+	if binding.Body != nil {
 		op.RequestBody = buildRequestBody(b, m, binding)
 	}
 
@@ -427,14 +430,6 @@ func operationID(svc *descriptor.Service, m *descriptor.Method, bindingIdx int) 
 		id = fmt.Sprintf("%s_%d", id, bindingIdx)
 	}
 	return id
-}
-
-func needsRequestBody(method string) bool {
-	switch method {
-	case "POST", "PUT", "PATCH":
-		return true
-	}
-	return false
 }
 
 func isPathParam(field *descriptor.Field, params []descriptor.Parameter) bool {
