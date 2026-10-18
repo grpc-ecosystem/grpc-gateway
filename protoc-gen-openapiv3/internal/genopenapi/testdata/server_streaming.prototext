@@ -1,0 +1,112 @@
+file_to_generate: "streaming/v1/streaming.proto"
+proto_file: {
+  name: "google/api/httpbody.proto"
+  package: "google.api"
+  message_type: {
+    name: "HttpBody"
+    field: {
+      name: "content_type"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "contentType"
+    }
+    field: {
+      name: "data"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_BYTES
+      json_name: "data"
+    }
+  }
+  options: {
+    go_package: "google.golang.org/genproto/googleapis/api/httpbody;httpbody"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "streaming/v1/streaming.proto"
+  package: "streaming.v1"
+  dependency: "google/api/httpbody.proto"
+  message_type: {
+    name: "Item"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "ItemRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "CountResponse"
+    field: {
+      name: "count"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "count"
+    }
+  }
+  service: {
+    name: "ItemService"
+    method: {
+      name: "GetItem"
+      input_type: ".streaming.v1.ItemRequest"
+      output_type: ".streaming.v1.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/{id}"
+        }
+      }
+    }
+    method: {
+      name: "ListItems"
+      input_type: ".streaming.v1.ItemRequest"
+      output_type: ".streaming.v1.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items"
+        }
+      }
+      server_streaming: true
+    }
+    method: {
+      name: "WatchCount"
+      input_type: ".streaming.v1.ItemRequest"
+      output_type: ".streaming.v1.CountResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/count"
+          response_body: "count"
+        }
+      }
+      server_streaming: true
+    }
+    method: {
+      name: "Download"
+      input_type: ".streaming.v1.ItemRequest"
+      output_type: ".google.api.HttpBody"
+      options: {
+        [google.api.http]: {
+          get: "/v1/download"
+        }
+      }
+      server_streaming: true
+    }
+  }
+  options: {
+    go_package: "github.com/example/streaming/v1;streamingv1"
+  }
+  syntax: "proto3"
+}

@@ -14,6 +14,10 @@ import (
 // google.rpc.Status default error response schema.
 const statusSchemaName = "google.rpc.Status"
 
+// httpBodyFQMN is the fully-qualified name of google.api.HttpBody, whose
+// contents the runtime writes as raw bytes rather than as JSON.
+const httpBodyFQMN = ".google.api.HttpBody"
+
 // buildOperation produces an OpenAPI Operation for one HTTP binding of an
 // RPC method, registering any referenced schemas with the schema builder.
 // `tag` is the name of the service's tag, used as the operation's default tag.
@@ -375,6 +379,10 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method, binding *descriptor.
 			b.ensureMessageSchema(m.ResponseType)
 			schema = NewSchemaRef(schemaName(m.ResponseType.FQMN()))
 		}
+		if m.GetServerStreaming() && m.ResponseType.FQMN() != httpBodyFQMN {
+			desc += " (streaming responses)"
+			schema = streamResultSchema(b, m, schema)
+		}
 		resp.Codes["200"] = &ResponseRef{Value: NewResponse(desc).WithJSONSchema(schema)}
 	}
 
@@ -383,6 +391,28 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method, binding *descriptor.
 		resp.Default = &ResponseRef{Value: NewResponse("An unexpected error response.").WithJSONSchema(NewSchemaRef(statusSchemaName))}
 	}
 	return resp
+}
+
+// streamResultSchema wraps the per-message schema of a server-streaming
+// method in the envelope the runtime writes for each chunk (see
+// runtime.ForwardResponseStream): every message arrives as
+// {"result": <message>}, and an error part-way through the stream arrives
+// as {"error": <google.rpc.Status>}. The error property is left out when
+// default errors are disabled, since a custom error handler is then in use.
+//
+// google.api.HttpBody streams are written as raw bytes without the
+// envelope, so callers must not wrap them.
+func streamResultSchema(b *schemaBuilder, m *descriptor.Method, result *SchemaOrRef) *SchemaOrRef {
+	props := map[string]*SchemaOrRef{"result": result}
+	if !b.reg.GetDisableDefaultErrors() {
+		ensureStatusSchema(b.doc)
+		props["error"] = NewSchemaRef(statusSchemaName)
+	}
+	return &SchemaOrRef{Value: &Schema{
+		Type:       SchemaType{"object"},
+		Title:      "Stream result of " + schemaName(m.ResponseType.FQMN()),
+		Properties: props,
+	}}
 }
 
 // ensureStatusSchema makes sure the google.rpc.Status component schema is

@@ -2,6 +2,7 @@ package genopenapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -1333,5 +1334,92 @@ func TestGenerate_NullValue(t *testing.T) {
 	unsetOption, _ := oneOf[1].(map[string]any)["properties"].(map[string]any)
 	if diff := cmp.Diff(null, unsetOption["unset"]); diff != "" {
 		t.Errorf("unset oneOf option mismatch (-want +got):\n%s", diff)
+	}
+}
+
+// TestGenerate_ServerStreaming checks that server-streaming methods describe
+// the chunks the runtime writes: each message is wrapped as {"result": ...}
+// and a mid-stream error arrives as {"error": <google.rpc.Status>}.
+func TestGenerate_ServerStreaming(t *testing.T) {
+	t.Parallel()
+
+	for _, disableDefaultErrors := range []bool{false, true} {
+		t.Run(fmt.Sprintf("disable_default_errors=%t", disableDefaultErrors), func(t *testing.T) {
+			t.Parallel()
+
+			req := loadRequest(t, "testdata/server_streaming.prototext")
+			reg := descriptor.NewRegistry()
+			if err := reg.Load(req); err != nil {
+				t.Fatalf("registry load: %v", err)
+			}
+			reg.SetDisableDefaultErrors(disableDefaultErrors)
+			f, err := reg.LookupFile(req.FileToGenerate[0])
+			if err != nil {
+				t.Fatalf("lookup %s: %v", req.FileToGenerate[0], err)
+			}
+			out, err := Generate(reg, []*descriptor.File{f})
+			if err != nil {
+				t.Fatalf("generate: %v", err)
+			}
+			if len(out) != 1 {
+				t.Fatalf("expected 1 output file, got %d", len(out))
+			}
+
+			var doc map[string]any
+			if err := json.Unmarshal([]byte(out[0].GetContent()), &doc); err != nil {
+				t.Fatalf("unmarshal output: %v", err)
+			}
+			paths, _ := doc["paths"].(map[string]any)
+			okResponse := func(path string) map[string]any {
+				t.Helper()
+				get, _ := paths[path].(map[string]any)["get"].(map[string]any)
+				if get == nil {
+					t.Fatalf("expected GET operation under %s, got: %v", path, paths)
+				}
+				resp, _ := get["responses"].(map[string]any)["200"].(map[string]any)
+				if resp == nil {
+					t.Fatalf("expected 200 response under %s", path)
+				}
+				return resp
+			}
+			okSchema := func(path string) any {
+				t.Helper()
+				content, _ := okResponse(path)["content"].(map[string]any)
+				appJSON, _ := content["application/json"].(map[string]any)
+				return appJSON["schema"]
+			}
+			streamResult := func(title string, result any) map[string]any {
+				props := map[string]any{"result": result}
+				if !disableDefaultErrors {
+					props["error"] = map[string]any{"$ref": "#/components/schemas/google.rpc.Status"}
+				}
+				return map[string]any{"type": "object", "title": title, "properties": props}
+			}
+
+			// Unary methods keep the plain response schema.
+			if diff := cmp.Diff(map[string]any{"$ref": "#/components/schemas/streaming.v1.Item"}, okSchema("/v1/items/{id}")); diff != "" {
+				t.Errorf("unary response schema mismatch (-want +got):\n%s", diff)
+			}
+
+			want := streamResult("Stream result of streaming.v1.Item", map[string]any{"$ref": "#/components/schemas/streaming.v1.Item"})
+			if diff := cmp.Diff(want, okSchema("/v1/items")); diff != "" {
+				t.Errorf("streaming response schema mismatch (-want +got):\n%s", diff)
+			}
+			if got, want := okResponse("/v1/items")["description"], "A successful response. (streaming responses)"; got != want {
+				t.Errorf("streaming response description = %q, want %q", got, want)
+			}
+
+			// With response_body, each chunk's result is the selected field.
+			want = streamResult("Stream result of streaming.v1.CountResponse", map[string]any{"type": "integer", "format": "int32"})
+			if diff := cmp.Diff(want, okSchema("/v1/count")); diff != "" {
+				t.Errorf("streaming response_body schema mismatch (-want +got):\n%s", diff)
+			}
+
+			// HttpBody streams are written as raw bytes, without the
+			// result/error wrapper.
+			if got, _ := okSchema("/v1/download").(map[string]any); got["properties"] != nil {
+				t.Errorf("HttpBody stream must not be wrapped in a stream result, got %v", got)
+			}
+		})
 	}
 }
