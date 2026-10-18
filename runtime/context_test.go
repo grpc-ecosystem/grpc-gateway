@@ -386,6 +386,103 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 		}
 	}
 }
+
+// TestAnnotateContext_PerServeMuxDefaultTimeout covers WithDefaultContextTimeout:
+// two muxes with different defaults, the global fallback when the option is not
+// set, an explicit zero, precedence of Grpc-Timeout, and earlier parent deadlines.
+func TestAnnotateContext_PerServeMuxDefaultTimeout(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	newRequest := func() *http.Request {
+		request, err := http.NewRequestWithContext(ctx, "GET", "http://example.com", nil)
+		if err != nil {
+			t.Fatalf(`http.NewRequestWithContext(ctx, "GET", "http://example.com", nil) failed with %v; want success`, err)
+		}
+		return request
+	}
+	const acceptableError = 50 * time.Millisecond
+	assertDeadline := func(t *testing.T, annotated context.Context, want time.Duration, wantSet bool) {
+		t.Helper()
+		deadline, ok := annotated.Deadline()
+		if !ok {
+			if wantSet {
+				t.Errorf("annotated.Deadline() = _, false; want _, true")
+			}
+			return
+		}
+		if !wantSet {
+			t.Errorf("annotated.Deadline() = %v, true; want _, false", deadline)
+			return
+		}
+		if got := time.Until(deadline); got-want > acceptableError || got-want < -acceptableError {
+			t.Errorf("time.Until(deadline) = %v; want %v; with error %v", got, want, acceptableError)
+		}
+	}
+	annotate := func(t *testing.T, mux *runtime.ServeMux, request *http.Request) context.Context {
+		t.Helper()
+		annotated, err := runtime.AnnotateContext(ctx, mux, request, expectedRPCName)
+		if err != nil {
+			t.Fatalf("runtime.AnnotateContext returned an error: %v; want success", err)
+		}
+		return annotated
+	}
+
+	// Two muxes with different defaults at the same time.
+	mux10s := runtime.NewServeMux(runtime.WithDefaultContextTimeout(10 * time.Second))
+	mux60s := runtime.NewServeMux(runtime.WithDefaultContextTimeout(60 * time.Second))
+	assertDeadline(t, annotate(t, mux10s, newRequest()), 10*time.Second, true)
+	assertDeadline(t, annotate(t, mux60s, newRequest()), 60*time.Second, true)
+
+	// A mux without the option reads the global default at request time, so a
+	// change after construction still applies.
+	globalDefault := runtime.DefaultContextTimeout
+	t.Cleanup(func() {
+		runtime.DefaultContextTimeout = globalDefault
+	})
+	runtime.DefaultContextTimeout = 0
+	muxFallback := runtime.NewServeMux()
+	assertDeadline(t, annotate(t, muxFallback, newRequest()), 0, false)
+	runtime.DefaultContextTimeout = 15 * time.Second
+	assertDeadline(t, annotate(t, muxFallback, newRequest()), 15*time.Second, true)
+
+	// An explicit zero disables the default for that mux, even when the global
+	// default is set.
+	muxDisabled := runtime.NewServeMux(runtime.WithDefaultContextTimeout(0))
+	assertDeadline(t, annotate(t, muxDisabled, newRequest()), 0, false)
+	assertDeadline(t, annotate(t, muxDisabled, newRequest()), 0, false)
+
+	// A valid Grpc-Timeout keeps taking precedence over the mux default.
+	request := newRequest()
+	request.Header.Set("Grpc-Timeout", "19M")
+	assertDeadline(t, annotate(t, mux10s, request), 19*time.Minute, true)
+
+	// An invalid Grpc-Timeout keeps its existing behavior.
+	request = newRequest()
+	request.Header.Set("Grpc-Timeout", "shazbot")
+	if _, err := runtime.AnnotateContext(ctx, mux10s, request, expectedRPCName); err == nil {
+		t.Errorf("runtime.AnnotateContext with an invalid Grpc-Timeout returned no error; want one")
+	}
+
+	// A parent deadline earlier than the mux default is not extended.
+	parentCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+	defer cancel()
+	annotated, err := runtime.AnnotateContext(parentCtx, mux10s, newRequest(), expectedRPCName)
+	if err != nil {
+		t.Fatalf("runtime.AnnotateContext returned an error: %v; want success", err)
+	}
+	assertDeadline(t, annotated, 100*time.Millisecond, true)
+
+	// A negative duration is rejected when the option is constructed.
+	func() {
+		defer func() {
+			if recover() == nil {
+				t.Errorf("runtime.WithDefaultContextTimeout(-1) did not panic; want a panic")
+			}
+		}()
+		runtime.NewServeMux(runtime.WithDefaultContextTimeout(-1))
+	}()
+}
+
 func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
 	ctx := context.Background()
 	md1 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"foo": "bar"}) }
