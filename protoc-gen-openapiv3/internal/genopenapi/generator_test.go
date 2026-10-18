@@ -1114,6 +1114,51 @@ func TestGenerate_NestedPathParam(t *testing.T) {
 	}
 }
 
+// TestGenerate_NullValue checks that google.protobuf.NullValue fields are
+// inlined as `type: null`, which is what protojson writes on the wire, rather
+// than referenced as a string enum component with a NULL_VALUE value.
+func TestGenerate_NullValue(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/null_value.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	schemas, _ := doc["components"].(map[string]any)["schemas"].(map[string]any)
+	if _, ok := schemas["google.protobuf.NullValue"]; ok {
+		t.Errorf("google.protobuf.NullValue should be inlined, not emitted as a component schema")
+	}
+
+	null := map[string]any{"type": "null"}
+	setting, _ := schemas["nullvalue.v1.Setting"].(map[string]any)
+	props, _ := setting["properties"].(map[string]any)
+	if diff := cmp.Diff(null, props["unset"]); diff != "" {
+		t.Errorf("unset property mismatch (-want +got):\n%s", diff)
+	}
+	wantNulls := map[string]any{"type": "array", "items": null}
+	if diff := cmp.Diff(wantNulls, props["nulls"]); diff != "" {
+		t.Errorf("nulls property mismatch (-want +got):\n%s", diff)
+	}
+	wantMap := map[string]any{"type": "object", "additionalProperties": null}
+	if diff := cmp.Diff(wantMap, props["nullMap"]); diff != "" {
+		t.Errorf("nullMap property mismatch (-want +got):\n%s", diff)
+	}
+
+	// The oneof option for the NullValue member carries the same schema.
+	oneOf, _ := setting["oneOf"].([]any)
+	if len(oneOf) != 3 {
+		t.Fatalf("expected 3 oneOf options, got %d: %v", len(oneOf), oneOf)
+	}
+	unsetOption, _ := oneOf[1].(map[string]any)["properties"].(map[string]any)
+	if diff := cmp.Diff(null, unsetOption["unset"]); diff != "" {
+		t.Errorf("unset oneOf option mismatch (-want +got):\n%s", diff)
+	}
+}
+
 // loadRequest reads a prototext-encoded CodeGeneratorRequest from disk.
 func loadRequest(t *testing.T, path string) *pluginpb.CodeGeneratorRequest {
 	t.Helper()

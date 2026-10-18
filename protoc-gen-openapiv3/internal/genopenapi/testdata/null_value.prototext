@@ -1,0 +1,106 @@
+file_to_generate: "nullvalue/v1/nullvalue.proto"
+proto_file: {
+  name: "google/protobuf/struct.proto"
+  package: "google.protobuf"
+  enum_type: {
+    name: "NullValue"
+    value: {
+      name: "NULL_VALUE"
+      number: 0
+    }
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/structpb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "nullvalue/v1/nullvalue.proto"
+  package: "nullvalue.v1"
+  dependency: "google/protobuf/struct.proto"
+  message_type: {
+    name: "Setting"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+    field: {
+      name: "unset"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_ENUM
+      type_name: ".google.protobuf.NullValue"
+      oneof_index: 0
+      json_name: "unset"
+    }
+    field: {
+      name: "text"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "text"
+    }
+    field: {
+      name: "nulls"
+      number: 4
+      label: LABEL_REPEATED
+      type: TYPE_ENUM
+      type_name: ".google.protobuf.NullValue"
+      json_name: "nulls"
+    }
+    field: {
+      name: "null_map"
+      number: 5
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".nullvalue.v1.Setting.NullMapEntry"
+      json_name: "nullMap"
+    }
+    nested_type: {
+      name: "NullMapEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_ENUM
+        type_name: ".google.protobuf.NullValue"
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+    oneof_decl: {
+      name: "value"
+    }
+  }
+  service: {
+    name: "SettingService"
+    method: {
+      name: "UpdateSetting"
+      input_type: ".nullvalue.v1.Setting"
+      output_type: ".nullvalue.v1.Setting"
+      options: {
+        [google.api.http]: {
+          put: "/v1/settings/{name}"
+          body: "*"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/nullvalue/v1;nullvaluev1"
+  }
+  syntax: "proto3"
+}
