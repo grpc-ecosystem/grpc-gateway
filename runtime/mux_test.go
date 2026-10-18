@@ -1091,6 +1091,55 @@ func TestServeMux_HealthEndpointMiddlewaresOptionOrder(t *testing.T) {
 	}
 }
 
+func TestServeMux_BareVerbDoesNotDependOnRegistrationOrder(t *testing.T) {
+	for _, tt := range []struct {
+		name     string
+		patterns []string
+		want     int
+		wantBody string
+	}{
+		{
+			name:     "verb pattern registered last",
+			patterns: []string{"/v1/{id}", "/v1/{name}:cancel"},
+			want:     http.StatusOK,
+			wantBody: "/v1/{id} id=:cancel",
+		},
+		{
+			name:     "verb pattern registered first",
+			patterns: []string{"/v1/{name}:cancel", "/v1/{id}"},
+			want:     http.StatusOK,
+			wantBody: "/v1/{id} id=:cancel",
+		},
+		{
+			name:     "only verb pattern",
+			patterns: []string{"/v1/{name}:cancel"},
+			want:     http.StatusNotFound,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			mux := runtime.NewServeMux()
+			for _, p := range tt.patterns {
+				p := p
+				if err := mux.HandlePath(http.MethodGet, p, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+					_, _ = fmt.Fprintf(w, "%s id=%s", p, pathParams["id"])
+				}); err != nil {
+					t.Fatalf("mux.HandlePath(%q) failed with %v; want success", p, err)
+				}
+			}
+
+			rr := httptest.NewRecorder()
+			mux.ServeHTTP(rr, httptest.NewRequest(http.MethodGet, "/v1/:cancel", nil))
+
+			if rr.Code != tt.want {
+				t.Errorf("rr.Code = %d; want %d; body=%q", rr.Code, tt.want, rr.Body.String())
+			}
+			if tt.wantBody != "" && rr.Body.String() != tt.wantBody {
+				t.Errorf("rr.Body = %q; want %q", rr.Body.String(), tt.wantBody)
+			}
+		})
+	}
+}
+
 func TestServeMux_InjectPattern(t *testing.T) {
 	mux := runtime.NewServeMux()
 	err := mux.HandlePath("GET", "/test", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {

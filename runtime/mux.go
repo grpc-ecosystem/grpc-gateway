@@ -506,9 +506,10 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			idx = len(lastPathComponent) - len(patVerb) - 1
 		}
 		if idx == 0 {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
-			s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
-			return
+			// The last component is the bare verb with nothing before it,
+			// which this pattern cannot match. Other patterns still might, so
+			// move on rather than ending the search with a 404.
+			continue
 		}
 
 		// Only copy the components when the verb has to be split off the last
