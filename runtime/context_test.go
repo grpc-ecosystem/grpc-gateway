@@ -305,6 +305,35 @@ func TestAnnotateContext_DropsSpoofedXForwardedHeaders(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_AuthorizationPrecedesForwardedMetadata(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	// The header loop iterates a map, so without an explicit order the
+	// Grpc-Metadata-Authorization value (forwarded as bare "authorization" by
+	// DefaultHeaderMatcher) lands ahead of the Authorization header's value in
+	// a fraction of runs. Repeat so that a regression shows up reliably.
+	for i := 0; i < 100; i++ {
+		request, err := http.NewRequestWithContext(ctx, "GET", "http://www.example.com", nil)
+		if err != nil {
+			t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
+		}
+		request.Header.Set("Authorization", "Bearer real")
+		request.Header.Set("Grpc-Metadata-Authorization", "Bearer forwarded")
+
+		annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+		if err != nil {
+			t.Fatalf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		}
+		md, ok := metadata.FromOutgoingContext(annotated)
+		if !ok {
+			t.Fatal("metadata.FromOutgoingContext failed")
+		}
+		if got, want := md["authorization"], []string{"Bearer real", "Bearer forwarded"}; !reflect.DeepEqual(got, want) {
+			t.Fatalf(`md["authorization"] = %q; want %q`, got, want)
+		}
+	}
+}
+
 func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"

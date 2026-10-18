@@ -148,6 +148,17 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 		}
 	}
 	var pairs []string
+	// For backwards-compatibility, pass through 'authorization' header with no prefix.
+	// It is added before the header loop so that it is always the first
+	// "authorization" value: the loop iterates a map, so a header the matcher
+	// forwards under the same key (Grpc-Metadata-Authorization with the default
+	// matcher) would otherwise land ahead of it in random order, and a backend
+	// reading the first value would get the client-forwarded one.
+	for _, val := range req.Header.Values("Authorization") {
+		if isValidGRPCMetadataTextValue(val) {
+			pairs = append(pairs, "authorization", val)
+		}
+	}
 	for key, vals := range req.Header {
 		key = textproto.CanonicalMIMEHeaderKey(key)
 		switch key {
@@ -157,10 +168,6 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 		}
 
 		for _, val := range vals {
-			// For backwards-compatibility, pass through 'authorization' header with no prefix.
-			if key == "Authorization" && isValidGRPCMetadataTextValue(val) {
-				pairs = append(pairs, "authorization", val)
-			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
 				// The gateway derives x-forwarded-host and x-forwarded-for below from
 				// the trusted request (Host / X-Forwarded-* / RemoteAddr), and backends
