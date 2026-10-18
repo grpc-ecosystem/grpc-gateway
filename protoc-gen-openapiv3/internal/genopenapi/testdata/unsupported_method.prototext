@@ -67,6 +67,19 @@ proto_file: {
         }
       }
     }
+    method: {
+      name: "PeekDocument"
+      input_type: ".document.v1.GetDocumentRequest"
+      output_type: ".document.v1.Document"
+      options: {
+        [google.api.http]: {
+          custom: {
+            kind: "get"
+            path: "/v1/documents/{name}:peek"
+          }
+        }
+      }
+    }
   }
   options: {
     go_package: "github.com/example/document/v1;documentv1"

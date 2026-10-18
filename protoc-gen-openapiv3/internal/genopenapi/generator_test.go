@@ -1116,7 +1116,8 @@ func TestGenerate_NestedPathParam(t *testing.T) {
 
 // TestGenerate_UnsupportedMethod checks that a binding using a custom HTTP
 // method that OpenAPI 3.1 cannot describe (here "LOCK") is skipped, instead
-// of leaving an empty path item and unused component schemas behind.
+// of leaving an empty path item and unused component schemas behind. Method
+// names are case-sensitive, so a custom "get" kind is skipped as well.
 func TestGenerate_UnsupportedMethod(t *testing.T) {
 	t.Parallel()
 
