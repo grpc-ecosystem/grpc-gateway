@@ -2,6 +2,7 @@ package genopenapi
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -35,10 +36,7 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 
 	op.Parameters = buildParameters(b, m, binding, pathParams)
 
-	// The registry rejects a body on GET, and on DELETE unless
-	// allow_delete_body is set, so any binding with a body gets one here,
-	// including custom methods.
-	if binding.Body != nil {
+	if needsRequestBody(binding.HTTPMethod, b.reg.IsAllowDeleteBody()) && binding.Body != nil {
 		op.RequestBody = buildRequestBody(b, m, binding)
 	}
 
@@ -430,6 +428,18 @@ func operationID(svc *descriptor.Service, m *descriptor.Method, bindingIdx int) 
 		id = fmt.Sprintf("%s_%d", id, bindingIdx)
 	}
 	return id
+}
+
+// needsRequestBody reports whether a binding with the given HTTP method gets
+// a request body. DELETE only does when allow_delete_body is set.
+func needsRequestBody(method string, allowDeleteBody bool) bool {
+	switch method {
+	case http.MethodPost, http.MethodPut, http.MethodPatch:
+		return true
+	case http.MethodDelete:
+		return allowDeleteBody
+	}
+	return false
 }
 
 func isPathParam(field *descriptor.Field, params []descriptor.Parameter) bool {

@@ -96,3 +96,27 @@ func TestFieldConsumedByPathParams(t *testing.T) {
 		t.Error("other_field is a real body field and should not be consumed")
 	}
 }
+
+// TestNeedsRequestBody checks that only POST, PUT and PATCH get a request body
+// by default, and that DELETE is added to them only with allow_delete_body.
+func TestNeedsRequestBody(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		method          string
+		allowDeleteBody bool
+		want            bool
+	}{
+		{method: "POST", want: true},
+		{method: "PUT", want: true},
+		{method: "PATCH", want: true},
+		{method: "GET", allowDeleteBody: true, want: false},
+		{method: "DELETE", want: false},
+		{method: "DELETE", allowDeleteBody: true, want: true},
+		{method: "OPTIONS", allowDeleteBody: true, want: false},
+	}
+	for _, tc := range cases {
+		if got := needsRequestBody(tc.method, tc.allowDeleteBody); got != tc.want {
+			t.Errorf("needsRequestBody(%q, %t) = %t, want %t", tc.method, tc.allowDeleteBody, got, tc.want)
+		}
+	}
+}

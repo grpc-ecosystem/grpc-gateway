@@ -565,6 +565,11 @@ func (r *Registry) SetAllowDeleteBody(allow bool) {
 	r.allowDeleteBody = allow
 }
 
+// IsAllowDeleteBody reports whether http delete methods may have a body.
+func (r *Registry) IsAllowDeleteBody() bool {
+	return r.allowDeleteBody
+}
+
 // SetAllowMerge controls whether generation one OpenAPI file out of multiple protos
 func (r *Registry) SetAllowMerge(allow bool) {
 	r.allowMerge = allow

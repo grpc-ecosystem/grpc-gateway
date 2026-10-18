@@ -42,20 +42,6 @@ proto_file: {
         }
       }
     }
-    method: {
-      name: "CheckBook"
-      input_type: ".book.v1.DeleteBookRequest"
-      output_type: ".book.v1.Book"
-      options: {
-        [google.api.http]: {
-          custom: {
-            kind: "OPTIONS"
-            path: "/v1/books/{name}"
-          }
-          body: "*"
-        }
-      }
-    }
   }
   options: {
     go_package: "github.com/example/book/v1;bookv1"
