@@ -162,6 +162,52 @@ func TestMuxServeHTTP(t *testing.T) {
 			reqMethod: "POST",
 			reqPath:   "/foo",
 			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			},
+			respStatus:  http.StatusOK,
+			respContent: "GET /foo",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "PUT",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+			},
+			respStatus: http.StatusNotImplemented,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded; charset",
+			},
+			respStatus: http.StatusNotImplemented,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			respStatus:                http.StatusNotImplemented,
@@ -206,6 +252,28 @@ func TestMuxServeHTTP(t *testing.T) {
 			reqPath:   "/foo",
 			headers: map[string]string{
 				"Content-Type":           "application/x-www-form-urlencoded",
+				"X-HTTP-Method-Override": "GET",
+			},
+			respStatus:  http.StatusOK,
+			respContent: "GET /foo",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type":           "application/x-www-form-urlencoded; charset=UTF-8",
 				"X-HTTP-Method-Override": "GET",
 			},
 			respStatus:  http.StatusOK,
