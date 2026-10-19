@@ -1051,6 +1051,46 @@ func TestServeMux_HandleMiddlewares(t *testing.T) {
 	}
 }
 
+func TestServeMux_HealthEndpointMiddlewaresOptionOrder(t *testing.T) {
+	client := &dummyHealthCheckClient{status: grpc_health_v1.HealthCheckResponse_SERVING}
+	for _, tt := range []struct {
+		name         string
+		healthBefore bool
+	}{
+		{name: "health endpoint before middlewares", healthBefore: true},
+		{name: "health endpoint after middlewares", healthBefore: false},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			var calls []int
+			mw := func(n int) runtime.Middleware {
+				return func(next runtime.HandlerFunc) runtime.HandlerFunc {
+					return func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+						calls = append(calls, n)
+						next(w, r, pathParams)
+					}
+				}
+			}
+			opts := []runtime.ServeMuxOption{runtime.WithMiddlewares(mw(1)), runtime.WithMiddlewares(mw(2))}
+			if tt.healthBefore {
+				opts = append([]runtime.ServeMuxOption{runtime.WithHealthzEndpoint(client)}, opts...)
+			} else {
+				opts = append(opts, runtime.WithHealthzEndpoint(client))
+			}
+			mux := runtime.NewServeMux(opts...)
+
+			rr := httptest.NewRecorder()
+			mux.ServeHTTP(rr, httptest.NewRequest(http.MethodGet, "/healthz", nil))
+
+			if rr.Code != http.StatusOK {
+				t.Errorf("rr.Code = %d; want %d", rr.Code, http.StatusOK)
+			}
+			if want := []int{1, 2}; !reflect.DeepEqual(calls, want) {
+				t.Errorf("middleware calls = %v; want %v", calls, want)
+			}
+		})
+	}
+}
+
 func TestServeMux_InjectPattern(t *testing.T) {
 	mux := runtime.NewServeMux()
 	err := mux.HandlePath("GET", "/test", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {

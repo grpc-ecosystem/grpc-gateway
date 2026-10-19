@@ -400,15 +400,28 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		serveMux.outgoingTrailerMatcher = defaultOutgoingTrailerMatcher
 	}
 
+	// Options such as WithHealthEndpointAt register handlers while the options
+	// are still being applied, so they were wrapped with only the middlewares
+	// configured before them. Rewrap them now that all middlewares are known.
+	if len(serveMux.middlewares) > 0 {
+		chain := chainMiddlewares(serveMux.middlewares)
+		for _, handlers := range serveMux.handlers {
+			for i := range handlers {
+				handlers[i].h = chain(handlers[i].raw)
+			}
+		}
+	}
+
 	return serveMux
 }
 
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
+	raw := h
 	if len(s.middlewares) > 0 {
 		h = chainMiddlewares(s.middlewares)(h)
 	}
-	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
+	s.handlers[meth] = append([]handler{{pat: pat, h: h, raw: raw}}, s.handlers[meth]...)
 }
 
 // HandlePath allows users to configure custom path handlers.
@@ -614,6 +627,8 @@ func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
 type handler struct {
 	pat Pattern
 	h   HandlerFunc
+	// raw is h before middlewares were applied.
+	raw HandlerFunc
 }
 
 func (s *ServeMux) handleHandler(h handler, w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
