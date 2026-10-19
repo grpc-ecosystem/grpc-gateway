@@ -453,8 +453,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_strfmt",
         importpath = "github.com/go-openapi/strfmt",
-        sum = "h1:cyf4J5Wjpd6bFpAs44MF8PsbWF/mWXhn82Ck/hgQZgw=",
-        version = "v0.27.3",
+        sum = "h1:E1xsvHb8R9vsuYru4TP2PVVTv9AIgSFAUACUZrFQfCI=",
+        version = "v0.27.4",
     )
     go_repository(
         name = "com_github_go_openapi_swag",
