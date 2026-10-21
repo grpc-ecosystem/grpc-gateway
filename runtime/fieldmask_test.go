@@ -29,6 +29,18 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			expected: newFieldMask(),
 		},
 		{
+			name:     "empty object",
+			msg:      &examplepb.ABitOfEverything{},
+			input:    `{}`,
+			expected: newFieldMask(),
+		},
+		{
+			name:     "empty object with whitespace",
+			msg:      &examplepb.ABitOfEverything{},
+			input:    " {} \n",
+			expected: newFieldMask(),
+		},
+		{
 			name:     "EmptyMessage",
 			msg:      &examplepb.ABitOfEverything{},
 			input:    `{"oneof_empty": {}}`,
