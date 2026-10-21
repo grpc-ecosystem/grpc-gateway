@@ -405,8 +405,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_analysis",
         importpath = "github.com/go-openapi/analysis",
-        sum = "h1:sNvbAGCJqUTqIAodr9IVqJMmuZas3YS9ms1dGK9yiJ4=",
-        version = "v1.0.0",
+        sum = "h1:JTEyujgl4GyFj8pbMUY2yZx5ak1Ozt/DaqzQjQBnBWM=",
+        version = "v1.0.1",
     )
     go_repository(
         name = "com_github_go_openapi_errors",
@@ -417,14 +417,14 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_jsonpointer",
         importpath = "github.com/go-openapi/jsonpointer",
-        sum = "h1:2KxywRmNwJkT/FMBa3iRNHEaAxSJvjqoufQZy3au1Mg=",
-        version = "v1.0.1",
+        sum = "h1:NbW7xT2b+l7x+JefiPGDsZWsrLk1ogrz4AHK1TTzMt8=",
+        version = "v1.0.2",
     )
     go_repository(
         name = "com_github_go_openapi_jsonreference",
         importpath = "github.com/go-openapi/jsonreference",
-        sum = "h1:oS4et8FOf3p3UQxEo4Xt0esijmBUM+F259Xl72OSZsc=",
-        version = "v1.0.2",
+        sum = "h1:5rDbq+JsjCv6/nUDDJt83nLZoADI4w03uvHXer+4aYQ=",
+        version = "v1.0.3",
     )
     go_repository(
         name = "com_github_go_openapi_loads",
@@ -555,8 +555,8 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_validate",
         importpath = "github.com/go-openapi/validate",
-        sum = "h1:dFsYCLVUQUL6Vi2lQSexgwmCXDuHe7eWRDhQxkE+xYA=",
-        version = "v1.0.0",
+        sum = "h1:Z337eNvBb5KhZiKtjBKfpk2ZHPI8otENKyp/I60XVos=",
+        version = "v1.0.1",
     )
     go_repository(
         name = "com_github_go_playground_locales",
