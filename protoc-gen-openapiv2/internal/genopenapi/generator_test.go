@@ -2810,6 +2810,107 @@ func TestGenerateCrossPackageMessageReference(t *testing.T) {
 	}
 }
 
+// TestGenerateCustomRefToOtherPackage verifies that a message in another proto
+// package, referenced only through a custom `ref` in an openapiv2_operation
+// option, is resolved and emitted as a definition.
+func TestGenerateCustomRefToOtherPackage(t *testing.T) {
+	t.Parallel()
+
+	const commonProto = `
+	file_to_generate: "common/errors.proto"
+	proto_file: {
+		name: "common/errors.proto"
+		package: "common"
+		message_type: {
+			name: "ErrorDetail"
+			field: {
+				name: "message"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				json_name: "message"
+			}
+		}
+		options: {
+			go_package: "example.com/repro/common"
+		}
+	}`
+	const serviceProto = `
+	file_to_generate: "service.proto"
+	proto_file: {
+		name: "service.proto"
+		package: "example"
+		dependency: "common/errors.proto"
+		message_type: {
+			name: "EchoRequest"
+		}
+		message_type: {
+			name: "EchoResponse"
+		}
+		service: {
+			name: "EchoService"
+			method: {
+				name: "Echo"
+				input_type: ".example.EchoRequest"
+				output_type: ".example.EchoResponse"
+				options: {
+					[google.api.http]: {
+						get: "/v1/echo"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "example.com/repro/example"
+		}
+	}`
+
+	var common, svc pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(commonProto), &common); err != nil {
+		t.Fatalf("failed to unmarshal common proto: %s", err)
+	}
+	if err := prototext.Unmarshal([]byte(serviceProto), &svc); err != nil {
+		t.Fatalf("failed to unmarshal service proto: %s", err)
+	}
+
+	meth := svc.ProtoFile[0].Service[0].Method[0]
+	proto.SetExtension(meth.Options, openapi_options.E_Openapiv2Operation, &openapi_options.Operation{
+		Responses: map[string]*openapi_options.Response{
+			"400": {
+				Description: "Bad request",
+				Schema: &openapi_options.Schema{
+					JsonSchema: &openapi_options.JSONSchema{Ref: ".common.ErrorDetail"},
+				},
+			},
+		},
+	})
+
+	svc.ProtoFile = append(common.ProtoFile, svc.ProtoFile...)
+	svc.FileToGenerate = []string{"service.proto"}
+
+	resp := requireGenerate(t, &svc, genopenapi.FormatJSON, false, false, false)
+	if len(resp) != 1 {
+		t.Fatalf("expected 1 response file, got %d", len(resp))
+	}
+
+	var doc map[string]interface{}
+	if err := yaml.Unmarshal([]byte(resp[0].GetContent()), &doc); err != nil {
+		t.Fatalf("failed to parse OpenAPI JSON: %v", err)
+	}
+	definitions, ok := doc["definitions"].(map[string]interface{})
+	if !ok {
+		t.Fatal("expected definitions in OpenAPI output")
+	}
+	if _, ok := definitions["commonErrorDetail"]; !ok {
+		t.Errorf("expected definition commonErrorDetail, got %v", getKeys(definitions))
+	}
+	for ref := range collectRefs(doc) {
+		if !strings.HasPrefix(ref, "#/definitions/") {
+			t.Errorf("unresolved $ref %q", ref)
+		}
+	}
+}
+
 func TestDeprecateFieldsAndMethods(t *testing.T) {
 	t.Parallel()
 
