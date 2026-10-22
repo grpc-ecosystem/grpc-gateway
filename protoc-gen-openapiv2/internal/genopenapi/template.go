@@ -21,6 +21,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
@@ -1293,6 +1294,8 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy s
 var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.-]*)([^}]*)}")
 
 // templateToParts splits a URL template into path segments for use by `partsToOpenAPIPath` and `partsToRegexpMap`.
+// The template is parsed with the same parser that protoc-gen-grpc-gateway uses, so both generators agree on
+// how a template is split into segments and verb.
 //
 // Parameters:
 //   - path:	The URL template as defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
@@ -1302,103 +1305,42 @@ var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.-]*)([^}]*)}")
 //
 // Returns:
 //
-//	The path segments of the URL template.
+//	The path segments of the URL template. The first part is always empty (the leading "/"), and if the
+//	template has a verb, the last part is the verb prefixed with ":".
 func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) []string {
-	// It seems like the right thing to do here is to just use
-	// strings.Split(path, "/") but that breaks badly when you hit a url like
-	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
-	// Instead do the right thing and write a small pushdown (counter) automata
-	// for it.
-	var parts []string
-	depth := 0
-	buffer := ""
-	for i, char := range path {
-		switch char {
-		case '{':
-			// Push on the stack
-			depth++
-			buffer += string(char)
-		case '}':
-			if depth == 0 {
-				panic("Encountered } without matching { before it.")
-			}
-			// Pop from the stack
-			depth--
-			if !reg.GetUseJSONNamesForFields() {
-				buffer += string(char)
-				continue
-			}
-			paramNameProto := strings.SplitN(buffer[1:], "=", 2)[0]
-			paramNameCamelCase := lowerCamelCase(paramNameProto, fields, msgs)
-			buffer = strings.Join([]string{"{", paramNameCamelCase, buffer[len(paramNameProto)+1:], "}"}, "")
-		case '/':
-			if depth == 0 {
-				parts = append(parts, buffer)
-				buffer = ""
-				// Since the stack was empty when we hit the '/' we are done with this
-				// section.
-				continue
-			}
-			buffer += string(char)
-		case ':':
-			if depth == 0 {
-				// Only treat this as a verb if we're at the end of the path or
-				// if there are no more path segments (only more literals after the colon)
-				remainingPath := path[i:]
-				if !strings.Contains(remainingPath, "/") {
-					parts = append(parts, buffer)
-					verbSegment := remainingPath
-					if reg.GetUseJSONNamesForFields() {
-						verbSegment = processParametersInSegment(verbSegment, fields, msgs)
-					}
-					parts = append(parts, verbSegment)
-					return parts
-				}
-			}
-			buffer += string(char)
-		default:
-			buffer += string(char)
-		}
+	segments, verb, err := httprule.SplitTemplate(path)
+	if err != nil {
+		// Path templates have already been validated with the same parser
+		// when the descriptor registry was loaded.
+		panic(fmt.Sprintf("invalid path template %q: %v", path, err))
 	}
 
-	// Now append the last element to parts
-	parts = append(parts, buffer)
-
+	parts := []string{""}
+	if len(segments) == 0 {
+		// The root path "/".
+		parts = append(parts, "")
+	}
+	for _, segment := range segments {
+		if segment.FieldPath == "" {
+			parts = append(parts, segment.Value)
+			continue
+		}
+		name := segment.FieldPath
+		if reg.GetUseJSONNamesForFields() {
+			name = lowerCamelCase(name, fields, msgs)
+		}
+		if segment.Value == "*" {
+			// "{name}" is equivalent to "{name=*}".
+			parts = append(parts, "{"+name+"}")
+			continue
+		}
+		parts = append(parts, "{"+name+"="+segment.Value+"}")
+	}
+	// A trailing ":" is parsed as an empty verb; keep it in the path.
+	if verb != "" || strings.HasSuffix(path, ":") {
+		parts = append(parts, ":"+verb)
+	}
 	return parts
-}
-
-// processParametersInSegment processes a path segment (like ":verb/{param}") to convert
-// parameter names to camelCase while preserving the overall structure
-func processParametersInSegment(segment string, fields []*descriptor.Field, msgs []*descriptor.Message) string {
-	result := segment
-	depth := 0
-	var paramStart int
-	for i, char := range segment {
-		switch char {
-		case '{':
-			if depth == 0 {
-				paramStart = i
-			}
-			depth++
-		case '}':
-			depth--
-			if depth == 0 {
-				paramContent := segment[paramStart+1 : i]
-				paramNameProto := strings.SplitN(paramContent, "=", 2)[0]
-				paramNameCamelCase := lowerCamelCase(paramNameProto, fields, msgs)
-
-				oldParam := "{" + paramContent + "}"
-				newParam := "{" + paramNameCamelCase
-				if strings.Contains(paramContent, "=") {
-					newParam += paramContent[len(paramNameProto):]
-				}
-				newParam += "}"
-
-				result = strings.Replace(result, oldParam, newParam, 1)
-			}
-		}
-	}
-	return result
 }
 
 // partsToOpenAPIPath converts each path part of the form /path/{string_value=strprefix/*} which is defined in
