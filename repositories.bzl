@@ -1191,8 +1191,8 @@ def go_repositories():
     go_repository(
         name = "com_github_oapi_codegen_runtime",
         importpath = "github.com/oapi-codegen/runtime",
-        sum = "h1:t7358VYPvNbWJ9gdAkIK/smVeHpBf6yp8VTsaZsb/7k=",
-        version = "v1.7.0",
+        sum = "h1:RJzEgQSJQADEPaG1cYuSCKYai/cCVRE2xnkrqhJs/3c=",
+        version = "v1.8.0",
     )
 
     go_repository(

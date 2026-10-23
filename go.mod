@@ -9,7 +9,7 @@ require (
 	github.com/go-openapi/swag v0.29.2
 	github.com/go-openapi/validate v1.0.1
 	github.com/google/go-cmp v0.7.0
-	github.com/oapi-codegen/runtime v1.7.0
+	github.com/oapi-codegen/runtime v1.8.0
 	github.com/rogpeppe/fastuuid v1.2.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.72.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.72.0
