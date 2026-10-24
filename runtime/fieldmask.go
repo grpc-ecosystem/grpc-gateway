@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"sort"
+	"strings"
 
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -132,25 +133,57 @@ func buildPathsBlindly(name string, in interface{}) []string {
 		return []string{name}
 	}
 
+	// A google.protobuf.Struct/Value field carries arbitrary client JSON, so
+	// its nesting depth is attacker controlled. Keep each queue entry pointing
+	// at its parent and its own segment rather than carrying the full path
+	// string, so a path is concatenated once at the leaf (O(depth)) instead of
+	// rebuilding the growing prefix at every level (O(depth^2)). A deeply
+	// nested object otherwise makes this allocate quadratically in the depth
+	// while producing only a handful of paths.
+	type pathNode struct {
+		parent  *pathNode
+		segment string
+	}
+	type queueItem struct {
+		path *pathNode
+		node map[string]interface{}
+	}
+	// joinPath reconstructs a dotted path by walking from a leaf back to the
+	// root, so each path is materialized exactly once.
+	joinPath := func(leaf *pathNode) string {
+		var segments []string
+		n := 0
+		for p := leaf; p != nil; p = p.parent {
+			segments = append(segments, p.segment)
+			if p != leaf {
+				n++ // separating dot
+			}
+			n += len(p.segment)
+		}
+		var b strings.Builder
+		b.Grow(n)
+		for i := len(segments) - 1; i >= 0; i-- {
+			if i != len(segments)-1 {
+				b.WriteByte('.')
+			}
+			b.WriteString(segments[i])
+		}
+		return b.String()
+	}
+
 	var paths []string
-	queue := []fieldMaskPathItem{{path: name, node: m}}
+	queue := []queueItem{{path: &pathNode{segment: name}, node: m}}
 	for len(queue) > 0 {
 		cur := queue[0]
 		queue = queue[1:]
 
-		m, ok := cur.node.(map[string]interface{})
-		if !ok {
-			// This should never happen since we should always check that we only add
-			// nodes of type map[string]interface{} to the queue.
-			continue
-		}
-		for k, v := range m {
+		for k, v := range cur.node {
+			child := &pathNode{parent: cur.path, segment: k}
 			if mi, ok := v.(map[string]interface{}); ok && len(mi) > 0 {
-				queue = append(queue, fieldMaskPathItem{path: cur.path + "." + k, node: mi})
+				queue = append(queue, queueItem{path: child, node: mi})
 			} else {
 				// No populated object remains, so there are no more levels to descend.
-				curPath := cur.path + "." + k
-				paths = append(paths, curPath)
+				paths = append(paths, joinPath(child))
 			}
 		}
 	}
