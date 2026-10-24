@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"maps"
+	"net/http"
 	"slices"
 	"sort"
 	"strconv"
@@ -271,23 +272,39 @@ type PathItem struct {
 // SetOperation places op under the slot for the given HTTP method.
 func (p *PathItem) SetOperation(method string, op *Operation) {
 	switch method {
-	case "GET":
+	case http.MethodGet:
 		p.Get = op
-	case "PUT":
+	case http.MethodPut:
 		p.Put = op
-	case "POST":
+	case http.MethodPost:
 		p.Post = op
-	case "DELETE":
+	case http.MethodDelete:
 		p.Delete = op
-	case "OPTIONS":
+	case http.MethodOptions:
 		p.Options = op
-	case "HEAD":
+	case http.MethodHead:
 		p.Head = op
-	case "PATCH":
+	case http.MethodPatch:
 		p.Patch = op
-	case "TRACE":
+	case http.MethodTrace:
 		p.Trace = op
 	}
+}
+
+// isPathItemMethod reports whether a PathItem has an operation slot for the
+// given HTTP method. OpenAPI 3.1 cannot describe any other method, such as a
+// custom HttpRule kind like "REPORT".
+//
+// The match is case-sensitive, like HTTP methods themselves (RFC 9110,
+// section 9.1). The gateway only serves a custom kind for requests whose
+// method matches it exactly, so a kind like "get" is not a GET operation.
+func isPathItemMethod(method string) bool {
+	switch method {
+	case http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete,
+		http.MethodOptions, http.MethodHead, http.MethodPatch, http.MethodTrace:
+		return true
+	}
+	return false
 }
 
 // Operation describes a single API operation on a path.
