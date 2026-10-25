@@ -266,7 +266,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 		if k, ok := duplicateObjectKey(raw); ok {
 			return fmt.Errorf("duplicate map key %q", k)
 		}
-		seen := make(map[interface{}]struct{}, len(m))
+		seen := make(map[any]struct{}, len(m))
 		for k, v := range m {
 			result := conv.Call([]reflect.Value{reflect.ValueOf(k)})
 			if err := result[1].Interface(); err != nil {
