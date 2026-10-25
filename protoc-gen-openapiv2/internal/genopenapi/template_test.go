@@ -5081,12 +5081,12 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 		{"/test1/{test1_id1_id2}", "/test1/{test1Id1Id2}"},
 		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1Id1Id2}/test2/{test2Id3Id4}"},
 		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1Id1Id2}/{test2Id3Id4}"},
-		{"test/{a}", "test/{a}"},
-		{"test/{ab}", "test/{ab}"},
-		{"test/{a_a}", "test/{aA}"},
-		{"test/{ab_c}", "test/{abC}"},
-		{"test/{json_name}", "test/{jsonNAME}"},
-		{"test/{field_abc.field_newName}", "test/{fieldAbc.RESERVEDJSONNAME}"},
+		{"/test/{a}", "/test/{a}"},
+		{"/test/{ab}", "/test/{ab}"},
+		{"/test/{a_a}", "/test/{aA}"},
+		{"/test/{ab_c}", "/test/{abC}"},
+		{"/test/{json_name}", "/test/{jsonNAME}"},
+		{"/test/{field_abc.field_newName}", "/test/{fieldAbc.RESERVEDJSONNAME}"},
 		{"/item/search:item/{item_no_query}", "/item/search:item/{itemNoQuery}"},
 	}
 	reg := descriptor.NewRegistry()
@@ -5111,11 +5111,11 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 		{"/test1/{test1_id1_id2}", "/test1/{test1_id1_id2}"},
 		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1_id1_id2}/test2/{test2_id3_id4}"},
 		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1_id1_id2}/{test2_id3_id4}"},
-		{"test/{a}", "test/{a}"},
-		{"test/{ab}", "test/{ab}"},
-		{"test/{a_a}", "test/{a_a}"},
-		{"test/{json_name}", "test/{json_name}"},
-		{"test/{field_abc.field_newName}", "test/{field_abc.field_newName}"},
+		{"/test/{a}", "/test/{a}"},
+		{"/test/{ab}", "/test/{ab}"},
+		{"/test/{a_a}", "/test/{a_a}"},
+		{"/test/{json_name}", "/test/{json_name}"},
+		{"/test/{field_abc.field_newName}", "/test/{field_abc.field_newName}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -5145,7 +5145,6 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 		{"/{test=prefix/*}", "/{test}"},
 		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
-		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 		{"/{name=prefix/*}", "/{name}"},
 		{"/{name=prefix1/*/prefix2/*}", "/{name}"},
 		{"/{user.name=prefix/*}", "/{user.name}"},
@@ -5156,8 +5155,10 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 		{"/{user.name=prefix/*}:customMethod", "/{user.name}:customMethod"},
 		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name}:customMethod"},
 		{"/{parent=prefix/*}/children:customMethod", "/{parent}/children:customMethod"},
-		{"/{name=prefix/*}/:customMethod", "/{name}/:customMethod"},
-		{"/foo/:bar", "/foo/:bar"},
+		{"/", "/"},
+		{"/:customMethod", "/:customMethod"},
+		{"/v1/a:b:customMethod", "/v1/a:b:customMethod"},
+		{"/v1/{name=**}", "/v1/{name}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -5216,12 +5217,11 @@ func TestTemplateToOpenAPIPathExpandSlashed(t *testing.T) {
 	}{
 		{"/v1/{name=projects/*/documents/*}:exportResults", "/v1/projects/{project}/documents/{document}:exportResults", getParameters([]string{"name"}), []string{"project", "document"}, true},
 		{"/test/{name=*}", "/test/{name}", getParameters([]string{"name"}), []string{"name"}, true},
-		{"/test/{name=*}/", "/test/{name}/", getParameters([]string{"name"}), []string{"name"}, true},
-		{"/test/{name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"name"}), []string{"testCase"}, true},
-		{"/test/{name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"name"}), []string{"test_case"}, false},
-		{"/test/{name=test-cases/*}/", "/test/test-cases/{test-case}/", getParameters([]string{"name"}), []string{"test-case"}, false},
-		{"/test/{test_type.name=test_cases/*}/", "/test/test_cases/{testCase}/", getParameters([]string{"test_type.name"}), []string{"testCase"}, true},
-		{"/test/{test_type.name=test_cases/*}/", "/test/test_cases/{test_case}/", getParameters([]string{"test_type.name"}), []string{"test_case"}, false},
+		{"/test/{name=test_cases/*}", "/test/test_cases/{testCase}", getParameters([]string{"name"}), []string{"testCase"}, true},
+		{"/test/{name=test_cases/*}", "/test/test_cases/{test_case}", getParameters([]string{"name"}), []string{"test_case"}, false},
+		{"/test/{name=test-cases/*}", "/test/test-cases/{test-case}", getParameters([]string{"name"}), []string{"test-case"}, false},
+		{"/test/{test_type.name=test_cases/*}", "/test/test_cases/{testCase}", getParameters([]string{"test_type.name"}), []string{"testCase"}, true},
+		{"/test/{test_type.name=test_cases/*}", "/test/test_cases/{test_case}", getParameters([]string{"test_type.name"}), []string{"test_case"}, false},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetExpandSlashedPathPatterns(true)
@@ -5245,7 +5245,7 @@ func TestExpandedPathParametersStringType(t *testing.T) {
 	tests := []struct {
 		input string
 	}{
-		{"/test/{name=test_cases/*}/"}, {"/v1/{name=projects/*/documents/*}:exportResults"},
+		{"/test/{name=test_cases/*}"}, {"/v1/{name=projects/*/documents/*}:exportResults"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetExpandSlashedPathPatterns(true)
@@ -5391,6 +5391,7 @@ func TestFQMNToRegexpMap(t *testing.T) {
 	}{
 		{"/test", map[string]string{}},
 		{"/{test}", map[string]string{}},
+		{"/{test=*}", map[string]string{}},
 		{"/{test" + pathParamUniqueSuffixDeliminator + "1=prefix/*}", map[string]string{"test" + pathParamUniqueSuffixDeliminator + "1": "prefix/[^/]+"}},
 		{"/{test=prefix/that/has/multiple/parts/to/it/**}", map[string]string{"test": "prefix/that/has/multiple/parts/to/it/.+"}},
 		{"/{test1=organizations/*}/{test2=divisions/*}", map[string]string{
@@ -5418,7 +5419,6 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 		{"/{test=prefix/*}", "/{test}"},
 		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
-		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 		{"/v1/{name=tests/*}/tests", "/v1/{name}/tests"},
 	}
 	reg := descriptor.NewRegistry()

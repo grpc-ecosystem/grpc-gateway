@@ -463,3 +463,62 @@ func TestParseVerb(t *testing.T) {
 		}
 	}
 }
+
+func TestSplitTemplate(t *testing.T) {
+	for _, spec := range []struct {
+		tmpl     string
+		segments []Segment
+		verb     string
+	}{
+		{
+			tmpl: "/",
+		},
+		{
+			tmpl: "/:verb",
+			verb: "verb",
+		},
+		{
+			tmpl: "/v1/a:b:verb",
+			segments: []Segment{
+				{Value: "v1"},
+				{Value: "a:b"},
+			},
+			verb: "verb",
+		},
+		{
+			tmpl: "/v1/*/**",
+			segments: []Segment{
+				{Value: "v1"},
+				{Value: "*"},
+				{Value: "**"},
+			},
+		},
+		{
+			tmpl: "/v1/{name}/{parent.name=projects/*/topics/**}:verb:with:colons",
+			segments: []Segment{
+				{Value: "v1"},
+				{FieldPath: "name", Value: "*"},
+				{FieldPath: "parent.name", Value: "projects/*/topics/**"},
+			},
+			verb: "verb:with:colons",
+		},
+	} {
+		segments, verb, err := SplitTemplate(spec.tmpl)
+		if err != nil {
+			t.Errorf("SplitTemplate(%q) failed with %v; want success", spec.tmpl, err)
+			continue
+		}
+		if !reflect.DeepEqual(segments, spec.segments) {
+			t.Errorf("SplitTemplate(%q) segments = %#v; want %#v", spec.tmpl, segments, spec.segments)
+		}
+		if verb != spec.verb {
+			t.Errorf("SplitTemplate(%q) verb = %q; want %q", spec.tmpl, verb, spec.verb)
+		}
+	}
+
+	for _, tmpl := range []string{"", "v1", "/v1/", "/v1/:verb", "/v1/{name"} {
+		if _, _, err := SplitTemplate(tmpl); err == nil {
+			t.Errorf("SplitTemplate(%q) succeeded; want an error", tmpl)
+		}
+	}
+}
