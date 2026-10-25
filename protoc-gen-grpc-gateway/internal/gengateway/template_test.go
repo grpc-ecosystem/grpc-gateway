@@ -1,6 +1,7 @@
 package gengateway
 
 import (
+	"go/format"
 	"strings"
 	"testing"
 
@@ -99,6 +100,66 @@ func TestApplyTemplateHeader(t *testing.T) {
 	}
 	if want := `mux.Handle(http.MethodGet,`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+}
+
+func TestApplyTemplateCustomMethod(t *testing.T) {
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Lock"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			MessageType: []*descriptorpb.DescriptorProto{msgdesc},
+			Service:     []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "LOCK",
+								PathTmpl:   compilePath(t, "/v1/example:lock"),
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+	// Both the client and the server registration functions handle the binding.
+	if want := `mux.Handle("LOCK",`; strings.Count(got, want) != 2 {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s twice", file, got, want)
+	}
+	if _, err := format.Source([]byte(got)); err != nil {
+		t.Errorf("format.Source(applyTemplate(%#v)) failed with %v; want success", file, err)
 	}
 }
 

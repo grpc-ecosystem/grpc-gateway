@@ -365,7 +365,11 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 			return p.OpaqueSetterExpr(msgExpr)
 		},
 		"toHTTPMethod": func(method string) string {
-			return httpMethods[method]
+			if m, ok := httpMethods[method]; ok {
+				return m
+			}
+			// Custom methods such as "LOCK" have no net/http constant.
+			return fmt.Sprintf("%q", method)
 		},
 	}
 
