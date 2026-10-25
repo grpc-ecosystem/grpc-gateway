@@ -98,10 +98,10 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 					queue = append(queue, child)
 				}
 			}
-		case ok && len(m) == 0:
-			fallthrough
 		case len(item.path) > 0:
-			// otherwise, it's a leaf node so print its path
+			// otherwise, it's a leaf node (an empty object counts as one) so
+			// print its path. The root has no path: an empty body such as {}
+			// sets nothing, and an empty path is not a valid FieldMask path.
 			fm.Paths = append(fm.Paths, item.path)
 		}
 	}
