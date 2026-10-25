@@ -3,6 +3,7 @@ package runtime
 import (
 	"bytes"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -307,6 +308,37 @@ func TestFieldMaskErrors(t *testing.T) {
 				t.Fatalf("errors did not match: got %q, wanted %q", err, tc.expectedErr)
 			}
 		})
+	}
+}
+
+// TestFieldMaskFromRequestBodyDeeplyNestedStruct checks that a deeply nested
+// google.protobuf.Struct value, whose nesting depth is attacker controlled,
+// still yields the single expected leaf path. It also guards against the
+// quadratic path building that previously allocated on the order of depth^2.
+func TestFieldMaskFromRequestBodyDeeplyNestedStruct(t *testing.T) {
+	const depth = 1000
+	var sb strings.Builder
+	sb.WriteString(`{"struct_field":`)
+	for i := 0; i < depth; i++ {
+		sb.WriteString(`{"a":`)
+	}
+	sb.WriteString(`"leaf"`)
+	sb.WriteString(strings.Repeat("}", depth))
+	sb.WriteString("}")
+
+	fm, err := FieldMaskFromRequestBody(bytes.NewReader([]byte(sb.String())), &examplepb.NonStandardMessage{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := "struct_field" + strings.Repeat(".a", depth)
+	expected := newFieldMask(want)
+	if !cmp.Equal(fm.GetPaths(), expected.GetPaths()) {
+		t.Fatalf("unexpected paths: got %d paths, first %q", len(fm.GetPaths()), func() string {
+			if len(fm.GetPaths()) > 0 {
+				return fm.GetPaths()[0]
+			}
+			return ""
+		}())
 	}
 }
 
