@@ -5438,6 +5438,19 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 	}
 }
 
+func TestListValueSchemaAllowsAnyItems(t *testing.T) {
+	// ListValue elements can be any JSON value, so the items schema must not
+	// restrict them to objects (see #3414).
+	schema := openapiSchemaObject{schemaCore: wktSchemas[".google.protobuf.ListValue"]}
+	got, err := json.Marshal(schema)
+	if err != nil {
+		t.Fatalf("json.Marshal(%#v) failed with %v; want success", schema, err)
+	}
+	if want := `{"type":"array","items":{}}`; string(got) != want {
+		t.Errorf("json.Marshal(ListValue schema) = %s; want %s", got, want)
+	}
+}
+
 func TestSchemaOfField(t *testing.T) {
 	type test struct {
 		field                 *descriptor.Field
@@ -5787,10 +5800,8 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type: "array",
-					Items: &openapiItemsObject{schemaCore: schemaCore{
-						Type: "object",
-					}},
+					Type:  "array",
+					Items: &openapiItemsObject{},
 				},
 			},
 		},

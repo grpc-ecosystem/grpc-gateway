@@ -97,13 +97,11 @@ var wktSchemas = map[string]schemaCore{
 		Type: "object",
 	},
 	".google.protobuf.Value": {},
+	// A ListValue element is any JSON value, like google.protobuf.Value, so
+	// leave the items schema unconstrained.
 	".google.protobuf.ListValue": {
-		Type: "array",
-		Items: (*openapiItemsObject)(&openapiSchemaObject{
-			schemaCore: schemaCore{
-				Type: "object",
-			},
-		}),
+		Type:  "array",
+		Items: &openapiItemsObject{},
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
