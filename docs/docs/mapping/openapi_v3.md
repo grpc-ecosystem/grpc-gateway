@@ -350,6 +350,18 @@ component schema named `google.rpc.Status` with the standard `code`,
 on error paths. Use the `disable_default_errors` plugin option to suppress
 this behaviour when using a custom error handler.
 
+### Server streaming
+
+For server-streaming RPCs, the `grpc-gateway` runtime writes one JSON object
+per message, separated by newlines, with each message wrapped as
+`{"result": ...}`. An error part-way through the stream is written as
+`{"error": ...}` with a `google.rpc.Status` body. The `200` response schema
+describes one of these chunks: an object titled `Stream result of <message>`
+with a `result` property holding the message schema (or the `response_body`
+field's schema) and an `error` property referencing `google.rpc.Status`. The
+`error` property is omitted when `disable_default_errors` is set.
+`google.api.HttpBody` streams are written as raw bytes and are not wrapped.
+
 ## Security schemes
 
 Security schemes are declared once in the file-level `openapiv3_document`
