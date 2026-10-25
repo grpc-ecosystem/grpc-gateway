@@ -146,29 +146,7 @@ func buildPathsBlindly(name string, in interface{}) []string {
 	}
 	type queueItem struct {
 		path *pathNode
-		node map[string]interface{}
-	}
-	// joinPath reconstructs a dotted path by walking from a leaf back to the
-	// root, so each path is materialized exactly once.
-	joinPath := func(leaf *pathNode) string {
-		var segments []string
-		n := 0
-		for p := leaf; p != nil; p = p.parent {
-			segments = append(segments, p.segment)
-			if p != leaf {
-				n++ // separating dot
-			}
-			n += len(p.segment)
-		}
-		var b strings.Builder
-		b.Grow(n)
-		for i := len(segments) - 1; i >= 0; i-- {
-			if i != len(segments)-1 {
-				b.WriteByte('.')
-			}
-			b.WriteString(segments[i])
-		}
-		return b.String()
+		node map[string]any
 	}
 
 	var paths []string
@@ -179,12 +157,27 @@ func buildPathsBlindly(name string, in interface{}) []string {
 
 		for k, v := range cur.node {
 			child := &pathNode{parent: cur.path, segment: k}
-			if mi, ok := v.(map[string]interface{}); ok && len(mi) > 0 {
+			if mi, ok := v.(map[string]any); ok && len(mi) > 0 {
 				queue = append(queue, queueItem{path: child, node: mi})
-			} else {
-				// No populated object remains, so there are no more levels to descend.
-				paths = append(paths, joinPath(child))
+				continue
 			}
+			// No populated object remains, so there are no more levels to
+			// descend. Walk back to the root to materialize the path once.
+			var segments []string
+			n := 0
+			for p := child; p != nil; p = p.parent {
+				segments = append(segments, p.segment)
+				n += len(p.segment) + 1
+			}
+			var b strings.Builder
+			b.Grow(n - 1)
+			for i := len(segments) - 1; i >= 0; i-- {
+				b.WriteString(segments[i])
+				if i > 0 {
+					b.WriteByte('.')
+				}
+			}
+			paths = append(paths, b.String())
 		}
 	}
 	return paths
