@@ -151,6 +151,11 @@ func (b *schemaBuilder) scalarOrRef(field *descriptor.Field) *SchemaOrRef {
 		b.ensureMessageSchema(msg)
 		return NewSchemaRef(schemaName(msg.FQMN()))
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
+		// google.protobuf.NullValue is an enum, but protojson writes it as
+		// a JSON null rather than as its value name.
+		if wkt := wellKnownTypeSchema(field.GetTypeName()); wkt != nil {
+			return &SchemaOrRef{Value: wkt}
+		}
 		enum, err := b.reg.LookupEnum("", field.GetTypeName())
 		if err != nil {
 			grpclog.Infof("protoc-gen-openapiv3: cannot resolve enum %q for field %q: %v; emitting plain string",
