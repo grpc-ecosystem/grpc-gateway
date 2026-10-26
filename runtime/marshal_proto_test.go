@@ -2,6 +2,8 @@ package runtime_test
 
 import (
 	"bytes"
+	"errors"
+	"io"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -87,5 +89,29 @@ func TestProtoEncoderDecodert(t *testing.T) {
 			unencoded,
 			message,
 		)
+	}
+}
+
+func TestProtoDecoderEOF(t *testing.T) {
+	marshaller := runtime.ProtoMarshaller{}
+
+	buffer, err := marshaller.Marshal(message)
+	if err != nil {
+		t.Fatalf("Marshalling returned error: %s", err.Error())
+	}
+	decoder := marshaller.NewDecoder(bytes.NewReader(buffer))
+
+	decoded := &examplepb.ABitOfEverything{}
+	if err := decoder.Decode(decoded); err != nil {
+		t.Fatalf("Decoding returned error: %s", err.Error())
+	}
+	if !proto.Equal(decoded, message) {
+		t.Errorf("Decoded didn't match original message: (original = %v) != (decoded = %v)", message, decoded)
+	}
+
+	// The reader has been drained, so a further Decode must report io.EOF
+	// instead of producing an empty message.
+	if err := decoder.Decode(&examplepb.ABitOfEverything{}); !errors.Is(err, io.EOF) {
+		t.Errorf("Decode on drained reader returned %v, want io.EOF", err)
 	}
 }
