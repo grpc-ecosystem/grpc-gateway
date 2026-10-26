@@ -280,6 +280,30 @@ func TestJSONPbUnmarshalEnumNonProto(t *testing.T) {
 	}
 }
 
+func TestJSONPbUnmarshalMapDuplicateKeyNonProto(t *testing.T) {
+	// A body bound directly to a map field decodes through decodeNonProtoField
+	// rather than protojson. A repeated key there must be rejected the way
+	// protojson rejects it, instead of one of the values being kept silently.
+	var m runtime.JSONPb
+
+	var gotStrings map[string]string
+	if err := m.Unmarshal([]byte(`{"a":"x","a":"y"}`), &gotStrings); err == nil {
+		t.Errorf("m.Unmarshal(duplicate key, map[string]string) = %v; want error", gotStrings)
+	}
+
+	var gotInts map[int32]string
+	if err := m.Unmarshal([]byte(`{"1":"x","01":"y"}`), &gotInts); err == nil {
+		t.Errorf("m.Unmarshal(duplicate key, map[int32]string) = %v; want error", gotInts)
+	}
+
+	var valid map[int32]string
+	if err := m.Unmarshal([]byte(`{"1":"x","2":"y"}`), &valid); err != nil {
+		t.Errorf("m.Unmarshal(distinct keys, map[int32]string) failed with %v; want success", err)
+	} else if len(valid) != 2 || valid[1] != "x" || valid[2] != "y" {
+		t.Errorf("m.Unmarshal(distinct keys, map[int32]string) = %v; want map[1:x 2:y]", valid)
+	}
+}
+
 func TestJSONPbUnmarshalFields(t *testing.T) {
 	var m runtime.JSONPb
 	for _, fixt := range fieldFixtures {
