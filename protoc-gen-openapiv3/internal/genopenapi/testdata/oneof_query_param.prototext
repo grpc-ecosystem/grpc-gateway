@@ -1,0 +1,180 @@
+file_to_generate: "oneofquery/v1/oneofquery.proto"
+proto_file: {
+  name: "oneofquery/v1/oneofquery.proto"
+  package: "oneofquery.v1"
+  message_type: {
+    name: "Book"
+    field: {
+      name: "title"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "title"
+    }
+  }
+  message_type: {
+    name: "BookKey"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "id"
+    }
+    field: {
+      name: "isbn"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "isbn"
+    }
+    field: {
+      name: "shelf"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "shelf"
+    }
+    oneof_decl: { name: "key" }
+  }
+  message_type: {
+    name: "GetBookRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "id"
+    }
+    field: {
+      name: "isbn"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "isbn"
+    }
+    field: {
+      name: "view"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 1
+      json_name: "view"
+    }
+    field: {
+      name: "mode"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 1
+      json_name: "mode"
+    }
+    field: {
+      name: "locale"
+      number: 5
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "locale"
+    }
+    oneof_decl: { name: "lookup" }
+    oneof_decl: { name: "format" }
+  }
+  message_type: {
+    name: "FindBookRequest"
+    field: {
+      name: "key"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".oneofquery.v1.BookKey"
+      oneof_index: 0
+      json_name: "key"
+    }
+    field: {
+      name: "alias"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "alias"
+    }
+    field: {
+      name: "locale"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "locale"
+    }
+    oneof_decl: { name: "selector" }
+  }
+  message_type: {
+    name: "UpdateBookRequest"
+    field: {
+      name: "book"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".oneofquery.v1.Book"
+      oneof_index: 0
+      json_name: "book"
+    }
+    field: {
+      name: "title"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      oneof_index: 0
+      json_name: "title"
+    }
+    field: {
+      name: "request_id"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "requestId"
+    }
+    oneof_decl: { name: "change" }
+  }
+  service: {
+    name: "BookService"
+    method: {
+      name: "GetBook"
+      input_type: ".oneofquery.v1.GetBookRequest"
+      output_type: ".oneofquery.v1.Book"
+      options: {
+        [google.api.http]: {
+          get: "/v1/books/{id}"
+        }
+      }
+    }
+    method: {
+      name: "FindBook"
+      input_type: ".oneofquery.v1.FindBookRequest"
+      output_type: ".oneofquery.v1.Book"
+      options: {
+        [google.api.http]: {
+          get: "/v1/books/{key.id}:find"
+        }
+      }
+    }
+    method: {
+      name: "UpdateBook"
+      input_type: ".oneofquery.v1.UpdateBookRequest"
+      output_type: ".oneofquery.v1.Book"
+      options: {
+        [google.api.http]: {
+          post: "/v1/books:update"
+          body: "book"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/oneofquery/v1;oneofqueryv1"
+  }
+  syntax: "proto3"
+}
