@@ -45,7 +45,8 @@ func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utili
 type DefaultQueryParser struct{}
 
 // Parse populates "values" into "msg".
-// A value is ignored if its key starts with one of the elements in "filter".
+// A value is ignored if its key starts with one of the elements in "filter",
+// or names a field that contains one of them.
 func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	// A field is addressable by both its proto name and its JSON name, so two
 	// keys can set the same one. Record which fields have been set and refuse a
@@ -61,7 +62,7 @@ func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 
 		msgValue := msg.ProtoReflect()
 		fieldPath := normalizeFieldPath(msgValue, strings.Split(fieldKey, "."))
-		if filter.HasCommonPrefix(fieldPath) {
+		if filter.HasCommonPrefix(fieldPath) || containsFilteredField(filter, fieldPath) {
 			continue
 		}
 		field := strings.Join(fieldPath, ".") + mapKey
@@ -74,6 +75,31 @@ func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 		}
 	}
 	return nil
+}
+
+// containsFilteredField reports whether fieldPath names a field that contains
+// one of the sequences in filter, such as "id" for a path parameter bound to
+// "id.value". Setting such a field from the query, which the parser can do for
+// well-known types like wrappers and timestamps, would replace the whole
+// message and with it the value already bound from the path or body.
+func containsFilteredField(filter *utilities.DoubleArray, fieldPath []string) bool {
+	if len(filter.Base) == 0 {
+		return false
+	}
+
+	var i int
+	for _, t := range fieldPath {
+		code, ok := filter.Encoding[t]
+		if !ok {
+			return false
+		}
+		j := filter.Base[i] + code
+		if len(filter.Check) <= j || filter.Check[j] != i+1 {
+			return false
+		}
+		i = j
+	}
+	return true
 }
 
 // PopulateFieldFromPath sets a value in a nested Protobuf structure.
