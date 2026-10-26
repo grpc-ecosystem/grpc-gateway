@@ -3501,7 +3501,7 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *desc
 			ret.Ref += j.GetRef()
 		}
 	} else {
-		f, t := protoJSONSchemaTypeToFormat(j.GetType())
+		t, f := protoJSONSchemaTypeToFormat(j.GetType())
 		ret.Format = f
 		ret.Type = t
 	}

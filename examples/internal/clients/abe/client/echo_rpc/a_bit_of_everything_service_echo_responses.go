@@ -219,7 +219,7 @@ ABitOfEverythingServiceEchoNotFound describes a response with status code 404, w
 Returned when the resource does not exist.
 */
 type ABitOfEverythingServiceEchoNotFound struct {
-	Payload int64
+	Payload int32
 }
 
 // IsSuccess returns true when this a bit of everything service echo not found response has a 2xx status code
@@ -262,7 +262,7 @@ func (o *ABitOfEverythingServiceEchoNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/example/a_bit_of_everything/echo/{value}][%d] aBitOfEverythingServiceEchoNotFound %s", 404, payload)
 }
 
-func (o *ABitOfEverythingServiceEchoNotFound) GetPayload() int64 {
+func (o *ABitOfEverythingServiceEchoNotFound) GetPayload() int32 {
 	return o.Payload
 }
 
