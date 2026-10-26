@@ -751,6 +751,32 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 				StringValue: "str",
 			},
 		},
+		{
+			// Setting the parent of a filtered field would replace the value
+			// bound from the path, e.g. {timestamp_value.seconds}.
+			values: url.Values{
+				"timestamp_value": {"2001-01-01T00:00:00Z"},
+				"string_value":    {"str"},
+			},
+			filter: utilities.NewDoubleArray([][]string{
+				{"timestamp_value", "seconds"},
+			}),
+			want: &examplepb.Proto3Message{
+				StringValue: "str",
+			},
+		},
+		{
+			values: url.Values{
+				"timestampValue": {"2001-01-01T00:00:00Z"},
+				"string_value":   {"str"},
+			},
+			filter: utilities.NewDoubleArray([][]string{
+				{"timestamp_value", "seconds"},
+			}),
+			want: &examplepb.Proto3Message{
+				StringValue: "str",
+			},
+		},
 	} {
 		msg := spec.want.ProtoReflect().New().Interface()
 		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
