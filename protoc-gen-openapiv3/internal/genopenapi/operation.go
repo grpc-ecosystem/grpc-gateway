@@ -116,6 +116,10 @@ func buildParameters(b *schemaBuilder, m *descriptor.Method, binding *descriptor
 			// This field is part of the request body, skip.
 			continue
 		}
+		if isPathSameOneof(field, binding.PathParams) || isBodySameOneof(field, binding.Body) {
+			// Another member of this oneof is already set, skip.
+			continue
+		}
 		params = append(params, b.queryParameters(field, "", false, subPathParams(field.GetName(), binding.PathParams), cycle)...)
 	}
 	return params
@@ -189,6 +193,10 @@ func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, 
 				}
 				if isPathParam(nested, pathParams) {
 					// Already handled as a path parameter, skip.
+					continue
+				}
+				if isPathSameOneof(nested, pathParams) {
+					// Another member of this oneof is a path parameter, skip.
 					continue
 				}
 				out = append(out, b.queryParameters(nested, name+".", deprecated, subPathParams(nested.GetName(), pathParams), cycle)...)
@@ -479,6 +487,32 @@ func isPathParam(field *descriptor.Field, params []descriptor.Parameter) bool {
 		}
 	}
 	return false
+}
+
+// isPathSameOneof reports whether another member of field's oneof is bound to
+// one of the path parameters. Only one member of a oneof can be set, so the
+// runtime rejects the others as query parameters.
+func isPathSameOneof(field *descriptor.Field, params []descriptor.Parameter) bool {
+	for _, p := range params {
+		if len(p.FieldPath) > 0 && sameOneof(field, p.FieldPath[0].Target) {
+			return true
+		}
+	}
+	return false
+}
+
+// isBodySameOneof reports whether another member of field's oneof is the body
+// field.
+func isBodySameOneof(field *descriptor.Field, body *descriptor.Body) bool {
+	return body != nil && len(body.FieldPath) > 0 && sameOneof(field, body.FieldPath[0].Target)
+}
+
+// sameOneof reports whether a and b are different members of the same oneof.
+// Proto3 optional fields each have their own synthetic oneof, so they never
+// match another field.
+func sameOneof(a, b *descriptor.Field) bool {
+	return b != nil && a != b && a.OneofIndex != nil && b.OneofIndex != nil &&
+		a.Message == b.Message && a.GetOneofIndex() == b.GetOneofIndex()
 }
 
 // subPathParams returns the path parameters nested under the given field name,

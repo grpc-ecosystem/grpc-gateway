@@ -1180,6 +1180,59 @@ func TestGenerate_NestedPathParam(t *testing.T) {
 	}
 }
 
+// TestGenerate_OneofQueryParams checks that the other members of a oneof are
+// not emitted as query parameters when one member is bound to the path or to
+// the body: the runtime rejects them with "field already set for oneof".
+// Members of unrelated oneofs are still emitted.
+func TestGenerate_OneofQueryParams(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/oneof_query_param.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	paths, _ := doc["paths"].(map[string]any)
+	for _, tc := range []struct {
+		path, method string
+		want         []string
+	}{
+		{
+			path:   "/v1/books/{id}",
+			method: "get",
+			want:   []string{"path:id", "query:view", "query:mode", "query:locale"},
+		},
+		{
+			path:   "/v1/books/{key.id}:find",
+			method: "get",
+			want:   []string{"path:key.id", "query:key.shelf", "query:locale"},
+		},
+		{
+			path:   "/v1/books:update",
+			method: "post",
+			want:   []string{"query:requestId"},
+		},
+	} {
+		item, _ := paths[tc.path].(map[string]any)
+		op, _ := item[tc.method].(map[string]any)
+		if op == nil {
+			t.Fatalf("expected %s operation under %s, got: %v", tc.method, tc.path, paths)
+		}
+		params, _ := op["parameters"].([]any)
+		var gotParams []string
+		for _, p := range params {
+			m, _ := p.(map[string]any)
+			gotParams = append(gotParams, m["in"].(string)+":"+m["name"].(string))
+		}
+		if diff := cmp.Diff(tc.want, gotParams); diff != "" {
+			t.Errorf("%s %s parameters mismatch (-want +got):\n%s", tc.method, tc.path, diff)
+		}
+	}
+}
+
 // TestGenerate_UnsupportedMethod checks that a binding using a custom HTTP
 // method that OpenAPI 3.1 cannot describe (here "LOCK") is skipped, instead
 // of leaving an empty path item and unused component schemas behind. Method
