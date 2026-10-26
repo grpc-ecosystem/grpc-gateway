@@ -207,7 +207,7 @@ UnannotatedEchoServiceEchoNotFound describes a response with status code 404, wi
 Returned when the resource does not exist.
 */
 type UnannotatedEchoServiceEchoNotFound struct {
-	Payload int64
+	Payload int32
 }
 
 // IsSuccess returns true when this unannotated echo service echo not found response has a 2xx status code
@@ -250,7 +250,7 @@ func (o *UnannotatedEchoServiceEchoNotFound) String() string {
 	return fmt.Sprintf("[POST /v1/example/echo/{id}][%d] unannotatedEchoServiceEchoNotFound %s", 404, payload)
 }
 
-func (o *UnannotatedEchoServiceEchoNotFound) GetPayload() int64 {
+func (o *UnannotatedEchoServiceEchoNotFound) GetPayload() int32 {
 	return o.Payload
 }
 

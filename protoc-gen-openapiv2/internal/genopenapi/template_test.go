@@ -5451,6 +5451,33 @@ func TestListValueSchemaAllowsAnyItems(t *testing.T) {
 	}
 }
 
+func TestOpenAPISchemaFromProtoSchemaType(t *testing.T) {
+	tests := []struct {
+		typ    openapi_options.JSONSchema_JSONSchemaSimpleTypes
+		format string
+		want   schemaCore
+	}{
+		{typ: openapi_options.JSONSchema_STRING, want: schemaCore{Type: "string"}},
+		{typ: openapi_options.JSONSchema_INTEGER, want: schemaCore{Type: "integer", Format: "int32"}},
+		{typ: openapi_options.JSONSchema_NUMBER, want: schemaCore{Type: "number", Format: "double"}},
+		{typ: openapi_options.JSONSchema_BOOLEAN, want: schemaCore{Type: "boolean"}},
+		{typ: openapi_options.JSONSchema_INTEGER, format: "int64", want: schemaCore{Type: "integer", Format: "int64"}},
+	}
+	reg := descriptor.NewRegistry()
+	for _, tt := range tests {
+		s := &openapi_options.Schema{
+			JsonSchema: &openapi_options.JSONSchema{
+				Type:   []openapi_options.JSONSchema_JSONSchemaSimpleTypes{tt.typ},
+				Format: tt.format,
+			},
+		}
+		got := openapiSchemaFromProtoSchema(s, reg, nil, nil)
+		if !reflect.DeepEqual(got.schemaCore, tt.want) {
+			t.Errorf("openapiSchemaFromProtoSchema(type: %v, format: %q).schemaCore = %+v; want %+v", tt.typ, tt.format, got.schemaCore, tt.want)
+		}
+	}
+}
+
 func TestSchemaOfField(t *testing.T) {
 	type test struct {
 		field                 *descriptor.Field

@@ -70,8 +70,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -126,8 +125,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -598,7 +596,7 @@
             "description": "Returned when the resource does not exist.",
             "schema": {
               "type": "integer",
-              "format": "integer"
+              "format": "int32"
             }
           },
           "418": {
@@ -661,8 +659,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -722,8 +719,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -777,8 +773,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -1228,8 +1223,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -1685,8 +1679,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -2132,8 +2125,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -2604,8 +2596,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -3065,8 +3056,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -4009,8 +3999,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -4473,8 +4462,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -4937,8 +4925,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -4989,8 +4976,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5052,8 +5038,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5293,8 +5278,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5338,8 +5322,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5401,8 +5384,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5457,8 +5439,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5512,8 +5493,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5589,8 +5569,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5676,8 +5655,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -5748,8 +5726,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6076,8 +6053,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6406,7 +6382,7 @@
             "description": "Returned when the resource does not exist.",
             "schema": {
               "type": "integer",
-              "format": "integer"
+              "format": "int32"
             }
           },
           "418": {
@@ -6473,7 +6449,7 @@
             "description": "Returned when the resource does not exist.",
             "schema": {
               "type": "integer",
-              "format": "integer"
+              "format": "int32"
             }
           },
           "418": {
@@ -6537,8 +6513,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6583,8 +6558,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6629,8 +6603,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6687,8 +6660,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6736,8 +6708,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6798,8 +6769,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6844,8 +6814,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6906,8 +6875,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -6964,8 +6932,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
@@ -7029,8 +6996,7 @@
           "404": {
             "description": "Returned when the resource does not exist.",
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           },
           "418": {
