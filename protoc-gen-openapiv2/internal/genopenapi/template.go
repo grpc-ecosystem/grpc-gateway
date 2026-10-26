@@ -28,6 +28,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -597,8 +598,11 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 // FQMNs/FQENs that will be referenced, WITHOUT using the naming cache.
 // This allows us to build the cache with the correct filtered names BEFORE
 // any code tries to use it.
-func collectReferencedNamesForCache(services []*descriptor.Service, messages []*descriptor.Message, reg *descriptor.Registry) map[string]bool {
+func collectReferencedNamesForCache(file *descriptor.File, services []*descriptor.Service, messages []*descriptor.Message, reg *descriptor.Registry) map[string]bool {
 	refs := make(map[string]bool)
+	// Custom refs are collected separately and traversed last, so they do not
+	// short-circuit collectNestedTypeFQNs' visited check.
+	customRefs := make(map[string]bool)
 
 	// Scan services FIRST so collectNestedTypeFQNs fully traverses
 	// message graphs without being short-circuited by pre-populated entries.
@@ -609,6 +613,9 @@ func collectReferencedNamesForCache(services []*descriptor.Service, messages []*
 		for _, meth := range svc.Methods {
 			if !isVisible(getMethodVisibilityOption(meth), reg) {
 				continue
+			}
+			if opts, err := getMethodOpenAPIOption(reg, meth); err == nil && opts != nil {
+				collectCustomRefs(opts.ProtoReflect(), customRefs)
 			}
 			if len(meth.Bindings) == 0 {
 				continue
@@ -638,6 +645,27 @@ func collectReferencedNamesForCache(services []*descriptor.Service, messages []*
 	for _, msg := range messages {
 		refs[msg.FQMN()] = true
 		collectNestedTypeFQNs(msg, reg, refs)
+		if opts, err := getMessageOpenAPIOption(reg, msg); err == nil && opts != nil {
+			collectCustomRefs(opts.ProtoReflect(), customRefs)
+		}
+		for _, field := range msg.Fields {
+			if opts, err := getFieldOpenAPIOption(reg, field); err == nil && opts != nil {
+				collectCustomRefs(opts.ProtoReflect(), customRefs)
+			}
+		}
+	}
+	if opts, err := getFileOpenAPIOption(reg, file); err == nil && opts != nil {
+		collectCustomRefs(opts.ProtoReflect(), customRefs)
+	}
+
+	for ref := range customRefs {
+		if refs[ref] {
+			continue
+		}
+		refs[ref] = true
+		if msg, err := reg.LookupMsg("", ref); err == nil {
+			collectNestedTypeFQNs(msg, reg, refs)
+		}
 	}
 
 	// Add google.rpc.Status if default errors enabled
@@ -650,6 +678,34 @@ func collectReferencedNamesForCache(services []*descriptor.Service, messages []*
 	}
 
 	return refs
+}
+
+// collectCustomRefs adds every JSONSchema "ref" found in an OpenAPI option
+// message to refs, so that types referenced only through options are kept in
+// the naming cache.
+func collectCustomRefs(m protoreflect.Message, refs map[string]bool) {
+	if schema, ok := m.Interface().(*openapi_options.JSONSchema); ok && schema.GetRef() != "" {
+		refs[schema.GetRef()] = true
+	}
+	m.Range(func(fd protoreflect.FieldDescriptor, v protoreflect.Value) bool {
+		switch {
+		case fd.IsMap():
+			if fd.MapValue().Message() != nil {
+				v.Map().Range(func(_ protoreflect.MapKey, mv protoreflect.Value) bool {
+					collectCustomRefs(mv.Message(), refs)
+					return true
+				})
+			}
+		case fd.Message() == nil:
+		case fd.IsList():
+			for i := 0; i < v.List().Len(); i++ {
+				collectCustomRefs(v.List().Get(i).Message(), refs)
+			}
+		default:
+			collectCustomRefs(v.Message(), refs)
+		}
+		return true
+	})
 }
 
 // collectNestedTypeFQNs recursively collects FQMNs/FQENs for all nested types
@@ -2278,7 +2334,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	//
 	// Pre-scan to collect referenced names WITHOUT using the naming cache.
 	// This allows us to build the cache with the correct filtered names upfront.
-	referencedNames := collectReferencedNamesForCache(p.Services, p.Messages, p.reg)
+	referencedNames := collectReferencedNamesForCache(p.File, p.Services, p.Messages, p.reg)
 
 	// Get all names from the registry
 	allFQMNs := p.reg.GetAllFQMNs()
