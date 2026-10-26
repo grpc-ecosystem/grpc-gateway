@@ -163,6 +163,94 @@ func TestApplyTemplateCustomMethod(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateNestedResponseBody(t *testing.T) {
+	reqdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleRequest"),
+	}
+	fieldDesc := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("name"),
+		Number: proto.Int32(1),
+		Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+		Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+	}
+	respdesc := &descriptorpb.DescriptorProto{
+		Name:  proto.String("Inner"),
+		Field: []*descriptorpb.FieldDescriptorProto{fieldDesc},
+	}
+	outerdesc := &descriptorpb.DescriptorProto{
+		Name:       proto.String("Outer"),
+		NestedType: []*descriptorpb.DescriptorProto{respdesc},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleRequest"),
+		OutputType: proto.String("Outer.Inner"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	req := &descriptor.Message{
+		DescriptorProto: reqdesc,
+	}
+	resp := &descriptor.Message{
+		DescriptorProto: respdesc,
+		Outers:          []string{"Outer"},
+	}
+	field := &descriptor.Field{
+		Message:              resp,
+		FieldDescriptorProto: fieldDesc,
+	}
+	resp.Fields = []*descriptor.Field{field}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			MessageType: []*descriptorpb.DescriptorProto{reqdesc, outerdesc},
+			Service:     []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{req, resp},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           req,
+						ResponseType:          resp,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl:   compilePath(t, "/v1/example"),
+								ResponseBody: &descriptor.Body{
+									FieldPath: descriptor.FieldPath{
+										{
+											Name:   "name",
+											Target: field,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+	// The embedded *Outer_Inner field is named Outer_Inner, not Inner.
+	if want := "response := m.Outer_Inner\n"; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+}
+
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),

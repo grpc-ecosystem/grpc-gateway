@@ -371,6 +371,11 @@ func request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }}(ct
 			// Custom methods such as "LOCK" have no net/http constant.
 			return fmt.Sprintf("%q", method)
 		},
+		// An embedded field is named after its type without the package
+		// qualifier, e.g. *examplepb.Outer_Inner embeds a field Outer_Inner.
+		"embeddedFieldName": func(goType string) string {
+			return goType[strings.LastIndex(goType, ".")+1:]
+		},
 	}
 
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Funcs(funcMap).Parse(`
@@ -929,7 +934,7 @@ type response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }} struct {
 }
 
 func (m response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}) XXX_ResponseBody() interface{} {
-	response := m.{{ $m.ResponseType.GetName }}
+	response := m.{{ $m.ResponseType.GoType $m.Service.File.GoPkg.Path | embeddedFieldName }}
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" $b.ResponseBody.FieldPath.String }}
 	return response
