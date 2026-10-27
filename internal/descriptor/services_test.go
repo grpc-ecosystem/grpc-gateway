@@ -746,6 +746,92 @@ func TestExtractServicesWithAdditionalBinding(t *testing.T) {
 	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
+func TestExtractServicesWithAdditionalBindingWithoutPattern(t *testing.T) {
+	src := `
+		name: "path/to/example.proto",
+		package: "example"
+		message_type <
+			name: "StringMessage"
+			field <
+				name: "string"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+			>
+		>
+		service <
+			name: "ExampleService"
+			method <
+				name: "Echo"
+				input_type: "StringMessage"
+				output_type: "StringMessage"
+				options <
+					[google.api.http] <
+						post: "/v1/example/echo"
+						body: "*"
+						additional_bindings <
+							body: "*"
+						>
+						additional_bindings <
+							post: "/v2/example/echo"
+							body: "*"
+						>
+					>
+				>
+			>
+		>
+	`
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+	}
+	msg := &Message{
+		DescriptorProto: fd.MessageType[0],
+		Fields: []*Field{
+			{
+				FieldDescriptorProto: fd.MessageType[0].Field[0],
+			},
+		},
+	}
+	file := &File{
+		FileDescriptorProto: &fd,
+		GoPkg: GoPackage{
+			Path: "path/to/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*Message{msg},
+		Services: []*Service{
+			{
+				ServiceDescriptorProto: fd.Service[0],
+				Methods: []*Method{
+					{
+						MethodDescriptorProto: fd.Service[0].Method[0],
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*Binding{
+							{
+								Index:      0,
+								PathTmpl:   compilePath(t, "/v1/example/echo"),
+								HTTPMethod: "POST",
+								Body:       &Body{FieldPath: nil},
+							},
+							{
+								Index:      1,
+								PathTmpl:   compilePath(t, "/v2/example/echo"),
+								HTTPMethod: "POST",
+								Body:       &Body{FieldPath: nil},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	crossLinkFixture(file)
+	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+}
+
 func TestExtractServicesWithError(t *testing.T) {
 	for _, spec := range []struct {
 		target string
