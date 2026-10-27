@@ -119,7 +119,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go tool gorelease -base=v2.32.0
+      - run: go tool gorelease -base=v2.33.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
