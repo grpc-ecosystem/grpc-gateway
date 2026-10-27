@@ -654,6 +654,48 @@ func TestPopulateParametersEmptyMessage(t *testing.T) {
 	}
 }
 
+func TestPopulateParametersFieldMask(t *testing.T) {
+	for _, spec := range []struct {
+		name   string
+		values url.Values
+		want   proto.Message
+	}{
+		{
+			name:   "paths",
+			values: url.Values{"fieldmask_value": {"float_value,double_value"}},
+			want: &examplepb.Proto3Message{
+				FieldmaskValue: &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}},
+			},
+		},
+		{
+			name:   "empty value",
+			values: url.Values{"fieldmask_value": {""}},
+			want: &examplepb.Proto3Message{
+				FieldmaskValue: &field_mask.FieldMask{},
+			},
+		},
+		{
+			name:   "JSON name with empty value",
+			values: url.Values{"fieldmaskValue": {""}},
+			want: &examplepb.Proto3Message{
+				FieldmaskValue: &field_mask.FieldMask{},
+			},
+		},
+	} {
+		t.Run(spec.name, func(t *testing.T) {
+			msg := spec.want.ProtoReflect().New().Interface()
+			err := runtime.PopulateQueryParameters(msg, spec.values, utilities.NewDoubleArray(nil))
+			if err != nil {
+				t.Errorf("runtime.PopulateQueryParameters(msg, %v, _) failed with %v; want success", spec.values, err)
+				return
+			}
+			if diff := cmp.Diff(spec.want, msg, protocmp.Transform()); diff != "" {
+				t.Errorf("runtime.PopulateQueryParameters(msg, %v, _): %s", spec.values, diff)
+			}
+		})
+	}
+}
+
 func TestPopulateParametersWithFilters(t *testing.T) {
 	for _, spec := range []struct {
 		values url.Values
