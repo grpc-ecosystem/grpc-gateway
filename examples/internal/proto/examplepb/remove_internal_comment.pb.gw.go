@@ -40,7 +40,7 @@ func request_Foo2Service_Foo2_0(ctx context.Context, marshaler runtime.Marshaler
 		protoReq Foo2Request
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -55,7 +55,7 @@ func local_request_Foo2Service_Foo2_0(ctx context.Context, marshaler runtime.Mar
 		protoReq Foo2Request
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Foo2(ctx, &protoReq)

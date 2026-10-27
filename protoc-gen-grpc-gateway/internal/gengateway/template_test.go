@@ -395,7 +395,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `marshaler.NewDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
+		if want := `runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `val, ok := pathParams["nested.int32"]`; !strings.Contains(got, want) {
@@ -1004,7 +1004,7 @@ func TestAllowPatchFeature(t *testing.T) {
 			return
 		}
 		if allowPatchFeature {
-			if want := `marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe)`; !strings.Contains(got, want) {
+			if want := `runtime.DecodeRequestBody(marshaler, newReader(), &protoReq.Abe)`; !strings.Contains(got, want) {
 				t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 			}
 			if !strings.Contains(got, want) {

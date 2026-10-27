@@ -82,7 +82,7 @@ func request_ExcessBodyService_WithBodyRpc_0(ctx context.Context, marshaler runt
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -97,7 +97,7 @@ func local_request_ExcessBodyService_WithBodyRpc_0(ctx context.Context, marshale
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.WithBodyRpc(ctx, &protoReq)
@@ -109,7 +109,7 @@ func request_ExcessBodyService_WithBodyServerStream_0(ctx context.Context, marsh
 		protoReq emptypb.Empty
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {

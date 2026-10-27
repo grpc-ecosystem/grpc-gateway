@@ -162,7 +162,7 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -177,7 +177,7 @@ func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marsha
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.EchoBody(ctx, &protoReq)
@@ -224,7 +224,7 @@ func request_UnannotatedEchoService_EchoNested_0(ctx context.Context, marshaler 
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -239,7 +239,7 @@ func local_request_UnannotatedEchoService_EchoNested_0(ctx context.Context, mars
 		protoReq UnannotatedSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.EchoNested(ctx, &protoReq)

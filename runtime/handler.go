@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -144,6 +145,32 @@ func handleForwardResponseTrailer(w http.ResponseWriter, mux *ServeMux, md Serve
 			}
 		}
 	}
+}
+
+// DecodeRequestBody decodes the body of a unary request from r into v using
+// marshaler. An empty body leaves v untouched.
+//
+// A unary body holds exactly one message. A JSON decoder stops after the
+// first value, so without a check a body such as {"a":1}{"b":2} or {"a":1}x
+// would be accepted with everything after the first value dropped, and
+// anything inspecting the raw body in front of the gateway could see a
+// different message from the one the backend receives. Decoders that expose
+// json.Decoder's Token method, as the JSON marshalers do, are therefore
+// required to be at io.EOF once the message has been read.
+func DecodeRequestBody(marshaler Marshaler, r io.Reader, v any) error {
+	dec := marshaler.NewDecoder(r)
+	if err := dec.Decode(v); err != nil {
+		if errors.Is(err, io.EOF) {
+			return nil
+		}
+		return err
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return errors.New("unexpected data after request body")
+		}
+	}
+	return nil
 }
 
 // responseBody interface contains method for getting field for marshaling to the response body

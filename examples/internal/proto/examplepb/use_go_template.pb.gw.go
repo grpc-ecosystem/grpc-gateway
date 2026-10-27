@@ -40,7 +40,7 @@ func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshal
 		protoReq LoginRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -55,7 +55,7 @@ func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.M
 		protoReq LoginRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Login(ctx, &protoReq)
@@ -67,7 +67,7 @@ func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marsha
 		protoReq LogoutRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -82,7 +82,7 @@ func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.
 		protoReq LogoutRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Logout(ctx, &protoReq)

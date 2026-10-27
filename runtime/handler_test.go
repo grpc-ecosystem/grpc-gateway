@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"sort"
+	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -644,6 +645,46 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 
 			if !reflect.DeepEqual(w.Trailer, tc.trailer) {
 				t.Fatalf("Trailer %v want %v", w.Trailer, tc.trailer)
+			}
+		})
+	}
+}
+
+func TestDecodeRequestBody(t *testing.T) {
+	for _, spec := range []struct {
+		name      string
+		marshaler runtime.Marshaler
+		body      string
+		want      string
+		wantErr   bool
+	}{
+		{name: "jsonpb", marshaler: &runtime.JSONPb{}, body: `{"id":"first"}`, want: "first"},
+		{name: "jsonpb trailing whitespace", marshaler: &runtime.JSONPb{}, body: "{\"id\":\"first\"}\n \t", want: "first"},
+		{name: "jsonpb empty", marshaler: &runtime.JSONPb{}, body: ""},
+		{name: "jsonpb second message", marshaler: &runtime.JSONPb{}, body: `{"id":"first"}{"id":"second"}`, wantErr: true},
+		{name: "jsonpb trailing garbage", marshaler: &runtime.JSONPb{}, body: `{"id":"first"}x`, wantErr: true},
+		{name: "jsonpb trailing delimiter", marshaler: &runtime.JSONPb{}, body: `{"id":"first"}]`, wantErr: true},
+		{name: "jsonpb invalid", marshaler: &runtime.JSONPb{}, body: `{"id":`, wantErr: true},
+		{name: "httpbody jsonpb second message", marshaler: &runtime.HTTPBodyMarshaler{Marshaler: &runtime.JSONPb{}}, body: `{"id":"first"}{"id":"second"}`, wantErr: true},
+		{name: "builtin", marshaler: &runtime.JSONBuiltin{}, body: `{"id":"first"}`, want: "first"},
+		{name: "builtin second message", marshaler: &runtime.JSONBuiltin{}, body: `{"id":"first"}{"id":"second"}`, wantErr: true},
+		{name: "proto", marshaler: &runtime.ProtoMarshaller{}, body: "\n\x05first", want: "first"},
+		{name: "proto empty", marshaler: &runtime.ProtoMarshaller{}, body: ""},
+	} {
+		t.Run(spec.name, func(t *testing.T) {
+			var msg pb.SimpleMessage
+			err := runtime.DecodeRequestBody(spec.marshaler, strings.NewReader(spec.body), &msg)
+			if spec.wantErr {
+				if err == nil {
+					t.Fatalf("DecodeRequestBody(%q) succeeded with %v; want error", spec.body, &msg)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("DecodeRequestBody(%q) failed with %v; want success", spec.body, err)
+			}
+			if got := msg.GetId(); got != spec.want {
+				t.Errorf("msg.Id = %q; want %q", got, spec.want)
 			}
 		})
 	}

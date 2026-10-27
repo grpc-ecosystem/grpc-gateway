@@ -414,19 +414,19 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
 	{{- else }}
 	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
@@ -435,19 +435,19 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), &bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
 	{{- else }}
 	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), &{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
@@ -650,19 +650,19 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
 	{{- else }}
 	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
@@ -671,19 +671,19 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), &bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
 	{{- else }}
 	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), &{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}

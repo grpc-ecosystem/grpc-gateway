@@ -40,7 +40,7 @@ func request_EnumWithSingleValueService_Echo_0(ctx context.Context, marshaler ru
 		protoReq EnumWithSingleValueServiceEchoRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if req.Body != nil {
@@ -55,7 +55,7 @@ func local_request_EnumWithSingleValueService_Echo_0(ctx context.Context, marsha
 		protoReq EnumWithSingleValueServiceEchoRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	msg, err := server.Echo(ctx, &protoReq)

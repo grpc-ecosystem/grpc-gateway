@@ -125,7 +125,7 @@ func request_OpaqueEcommerceService_OpaqueCreateProduct_0(ctx context.Context, m
 		metadata runtime.ServerMetadata
 	)
 	var bodyData OpaqueCreateProductRequest
-	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
@@ -142,7 +142,7 @@ func local_request_OpaqueEcommerceService_OpaqueCreateProduct_0(ctx context.Cont
 		metadata runtime.ServerMetadata
 	)
 	var bodyData OpaqueCreateProductRequest
-	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, &bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
@@ -158,7 +158,7 @@ func request_OpaqueEcommerceService_OpaqueCreateProductField_0(ctx context.Conte
 		metadata runtime.ServerMetadata
 	)
 	bodyData := &OpaqueProduct{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
@@ -181,7 +181,7 @@ func local_request_OpaqueEcommerceService_OpaqueCreateProductField_0(ctx context
 		metadata runtime.ServerMetadata
 	)
 	bodyData := &OpaqueProduct{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
@@ -292,7 +292,7 @@ func request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	bodyData := &OpaqueProduct{}
-	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
@@ -335,7 +335,7 @@ func local_request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Cont
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	bodyData := &OpaqueProduct{}
-	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, newReader(), bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
@@ -439,7 +439,7 @@ func request_OpaqueEcommerceService_OpaqueEchoNote_0(ctx context.Context, marsha
 		metadata runtime.ServerMetadata
 	)
 	bodyData := &sub.StringMessage{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetNote(bodyData)
@@ -456,7 +456,7 @@ func local_request_OpaqueEcommerceService_OpaqueEchoNote_0(ctx context.Context, 
 		metadata runtime.ServerMetadata
 	)
 	bodyData := &sub.StringMessage{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetNote(bodyData)
