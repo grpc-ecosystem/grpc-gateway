@@ -402,7 +402,9 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		msg = wrapperspb.Bytes(v)
 	case "google.protobuf.FieldMask":
 		fm := &field_mask.FieldMask{}
-		fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
+		if value != "" {
+			fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
+		}
 		msg = fm
 	case "google.protobuf.Value":
 		var v structpb.Value
