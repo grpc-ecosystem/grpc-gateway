@@ -196,7 +196,9 @@ func (r *Registry) newMethod(svc *Service, md *descriptorpb.MethodDescriptorProt
 			if err != nil {
 				return err
 			}
-			meth.Bindings = append(meth.Bindings, b)
+			if b != nil {
+				meth.Bindings = append(meth.Bindings, b)
+			}
 		}
 
 		return nil
