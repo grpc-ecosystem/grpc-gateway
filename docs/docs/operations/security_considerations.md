@@ -95,6 +95,38 @@ parse would have failed, then with the permissive setting for the request that
 actually proceeds. That costs an extra parse per request, so it suits a
 canary or a sampled fraction of traffic rather than everything.
 
+## Request headers become gRPC metadata, under a prefix
+
+The default incoming header matcher forwards the permanent HTTP headers
+(`Authorization`, `Cookie`, `User-Agent` and so on) to the backend as gRPC
+metadata under the `grpcgateway-` prefix, plus `Authorization` under the bare
+`authorization` key. Everything else is dropped. A backend can therefore tell a
+value that came from the HTTP client (`grpcgateway-cookie`) apart from one it
+set itself.
+
+Before this default changed, any header of the form `Grpc-Metadata-<key>` was
+also forwarded as the bare key `<key>`. That let a client choose the metadata
+key, so a backend that read, say, `md["user"]` expecting an interceptor to have
+put it there could be handed a value from `Grpc-Metadata-User` instead.
+[CVE-2026-18972](https://docs.velociraptor.app/announcements/advisories/cve-2026-18972/)
+was exactly this.
+
+If you rely on `Grpc-Metadata-` forwarding, `WithLegacyHeaderMatching` restores
+it:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithLegacyHeaderMatching(),
+)
+```
+
+Before doing so, check that nothing on the gRPC side trusts a metadata key the
+client could now set. The safer option is a custom matcher that forwards the
+specific headers you need, see
+[Mapping from HTTP request headers to gRPC client metadata](../mapping/customizing_your_gateway.md#mapping-from-http-request-headers-to-grpc-client-metadata).
+A matcher that keeps the old default alongside your own rules should fall back
+to `runtime.LegacyHeaderMatcher` rather than `runtime.DefaultHeaderMatcher`.
+
 ## See also
 
 - [Customizing your gateway](../mapping/customizing_your_gateway.md), which shows

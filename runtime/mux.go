@@ -168,9 +168,26 @@ type HeaderMatcherFunc func(string) (string, bool)
 
 // DefaultHeaderMatcher is used to pass http request headers to/from gRPC context. This adds permanent HTTP header
 // keys (as specified by the IANA, e.g: Accept, Cookie, Host) to the gRPC metadata with the grpcgateway- prefix. If you want to know which headers are considered permanent, you can view the isPermanentHTTPHeader function.
-// HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata after removing the prefix 'Grpc-Metadata-'.
 // Other headers are not added to the gRPC metadata.
+//
+// Earlier versions also mapped HTTP headers that start with 'Grpc-Metadata-' to gRPC metadata after removing the
+// prefix. That let any HTTP client set an arbitrary metadata key, which a backend trusting a key as set by an
+// interceptor or the gateway itself could not tell apart from the real value. Use LegacyHeaderMatcher, or the
+// WithLegacyHeaderMatching option, to keep forwarding those headers.
 func DefaultHeaderMatcher(key string) (string, bool) {
+	if key = textproto.CanonicalMIMEHeaderKey(key); isPermanentHTTPHeader(key) {
+		return MetadataPrefix + key, true
+	}
+	return "", false
+}
+
+// LegacyHeaderMatcher is the incoming header matcher earlier releases used by default. In addition to the
+// permanent HTTP headers DefaultHeaderMatcher maps, HTTP headers that start with 'Grpc-Metadata-' are mapped
+// to gRPC metadata after removing the prefix 'Grpc-Metadata-'.
+//
+// This lets any HTTP client set any metadata key the backend reads, except the ones the gateway reserves for
+// itself, so only use it when the backend does not trust a metadata key to have been set by the gateway.
+func LegacyHeaderMatcher(key string) (string, bool) {
 	switch key = textproto.CanonicalMIMEHeaderKey(key); {
 	case isPermanentHTTPHeader(key):
 		return MetadataPrefix + key, true
@@ -186,6 +203,12 @@ func DefaultHeaderMatcher(key string) (string, bool) {
 		return mdKey, true
 	}
 	return "", false
+}
+
+// WithLegacyHeaderMatching returns a ServeMuxOption that restores LegacyHeaderMatcher as the incoming header
+// matcher, so HTTP headers that start with 'Grpc-Metadata-' are forwarded as gRPC metadata again.
+func WithLegacyHeaderMatching() ServeMuxOption {
+	return WithIncomingHeaderMatcher(LegacyHeaderMatcher)
 }
 
 func defaultOutgoingHeaderMatcher(key string) (string, bool) {

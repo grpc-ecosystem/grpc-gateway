@@ -61,7 +61,9 @@ func runServers(ctx context.Context) <-chan error {
 		}
 	}()
 	go func() {
-		if err := runGateway(ctx, ":8088"); err != nil {
+		// The example server reads client-chosen metadata (BulkCreate fails on
+		// an "error" key), which the default matcher no longer forwards.
+		if err := runGateway(ctx, ":8088", gwruntime.WithLegacyHeaderMatching()); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()

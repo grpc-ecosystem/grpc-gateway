@@ -681,7 +681,8 @@ See also these community example repositories:
 - Method parameters in the query string.
 - Enum fields in the path parameter (including repeated enum fields).
 - Mapping streaming APIs to newline-delimited JSON streams.
-- Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
+- Mapping permanent HTTP headers (e.g. `Authorization`, `Cookie`) to gRPC metadata (prefixed with `grpcgateway-`),
+  and optionally headers with the `Grpc-Metadata-` prefix.
 - Optionally emitting API definitions for
   [OpenAPI (Swagger) v2](https://swagger.io/docs/specification/2-0/basic-structure/).
 - Setting [gRPC timeouts](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests)
@@ -713,8 +714,9 @@ But patches are welcome.
   [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml))
   are prefixed with `grpcgateway-` and added with their values to gRPC request
   header.
-- HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
-  (prefixed with `grpcgateway-`).
+- HTTP headers that start with 'Grpc-Metadata-' are not forwarded by default, since that would let
+  any client set arbitrary gRPC metadata keys. The `WithLegacyHeaderMatching` option maps them to gRPC
+  metadata with the prefix removed, as earlier versions did.
 - While configurable, the default {un,}marshaling uses
   [protojson](https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson).
 - The path template used to map gRPC service methods to HTTP endpoints supports the [google.api.http](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto)
