@@ -287,8 +287,8 @@ def go_repositories():
     go_repository(
         name = "com_github_envoyproxy_go_control_plane_envoy",
         importpath = "github.com/envoyproxy/go-control-plane/envoy",
-        sum = "h1:u3riX6BoYRfF4Dr7dwSOroNfdSbEPe9Yyl09/B6wBrQ=",
-        version = "v1.37.0",
+        sum = "h1:SWe0x6yfglnxuvOiYgTTnNq7QD/yvqthOh1RBI8Bj8w=",
+        version = "v1.39.1-0.20260819172001-e6e3fd93e4be",
     )
     go_repository(
         name = "com_github_envoyproxy_go_control_plane_ratelimit",
@@ -722,8 +722,8 @@ def go_repositories():
     go_repository(
         name = "com_github_googlecloudplatform_opentelemetry_operations_go_detectors_gcp",
         importpath = "github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp",
-        sum = "h1:yzIYdwuro811Z27D3T80Wkd3rqZzb0K43nner7Eh1yE=",
-        version = "v1.34.0",
+        sum = "h1:bN1gA3of5bXtbnLsRPrwfmbbe7A5UWFlcTHseujLnpc=",
+        version = "v1.35.0",
     )
 
     go_repository(
@@ -2308,8 +2308,8 @@ def go_repositories():
     go_repository(
         name = "dev_cel_expr",
         importpath = "cel.dev/expr",
-        sum = "h1:K6j46C81hXtZQfuX60cVWQFBJahKSE2gfRbNuvr5bFs=",
-        version = "v0.25.2",
+        sum = "h1:A2jO8jwOugrrovveCWfj0KEZOfqiLgAcwjpHPhzIGw0=",
+        version = "v0.25.3",
     )
 
     go_repository(
@@ -2385,8 +2385,8 @@ def go_repositories():
     go_repository(
         name = "io_opentelemetry_go_contrib_detectors_gcp",
         importpath = "go.opentelemetry.io/contrib/detectors/gcp",
-        sum = "h1:NmLfL734pJhM0JKaYd2Y28+nY9dPRWYAAbxhRCrKXPw=",
-        version = "v1.44.0",
+        sum = "h1:9jR0ZPRok9ryaOQ2Wx8rg5F7Aon59mxrqbVI60/vlBk=",
+        version = "v1.45.0",
     )
     go_repository(
         name = "io_opentelemetry_go_contrib_instrumentation_google_golang_org_grpc_otelgrpc",
@@ -2501,8 +2501,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_grpc",
         importpath = "google.golang.org/grpc",
-        sum = "h1:soMyaPJ8pAak5PIQ0DGBUir0XRo2fRoMqhNWMLlLxO0=",
-        version = "v1.84.0",
+        sum = "h1:BPBCfuVRQ1qvBhKDOq9uvQllMvO59rKsYhXpp7Dd8vw=",
+        version = "v1.85.0",
     )
 
     go_repository(
