@@ -73,7 +73,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -107,6 +107,37 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_DefaultMatcherDropsGrpcMetadata(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	request, err := http.NewRequestWithContext(ctx, "GET", "http://www.example.com/v1", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
+	}
+	// With the default matcher a client must not be able to pick the metadata
+	// key a backend reads, so a Grpc-Metadata- header is not forwarded at all,
+	// while a permanent header still lands under the grpcgateway- prefix.
+	request.Header.Add("Grpc-Metadata-User", "admin")
+	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString([]byte("abc")))
+	request.Header.Add("Accept", "application/json")
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	if err != nil {
+		t.Fatalf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok {
+		t.Fatal("metadata.FromOutgoingContext failed")
+	}
+	for _, key := range []string{"user", "test-bin", "grpc-metadata-user"} {
+		if got, ok := md[key]; ok {
+			t.Errorf("md[%q] = %q; want it to be absent", key, got)
+		}
+	}
+	if got, want := md["grpcgateway-accept"], []string{"application/json"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["grpcgateway-accept"] = %q; want %q`, got, want)
+	}
+}
+
 func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
@@ -118,7 +149,7 @@ func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	binData := []byte("\x00test-binary-data")
 	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString(binData))
 
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -282,13 +313,13 @@ func TestAnnotateContext_DropsSpoofedXForwardedHeaders(t *testing.T) {
 		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://bar.foo.example.com", err)
 	}
 	request.RemoteAddr = "192.0.2.100:12345" // real client, gateway-set
-	// DefaultHeaderMatcher strips the Grpc-Metadata- prefix, so these would
+	// LegacyHeaderMatcher strips the Grpc-Metadata- prefix, so these would
 	// otherwise map to x-forwarded-for / x-forwarded-host and land ahead of the
 	// gateway-set values, letting a client spoof the host/IP a backend trusts.
 	request.Header.Set("Grpc-Metadata-X-Forwarded-For", "66.66.66.66")
 	request.Header.Set("Grpc-Metadata-X-Forwarded-Host", "evil.example.com")
 
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -310,7 +341,7 @@ func TestAnnotateContext_AuthorizationPrecedesForwardedMetadata(t *testing.T) {
 	expectedRPCName := "/example.Example/Example"
 	// The header loop iterates a map, so without an explicit order the
 	// Grpc-Metadata-Authorization value (forwarded as bare "authorization" by
-	// DefaultHeaderMatcher) lands ahead of the Authorization header's value in
+	// LegacyHeaderMatcher) lands ahead of the Authorization header's value in
 	// a fraction of runs. Repeat so that a regression shows up reliably.
 	for i := 0; i < 100; i++ {
 		request, err := http.NewRequestWithContext(ctx, "GET", "http://www.example.com", nil)
@@ -320,7 +351,7 @@ func TestAnnotateContext_AuthorizationPrecedesForwardedMetadata(t *testing.T) {
 		request.Header.Set("Authorization", "Bearer real")
 		request.Header.Set("Grpc-Metadata-Authorization", "Bearer forwarded")
 
-		annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+		annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName)
 		if err != nil {
 			t.Fatalf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		}
@@ -454,12 +485,12 @@ func TestAnnotateContext_CustomAnnotatorsOverrideForwardedMetadata(t *testing.T)
 	if err != nil {
 		t.Fatalf(`http.NewRequestWithContext(ctx, "GET", "http://example.com", nil) failed with %v; want success`, err)
 	}
-	// DefaultHeaderMatcher strips the Grpc-Metadata- prefix, so this would
+	// LegacyHeaderMatcher strips the Grpc-Metadata- prefix, so this would
 	// otherwise land ahead of the value the annotator sets for the same key.
 	request.Header.Set("Grpc-Metadata-Method", "/example.Admin/Delete")
 	request.Header.Set("Grpc-Metadata-Other", "kept")
 
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithMetadata(annotator)), request, expectedRPCName)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching(), runtime.WithMetadata(annotator)), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -514,7 +545,7 @@ func TestAnnotateIncomingContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -558,7 +589,7 @@ func TestAnnotateIncomingContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	binData := []byte("\x00test-binary-data")
 	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString(binData))
 
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return

@@ -106,7 +106,15 @@ Note: The incoming `Authorization` HTTP header can not be removed or overwritten
 
 ## Mapping from HTTP request headers to gRPC client metadata
 
-You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example:
+[The default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) only forwards permanent HTTP headers (`Authorization`, `Cookie`, `User-Agent`, ...), prefixed with `grpcgateway-`. Earlier versions also forwarded any `Grpc-Metadata-<key>` header as the bare metadata key `<key>`, which lets any client set any metadata key the backend reads, including ones the backend expects an interceptor or the gateway to have set. To keep that behavior, use `WithLegacyHeaderMatching`:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithLegacyHeaderMatching(),
+)
+```
+
+You might not like the default mapping rule and might want to pass through all the HTTP headers, for example:
 
 1. Write a [`HeaderMatcherFunc`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#HeaderMatcherFunc).
 
