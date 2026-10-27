@@ -2593,6 +2593,12 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 				if verbs.PathItemObject.Patch != nil {
 					maps = append(maps, verbs.PathItemObject.Patch.Responses)
 				}
+				if verbs.PathItemObject.Head != nil {
+					maps = append(maps, verbs.PathItemObject.Head.Responses)
+				}
+				if verbs.PathItemObject.Options != nil {
+					maps = append(maps, verbs.PathItemObject.Options.Responses)
+				}
 
 				for k, v := range spb.Responses {
 					for _, respMap := range maps {

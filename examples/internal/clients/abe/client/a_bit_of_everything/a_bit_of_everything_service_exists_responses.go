@@ -28,6 +28,30 @@ func (o *ABitOfEverythingServiceExistsReader) ReadResponse(response runtime.Clie
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewABitOfEverythingServiceExistsForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 404:
+		result := NewABitOfEverythingServiceExistsNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 418:
+		result := NewABitOfEverythingServiceExistsIMATeapot()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewABitOfEverythingServiceExistsInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		result := NewABitOfEverythingServiceExistsDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -102,6 +126,280 @@ func (o *ABitOfEverythingServiceExistsOK) readResponse(response runtime.ClientRe
 
 	// response payload
 	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceExistsForbidden creates a ABitOfEverythingServiceExistsForbidden with default headers values
+func NewABitOfEverythingServiceExistsForbidden() *ABitOfEverythingServiceExistsForbidden {
+	return &ABitOfEverythingServiceExistsForbidden{}
+}
+
+/*
+ABitOfEverythingServiceExistsForbidden describes a response with status code 403, with default header values.
+
+Returned when the user does not have permission to access the resource.
+*/
+type ABitOfEverythingServiceExistsForbidden struct {
+	Payload any
+}
+
+// IsSuccess returns true when this a bit of everything service exists forbidden response has a 2xx status code
+func (o *ABitOfEverythingServiceExistsForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service exists forbidden response has a 3xx status code
+func (o *ABitOfEverythingServiceExistsForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service exists forbidden response has a 4xx status code
+func (o *ABitOfEverythingServiceExistsForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this a bit of everything service exists forbidden response has a 5xx status code
+func (o *ABitOfEverythingServiceExistsForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this a bit of everything service exists forbidden response a status code equal to that given
+func (o *ABitOfEverythingServiceExistsForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the a bit of everything service exists forbidden response
+func (o *ABitOfEverythingServiceExistsForbidden) Code() int {
+	return 403
+}
+
+func (o *ABitOfEverythingServiceExistsForbidden) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsForbidden %s", 403, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsForbidden) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsForbidden %s", 403, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsForbidden) GetPayload() any {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceExistsForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceExistsNotFound creates a ABitOfEverythingServiceExistsNotFound with default headers values
+func NewABitOfEverythingServiceExistsNotFound() *ABitOfEverythingServiceExistsNotFound {
+	return &ABitOfEverythingServiceExistsNotFound{}
+}
+
+/*
+ABitOfEverythingServiceExistsNotFound describes a response with status code 404, with default header values.
+
+Returned when the resource does not exist.
+*/
+type ABitOfEverythingServiceExistsNotFound struct {
+	Payload string
+}
+
+// IsSuccess returns true when this a bit of everything service exists not found response has a 2xx status code
+func (o *ABitOfEverythingServiceExistsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service exists not found response has a 3xx status code
+func (o *ABitOfEverythingServiceExistsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service exists not found response has a 4xx status code
+func (o *ABitOfEverythingServiceExistsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this a bit of everything service exists not found response has a 5xx status code
+func (o *ABitOfEverythingServiceExistsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this a bit of everything service exists not found response a status code equal to that given
+func (o *ABitOfEverythingServiceExistsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the a bit of everything service exists not found response
+func (o *ABitOfEverythingServiceExistsNotFound) Code() int {
+	return 404
+}
+
+func (o *ABitOfEverythingServiceExistsNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsNotFound %s", 404, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsNotFound %s", 404, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsNotFound) GetPayload() string {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceExistsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceExistsIMATeapot creates a ABitOfEverythingServiceExistsIMATeapot with default headers values
+func NewABitOfEverythingServiceExistsIMATeapot() *ABitOfEverythingServiceExistsIMATeapot {
+	return &ABitOfEverythingServiceExistsIMATeapot{}
+}
+
+/*
+ABitOfEverythingServiceExistsIMATeapot describes a response with status code 418, with default header values.
+
+I'm a teapot.
+*/
+type ABitOfEverythingServiceExistsIMATeapot struct {
+	Payload models.ExamplepbNumericEnum
+}
+
+// IsSuccess returns true when this a bit of everything service exists i m a teapot response has a 2xx status code
+func (o *ABitOfEverythingServiceExistsIMATeapot) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service exists i m a teapot response has a 3xx status code
+func (o *ABitOfEverythingServiceExistsIMATeapot) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service exists i m a teapot response has a 4xx status code
+func (o *ABitOfEverythingServiceExistsIMATeapot) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this a bit of everything service exists i m a teapot response has a 5xx status code
+func (o *ABitOfEverythingServiceExistsIMATeapot) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this a bit of everything service exists i m a teapot response a status code equal to that given
+func (o *ABitOfEverythingServiceExistsIMATeapot) IsCode(code int) bool {
+	return code == 418
+}
+
+// Code gets the status code for the a bit of everything service exists i m a teapot response
+func (o *ABitOfEverythingServiceExistsIMATeapot) Code() int {
+	return 418
+}
+
+func (o *ABitOfEverythingServiceExistsIMATeapot) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsIMATeapot %s", 418, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsIMATeapot) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsIMATeapot %s", 418, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsIMATeapot) GetPayload() models.ExamplepbNumericEnum {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceExistsIMATeapot) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceExistsInternalServerError creates a ABitOfEverythingServiceExistsInternalServerError with default headers values
+func NewABitOfEverythingServiceExistsInternalServerError() *ABitOfEverythingServiceExistsInternalServerError {
+	return &ABitOfEverythingServiceExistsInternalServerError{}
+}
+
+/*
+ABitOfEverythingServiceExistsInternalServerError describes a response with status code 500, with default header values.
+
+Server error
+*/
+type ABitOfEverythingServiceExistsInternalServerError struct {
+	Payload *models.ExamplepbErrorResponse
+}
+
+// IsSuccess returns true when this a bit of everything service exists internal server error response has a 2xx status code
+func (o *ABitOfEverythingServiceExistsInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service exists internal server error response has a 3xx status code
+func (o *ABitOfEverythingServiceExistsInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service exists internal server error response has a 4xx status code
+func (o *ABitOfEverythingServiceExistsInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this a bit of everything service exists internal server error response has a 5xx status code
+func (o *ABitOfEverythingServiceExistsInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this a bit of everything service exists internal server error response a status code equal to that given
+func (o *ABitOfEverythingServiceExistsInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the a bit of everything service exists internal server error response
+func (o *ABitOfEverythingServiceExistsInternalServerError) Code() int {
+	return 500
+}
+
+func (o *ABitOfEverythingServiceExistsInternalServerError) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsInternalServerError %s", 500, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsInternalServerError) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[HEAD /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceExistsInternalServerError %s", 500, payload)
+}
+
+func (o *ABitOfEverythingServiceExistsInternalServerError) GetPayload() *models.ExamplepbErrorResponse {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceExistsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ExamplepbErrorResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
