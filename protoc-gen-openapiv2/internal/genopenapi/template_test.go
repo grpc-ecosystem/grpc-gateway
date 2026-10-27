@@ -3733,6 +3733,102 @@ func TestValidateDefaultValueType(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateFileResponsesAllMethods(t *testing.T) {
+	httpMethods := []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	var bindings []*descriptor.Binding
+	for _, httpMethod := range httpMethods {
+		bindings = append(bindings, &descriptor.Binding{
+			HTTPMethod: httpMethod,
+			PathTmpl: httprule.Template{
+				Version:  1,
+				OpCodes:  []int{0, 0},
+				Template: "/v1/echo",
+			},
+		})
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings:              bindings,
+					},
+				},
+			},
+		},
+	}
+	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &openapi_options.Swagger{
+		Responses: map[string]*openapi_options.Response{
+			"404": {Description: "Returned when the resource does not exist."},
+		},
+	})
+
+	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Fatalf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+	}
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(reqFromFile(fileCL)); err != nil {
+		t.Fatalf("reg.Load(%#v) failed with %v; want success", file, err)
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	pathItem := result.getPathItemObject("/v1/echo")
+	for _, httpMethod := range httpMethods {
+		op := getOperation(pathItem, httpMethod)
+		if op == nil {
+			t.Errorf("%s /v1/echo: operation not found", httpMethod)
+			continue
+		}
+		resp, ok := op.Responses["404"]
+		if !ok {
+			t.Errorf("%s /v1/echo: file-level 404 response not applied", httpMethod)
+			continue
+		}
+		if want := "Returned when the resource does not exist."; resp.Description != want {
+			t.Errorf("%s /v1/echo: 404 description = %q, want %q", httpMethod, resp.Description, want)
+		}
+	}
+}
+
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),

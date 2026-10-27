@@ -28,6 +28,30 @@ func (o *ABitOfEverythingServiceCustomOptionsRequestReader) ReadResponse(respons
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewABitOfEverythingServiceCustomOptionsRequestForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 404:
+		result := NewABitOfEverythingServiceCustomOptionsRequestNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 418:
+		result := NewABitOfEverythingServiceCustomOptionsRequestIMATeapot()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewABitOfEverythingServiceCustomOptionsRequestInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		result := NewABitOfEverythingServiceCustomOptionsRequestDefault(response.Code())
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -102,6 +126,280 @@ func (o *ABitOfEverythingServiceCustomOptionsRequestOK) readResponse(response ru
 
 	// response payload
 	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceCustomOptionsRequestForbidden creates a ABitOfEverythingServiceCustomOptionsRequestForbidden with default headers values
+func NewABitOfEverythingServiceCustomOptionsRequestForbidden() *ABitOfEverythingServiceCustomOptionsRequestForbidden {
+	return &ABitOfEverythingServiceCustomOptionsRequestForbidden{}
+}
+
+/*
+ABitOfEverythingServiceCustomOptionsRequestForbidden describes a response with status code 403, with default header values.
+
+Returned when the user does not have permission to access the resource.
+*/
+type ABitOfEverythingServiceCustomOptionsRequestForbidden struct {
+	Payload any
+}
+
+// IsSuccess returns true when this a bit of everything service custom options request forbidden response has a 2xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service custom options request forbidden response has a 3xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service custom options request forbidden response has a 4xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this a bit of everything service custom options request forbidden response has a 5xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this a bit of everything service custom options request forbidden response a status code equal to that given
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the a bit of everything service custom options request forbidden response
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) Code() int {
+	return 403
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestForbidden %s", 403, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestForbidden %s", 403, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) GetPayload() any {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceCustomOptionsRequestNotFound creates a ABitOfEverythingServiceCustomOptionsRequestNotFound with default headers values
+func NewABitOfEverythingServiceCustomOptionsRequestNotFound() *ABitOfEverythingServiceCustomOptionsRequestNotFound {
+	return &ABitOfEverythingServiceCustomOptionsRequestNotFound{}
+}
+
+/*
+ABitOfEverythingServiceCustomOptionsRequestNotFound describes a response with status code 404, with default header values.
+
+Returned when the resource does not exist.
+*/
+type ABitOfEverythingServiceCustomOptionsRequestNotFound struct {
+	Payload string
+}
+
+// IsSuccess returns true when this a bit of everything service custom options request not found response has a 2xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service custom options request not found response has a 3xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service custom options request not found response has a 4xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this a bit of everything service custom options request not found response has a 5xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this a bit of everything service custom options request not found response a status code equal to that given
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the a bit of everything service custom options request not found response
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) Code() int {
+	return 404
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestNotFound %s", 404, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestNotFound %s", 404, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) GetPayload() string {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceCustomOptionsRequestIMATeapot creates a ABitOfEverythingServiceCustomOptionsRequestIMATeapot with default headers values
+func NewABitOfEverythingServiceCustomOptionsRequestIMATeapot() *ABitOfEverythingServiceCustomOptionsRequestIMATeapot {
+	return &ABitOfEverythingServiceCustomOptionsRequestIMATeapot{}
+}
+
+/*
+ABitOfEverythingServiceCustomOptionsRequestIMATeapot describes a response with status code 418, with default header values.
+
+I'm a teapot.
+*/
+type ABitOfEverythingServiceCustomOptionsRequestIMATeapot struct {
+	Payload models.ExamplepbNumericEnum
+}
+
+// IsSuccess returns true when this a bit of everything service custom options request i m a teapot response has a 2xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service custom options request i m a teapot response has a 3xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service custom options request i m a teapot response has a 4xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this a bit of everything service custom options request i m a teapot response has a 5xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this a bit of everything service custom options request i m a teapot response a status code equal to that given
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) IsCode(code int) bool {
+	return code == 418
+}
+
+// Code gets the status code for the a bit of everything service custom options request i m a teapot response
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) Code() int {
+	return 418
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestIMATeapot %s", 418, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestIMATeapot %s", 418, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) GetPayload() models.ExamplepbNumericEnum {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestIMATeapot) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewABitOfEverythingServiceCustomOptionsRequestInternalServerError creates a ABitOfEverythingServiceCustomOptionsRequestInternalServerError with default headers values
+func NewABitOfEverythingServiceCustomOptionsRequestInternalServerError() *ABitOfEverythingServiceCustomOptionsRequestInternalServerError {
+	return &ABitOfEverythingServiceCustomOptionsRequestInternalServerError{}
+}
+
+/*
+ABitOfEverythingServiceCustomOptionsRequestInternalServerError describes a response with status code 500, with default header values.
+
+Server error
+*/
+type ABitOfEverythingServiceCustomOptionsRequestInternalServerError struct {
+	Payload *models.ExamplepbErrorResponse
+}
+
+// IsSuccess returns true when this a bit of everything service custom options request internal server error response has a 2xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this a bit of everything service custom options request internal server error response has a 3xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this a bit of everything service custom options request internal server error response has a 4xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this a bit of everything service custom options request internal server error response has a 5xx status code
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this a bit of everything service custom options request internal server error response a status code equal to that given
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the a bit of everything service custom options request internal server error response
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) Code() int {
+	return 500
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestInternalServerError %s", 500, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[OPTIONS /v1/example/a_bit_of_everything/{uuidName}][%d] aBitOfEverythingServiceCustomOptionsRequestInternalServerError %s", 500, payload)
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) GetPayload() *models.ExamplepbErrorResponse {
+	return o.Payload
+}
+
+func (o *ABitOfEverythingServiceCustomOptionsRequestInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ExamplepbErrorResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
