@@ -108,6 +108,10 @@ func isValidGRPCMetadataKey(key string) bool {
 	// This means 0-9 a-z _ - .
 	// Only lowercase letters are valid in the wire protocol, but the client library will normalize
 	// uppercase ASCII to lowercase, so uppercase ASCII is also acceptable.
+	// An empty key is not a valid header name, and gRPC fails the call with one.
+	if key == "" {
+		return false
+	}
 	bytes := []byte(key) // gRPC validates strings on the byte level, not Unicode.
 	for _, ch := range bytes {
 		validLowercaseLetter := ch >= 'a' && ch <= 'z'
