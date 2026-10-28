@@ -2601,6 +2601,22 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 				}
 
 				for k, v := range spb.Responses {
+					var hdrs openapiHeadersObject
+					if v.Headers != nil {
+						var err error
+						hdrs, err = processHeaders(v.Headers)
+						if err != nil {
+							return nil, err
+						}
+					}
+					var exts []extension
+					if v.Extensions != nil {
+						var err error
+						exts, err = processExtensions(v.Extensions)
+						if err != nil {
+							return nil, err
+						}
+					}
 					for _, respMap := range maps {
 						if _, ok := respMap[k]; ok {
 							// Don't overwrite already existing Responses
@@ -2610,6 +2626,8 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 							Description: v.Description,
 							Schema:      openapiSchemaFromProtoSchema(v.Schema, p.reg, customRefs, nil),
 							Examples:    openapiExamplesFromProtoExamples(v.Examples),
+							Headers:     hdrs,
+							extensions:  exts,
 						}
 					}
 				}

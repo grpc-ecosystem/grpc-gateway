@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -338,7 +339,15 @@ func (o *SnakeEnumServiceSnakeEnumIMATeapot) readResponse(response runtime.Clien
 
 // NewSnakeEnumServiceSnakeEnumInternalServerError creates a SnakeEnumServiceSnakeEnumInternalServerError with default headers values
 func NewSnakeEnumServiceSnakeEnumInternalServerError() *SnakeEnumServiceSnakeEnumInternalServerError {
-	return &SnakeEnumServiceSnakeEnumInternalServerError{}
+	var (
+		// initialize headers with default values
+		xCorrelationIDDefault = strfmt.UUID("2438ac3c-37eb-4902-adef-ed16b4431030")
+	)
+
+	return &SnakeEnumServiceSnakeEnumInternalServerError{
+
+		XCorrelationID: xCorrelationIDDefault,
+	}
 }
 
 /*
@@ -347,6 +356,14 @@ SnakeEnumServiceSnakeEnumInternalServerError describes a response with status co
 Server error
 */
 type SnakeEnumServiceSnakeEnumInternalServerError struct {
+
+	/* Unique event identifier for server requests
+
+	   Format: uuid
+	   Default: "2438ac3c-37eb-4902-adef-ed16b4431030"
+	*/
+	XCorrelationID strfmt.UUID
+
 	Payload *models.ExamplepbErrorResponse
 }
 
@@ -395,6 +412,17 @@ func (o *SnakeEnumServiceSnakeEnumInternalServerError) GetPayload() *models.Exam
 }
 
 func (o *SnakeEnumServiceSnakeEnumInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// hydrates response header X-Correlation-Id
+	hdrXCorrelationID := response.GetHeader("X-Correlation-Id")
+
+	if hdrXCorrelationID != "" {
+		valxCorrelationId, err := formats.Parse("uuid", hdrXCorrelationID)
+		if err != nil {
+			return errors.InvalidType("X-Correlation-Id", "header", "strfmt.UUID", hdrXCorrelationID)
+		}
+		o.XCorrelationID = *(valxCorrelationId.(*strfmt.UUID))
+	}
 
 	o.Payload = new(models.ExamplepbErrorResponse)
 

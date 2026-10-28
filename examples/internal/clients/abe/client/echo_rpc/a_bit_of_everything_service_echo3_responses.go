@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -346,7 +347,15 @@ func (o *ABitOfEverythingServiceEcho3IMATeapot) readResponse(response runtime.Cl
 
 // NewABitOfEverythingServiceEcho3InternalServerError creates a ABitOfEverythingServiceEcho3InternalServerError with default headers values
 func NewABitOfEverythingServiceEcho3InternalServerError() *ABitOfEverythingServiceEcho3InternalServerError {
-	return &ABitOfEverythingServiceEcho3InternalServerError{}
+	var (
+		// initialize headers with default values
+		xCorrelationIDDefault = strfmt.UUID("2438ac3c-37eb-4902-adef-ed16b4431030")
+	)
+
+	return &ABitOfEverythingServiceEcho3InternalServerError{
+
+		XCorrelationID: xCorrelationIDDefault,
+	}
 }
 
 /*
@@ -355,6 +364,14 @@ ABitOfEverythingServiceEcho3InternalServerError describes a response with status
 Server error
 */
 type ABitOfEverythingServiceEcho3InternalServerError struct {
+
+	/* Unique event identifier for server requests
+
+	   Format: uuid
+	   Default: "2438ac3c-37eb-4902-adef-ed16b4431030"
+	*/
+	XCorrelationID strfmt.UUID
+
 	Payload *models.ExamplepbErrorResponse
 }
 
@@ -403,6 +420,17 @@ func (o *ABitOfEverythingServiceEcho3InternalServerError) GetPayload() *models.E
 }
 
 func (o *ABitOfEverythingServiceEcho3InternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// hydrates response header X-Correlation-Id
+	hdrXCorrelationID := response.GetHeader("X-Correlation-Id")
+
+	if hdrXCorrelationID != "" {
+		valxCorrelationId, err := formats.Parse("uuid", hdrXCorrelationID)
+		if err != nil {
+			return errors.InvalidType("X-Correlation-Id", "header", "strfmt.UUID", hdrXCorrelationID)
+		}
+		o.XCorrelationID = *(valxCorrelationId.(*strfmt.UUID))
+	}
 
 	o.Payload = new(models.ExamplepbErrorResponse)
 

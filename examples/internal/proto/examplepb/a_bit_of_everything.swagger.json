@@ -83,6 +83,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -138,6 +147,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -609,6 +627,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "503": {
@@ -672,6 +699,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -732,6 +768,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -786,6 +831,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -1236,6 +1290,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -1692,6 +1755,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -2138,6 +2210,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -2609,6 +2690,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -3069,6 +3159,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -3131,6 +3230,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -3593,6 +3701,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -4056,6 +4173,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -4519,6 +4645,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -4982,6 +5117,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5033,6 +5177,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5095,6 +5248,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5335,6 +5497,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5379,6 +5550,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5441,6 +5621,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5496,6 +5685,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5550,6 +5748,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5626,6 +5833,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5712,6 +5928,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -5783,6 +6008,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6110,6 +6344,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6439,6 +6682,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "503": {
@@ -6506,6 +6758,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "503": {
@@ -6570,6 +6831,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6615,6 +6885,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6660,6 +6939,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6717,6 +7005,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6765,6 +7062,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6826,6 +7132,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6871,6 +7186,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6932,6 +7256,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -6989,6 +7322,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
@@ -7053,6 +7395,15 @@
             "description": "Server error",
             "schema": {
               "$ref": "#/definitions/examplepbErrorResponse"
+            },
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Unique event identifier for server requests",
+                "type": "string",
+                "format": "uuid",
+                "default": "2438ac3c-37eb-4902-adef-ed16b4431030",
+                "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+              }
             }
           },
           "default": {
