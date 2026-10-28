@@ -49,6 +49,11 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 		if err := applyOperationOverride(op, o); err != nil {
 			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
 		}
+		if o.GetOperationId() != "" && bindingIdx > 0 {
+			// Suffix additional bindings like the default ID so the
+			// operationId stays unique.
+			op.OperationID = fmt.Sprintf("%s_%d", op.OperationID, bindingIdx)
+		}
 	}
 	return op, nil
 }

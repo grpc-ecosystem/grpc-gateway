@@ -1142,6 +1142,32 @@ func TestGenerate_Binding(t *testing.T) {
 	}
 }
 
+// TestGenerate_OperationIDAdditionalBindings checks that an annotated
+// operation_id is suffixed for additional bindings, like the default ID,
+// instead of failing the duplicate operationId check.
+func TestGenerate_OperationIDAdditionalBindings(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/operation_id_bindings.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	paths, _ := doc["paths"].(map[string]any)
+	for path, want := range map[string]string{
+		"/v1/books/{id}":         "getBook",
+		"/v1/library/books/{id}": "getBook_1",
+	} {
+		get, _ := paths[path].(map[string]any)["get"].(map[string]any)
+		if get["operationId"] != want {
+			t.Errorf("%s: want operationId %q, got %v", path, want, get["operationId"])
+		}
+	}
+}
+
 // TestGenerate_NestedPathParam checks that a nested field bound to a path
 // parameter ({id.value}) is not also emitted as a query parameter, while its
 // sibling fields and other fields of the same message type still are.
