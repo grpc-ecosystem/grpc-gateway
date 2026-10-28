@@ -1451,6 +1451,43 @@ func TestServeMux_EscapedPathSeparatorHexCase(t *testing.T) {
 	}
 }
 
+func TestServeMux_MultiSegmentVariableKeepsEscapedSeparator(t *testing.T) {
+	// google.api.http leaves %2F escaped in a variable spanning several
+	// segments, such as {name=projects/*/secrets/*}. Decoding it in one of the
+	// "*" segments would bind a name with more segments than the template
+	// allows, e.g. a secret version's name on the secret's method.
+	for _, mode := range []runtime.UnescapingMode{
+		runtime.UnescapingModeAllExceptReserved,
+		runtime.UnescapingModeAllExceptSlash,
+	} {
+		for _, tt := range []struct {
+			reqPath string
+			want    string
+		}{
+			{"/v1/projects/p1/secrets/s1%2Fversions%2F3", "projects/p1/secrets/s1%2Fversions%2F3"},
+			{"/v1/projects/p1%2fsecrets%2fs2/secrets/s1", "projects/p1%2fsecrets%2fs2/secrets/s1"},
+			{"/v1/projects/p1/secrets/a%40b", "projects/p1/secrets/a@b"},
+		} {
+			mux := runtime.NewServeMux(runtime.WithUnescapingMode(mode))
+			var got string
+			err := mux.HandlePath("GET", "/v1/{name=projects/*/secrets/*}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+				got = pathParams["name"]
+			})
+			if err != nil {
+				t.Fatalf("mux.HandlePath failed: %v", err)
+			}
+
+			r := httptest.NewRequest("GET", tt.reqPath, nil)
+			w := httptest.NewRecorder()
+			mux.ServeHTTP(w, r)
+			if w.Code != http.StatusOK || got != tt.want {
+				t.Errorf("unescaping mode %d, GET %s: w.Code=%d name=%q; want %d, %q",
+					mode, tt.reqPath, w.Code, got, http.StatusOK, tt.want)
+			}
+		}
+	}
+}
+
 // BenchmarkMuxServeHTTP routes a request whose path splits into many
 // components against a mux with many registered patterns, none of which match.
 // The routing cost has to stay proportional to the path, not to the path
