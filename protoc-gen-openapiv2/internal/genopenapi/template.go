@@ -1516,10 +1516,12 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 	return tags
 }
 
-// findServiceIndex finds the index of a service within its file's service list.
+// findServiceIndex finds the index of a service among the service declarations
+// of its file, which is the index used by source code info paths. It cannot use
+// svc.File.Services, because the registry leaves out services without methods.
 func findServiceIndex(svc *descriptor.Service) int {
-	for i, s := range svc.File.Services {
-		if s == svc {
+	for i, s := range svc.File.GetService() {
+		if s == svc.ServiceDescriptorProto {
 			return i
 		}
 	}
@@ -1607,14 +1609,9 @@ func expandPathPatterns(pathParts []string, pathParams []descriptor.Parameter, r
 }
 
 func renderServices(services []*descriptor.Service, paths *openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message, defs openapiDefinitionsObject) error {
-	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
-	svcBaseIdx := 0
-	var lastFile *descriptor.File = nil
-	for svcIdx, svc := range services {
-		if svc.File != lastFile {
-			lastFile = svc.File
-			svcBaseIdx = svcIdx
-		}
+	for _, svc := range services {
+		// Correctness of methIdx depends on 'svc.Methods' containing the methods in the same order as the 'service.Method' array.
+		svcIdx := findServiceIndex(svc)
 
 		if !isVisible(getServiceVisibilityOption(svc), reg) {
 			continue
@@ -2087,7 +2084,7 @@ func renderServices(services []*descriptor.Service, paths *openapiPathsObject, r
 					}
 				}
 
-				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx-svcBaseIdx), methProtoPath, int32(methIdx))
+				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
 				if err := updateOpenAPIDataFromComments(reg, operationObject, meth, methComments, false); err != nil {
 					panic(err)
 				}
