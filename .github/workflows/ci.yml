@@ -50,7 +50,7 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:78d2f4a762a4e9ae4e1a1128434ef0f80616364e89bb22ff312d3d2ebe19e51e
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:b4511e0aedb7cfaca90a023aaa17b65b2f90ea807fad09bf75c74d90070aeadf
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -76,7 +76,7 @@ jobs:
           ':(glob,exclude)examples/internal/clients/**/BUILD.bazel'
   bazel:
     container:
-      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:78d2f4a762a4e9ae4e1a1128434ef0f80616364e89bb22ff312d3d2ebe19e51e
+      image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:b4511e0aedb7cfaca90a023aaa17b65b2f90ea807fad09bf75c74d90070aeadf
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
