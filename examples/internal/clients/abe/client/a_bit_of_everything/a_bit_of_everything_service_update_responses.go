@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -338,7 +339,15 @@ func (o *ABitOfEverythingServiceUpdateIMATeapot) readResponse(response runtime.C
 
 // NewABitOfEverythingServiceUpdateInternalServerError creates a ABitOfEverythingServiceUpdateInternalServerError with default headers values
 func NewABitOfEverythingServiceUpdateInternalServerError() *ABitOfEverythingServiceUpdateInternalServerError {
-	return &ABitOfEverythingServiceUpdateInternalServerError{}
+	var (
+		// initialize headers with default values
+		xCorrelationIDDefault = strfmt.UUID("2438ac3c-37eb-4902-adef-ed16b4431030")
+	)
+
+	return &ABitOfEverythingServiceUpdateInternalServerError{
+
+		XCorrelationID: xCorrelationIDDefault,
+	}
 }
 
 /*
@@ -347,6 +356,14 @@ ABitOfEverythingServiceUpdateInternalServerError describes a response with statu
 Server error
 */
 type ABitOfEverythingServiceUpdateInternalServerError struct {
+
+	/* Unique event identifier for server requests
+
+	   Format: uuid
+	   Default: "2438ac3c-37eb-4902-adef-ed16b4431030"
+	*/
+	XCorrelationID strfmt.UUID
+
 	Payload *models.ExamplepbErrorResponse
 }
 
@@ -395,6 +412,17 @@ func (o *ABitOfEverythingServiceUpdateInternalServerError) GetPayload() *models.
 }
 
 func (o *ABitOfEverythingServiceUpdateInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// hydrates response header X-Correlation-Id
+	hdrXCorrelationID := response.GetHeader("X-Correlation-Id")
+
+	if hdrXCorrelationID != "" {
+		valxCorrelationId, err := formats.Parse("uuid", hdrXCorrelationID)
+		if err != nil {
+			return errors.InvalidType("X-Correlation-Id", "header", "strfmt.UUID", hdrXCorrelationID)
+		}
+		o.XCorrelationID = *(valxCorrelationId.(*strfmt.UUID))
+	}
 
 	o.Payload = new(models.ExamplepbErrorResponse)
 

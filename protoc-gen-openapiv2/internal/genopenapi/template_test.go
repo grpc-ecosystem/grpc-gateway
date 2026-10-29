@@ -3829,6 +3829,118 @@ func TestApplyTemplateFileResponsesAllMethods(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateFileResponsesHeadersAndExtensions(t *testing.T) {
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &openapi_options.Swagger{
+		Responses: map[string]*openapi_options.Response{
+			"500": {
+				Description: "Server error",
+				Headers: map[string]*openapi_options.Header{
+					"x-request-id": {
+						Description: "Request identifier",
+						Type:        "string",
+						Format:      "uuid",
+					},
+				},
+				Extensions: map[string]*structpb.Value{
+					"x-resp-id": {Kind: &structpb.Value_StringValue{StringValue: "resp500"}},
+				},
+			},
+		},
+	})
+
+	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Fatalf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+	}
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(reqFromFile(fileCL)); err != nil {
+		t.Fatalf("reg.Load(%#v) failed with %v; want success", file, err)
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	op := result.getPathItemObject("/v1/echo").Get
+	if op == nil {
+		t.Fatal("GET /v1/echo: operation not found")
+	}
+	resp, ok := op.Responses["500"]
+	if !ok {
+		t.Fatal("GET /v1/echo: file-level 500 response not applied")
+	}
+	wantHeaders := openapiHeadersObject{
+		"X-Request-Id": {
+			Description: "Request identifier",
+			Type:        "string",
+			Format:      "uuid",
+		},
+	}
+	if !reflect.DeepEqual(resp.Headers, wantHeaders) {
+		t.Errorf("GET /v1/echo: 500 headers = %#v, want %#v", resp.Headers, wantHeaders)
+	}
+	wantExts := []extension{
+		{key: "x-resp-id", value: json.RawMessage("\"resp500\"")},
+	}
+	if !reflect.DeepEqual(resp.extensions, wantExts) {
+		t.Errorf("GET /v1/echo: 500 extensions = %#v, want %#v", resp.extensions, wantExts)
+	}
+}
+
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),

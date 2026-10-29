@@ -343,7 +343,15 @@ func (o *ABitOfEverythingServiceUpdateV22IMATeapot) readResponse(response runtim
 
 // NewABitOfEverythingServiceUpdateV22InternalServerError creates a ABitOfEverythingServiceUpdateV22InternalServerError with default headers values
 func NewABitOfEverythingServiceUpdateV22InternalServerError() *ABitOfEverythingServiceUpdateV22InternalServerError {
-	return &ABitOfEverythingServiceUpdateV22InternalServerError{}
+	var (
+		// initialize headers with default values
+		xCorrelationIDDefault = strfmt.UUID("2438ac3c-37eb-4902-adef-ed16b4431030")
+	)
+
+	return &ABitOfEverythingServiceUpdateV22InternalServerError{
+
+		XCorrelationID: xCorrelationIDDefault,
+	}
 }
 
 /*
@@ -352,6 +360,14 @@ ABitOfEverythingServiceUpdateV22InternalServerError describes a response with st
 Server error
 */
 type ABitOfEverythingServiceUpdateV22InternalServerError struct {
+
+	/* Unique event identifier for server requests
+
+	   Format: uuid
+	   Default: "2438ac3c-37eb-4902-adef-ed16b4431030"
+	*/
+	XCorrelationID strfmt.UUID
+
 	Payload *models.ExamplepbErrorResponse
 }
 
@@ -400,6 +416,17 @@ func (o *ABitOfEverythingServiceUpdateV22InternalServerError) GetPayload() *mode
 }
 
 func (o *ABitOfEverythingServiceUpdateV22InternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// hydrates response header X-Correlation-Id
+	hdrXCorrelationID := response.GetHeader("X-Correlation-Id")
+
+	if hdrXCorrelationID != "" {
+		valxCorrelationId, err := formats.Parse("uuid", hdrXCorrelationID)
+		if err != nil {
+			return errors.InvalidType("X-Correlation-Id", "header", "strfmt.UUID", hdrXCorrelationID)
+		}
+		o.XCorrelationID = *(valxCorrelationId.(*strfmt.UUID))
+	}
 
 	o.Payload = new(models.ExamplepbErrorResponse)
 

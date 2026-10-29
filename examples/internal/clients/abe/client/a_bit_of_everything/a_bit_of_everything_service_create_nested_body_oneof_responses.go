@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -340,7 +341,15 @@ func (o *ABitOfEverythingServiceCreateNestedBodyOneofIMATeapot) readResponse(res
 
 // NewABitOfEverythingServiceCreateNestedBodyOneofInternalServerError creates a ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError with default headers values
 func NewABitOfEverythingServiceCreateNestedBodyOneofInternalServerError() *ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError {
-	return &ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError{}
+	var (
+		// initialize headers with default values
+		xCorrelationIDDefault = strfmt.UUID("2438ac3c-37eb-4902-adef-ed16b4431030")
+	)
+
+	return &ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError{
+
+		XCorrelationID: xCorrelationIDDefault,
+	}
 }
 
 /*
@@ -349,6 +358,14 @@ ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError describes a resp
 Server error
 */
 type ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError struct {
+
+	/* Unique event identifier for server requests
+
+	   Format: uuid
+	   Default: "2438ac3c-37eb-4902-adef-ed16b4431030"
+	*/
+	XCorrelationID strfmt.UUID
+
 	Payload *models.ExamplepbErrorResponse
 }
 
@@ -397,6 +414,17 @@ func (o *ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError) GetPay
 }
 
 func (o *ABitOfEverythingServiceCreateNestedBodyOneofInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// hydrates response header X-Correlation-Id
+	hdrXCorrelationID := response.GetHeader("X-Correlation-Id")
+
+	if hdrXCorrelationID != "" {
+		valxCorrelationId, err := formats.Parse("uuid", hdrXCorrelationID)
+		if err != nil {
+			return errors.InvalidType("X-Correlation-Id", "header", "strfmt.UUID", hdrXCorrelationID)
+		}
+		o.XCorrelationID = *(valxCorrelationId.(*strfmt.UUID))
+	}
 
 	o.Payload = new(models.ExamplepbErrorResponse)
 
