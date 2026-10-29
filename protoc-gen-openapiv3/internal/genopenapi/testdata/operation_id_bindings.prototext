@@ -1,0 +1,48 @@
+file_to_generate: "opid/v1/opid.proto"
+proto_file: {
+  name: "opid/v1/opid.proto"
+  package: "opid.v1"
+  message_type: {
+    name: "GetBookRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "Book"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "BookService"
+    method: {
+      name: "GetBook"
+      input_type: ".opid.v1.GetBookRequest"
+      output_type: ".opid.v1.Book"
+      options: {
+        [google.api.http]: {
+          get: "/v1/books/{id}"
+          additional_bindings: {
+            get: "/v1/library/books/{id}"
+          }
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          operation_id: "getBook"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/opid/v1;opidv1"
+  }
+  syntax: "proto3"
+}

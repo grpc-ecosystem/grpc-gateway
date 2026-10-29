@@ -197,7 +197,8 @@ The mapping from proto constructs to OpenAPI is fixed and summarised below.
 
 The default `operationId` is `<Service>_<Method>`. When a method has multiple
 HTTP bindings, the first uses the bare ID and subsequent bindings append
-`_1`, `_2`, ... so the spec remains valid.
+`_1`, `_2`, ... so the spec remains valid. An `operation_id` set with
+`openapiv3_operation` is suffixed the same way.
 
 The service's tag is named after the service and described by its leading
 comment. The service-level `openapiv3_tag` annotation overrides it: a
