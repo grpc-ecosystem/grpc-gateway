@@ -276,7 +276,7 @@
   "moduleExtensions": {
     "//:non_module_deps.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "Hq+5O2Rai/he/657JsPHZWvCoVAk+hc9/iiNt7zFmpw=",
+        "bzlTransitiveDigest": "VFPK01y/p72uTKswIqrrv/F9H3BIU++t0dkH/mtD0oc=",
         "usagesDigest": "iXvfBtzAbLvbLe9kllQpE1XGaenkPW3Qmggx56ZxOoQ=",
         "recordedInputs": [
           "REPO_MAPPING:,bazel_tools bazel_tools"
@@ -285,10 +285,10 @@
           "com_github_bazelbuild_buildtools": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
-              "sha256": "fa0b905032d49a621679e7318875736e451895a1417d992fbbebd27f82b83c38",
-              "strip_prefix": "buildtools-10.1.0",
+              "sha256": "5af90068e9e8812abdc455ad04cc474470bccc8bbabc8b571e3f58a66799680f",
+              "strip_prefix": "buildtools-10.2.0",
               "urls": [
-                "https://github.com/bazelbuild/buildtools/archive/v10.1.0.tar.gz"
+                "https://github.com/bazelbuild/buildtools/archive/v10.2.0.tar.gz"
               ]
             }
           },
