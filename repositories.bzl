@@ -435,14 +435,14 @@ def go_repositories():
     go_repository(
         name = "com_github_go_openapi_runtime",
         importpath = "github.com/go-openapi/runtime",
-        sum = "h1:qVgTDaFH+pzO8UqlwYNVmx2DD+nwVK3rB65V29ednD0=",
-        version = "v0.33.3",
+        sum = "h1:Rx/XxCbl0CYIURslbmGFEdCz3q4CEaQANR0uy1z7HSc=",
+        version = "v0.33.4",
     )
     go_repository(
         name = "com_github_go_openapi_runtime_server_middleware",
         importpath = "github.com/go-openapi/runtime/server-middleware",
-        sum = "h1:Td5UBla/J/KCjlsD0tmZYWQWxnT4gHpfXbueLQv9Umw=",
-        version = "v0.33.3",
+        sum = "h1:pG+4Po10HYrXhX2z/6zSB3zUoFmP5xOQ36nA2UxC6II=",
+        version = "v0.33.4",
     )
     go_repository(
         name = "com_github_go_openapi_spec",
@@ -2570,8 +2570,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_net",
         importpath = "golang.org/x/net",
-        sum = "h1:RR+6j/BTBCrggOLugxa+66R8FvoN6MHlzDlZIbN9YFw=",
-        version = "v0.61.0",
+        sum = "h1:18ELalfM5+XNRwzM2nYqXsZQ9ByS1uhj2O/U7+5jqRY=",
+        version = "v0.62.0",
     )
     go_repository(
         name = "org_golang_x_oauth2",
