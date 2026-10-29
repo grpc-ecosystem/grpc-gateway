@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
@@ -29,6 +30,7 @@ import (
 var (
 	_ codes.Code
 	_ io.Reader
+	_ json.Token
 	_ status.Status
 	_ = errors.New
 	_ = runtime.String
@@ -124,11 +126,17 @@ func request_OpaqueEcommerceService_OpaqueCreateProduct_0(ctx context.Context, m
 		protoReq OpaqueCreateProductRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	var bodyData OpaqueCreateProductRequest
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &bodyData); err != nil {
+	if err := dec.Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
@@ -141,11 +149,17 @@ func local_request_OpaqueEcommerceService_OpaqueCreateProduct_0(ctx context.Cont
 		protoReq OpaqueCreateProductRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	var bodyData OpaqueCreateProductRequest
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &bodyData); err != nil {
+	if err := dec.Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	msg, err := server.OpaqueCreateProduct(ctx, &protoReq)
 	return msg, metadata, err
 }
@@ -157,11 +171,17 @@ func request_OpaqueEcommerceService_OpaqueCreateProductField_0(ctx context.Conte
 		protoReq OpaqueCreateProductFieldRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	bodyData := &OpaqueProduct{}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -180,11 +200,17 @@ func local_request_OpaqueEcommerceService_OpaqueCreateProductField_0(ctx context
 		protoReq OpaqueCreateProductFieldRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	bodyData := &OpaqueProduct{}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -291,11 +317,17 @@ func request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Context, m
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
+	dec := marshaler.NewDecoder(newReader())
 	bodyData := &OpaqueProduct{}
-	if err := runtime.DecodeRequestBody(marshaler, newReader(), bodyData); err != nil {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	if !protoReq.HasUpdateMask() || len(protoReq.GetUpdateMask().GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.GetProduct()); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -334,11 +366,17 @@ func local_request_OpaqueEcommerceService_OpaqueUpdateProduct_0(ctx context.Cont
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
+	dec := marshaler.NewDecoder(newReader())
 	bodyData := &OpaqueProduct{}
-	if err := runtime.DecodeRequestBody(marshaler, newReader(), bodyData); err != nil {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetProduct(bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	if !protoReq.HasUpdateMask() || len(protoReq.GetUpdateMask().GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.GetProduct()); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -438,11 +476,17 @@ func request_OpaqueEcommerceService_OpaqueEchoNote_0(ctx context.Context, marsha
 		protoReq OpaqueEchoNoteRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	bodyData := &sub.StringMessage{}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetNote(bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
 	}
@@ -455,11 +499,17 @@ func local_request_OpaqueEcommerceService_OpaqueEchoNote_0(ctx context.Context, 
 		protoReq OpaqueEchoNoteRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	bodyData := &sub.StringMessage{}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, bodyData); err != nil {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.SetNote(bodyData)
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	msg, err := server.OpaqueEchoNote(ctx, &protoReq)
 	return msg, metadata, err
 }

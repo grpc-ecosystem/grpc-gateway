@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
@@ -28,6 +29,7 @@ import (
 var (
 	_ codes.Code
 	_ io.Reader
+	_ json.Token
 	_ status.Status
 	_ = errors.New
 	_ = runtime.String
@@ -40,8 +42,14 @@ func request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context, marsh
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -55,8 +63,14 @@ func local_request_GenerateUnboundMethodsEchoService_Echo_0(ctx context.Context,
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.Echo(ctx, &protoReq)
 	return msg, metadata, err
@@ -67,8 +81,14 @@ func request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Context, m
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -82,8 +102,14 @@ func local_request_GenerateUnboundMethodsEchoService_EchoBody_0(ctx context.Cont
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.EchoBody(ctx, &protoReq)
 	return msg, metadata, err
@@ -94,8 +120,14 @@ func request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Context,
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -109,8 +141,14 @@ func local_request_GenerateUnboundMethodsEchoService_EchoDelete_0(ctx context.Co
 		protoReq GenerateUnboundMethodsSimpleMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.EchoDelete(ctx, &protoReq)
 	return msg, metadata, err

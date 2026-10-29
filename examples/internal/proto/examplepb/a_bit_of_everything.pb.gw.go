@@ -10,6 +10,7 @@ package examplepb
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
@@ -33,6 +34,7 @@ import (
 var (
 	_ codes.Code
 	_ io.Reader
+	_ json.Token
 	_ status.Status
 	_ = errors.New
 	_ = runtime.String
@@ -396,8 +398,14 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 		protoReq ABitOfEverything
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -411,8 +419,14 @@ func local_request_ABitOfEverythingService_CreateBody_0(ctx context.Context, mar
 		protoReq ABitOfEverything
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.CreateBody(ctx, &protoReq)
 	return msg, metadata, err
@@ -424,8 +438,14 @@ func request_ABitOfEverythingService_UpdateEntity_0(ctx context.Context, marshal
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["id.value"]
 	if !ok {
@@ -448,8 +468,14 @@ func local_request_ABitOfEverythingService_UpdateEntity_0(ctx context.Context, m
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["id.value"]
 	if !ok {
@@ -471,8 +497,14 @@ func request_ABitOfEverythingService_CreateBook_0(ctx context.Context, marshaler
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Book); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["parent"]
 	if !ok {
@@ -501,8 +533,14 @@ func local_request_ABitOfEverythingService_CreateBook_0(ctx context.Context, mar
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Book); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["parent"]
 	if !ok {
@@ -534,8 +572,14 @@ func request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, marshaler
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, newReader(), &protoReq.Book); err != nil {
+	dec := marshaler.NewDecoder(newReader())
+	if err := dec.Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Book); err != nil {
@@ -575,8 +619,14 @@ func local_request_ABitOfEverythingService_UpdateBook_0(ctx context.Context, mar
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, newReader(), &protoReq.Book); err != nil {
+	dec := marshaler.NewDecoder(newReader())
+	if err := dec.Decode(&protoReq.Book); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Book); err != nil {
@@ -807,8 +857,14 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["uuid"]
 	if !ok {
@@ -831,8 +887,14 @@ func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshal
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["uuid"]
 	if !ok {
@@ -854,8 +916,14 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Abe); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["abe.uuid"]
 	if !ok {
@@ -884,8 +952,14 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Abe); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["abe.uuid"]
 	if !ok {
@@ -917,8 +991,14 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, newReader(), &protoReq.Abe); err != nil {
+	dec := marshaler.NewDecoder(newReader())
+	if err := dec.Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Abe); err != nil {
@@ -958,8 +1038,14 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, newReader(), &protoReq.Abe); err != nil {
+	dec := marshaler.NewDecoder(newReader())
+	if err := dec.Decode(&protoReq.Abe); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Abe); err != nil {
@@ -992,8 +1078,14 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["abe.uuid"]
 	if !ok {
@@ -1016,8 +1108,14 @@ func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marsh
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["abe.uuid"]
 	if !ok {
@@ -1038,6 +1136,7 @@ func request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.Context
 		protoReq NestedBodyOneofRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	if protoReq.Payload == nil {
 		protoReq.Payload = &NestedBodyOneof{}
 	}
@@ -1046,8 +1145,13 @@ func request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.Context
 	} else if _, ok := protoReq.Payload.Input.(*NestedBodyOneof_InputValue); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *NestedBodyOneof_InputValue, but: %t\n", protoReq.Payload.Input)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Payload.Input.(*NestedBodyOneof_InputValue).InputValue); err != nil {
+	if err := dec.Decode(&protoReq.Payload.Input.(*NestedBodyOneof_InputValue).InputValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -1067,6 +1171,7 @@ func local_request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.C
 		protoReq NestedBodyOneofRequest
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	if protoReq.Payload == nil {
 		protoReq.Payload = &NestedBodyOneof{}
 	}
@@ -1075,8 +1180,13 @@ func local_request_ABitOfEverythingService_CreateNestedBodyOneof_0(ctx context.C
 	} else if _, ok := protoReq.Payload.Input.(*NestedBodyOneof_InputValue); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *NestedBodyOneof_InputValue, but: %t\n", protoReq.Payload.Input)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Payload.Input.(*NestedBodyOneof_InputValue).InputValue); err != nil {
+	if err := dec.Decode(&protoReq.Payload.Input.(*NestedBodyOneof_InputValue).InputValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -1515,8 +1625,14 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 		protoReq sub.StringMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Value); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -1530,8 +1646,14 @@ func local_request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler
 		protoReq sub.StringMessage
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Value); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.Echo(ctx, &protoReq)
 	return msg, metadata, err
@@ -1578,8 +1700,14 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["single_nested.name"]
 	if !ok {
@@ -1602,8 +1730,14 @@ func local_request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, m
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["single_nested.name"]
 	if !ok {
@@ -1665,8 +1799,14 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Data); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Data); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["id"]
 	if !ok {
@@ -1689,8 +1829,14 @@ func local_request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Cont
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.Data); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.Data); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["id"]
 	if !ok {
@@ -1710,8 +1856,14 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["name"]
 	if !ok {
@@ -1734,8 +1886,14 @@ func local_request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Conte
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["name"]
 	if !ok {
@@ -1863,8 +2021,14 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.SingleNested); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.SingleNested); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["string_value"]
 	if !ok {
@@ -1893,8 +2057,14 @@ func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Co
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.SingleNested); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq.SingleNested); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	val, ok := pathParams["string_value"]
 	if !ok {
@@ -1919,8 +2089,14 @@ func request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx context.C
 		protoReq Body
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -1934,8 +2110,14 @@ func local_request_ABitOfEverythingService_OverwriteRequestContentType_0(ctx con
 		protoReq Body
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.OverwriteRequestContentType(ctx, &protoReq)
 	return msg, metadata, err
@@ -2233,13 +2415,19 @@ func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marsha
 		protoReq oneofenum.OneofEnumMessage
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	if protoReq.One == nil {
 		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
 	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil {
+	if err := dec.Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -2253,13 +2441,19 @@ func local_request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, 
 		protoReq oneofenum.OneofEnumMessage
 		metadata runtime.ServerMetadata
 	)
+	dec := marshaler.NewDecoder(req.Body)
 	if protoReq.One == nil {
 		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
 	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil {
+	if err := dec.Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.PostOneofEnum(ctx, &protoReq)
 	return msg, metadata, err
@@ -2270,8 +2464,14 @@ func request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context.Conte
 		protoReq RequiredMessageTypeRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -2285,8 +2485,14 @@ func local_request_ABitOfEverythingService_PostRequiredMessageType_0(ctx context
 		protoReq RequiredMessageTypeRequest
 		metadata runtime.ServerMetadata
 	)
-	if err := runtime.DecodeRequestBody(marshaler, req.Body, &protoReq); err != nil {
+	dec := marshaler.NewDecoder(req.Body)
+	if err := dec.Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
 	}
 	msg, err := server.PostRequiredMessageType(ctx, &protoReq)
 	return msg, metadata, err
