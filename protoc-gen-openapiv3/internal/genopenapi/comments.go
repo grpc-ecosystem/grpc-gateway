@@ -95,9 +95,16 @@ func splitSummaryDescription(comment string) (summary, description string) {
 	return summary, description
 }
 
+// serviceIndex returns the index of svc among the service declarations of its
+// file, which is the index used by source code info paths. It cannot use
+// svc.File.Services, because the registry leaves out services without methods.
+func serviceIndex(svc *descriptor.Service) int {
+	return slices.Index(svc.File.GetService(), svc.ServiceDescriptorProto)
+}
+
 // serviceComments returns the leading comment on a service declaration.
 func serviceComments(svc *descriptor.Service) string {
-	idx := slices.Index(svc.File.Services, svc)
+	idx := serviceIndex(svc)
 	if idx < 0 {
 		return ""
 	}
@@ -106,7 +113,7 @@ func serviceComments(svc *descriptor.Service) string {
 
 // methodComments returns the leading comment on a method declaration.
 func methodComments(m *descriptor.Method) string {
-	svcIdx := slices.Index(m.Service.File.Services, m.Service)
+	svcIdx := serviceIndex(m.Service)
 	if svcIdx < 0 {
 		return ""
 	}

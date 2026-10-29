@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -107,5 +108,40 @@ func TestExtractCommentsLineEndings(t *testing.T) {
 				t.Errorf("description = %q, want %q", desc, want)
 			}
 		})
+	}
+}
+
+func TestServiceAndMethodCommentsAfterEmptyService(t *testing.T) {
+	t.Parallel()
+	// The registry leaves the empty service out of File.Services, so the
+	// second service declaration is the first entry there.
+	emptySvc := &descriptorpb.ServiceDescriptorProto{Name: proto.String("Placeholder")}
+	getMethod := &descriptorpb.MethodDescriptorProto{Name: proto.String("Get")}
+	bookSvc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("BookService"),
+		Method: []*descriptorpb.MethodDescriptorProto{getMethod},
+	}
+	file := &descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			Service: []*descriptorpb.ServiceDescriptorProto{emptySvc, bookSvc},
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{
+				Location: []*descriptorpb.SourceCodeInfo_Location{
+					{Path: []int32{serviceProtoPath, 0}, LeadingComments: proto.String(" Placeholder service.\n")},
+					{Path: []int32{serviceProtoPath, 1}, LeadingComments: proto.String(" Manages books.\n")},
+					{Path: []int32{serviceProtoPath, 1, methodProtoPath, 0}, LeadingComments: proto.String(" Gets a book.\n")},
+				},
+			},
+		},
+	}
+	svc := &descriptor.Service{File: file, ServiceDescriptorProto: bookSvc}
+	meth := &descriptor.Method{Service: svc, MethodDescriptorProto: getMethod}
+	svc.Methods = []*descriptor.Method{meth}
+	file.Services = []*descriptor.Service{svc}
+
+	if got, want := serviceComments(svc), "Manages books."; got != want {
+		t.Errorf("serviceComments() = %q, want %q", got, want)
+	}
+	if got, want := methodComments(meth), "Gets a book."; got != want {
+		t.Errorf("methodComments() = %q, want %q", got, want)
 	}
 }

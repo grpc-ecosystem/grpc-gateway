@@ -326,6 +326,104 @@ func TestGeneratedYAMLIndent(t *testing.T) {
 	}
 }
 
+func TestGenerateCommentsAfterEmptyService(t *testing.T) {
+	t.Parallel()
+
+	// The registry leaves the empty Placeholder service out of the file's
+	// services, so BookService must not take Placeholder's comments.
+	const in = `
+	file_to_generate: "exampleproto/v1/example.proto"
+	proto_file: {
+		name: "exampleproto/v1/example.proto"
+		package: "example.v1"
+		message_type: {
+			name: "Book"
+		}
+		service: {
+			name: "Placeholder"
+		}
+		service: {
+			name: "BookService"
+			method: {
+				name: "GetBook"
+				input_type: ".example.v1.Book"
+				output_type: ".example.v1.Book"
+				options: {
+					[google.api.http]: {
+						get: "/v1/book"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "exampleproto/v1;exampleproto"
+		}
+		source_code_info: {
+			location: {
+				path: 6
+				path: 0
+				span: 4
+				span: 0
+				span: 22
+				leading_comments: " Placeholder service.\n"
+			}
+			location: {
+				path: 6
+				path: 1
+				span: 7
+				span: 0
+				span: 12
+				leading_comments: " Manages books.\n"
+			}
+			location: {
+				path: 6
+				path: 1
+				path: 2
+				path: 0
+				span: 9
+				span: 2
+				span: 14
+				leading_comments: " Gets a book.\n"
+			}
+		}
+		syntax: "proto3"
+	}
+	`
+
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+		t.Fatalf("failed to unmarshal request: %s", err)
+	}
+
+	resp := requireGenerate(t, &req, genopenapi.FormatJSON, false, false, false)
+	if len(resp) != 1 {
+		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+	}
+
+	var doc struct {
+		Tags []struct {
+			Name        string `json:"name"`
+			Description string `json:"description"`
+		} `json:"tags"`
+		Paths map[string]map[string]struct {
+			Summary string `json:"summary"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal([]byte(resp[0].GetContent()), &doc); err != nil {
+		t.Fatalf("failed to unmarshal output: %s", err)
+	}
+
+	if len(doc.Tags) != 1 || doc.Tags[0].Name != "BookService" {
+		t.Fatalf("tags = %+v, want one BookService tag", doc.Tags)
+	}
+	if got, want := doc.Tags[0].Description, "Manages books."; got != want {
+		t.Errorf("BookService tag description = %q, want %q", got, want)
+	}
+	if got, want := doc.Paths["/v1/book"]["get"].Summary, "Gets a book."; got != want {
+		t.Errorf("GetBook summary = %q, want %q", got, want)
+	}
+}
+
 func TestGenerateRPCOrderPreserved(t *testing.T) {
 	t.Parallel()
 
