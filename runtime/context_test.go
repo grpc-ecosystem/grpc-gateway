@@ -336,6 +336,34 @@ func TestAnnotateContext_DropsSpoofedXForwardedHeaders(t *testing.T) {
 	}
 }
 
+func TestAnnotateContext_SkipsEmptyMetadataKey(t *testing.T) {
+	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
+	request, err := http.NewRequestWithContext(ctx, "GET", "http://www.example.com", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequestWithContext(ctx, %q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
+	}
+	// LegacyHeaderMatcher strips the Grpc-Metadata- prefix, so this maps to an
+	// empty metadata key, which gRPC rejects by failing the whole call.
+	request.Header.Set("Grpc-Metadata-", "value")
+	request.Header.Set("Grpc-Metadata-Foo", "kept")
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(runtime.WithLegacyHeaderMatching()), request, expectedRPCName)
+	if err != nil {
+		t.Fatalf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok {
+		t.Fatal("metadata.FromOutgoingContext failed")
+	}
+	if got, ok := md[""]; ok {
+		t.Errorf(`md[""] = %q; want it to be absent`, got)
+	}
+	if got, want := md["foo"], []string{"kept"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["foo"] = %q; want %q`, got, want)
+	}
+}
+
 func TestAnnotateContext_AuthorizationPrecedesForwardedMetadata(t *testing.T) {
 	ctx := context.Background()
 	expectedRPCName := "/example.Example/Example"
