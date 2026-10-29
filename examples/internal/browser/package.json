@@ -11,7 +11,7 @@
   "devDependencies": {
     "gulp": "^5.0.0",
     "jasmine-core": "^5.5.0",
-    "playwright": "^1.49.1",
+    "playwright": "^1.64.1",
     "swagger-client": "^3.37.4",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
