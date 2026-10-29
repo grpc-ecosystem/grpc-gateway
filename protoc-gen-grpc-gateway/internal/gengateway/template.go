@@ -811,9 +811,9 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Server(ctx context.Cont
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		{{- if $b.PathTmpl }}
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{ $svc.File.GetPackage }}.{{ $svc.GetName }}/{{ $m.GetName }}", runtime.WithHTTPPathPattern("{{ $b.PathTmpl.Template }}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{ with $svc.File.GetPackage }}{{ . }}.{{ end }}{{ $svc.GetName }}/{{ $m.GetName }}", runtime.WithHTTPPathPattern("{{ $b.PathTmpl.Template }}"))
 		{{- else -}}
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{ $svc.File.GetPackage }}.{{ $svc.GetName }}/{{ $m.GetName }}")
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{ with $svc.File.GetPackage }}{{ . }}.{{ end }}{{ $svc.GetName }}/{{ $m.GetName }}")
 		{{- end }}
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -890,9 +890,9 @@ func Register{{ $svc.GetName }}{{ $.RegisterFuncSuffix }}Client(ctx context.Cont
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		{{- if $b.PathTmpl }}
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/{{ $svc.File.GetPackage }}.{{ $svc.GetName }}/{{ $m.GetName }}", runtime.WithHTTPPathPattern("{{ $b.PathTmpl.Template}}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/{{ with $svc.File.GetPackage }}{{ . }}.{{ end }}{{ $svc.GetName }}/{{ $m.GetName }}", runtime.WithHTTPPathPattern("{{ $b.PathTmpl.Template}}"))
 		{{- else -}}
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/{{ $svc.File.GetPackage }}.{{ $svc.GetName }}/{{ $m.GetName }}")
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/{{ with $svc.File.GetPackage }}{{ . }}.{{ end }}{{ $svc.GetName }}/{{ $m.GetName }}")
 		{{- end }}
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

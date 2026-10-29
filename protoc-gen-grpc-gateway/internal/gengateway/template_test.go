@@ -163,6 +163,77 @@ func TestApplyTemplateCustomMethod(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateRPCMethodName(t *testing.T) {
+	for _, spec := range []struct {
+		pkg  string
+		want string
+	}{
+		{pkg: "example.v1", want: "/example.v1.ExampleService/Echo"},
+		{pkg: "", want: "/ExampleService/Echo"},
+	} {
+		t.Run(spec.want, func(t *testing.T) {
+			msgdesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("ExampleMessage"),
+			}
+			meth := &descriptorpb.MethodDescriptorProto{
+				Name:       proto.String("Echo"),
+				InputType:  proto.String("ExampleMessage"),
+				OutputType: proto.String("ExampleMessage"),
+			}
+			svc := &descriptorpb.ServiceDescriptorProto{
+				Name:   proto.String("ExampleService"),
+				Method: []*descriptorpb.MethodDescriptorProto{meth},
+			}
+			msg := &descriptor.Message{
+				DescriptorProto: msgdesc,
+			}
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					Name:        proto.String("example.proto"),
+					MessageType: []*descriptorpb.DescriptorProto{msgdesc},
+					Service:     []*descriptorpb.ServiceDescriptorProto{svc},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: []*descriptor.Message{msg},
+				Services: []*descriptor.Service{
+					{
+						ServiceDescriptorProto: svc,
+						Methods: []*descriptor.Method{
+							{
+								MethodDescriptorProto: meth,
+								RequestType:           msg,
+								ResponseType:          msg,
+								Bindings: []*descriptor.Binding{
+									{
+										HTTPMethod: "POST",
+										PathTmpl:   compilePath(t, "/v1/echo"),
+										Body:       &descriptor.Body{FieldPath: nil},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			if spec.pkg != "" {
+				file.Package = proto.String(spec.pkg)
+			}
+			got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler"}, descriptor.NewRegistry())
+			if err != nil {
+				t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+			}
+			for _, fn := range []string{"runtime.AnnotateIncomingContext", "runtime.AnnotateContext"} {
+				if want := fn + `(ctx, mux, req, "` + spec.want + `"`; !strings.Contains(got, want) {
+					t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+				}
+			}
+		})
+	}
+}
+
 func TestApplyTemplateNestedResponseBody(t *testing.T) {
 	reqdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleRequest"),
