@@ -1,0 +1,23 @@
+# Plumber overlay: inherits every control from the CLI's built-in
+# baseline, only the differences for this repository are written here.
+# Run 'plumber config resolve' to see the full effective config.
+extends: plumber:default
+version: '2.0'
+
+github:
+  controls:
+    # The SLSA generator has to be referenced by its release tag, the
+    # verifier rejects a commit reference, so its owner is exempt from
+    # the pin requirement the way GitHub's own actions are.
+    actionsMustBePinnedByCommitSha:
+      trustedOwners:
+        - actions
+        - github
+        - slsa-framework
+
+    githubActionMustComeFromAuthorizedSources:
+      # Keep the curated default list and trust the release upload the
+      # SLSA generator runs on its own.
+      includePlumberDefaults: true
+      trustedGithubActions:
+        - softprops/action-gh-release

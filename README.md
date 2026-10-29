@@ -10,6 +10,7 @@ gRPC to JSON proxy generator following the gRPC HTTP spec
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/releases"><img src="https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/stargazers"><img src="https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 <a href="https://slsa.dev/images/gh-badge-level3.svg"><img src="https://slsa.dev/images/gh-badge-level3.svg"/></a>
+<a href="https://score.getplumber.io/github.com/grpc-ecosystem/grpc-gateway"><img src="https://score.getplumber.io/github.com/grpc-ecosystem/grpc-gateway.svg"/></a>
 
 </div>
 
