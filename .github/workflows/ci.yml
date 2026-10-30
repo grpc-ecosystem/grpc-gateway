@@ -18,6 +18,7 @@ jobs:
         with:
           persist-credentials: false
       - run: go build ./...
+      - run: go -C examples build ./...
   test:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +29,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go test ./...
+      - run: make test
   node_test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -63,6 +64,7 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
+      - run: go -C examples mod tidy
         # Make newly generated files visible with intent-to-add, and diff against HEAD
         # so staged and unstaged changes are both checked.
         # Lowercase "d" excludes deletions, so the first diff rejects all other changes.
@@ -115,7 +117,7 @@ jobs:
         run: bazel run //:gazelle && git add -N . && git diff --exit-code HEAD
       - name: Check that repositories.bzl is up-to-date
         run: |
-          bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories &&
+          bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories -prune &&
           git add -N . && git diff --exit-code HEAD
       - name: Check formatting of Bazel BUILD files
         run: bazel run //:buildifier && git add -N . && git diff --exit-code HEAD
