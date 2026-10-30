@@ -67,15 +67,9 @@ jobs:
       - run: go -C examples mod tidy
         # Make newly generated files visible with intent-to-add, and diff against HEAD
         # so staged and unstaged changes are both checked.
-        # Lowercase "d" excludes deletions, so the first diff rejects all other changes.
-        # Uppercase "D" selects only deletions. Allow deleted client BUILD.bazel files,
-        # which generation removes and the separate Bazel job regenerates with Gazelle.
-        # Added or modified client BUILD.bazel files still fail the first diff.
       - run: >-
           git add -N . &&
-          git diff --exit-code HEAD --diff-filter=d &&
-          git diff --exit-code HEAD --diff-filter=D -- .
-          ':(glob,exclude)examples/internal/clients/**/BUILD.bazel'
+          git diff --exit-code HEAD
   bazel:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:b4511e0aedb7cfaca90a023aaa17b65b2f90ea807fad09bf75c74d90070aeadf
@@ -160,3 +154,6 @@ jobs:
           go-version-file: 'go.mod'
           check-latest: true
       - run: go tool staticcheck ./...
+        # The examples module has no staticcheck tool directive, so run the binary
+        # pinned in the root go.mod against it.
+      - run: cd examples && "$(go -C .. tool -n staticcheck)" ./...

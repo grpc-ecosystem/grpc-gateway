@@ -36,7 +36,7 @@ $ make install && make clean && make generate
 ```
 
 ```sh
-$ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
+$ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories -prune && \
     bazel run :gazelle && \
     bazel run :buildifier
 ```
