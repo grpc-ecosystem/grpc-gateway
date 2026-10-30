@@ -235,7 +235,8 @@ func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, 
 // The parameter schema is the map value's schema.
 //
 // Unsupported key types — float, double, bytes — are dropped with a log
-// line: the runtime can't key URL parameters by them.
+// line: the runtime can't key URL parameters by them. So are maps whose
+// values are messages the runtime can't read from a query value.
 func mapQueryParameter(b *schemaBuilder, field *descriptor.Field, name string, deprecated bool, entry *descriptor.Message) []*ParameterRef {
 	var keyField, valueField *descriptor.Field
 	for _, f := range entry.Fields {
@@ -247,6 +248,11 @@ func mapQueryParameter(b *schemaBuilder, field *descriptor.Field, name string, d
 		}
 	}
 	if keyField == nil || valueField == nil {
+		return nil
+	}
+	if valueField.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE && !isQueryValueMessage(valueField.GetTypeName()) {
+		grpclog.Infof("protoc-gen-openapiv3: map query parameter %q has values of type %s, which cannot be read from a query string; skipping",
+			name, valueField.GetTypeName())
 		return nil
 	}
 	keyType, ok := queryMapKeyType(keyField.GetType())
@@ -312,6 +318,17 @@ func queryMapKeyType(t descriptorpb.FieldDescriptorProto_Type) (string, bool) {
 		return "boolean", true
 	}
 	return "", false
+}
+
+// isQueryValueMessage reports whether the runtime can read a message of the
+// given type from a single query value (see runtime.PopulateQueryParameters).
+// It only parses well-known types, and not Any or ListValue.
+func isQueryValueMessage(typeName string) bool {
+	switch typeName {
+	case ".google.protobuf.Any", ".google.protobuf.ListValue":
+		return false
+	}
+	return wellKnownTypeSchema(typeName) != nil
 }
 
 // queryCycleChecker bounds recursion depth when flattening nested message

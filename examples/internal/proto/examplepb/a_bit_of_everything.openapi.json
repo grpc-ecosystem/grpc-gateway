@@ -259,13 +259,6 @@
             }
           },
           {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
-            }
-          },
-          {
             "name": "timestampValue",
             "in": "query",
             "schema": {
@@ -1497,13 +1490,6 @@
             }
           },
           {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
-            }
-          },
-          {
             "name": "nonConventionalNameValue",
             "in": "query",
             "schema": {
@@ -1946,13 +1932,6 @@
             "description": "map of string  (This comment is overridden by the field annotation)",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
             }
           },
           {
@@ -2401,13 +2380,6 @@
             }
           },
           {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
-            }
-          },
-          {
             "name": "nonConventionalNameValue",
             "in": "query",
             "schema": {
@@ -2852,13 +2824,6 @@
             "description": "map of string  (This comment is overridden by the field annotation)",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
             }
           },
           {
@@ -3316,13 +3281,6 @@
             }
           },
           {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
-            }
-          },
-          {
             "name": "nonConventionalNameValue",
             "in": "query",
             "schema": {
@@ -3760,13 +3718,6 @@
             "description": "map of string  (This comment is overridden by the field annotation)",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
             }
           },
           {
@@ -4427,13 +4378,6 @@
             "description": "map of string  (This comment is overridden by the field annotation)",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
             }
           },
           {
@@ -5663,13 +5607,6 @@
             }
           },
           {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
-            }
-          },
-          {
             "name": "nonConventionalNameValue",
             "in": "query",
             "schema": {
@@ -6117,13 +6054,6 @@
             }
           },
           {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
-            }
-          },
-          {
             "name": "nonConventionalNameValue",
             "in": "query",
             "schema": {
@@ -6544,13 +6474,6 @@
             "description": "map of string  (This comment is overridden by the field annotation)",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "mappedNestedValue[string]",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverything.Nested"
             }
           },
           {
