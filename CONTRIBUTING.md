@@ -17,7 +17,7 @@ docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/
         make generate'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
     ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest -c '\
-        bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
+        bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories -prune && \
         bazel run :gazelle && \
         bazel run :buildifier'
 ```

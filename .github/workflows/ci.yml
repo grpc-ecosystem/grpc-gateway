@@ -117,7 +117,7 @@ jobs:
         run: bazel run //:gazelle && git add -N . && git diff --exit-code HEAD
       - name: Check that repositories.bzl is up-to-date
         run: |
-          bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories &&
+          bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories -prune &&
           git add -N . && git diff --exit-code HEAD
       - name: Check formatting of Bazel BUILD files
         run: bazel run //:buildifier && git add -N . && git diff --exit-code HEAD

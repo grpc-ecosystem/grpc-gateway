@@ -31,7 +31,7 @@ jobs:
           build --local_ram_resources=7168 # Github runners have 7G of memory
           build --local_cpu_resources=2    # Github runners have 2 vCPU
           EOF
-      - run: bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
+      - run: bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories -prune
         # Required with newer versions of Git
         # https://github.com/actions/checkout/issues/766
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
