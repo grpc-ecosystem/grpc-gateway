@@ -36,12 +36,12 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 	return mux, nil
 }
 
-func dial(network, addr string) (*grpc.ClientConn, error) {
+func dial(ctx context.Context, network, addr string) (*grpc.ClientConn, error) {
 	switch network {
 	case "tcp":
-		return dialTCP(addr)
+		return dialTCP(ctx, addr)
 	case "unix":
-		return dialUnix(addr)
+		return dialUnix(ctx, addr)
 	default:
 		return nil, fmt.Errorf("unsupported network type %q", network)
 	}
@@ -49,15 +49,15 @@ func dial(network, addr string) (*grpc.ClientConn, error) {
 
 // dialTCP creates a client connection via TCP.
 // "addr" must be a valid TCP address with a port number.
-func dialTCP(addr string) (*grpc.ClientConn, error) {
-	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func dialTCP(ctx context.Context, addr string) (*grpc.ClientConn, error) {
+	return grpc.DialContext(ctx, addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
 
 // dialUnix creates a client connection via a unix domain socket.
 // "addr" must be a valid path to the socket.
-func dialUnix(addr string) (*grpc.ClientConn, error) {
+func dialUnix(ctx context.Context, addr string) (*grpc.ClientConn, error) {
 	d := func(ctx context.Context, addr string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, "unix", addr)
 	}
-	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithContextDialer(d))
+	return grpc.DialContext(ctx, addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithContextDialer(d))
 }
