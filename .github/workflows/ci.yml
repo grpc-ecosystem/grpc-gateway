@@ -18,6 +18,7 @@ jobs:
         with:
           persist-credentials: false
       - run: go build ./...
+      - run: go -C examples build ./...
   test:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +29,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go test ./...
+      - run: make test
   node_test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -63,17 +64,12 @@ jobs:
       - run: make clean
       - run: make generate
       - run: go mod tidy
+      - run: go -C examples mod tidy
         # Make newly generated files visible with intent-to-add, and diff against HEAD
         # so staged and unstaged changes are both checked.
-        # Lowercase "d" excludes deletions, so the first diff rejects all other changes.
-        # Uppercase "D" selects only deletions. Allow deleted client BUILD.bazel files,
-        # which generation removes and the separate Bazel job regenerates with Gazelle.
-        # Added or modified client BUILD.bazel files still fail the first diff.
       - run: >-
           git add -N . &&
-          git diff --exit-code HEAD --diff-filter=d &&
-          git diff --exit-code HEAD --diff-filter=D -- .
-          ':(glob,exclude)examples/internal/clients/**/BUILD.bazel'
+          git diff --exit-code HEAD
   bazel:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:b4511e0aedb7cfaca90a023aaa17b65b2f90ea807fad09bf75c74d90070aeadf
@@ -115,7 +111,7 @@ jobs:
         run: bazel run //:gazelle && git add -N . && git diff --exit-code HEAD
       - name: Check that repositories.bzl is up-to-date
         run: |
-          bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories &&
+          bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories -prune &&
           git add -N . && git diff --exit-code HEAD
       - name: Check formatting of Bazel BUILD files
         run: bazel run //:buildifier && git add -N . && git diff --exit-code HEAD
@@ -158,3 +154,6 @@ jobs:
           go-version-file: 'go.mod'
           check-latest: true
       - run: go tool staticcheck ./...
+        # The examples module has no staticcheck tool directive, so run the binary
+        # pinned in the root go.mod against it.
+      - run: cd examples && "$(go -C .. tool -n staticcheck)" ./...

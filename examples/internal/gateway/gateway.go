@@ -3,7 +3,6 @@ package gateway
 import (
 	"context"
 	"fmt"
-	"net"
 	"net/http"
 
 	"google.golang.org/grpc/credentials/insecure"
@@ -56,8 +55,5 @@ func dialTCP(addr string) (*grpc.ClientConn, error) {
 // dialUnix creates a client connection via a unix domain socket.
 // "addr" must be a valid path to the socket.
 func dialUnix(addr string) (*grpc.ClientConn, error) {
-	d := func(ctx context.Context, addr string) (net.Conn, error) {
-		return (&net.Dialer{}).DialContext(ctx, "unix", addr)
-	}
-	return grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithContextDialer(d))
+	return grpc.NewClient("unix:"+addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 }
