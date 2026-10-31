@@ -1709,6 +1709,39 @@ func TestPostWithEmptyBody(t *testing.T) {
 	}
 }
 
+func TestPostWithTrailingData(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	// A unary body is a single message. The JSON decoder stops after the
+	// first value, so a second message or garbage after it must be refused
+	// rather than silently dropped.
+	for _, port := range []int{8088, 8089} {
+		for _, body := range []string{
+			`{"id":"first"}{"id":"second"}`,
+			`{"id":"first"}x`,
+		} {
+			apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo_body", port)
+			resp, err := http.Post(apiURL, "application/json", strings.NewReader(body))
+			if err != nil {
+				t.Fatalf("http.Post(%q) failed with %v; want success", apiURL, err)
+			}
+			buf, err := io.ReadAll(resp.Body)
+			resp.Body.Close()
+			if err != nil {
+				t.Fatalf("io.ReadAll(resp.Body) failed with %v; want success", err)
+			}
+
+			if got, want := resp.StatusCode, http.StatusBadRequest; got != want {
+				t.Errorf("http.Post(%q, %q) response code is %d; want %d", apiURL, body, got, want)
+				t.Logf("%s", buf)
+			}
+		}
+	}
+}
+
 func TestUnknownPath(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -2869,7 +2902,9 @@ func testExcessBodyRPCWithBodyUnexpected(t *testing.T, port int) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}.")
+	// Only whitespace may follow the message; anything else is refused
+	// before the RPC is made (see TestPostWithTrailingData).
+	body := strings.NewReader("{} ")
 
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {
@@ -2898,7 +2933,9 @@ func testExcessBodyStreamWithBodyUnexpected(t *testing.T, port int) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	body := strings.NewReader("{}" + strings.Repeat(".", 511))
+	// Only whitespace may follow the message; anything else is refused
+	// before the RPC is made (see TestPostWithTrailingData).
+	body := strings.NewReader("{}" + strings.Repeat(" ", 511))
 
 	req, err := http.NewRequestWithContext(ctx, "POST", apiURL, body)
 	if err != nil {

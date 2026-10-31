@@ -285,6 +285,7 @@ import (
 var (
 	_ codes.Code
 	_ io.Reader
+	_ json.Token
 	_ status.Status
 	_ = errors.New
 	_ = runtime.String
@@ -405,52 +406,39 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
+	dec := marshaler.NewDecoder(newReader())
+	{{- else }}
+	dec := marshaler.NewDecoder(req.Body)
 	{{- end }}
 	{{- $protoReq := .Body.AssignableExprPrep "protoReq" .Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{printf "%s" $protoReq }}
 	{{- end }}
-	{{- if not $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := dec.Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
 	{{- else }}
 	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF) {
+	if err := dec.Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
-	{{- end }}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	{{- if $isFieldMask }}
-	{{- if $UseOpaqueAPI }}
-	{{- if eq "*" .GetBodyFieldPath }}
-	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	proto.Merge(&protoReq, &bodyData)
-	{{- else }}
-	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
-	{{- end }}
-	{{- else }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	{{- end }}
 	{{- if $UseOpaqueAPI }}
 	if !protoReq.Has{{ .FieldMaskField }}() || len(protoReq.Get{{ .FieldMaskField }}().GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Get{{ .GetBodyFieldStructName }}()); err != nil {
@@ -641,52 +629,39 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
+	dec := marshaler.NewDecoder(newReader())
+	{{- else }}
+	dec := marshaler.NewDecoder(req.Body)
 	{{- end }}
 	{{- $protoReq := .Body.AssignableExprPrep "protoReq" .Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{ printf "%s" $protoReq }}
 	{{- end }}
-	{{- if not $isFieldMask }}
 	{{- if $UseOpaqueAPI }}
 	{{- if eq "*" .GetBodyFieldPath }}
 	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(req.Body).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := dec.Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	proto.Merge(&protoReq, &bodyData)
 	{{- else }}
 	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(req.Body).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
+	if err := dec.Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
 	{{- end }}
 	{{- else }}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
+	if err := dec.Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- end }}
-	{{- end }}
+	if td, ok := dec.(interface{ Token() (json.Token, error) }); ok {
+		if _, err := td.Token(); !errors.Is(err, io.EOF) {
+			return nil, metadata, status.Error(codes.InvalidArgument, "unexpected data after request body")
+		}
+	}
 	{{- if $isFieldMask }}
-	{{- if $UseOpaqueAPI }}
-	{{- if eq "*" .GetBodyFieldPath }}
-	var bodyData {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	if err := marshaler.NewDecoder(newReader()).Decode(&bodyData); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	proto.Merge(&protoReq, &bodyData)
-	{{- else }}
-	bodyData := &{{ .GetBodyFieldType }}{}
-	if err := marshaler.NewDecoder(newReader()).Decode(bodyData); err != nil && !errors.Is(err, io.EOF) {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	protoReq.Set{{ .GetBodyFieldStructName }}(bodyData)
-	{{- end }}
-	{{- else }}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{ .Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path }}); err != nil && !errors.Is(err, io.EOF)  {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	{{- end }}
 	{{- if $UseOpaqueAPI }}
 	if !protoReq.Has{{ .FieldMaskField }}() || len(protoReq.Get{{ .FieldMaskField }}().GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.Get{{ .GetBodyFieldStructName }}()); err != nil {

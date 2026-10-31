@@ -31,6 +31,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
+		"encoding/json",
 		"errors",
 		"io",
 		"net/http",
