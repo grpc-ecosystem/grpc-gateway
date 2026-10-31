@@ -26,7 +26,8 @@
       "externalDocs": {
         "description": "Find out more about EchoService",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-      }
+      },
+      "x-a-bit-of-everything-foo": "bar"
     },
     {
       "name": "camelCaseServiceName",
