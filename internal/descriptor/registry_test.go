@@ -780,6 +780,25 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 	}
 }
 
+func TestCheckDuplicateAnnotation(t *testing.T) {
+	reg := NewRegistry()
+	svc := &Service{}
+	if err := reg.CheckDuplicateAnnotation("GET", "/v1/books", svc); err != nil {
+		t.Fatalf("reg.CheckDuplicateAnnotation(GET, /v1/books) failed with %v; want success", err)
+	}
+	// Same path template with a different HTTP method is a distinct binding.
+	if err := reg.CheckDuplicateAnnotation("POST", "/v1/books", svc); err != nil {
+		t.Errorf("reg.CheckDuplicateAnnotation(POST, /v1/books) failed with %v; want success", err)
+	}
+	// Same method and path template in another service is not a duplicate.
+	if err := reg.CheckDuplicateAnnotation("GET", "/v1/books", &Service{}); err != nil {
+		t.Errorf("reg.CheckDuplicateAnnotation(GET, /v1/books) in another service failed with %v; want success", err)
+	}
+	if err := reg.CheckDuplicateAnnotation("GET", "/v1/books", svc); err == nil {
+		t.Errorf("reg.CheckDuplicateAnnotation(GET, /v1/books) a second time succeeded; want a duplicate annotation error")
+	}
+}
+
 func assertStringSlice(t *testing.T, message string, got, want []string) {
 	if len(got) != len(want) {
 		t.Errorf("%s = %#v len(%d); want %#v len(%d)", message, got, len(got), want, len(want))
