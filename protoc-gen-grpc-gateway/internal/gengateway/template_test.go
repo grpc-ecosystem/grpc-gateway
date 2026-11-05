@@ -466,7 +466,13 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `marshaler.NewDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
+		if want := `dec := marshaler.NewDecoder(req.Body)`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `dec.Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
+			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `if _, err := td.Token(); !errors.Is(err, io.EOF) {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `val, ok := pathParams["nested.int32"]`; !strings.Contains(got, want) {
@@ -1075,7 +1081,10 @@ func TestAllowPatchFeature(t *testing.T) {
 			return
 		}
 		if allowPatchFeature {
-			if want := `marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe)`; !strings.Contains(got, want) {
+			if want := `dec := marshaler.NewDecoder(newReader())`; !strings.Contains(got, want) {
+				t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+			}
+			if want := `dec.Decode(&protoReq.Abe)`; !strings.Contains(got, want) {
 				t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 			}
 			if !strings.Contains(got, want) {
