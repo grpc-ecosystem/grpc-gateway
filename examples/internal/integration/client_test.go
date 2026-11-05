@@ -3,10 +3,14 @@ package integration_test
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"testing"
 
+	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	abeclient "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/client"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/client/a_bit_of_everything"
 	abemodels "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe/models"
@@ -53,8 +57,9 @@ func TestEchoClient(t *testing.T) {
 		t.Errorf(`cl.EchoService.EchoServiceEcho("foo") failed with %v; want success`, err)
 		return
 	}
-	if got, want := resp.Payload.ID, "foo"; got != want {
-		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
+	want := &echomodels.ExamplepbSimpleMessage{ID: "foo", Num: "0"}
+	if diff := cmp.Diff(want, resp.Payload); diff != "" {
+		t.Errorf("resp.Payload differs (-want +got):\n%s", diff)
 	}
 }
 
@@ -73,8 +78,9 @@ func TestEchoBodyClient(t *testing.T) {
 		t.Errorf("cl.EchoService.EchoServiceEchoBody(%#v) failed with %v; want success", req, err)
 		return
 	}
-	if got, want := resp.Payload.ID, "foo"; got != want {
-		t.Errorf("resp.Payload.ID = %q; want %q", got, want)
+	want := &echomodels.ExamplepbSimpleMessage{ID: "foo", Num: "0"}
+	if diff := cmp.Diff(want, resp.Payload); diff != "" {
+		t.Errorf("resp.Payload differs (-want +got):\n%s", diff)
 	}
 }
 
@@ -239,6 +245,236 @@ func testABEClientCreate(t *testing.T, cl *abeclient.ABitOfEverything) {
 	}
 	if resp.NestedPathEnumValue == nil || *resp.NestedPathEnumValue != *want.NestedPathEnumValue {
 		t.Error("nested path enum")
+	}
+}
+
+func TestABitOfEverythingClientCreateBody(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	enumOne := abemodels.ExamplepbNumericEnumONE
+	enumZero := abemodels.ExamplepbNumericEnumZERO
+	enumPath := abemodels.PathenumPathEnumDEF
+	messagePath := abemodels.MessagePathEnumNestedPathEnumJKL
+	deepFalse := abemodels.NestedDeepEnumFALSE
+	floatVal := float32(1.5)
+	doubleVal := 2.5
+	int64Val := "4294967296"
+	timestamp, err := strfmt.ParseDateTime("2006-01-02T15:04:05Z")
+	if err != nil {
+		t.Fatalf("strfmt.ParseDateTime failed with %v; want success", err)
+	}
+	want := &abemodels.ExamplepbABitOfEverything{
+		FloatValue:               &floatVal,
+		DoubleValue:              &doubleVal,
+		Int64Value:               &int64Val,
+		Uint64Value:              "9223372036854775807",
+		Int32Value:               -2147483648,
+		Fixed64Value:             "9223372036854775807",
+		Fixed32Value:             4294967295,
+		BoolValue:                true,
+		StringValue:              "strprefix/foo",
+		Uint32Value:              4294967295,
+		Sfixed32Value:            2147483647,
+		Sfixed64Value:            "-4611686018427387904",
+		Sint32Value:              2147483647,
+		Sint64Value:              "4611686018427387903",
+		NonConventionalNameValue: "camelCase",
+		EnumValue:                &enumOne,
+		PathEnumValue:            &enumPath,
+		NestedPathEnumValue:      &messagePath,
+		EnumValueAnnotation:      &enumOne,
+		Nested: []*abemodels.ABitOfEverythingNested{
+			{Name: "bar", Amount: 10, Ok: &deepFalse},
+			{Name: "baz", Amount: 20, Ok: &deepFalse},
+		},
+		RepeatedStringValue: []string{"a", "b", "c"},
+		OneofString:         "x",
+		MapValue: map[string]*abemodels.ExamplepbNumericEnum{
+			"a": &enumOne,
+			"b": &enumZero,
+		},
+		MappedStringValue: map[string]string{"a": "x", "b": "y"},
+		MappedNestedValue: map[string]abemodels.ABitOfEverythingNested{
+			"a": {Name: "x", Amount: 1, Ok: &deepFalse},
+			"b": {Name: "y", Amount: 2, Ok: &deepFalse},
+		},
+		TimestampValue:                           timestamp,
+		Int64OverrideType:                        "0",
+		RequiredStringViaFieldBehaviorAnnotation: strPtr("foo"),
+		RequiredStringField1:                     strPtr(""),
+		RequiredStringField2:                     strPtr(""),
+		RequiredFieldBehaviorJSONNameCustom:      strPtr(""),
+		RequiredFieldSchemaJSONNameCustom:        strPtr(""),
+	}
+
+	cl := abeclient.New(gatewayTransport(), strfmt.Default)
+	got := createABEBody(t, cl, want)
+	if got.UUID == nil || *got.UUID == "" {
+		t.Errorf("got.UUID is empty; want not empty")
+	}
+	got.UUID = nil
+	if diff := cmp.Diff(want, got, cmpopts.EquateEmpty()); diff != "" {
+		t.Errorf("CreateBody response differs (-want +got):\n%s", diff)
+	}
+}
+
+func TestABitOfEverythingClientLookup(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	cl := abeclient.New(gatewayTransport(), strfmt.Default)
+	created := createABEBody(t, cl, &abemodels.ExamplepbABitOfEverything{
+		BoolValue:   true,
+		StringValue: "strprefix/foo",
+	})
+
+	resp, err := cl.ABitOfEverything.ABitOfEverythingServiceLookup(
+		a_bit_of_everything.NewABitOfEverythingServiceLookupParamsWithContext(context.Background()).
+			WithUUID(string(*created.UUID)),
+		nil,
+	)
+	if err != nil {
+		t.Fatalf("cl.ABitOfEverything.ABitOfEverythingServiceLookup(%q) failed with %v; want success", *created.UUID, err)
+	}
+	if diff := cmp.Diff(created, resp.Payload); diff != "" {
+		t.Errorf("Lookup response differs (-want +got):\n%s", diff)
+	}
+
+	testABEClientLookupNotFound(t, cl, "not_exist")
+}
+
+func TestABitOfEverythingClientDelete(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	cl := abeclient.New(gatewayTransport(), strfmt.Default)
+	created := createABEBody(t, cl, &abemodels.ExamplepbABitOfEverything{
+		BoolValue:   true,
+		StringValue: "strprefix/foo",
+	})
+
+	resp, err := cl.ABitOfEverything.ABitOfEverythingServiceDelete(
+		a_bit_of_everything.NewABitOfEverythingServiceDeleteParamsWithContext(context.Background()).
+			WithUUID(string(*created.UUID)),
+		nil,
+	)
+	if err != nil {
+		t.Fatalf("cl.ABitOfEverything.ABitOfEverythingServiceDelete(%q) failed with %v; want success", *created.UUID, err)
+	}
+	if diff := cmp.Diff(map[string]any{}, resp.Payload); diff != "" {
+		t.Errorf("Delete response differs (-want +got):\n%s", diff)
+	}
+
+	testABEClientLookupNotFound(t, cl, string(*created.UUID))
+}
+
+func TestABitOfEverythingClientGetRepeatedQuery(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	enumOne := abemodels.ExamplepbNumericEnumONE
+	want := &abemodels.ExamplepbABitOfEverythingRepeated{
+		PathRepeatedFloatValue:   []float32{1.5, -1.5},
+		PathRepeatedDoubleValue:  []float64{2.5, -2.5},
+		PathRepeatedInt64Value:   []string{"4294967296", "-4294967296"},
+		PathRepeatedUint64Value:  []string{"0", "9223372036854775807"},
+		PathRepeatedInt32Value:   []int32{2147483647, -2147483648},
+		PathRepeatedFixed64Value: []string{"0", "9223372036854775807"},
+		PathRepeatedFixed32Value: []int64{0, 4294967295},
+		PathRepeatedBoolValue:    []bool{true, false},
+		PathRepeatedStringValue:  []string{"foo", "bar"},
+		// The client sends standard base64 and escapes "/" as %2F, which the
+		// gateway's default unescaping mode decodes before routing, so stick to
+		// bytes whose encoding has no "/". "+" still checks a non URL-safe
+		// encoding.
+		PathRepeatedBytesValue:    []strfmt.Base64{{0x00}, {0xfb}},
+		PathRepeatedUint32Value:   []int64{4294967295, 0},
+		PathRepeatedEnumValue:     []*abemodels.ExamplepbNumericEnum{&enumOne, &enumOne},
+		PathRepeatedSfixed32Value: []int32{-2147483648, 2147483647},
+		PathRepeatedSfixed64Value: []string{"-4294967296", "4294967296"},
+		PathRepeatedSint32Value:   []int32{2147483646, -2147483647},
+		PathRepeatedSint64Value:   []string{"4611686018427387903", "-4611686018427387904"},
+	}
+
+	cl := abeclient.New(gatewayTransport(), strfmt.Default)
+	resp, err := cl.ABitOfEverything.ABitOfEverythingServiceGetRepeatedQuery(
+		a_bit_of_everything.NewABitOfEverythingServiceGetRepeatedQueryParamsWithContext(context.Background()).
+			WithPathRepeatedFloatValue(want.PathRepeatedFloatValue).
+			WithPathRepeatedDoubleValue(want.PathRepeatedDoubleValue).
+			WithPathRepeatedInt64Value(want.PathRepeatedInt64Value).
+			WithPathRepeatedUint64Value(want.PathRepeatedUint64Value).
+			WithPathRepeatedInt32Value(want.PathRepeatedInt32Value).
+			WithPathRepeatedFixed64Value(want.PathRepeatedFixed64Value).
+			WithPathRepeatedFixed32Value(want.PathRepeatedFixed32Value).
+			WithPathRepeatedBoolValue(want.PathRepeatedBoolValue).
+			WithPathRepeatedStringValue(want.PathRepeatedStringValue).
+			WithPathRepeatedBytesValue(want.PathRepeatedBytesValue).
+			WithPathRepeatedUint32Value(want.PathRepeatedUint32Value).
+			WithPathRepeatedEnumValue([]string{string(enumOne), string(enumOne)}).
+			WithPathRepeatedSfixed32Value(want.PathRepeatedSfixed32Value).
+			WithPathRepeatedSfixed64Value(want.PathRepeatedSfixed64Value).
+			WithPathRepeatedSint32Value(want.PathRepeatedSint32Value).
+			WithPathRepeatedSint64Value(want.PathRepeatedSint64Value),
+		nil,
+	)
+	if err != nil {
+		t.Fatalf("cl.ABitOfEverything.ABitOfEverythingServiceGetRepeatedQuery failed with %v; want success", err)
+	}
+	if diff := cmp.Diff(want, resp.Payload); diff != "" {
+		t.Errorf("GetRepeatedQuery response differs (-want +got):\n%s", diff)
+	}
+}
+
+// createABEBody creates msg through the CreateBody endpoint and returns the
+// stored message.
+func createABEBody(t *testing.T, cl *abeclient.ABitOfEverything, msg *abemodels.ExamplepbABitOfEverything) *abemodels.ExamplepbABitOfEverything {
+	t.Helper()
+	resp, err := cl.ABitOfEverything.ABitOfEverythingServiceCreateBody(
+		a_bit_of_everything.NewABitOfEverythingServiceCreateBodyParamsWithContext(context.Background()).WithBody(msg),
+		nil,
+	)
+	if err != nil {
+		t.Fatalf("cl.ABitOfEverything.ABitOfEverythingServiceCreateBody(%#v) failed with %v; want success", msg, err)
+	}
+	return resp.Payload
+}
+
+func testABEClientLookupNotFound(t *testing.T, cl *abeclient.ABitOfEverything, uuid string) {
+	t.Helper()
+	var code int
+	_, err := cl.ABitOfEverything.ABitOfEverythingServiceLookup(
+		a_bit_of_everything.NewABitOfEverythingServiceLookupParamsWithContext(context.Background()).WithUUID(uuid),
+		nil,
+		recordStatusCode(&code),
+	)
+	if err == nil {
+		t.Errorf("cl.ABitOfEverything.ABitOfEverythingServiceLookup(%q) succeeded; want failure", uuid)
+	}
+	if code != http.StatusNotFound {
+		t.Errorf("cl.ABitOfEverything.ABitOfEverythingServiceLookup(%q) returned status %d; want %d", uuid, code, http.StatusNotFound)
+	}
+}
+
+// recordStatusCode stores the HTTP status code of the response in code. The
+// ABE spec declares a string body for 404 responses, so the generated client
+// fails to decode the gateway's error body and the status code is what we
+// can check.
+func recordStatusCode(code *int) a_bit_of_everything.ClientOption {
+	return func(op *runtime.ClientOperation) {
+		reader := op.Reader
+		op.Reader = runtime.ClientResponseReaderFunc(func(resp runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
+			*code = resp.Code()
+			return reader.ReadResponse(resp, consumer)
+		})
 	}
 }
 
