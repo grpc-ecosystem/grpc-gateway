@@ -56,7 +56,7 @@ use_repo(
     "com_github_bazelbuild_buildtools_v7",
     "com_github_golang_protobuf",
     "com_github_google_go_cmp",
-    "in_yaml_go_yaml_v3",
+    "in_yaml_go_yaml_v4",
     "org_golang_google_genproto_googleapis_api",
     "org_golang_google_genproto_googleapis_rpc",
     "org_golang_google_grpc",

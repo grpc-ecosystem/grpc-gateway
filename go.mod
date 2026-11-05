@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/google/go-cmp v0.7.0
-	go.yaml.in/yaml/v3 v3.0.6
+	go.yaml.in/yaml/v4 v4.0.0
 	golang.org/x/text v0.43.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20261104224025-d1e00e9f33ab
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261019180522-ce908d29299b

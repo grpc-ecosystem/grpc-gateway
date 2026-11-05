@@ -12,7 +12,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"

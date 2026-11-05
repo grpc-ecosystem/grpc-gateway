@@ -133,10 +133,10 @@ def go_repositories():
         version = "v0.25.3",
     )
     go_repository(
-        name = "in_yaml_go_yaml_v3",
-        importpath = "go.yaml.in/yaml/v3",
-        sum = "h1:zcDfvjXEqTQmpjniUBLc91xYJMB2c4QOFxEF/LCEckM=",
-        version = "v3.0.6",
+        name = "in_yaml_go_yaml_v4",
+        importpath = "go.yaml.in/yaml/v4",
+        sum = "h1:/LG1pNO84Z4l603j/xMn69CcS5OYhMQ/f7l2LoQUGuw=",
+        version = "v4.0.0",
     )
     go_repository(
         name = "io_opentelemetry_go_auto_sdk",

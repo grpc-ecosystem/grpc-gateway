@@ -28,8 +28,8 @@ file:
 		t.Fatal(err)
 	}
 
-	if !strings.Contains(err.Error(), "line 3") {
-		t.Errorf("Expected yaml error to be detected in line 3. Got other error: %v", err)
+	if !strings.Contains(err.Error(), "line 5") {
+		t.Errorf("Expected yaml error to be detected in line 5. Got other error: %v", err)
 	}
 
 	if config != nil {

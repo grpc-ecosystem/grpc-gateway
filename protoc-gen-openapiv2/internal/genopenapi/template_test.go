@@ -17,7 +17,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/protobuf/encoding/protojson"
