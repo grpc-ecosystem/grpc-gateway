@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 type param struct {
