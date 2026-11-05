@@ -14543,7 +14543,10 @@ func TestRenderServiceTagsWithProtoComments(t *testing.T) {
 
 	reg := descriptor.NewRegistry()
 
-	tags := renderServiceTags(services, reg)
+	tags, err := renderServiceTags(services, reg)
+	if err != nil {
+		t.Fatalf("renderServiceTags() failed: %v", err)
+	}
 
 	if len(tags) != 1 {
 		t.Fatalf("expected 1 tag, got %d", len(tags))
@@ -14596,7 +14599,10 @@ func TestRenderServiceTagsWithSingleParagraphComment(t *testing.T) {
 
 	reg := descriptor.NewRegistry()
 
-	tags := renderServiceTags(services, reg)
+	tags, err := renderServiceTags(services, reg)
+	if err != nil {
+		t.Fatalf("renderServiceTags() failed: %v", err)
+	}
 
 	if len(tags) != 1 {
 		t.Fatalf("expected 1 tag, got %d", len(tags))
@@ -14649,7 +14655,10 @@ func TestRenderServiceTagsExplicitOptionTakesPrecedence(t *testing.T) {
 
 	reg := descriptor.NewRegistry()
 
-	tags := renderServiceTags(services, reg)
+	tags, err := renderServiceTags(services, reg)
+	if err != nil {
+		t.Fatalf("renderServiceTags() failed: %v", err)
+	}
 
 	if len(tags) != 1 {
 		t.Fatalf("expected 1 tag, got %d", len(tags))
@@ -14686,7 +14695,10 @@ func TestRenderServiceTagsNoComment(t *testing.T) {
 
 	reg := descriptor.NewRegistry()
 
-	tags := renderServiceTags(services, reg)
+	tags, err := renderServiceTags(services, reg)
+	if err != nil {
+		t.Fatalf("renderServiceTags() failed: %v", err)
+	}
 
 	if len(tags) != 1 {
 		t.Fatalf("expected 1 tag, got %d", len(tags))
@@ -14695,6 +14707,60 @@ func TestRenderServiceTagsNoComment(t *testing.T) {
 	// No comment should result in empty description
 	if tags[0].Description != "" {
 		t.Errorf("renderServiceTags().Tags[0].Description = %q, want empty string", tags[0].Description)
+	}
+}
+
+func TestRenderServiceTagsWithExtensions(t *testing.T) {
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:    proto.String("ExampleService"),
+		Options: &descriptorpb.ServiceOptions{},
+	}
+	proto.SetExtension(svc.Options, openapi_options.E_Openapiv2Tag, &openapi_options.Tag{
+		Description: "Example service",
+		Extensions: map[string]*structpb.Value{
+			"x-traitTag": {Kind: &structpb.Value_BoolValue{BoolValue: true}},
+		},
+	})
+
+	file := &descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+	}
+	services := []*descriptor.Service{
+		{
+			ServiceDescriptorProto: svc,
+			File:                   file,
+		},
+	}
+	file.Services = services
+
+	reg := descriptor.NewRegistry()
+
+	tags, err := renderServiceTags(services, reg)
+	if err != nil {
+		t.Fatalf("renderServiceTags() failed: %v", err)
+	}
+	if len(tags) != 1 {
+		t.Fatalf("expected 1 tag, got %d", len(tags))
+	}
+	wantExts := []extension{
+		{key: "x-traitTag", value: json.RawMessage("true")},
+	}
+	if !reflect.DeepEqual(tags[0].extensions, wantExts) {
+		t.Errorf("renderServiceTags().Tags[0].extensions = %#v, want %#v", tags[0].extensions, wantExts)
+	}
+
+	proto.SetExtension(svc.Options, openapi_options.E_Openapiv2Tag, &openapi_options.Tag{
+		Extensions: map[string]*structpb.Value{
+			"traitTag": {Kind: &structpb.Value_BoolValue{BoolValue: true}},
+		},
+	})
+	if _, err := renderServiceTags(services, reg); err == nil {
+		t.Error("renderServiceTags() succeeded with an extension key without the x- prefix; want error")
 	}
 }
 

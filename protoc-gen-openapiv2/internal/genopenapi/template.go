@@ -1461,7 +1461,7 @@ func partsToRegexpMap(parts []string) map[string]string {
 	return regExps
 }
 
-func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry) []openapiTagObject {
+func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry) ([]openapiTagObject, error) {
 	var tags []openapiTagObject
 	for _, svc := range services {
 		if !isVisible(getServiceVisibilityOption(svc), reg) {
@@ -1478,8 +1478,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 
 		opts, err := getServiceOpenAPIOption(reg, svc)
 		if err != nil {
-			grpclog.Error(err)
-			return nil
+			return nil, err
 		}
 		if opts != nil {
 			tag.Description = opts.Description
@@ -1498,6 +1497,13 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 			if opts.GetName() != "" {
 				tag.Name = opts.GetName()
 			}
+			if opts.Extensions != nil {
+				exts, err := processExtensions(opts.Extensions)
+				if err != nil {
+					return nil, err
+				}
+				tag.extensions = exts
+			}
 		}
 
 		// If no description is set from options, use proto comments
@@ -1513,7 +1519,7 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 
 		tags = append(tags, tag)
 	}
-	return tags
+	return tags, nil
 }
 
 // findServiceIndex finds the index of a service among the service declarations
@@ -2672,7 +2678,11 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	}
 
 	if !p.reg.GetDisableServiceTags() {
-		s.Tags = mergeTags(s.Tags, renderServiceTags(p.Services, p.reg))
+		tags, err := renderServiceTags(p.Services, p.reg)
+		if err != nil {
+			return nil, err
+		}
+		s.Tags = mergeTags(s.Tags, tags)
 	}
 
 	// Finally add any references added by users that aren't

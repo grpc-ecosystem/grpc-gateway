@@ -546,6 +546,10 @@ service ABitOfEverythingService {
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
       description: "Find out more about EchoService"
     }
+    extensions: {
+      key: "x-a-bit-of-everything-foo"
+      value: {string_value: "bar"}
+    }
   };
 
   // Create a new ABitOfEverything
