@@ -232,7 +232,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -1470,7 +1470,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -1922,7 +1922,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -2374,7 +2374,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -2828,7 +2828,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -3289,7 +3289,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -3736,7 +3736,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -4403,7 +4403,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -5636,7 +5636,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -6090,7 +6090,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {
@@ -6520,7 +6520,7 @@
             "name": "oneofEmpty",
             "in": "query",
             "schema": {
-              "type": "object"
+              "type": "string"
             }
           },
           {

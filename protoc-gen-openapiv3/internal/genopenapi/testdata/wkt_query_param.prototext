@@ -1,0 +1,112 @@
+file_to_generate: "search/v1/search.proto"
+proto_file: {
+  name: "google/protobuf/empty.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Empty"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/emptypb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "google/protobuf/struct.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Struct"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/structpb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "search/v1/search.proto"
+  package: "search.v1"
+  dependency: "google/protobuf/empty.proto"
+  dependency: "google/protobuf/struct.proto"
+  message_type: {
+    name: "SearchRequest"
+    field: {
+      name: "filter"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".google.protobuf.Struct"
+      json_name: "filter"
+    }
+    field: {
+      name: "all"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".google.protobuf.Empty"
+      json_name: "all"
+    }
+    field: {
+      name: "filters"
+      number: 3
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".google.protobuf.Struct"
+      json_name: "filters"
+    }
+    field: {
+      name: "named_filters"
+      number: 4
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".search.v1.SearchRequest.NamedFiltersEntry"
+      json_name: "namedFilters"
+    }
+    nested_type: {
+      name: "NamedFiltersEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_MESSAGE
+        type_name: ".google.protobuf.Struct"
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+  }
+  message_type: {
+    name: "SearchResponse"
+    field: {
+      name: "ids"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "ids"
+    }
+  }
+  service: {
+    name: "SearchService"
+    method: {
+      name: "Search"
+      input_type: ".search.v1.SearchRequest"
+      output_type: ".search.v1.SearchResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/search"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/search/v1;searchv1"
+  }
+  syntax: "proto3"
+}

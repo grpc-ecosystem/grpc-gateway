@@ -258,6 +258,9 @@ service BookService {
   fields of `id` are still flattened into query parameters. When one member
   of a `oneof` is a path parameter or the body field, the other members of
   that `oneof` are left out, since the runtime rejects them.
+- `google.protobuf.Struct` and `google.protobuf.Empty` query parameters are
+  typed as strings, since the runtime reads a `Struct` as its JSON encoding
+  and an `Empty` as an empty value or `{}`.
 - `body="*"` synthesises an inline object schema that includes every request
   field **except** path parameters.
 - `body="field"` uses that single field's type as the request body.

@@ -213,7 +213,7 @@ func (b *schemaBuilder) queryParameters(field *descriptor.Field, prefix string, 
 	param := &Parameter{
 		Name:   name,
 		In:     "query",
-		Schema: b.fieldSchema(field),
+		Schema: b.queryValueSchema(field),
 	}
 	if desc := fieldComments(b.reg, field); desc != "" {
 		param.Description = desc
@@ -258,7 +258,7 @@ func mapQueryParameter(b *schemaBuilder, field *descriptor.Field, name string, d
 	param := &Parameter{
 		Name:   fmt.Sprintf("%s[%s]", name, keyType),
 		In:     "query",
-		Schema: b.fieldSchema(valueField),
+		Schema: b.queryValueSchema(valueField),
 	}
 	if desc := fieldComments(b.reg, field); desc != "" {
 		param.Description = desc
@@ -270,6 +270,23 @@ func mapQueryParameter(b *schemaBuilder, field *descriptor.Field, name string, d
 		param.Deprecated = true
 	}
 	return []*ParameterRef{{Value: param}}
+}
+
+// queryValueSchema returns the schema of a query parameter value for field.
+// google.protobuf.Struct and google.protobuf.Empty are objects in a body, but
+// the runtime reads them from the query string as text: a Struct as its JSON
+// encoding, and an Empty as an empty value or {}. Their parameters are typed
+// as strings.
+func (b *schemaBuilder) queryValueSchema(field *descriptor.Field) *SchemaOrRef {
+	switch field.GetTypeName() {
+	case ".google.protobuf.Struct", ".google.protobuf.Empty":
+		schema := &SchemaOrRef{Value: &Schema{Type: SchemaType{"string"}}}
+		if field.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+			schema = &SchemaOrRef{Value: &Schema{Type: SchemaType{"array"}, Items: schema}}
+		}
+		return schema
+	}
+	return b.fieldSchema(field)
 }
 
 // queryMapKeyType returns the JSON Schema type name used to document the

@@ -521,7 +521,7 @@ type ABitOfEverythingServiceCustom1Params struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -618,7 +618,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
 	Sint32Value         *int32                                                            `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                           `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                         `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                           `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                           `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                           `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -709,7 +709,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -795,7 +795,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsParams struct {
 	Sint32Value         *int32                                                            `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                           `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                         `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                           `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                           `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                           `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -887,7 +887,7 @@ type ABitOfEverythingServiceGetQueryParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -963,7 +963,7 @@ type ABitOfEverythingServiceCreateParams struct {
 	Uuid                *string                                                                  `form:"uuid,omitempty" json:"uuid,omitempty"`
 	BytesValue          *[]byte                                                                  `form:"bytesValue,omitempty" json:"bytesValue,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -1051,7 +1051,7 @@ type ABitOfEverythingServiceExistsParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -1143,7 +1143,7 @@ type ABitOfEverythingServiceCustomOptionsRequestParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -1326,7 +1326,7 @@ type ABitOfEverythingServiceTraceRequestParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -1418,7 +1418,7 @@ type ABitOfEverythingServiceCustomParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -1510,7 +1510,7 @@ type ABitOfEverythingServiceDoubleColonParams struct {
 	Sint32Value         *int32                                                                   `form:"sint32Value,omitempty" json:"sint32Value,omitempty"`
 	Sint64Value         *string                                                                  `form:"sint64Value,omitempty" json:"sint64Value,omitempty"`
 	RepeatedStringValue *[]string                                                                `form:"repeatedStringValue,omitempty" json:"repeatedStringValue,omitempty"`
-	OneofEmpty          *map[string]interface{}                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
+	OneofEmpty          *string                                                                  `form:"oneofEmpty,omitempty" json:"oneofEmpty,omitempty"`
 	OneofString         *string                                                                  `form:"oneofString,omitempty" json:"oneofString,omitempty"`
 
 	// MapValueString map of numeric enum
@@ -3998,7 +3998,7 @@ func NewABitOfEverythingServiceCustom1Request(server string, optionalStringValue
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -4943,7 +4943,7 @@ func NewABitOfEverythingServiceCheckNestedEnumGetQueryParamsRequest(server strin
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -5783,7 +5783,7 @@ func NewABitOfEverythingServiceCheckGetQueryParamsRequest(server string, singleN
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -6586,7 +6586,7 @@ func NewABitOfEverythingServiceCheckPostQueryParamsRequestWithBody(server string
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -7428,7 +7428,7 @@ func NewABitOfEverythingServiceGetQueryRequest(server string, uuid string, param
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -8138,7 +8138,7 @@ func NewABitOfEverythingServiceCreateRequest(server string, floatValue float32, 
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -9014,7 +9014,7 @@ func NewABitOfEverythingServiceExistsRequest(server string, uuid string, params 
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -9854,7 +9854,7 @@ func NewABitOfEverythingServiceCustomOptionsRequestRequest(server string, uuid s
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -10741,7 +10741,7 @@ func NewABitOfEverythingServiceTraceRequestRequest(server string, uuid string, p
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -11581,7 +11581,7 @@ func NewABitOfEverythingServiceCustomRequest(server string, uuid string, params 
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -12421,7 +12421,7 @@ func NewABitOfEverythingServiceDoubleColonRequest(server string, uuid string, pa
 
 		if params.OneofEmpty != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "oneofEmpty", *params.OneofEmpty, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

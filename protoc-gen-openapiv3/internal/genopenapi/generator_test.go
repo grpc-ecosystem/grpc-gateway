@@ -1259,6 +1259,42 @@ func TestGenerate_OneofQueryParams(t *testing.T) {
 	}
 }
 
+// TestGenerate_WKTObjectQueryParams checks that google.protobuf.Struct and
+// google.protobuf.Empty query parameters are typed as strings. The runtime
+// reads them from the query string as text (a Struct as its JSON encoding, an
+// Empty as an empty value or {}), not as exploded object properties.
+func TestGenerate_WKTObjectQueryParams(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/wkt_query_param.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	op, _ := doc["paths"].(map[string]any)["/v1/search"].(map[string]any)["get"].(map[string]any)
+	if op == nil {
+		t.Fatalf("expected GET /v1/search operation, got: %v", doc["paths"])
+	}
+	gotSchemas := map[string]any{}
+	for _, p := range op["parameters"].([]any) {
+		m, _ := p.(map[string]any)
+		gotSchemas[m["in"].(string)+":"+m["name"].(string)] = m["schema"]
+	}
+	str := map[string]any{"type": "string"}
+	want := map[string]any{
+		"query:filter":               str,
+		"query:all":                  str,
+		"query:filters":              map[string]any{"type": "array", "items": str},
+		"query:namedFilters[string]": str,
+	}
+	if diff := cmp.Diff(want, gotSchemas); diff != "" {
+		t.Errorf("query parameter schemas mismatch (-want +got):\n%s", diff)
+	}
+}
+
 // TestGenerate_UnsupportedMethod checks that a binding using a custom HTTP
 // method that OpenAPI 3.1 cannot describe (here "LOCK") is skipped, instead
 // of leaving an empty path item and unused component schemas behind. Method
