@@ -522,6 +522,51 @@ func TestMatchWithBinding(t *testing.T) {
 			},
 			mode: UnescapingModeAllCharacters,
 		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+			},
+			pool: []string{"foo", "bar", "id"},
+			path: "foo/bar/part1%2Fpart2",
+			want: map[string]string{
+				"id": "bar/part1%2Fpart2",
+			},
+			mode: UnescapingModeAllExceptReserved,
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+			},
+			pool: []string{"foo", "bar", "id"},
+			path: "foo/bar/part1%2Fpart2",
+			want: map[string]string{
+				"id": "bar/part1%2Fpart2",
+			},
+			mode: UnescapingModeAllExceptSlash,
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+			},
+			pool: []string{"foo", "bar", "id"},
+			path: "foo/bar/a%40b%2fc",
+			want: map[string]string{
+				"id": "bar/a@b%2fc",
+			},
+			mode: UnescapingModeAllExceptReserved,
+		},
 	} {
 		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err != nil {
