@@ -1,0 +1,69 @@
+file_to_generate: "media/v1/media.proto"
+proto_file: {
+  name: "google/api/httpbody.proto"
+  package: "google.api"
+  message_type: {
+    name: "HttpBody"
+    field: {
+      name: "content_type"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "contentType"
+    }
+    field: {
+      name: "data"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_BYTES
+      json_name: "data"
+    }
+  }
+  options: {
+    go_package: "google.golang.org/genproto/googleapis/api/httpbody;httpbody"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "media/v1/media.proto"
+  package: "media.v1"
+  dependency: "google/api/httpbody.proto"
+  message_type: {
+    name: "MediaRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "MediaService"
+    method: {
+      name: "GetThumbnail"
+      input_type: ".media.v1.MediaRequest"
+      output_type: ".google.api.HttpBody"
+      options: {
+        [google.api.http]: {
+          get: "/v1/media/{id}/thumbnail"
+        }
+      }
+    }
+    method: {
+      name: "Download"
+      input_type: ".media.v1.MediaRequest"
+      output_type: ".google.api.HttpBody"
+      options: {
+        [google.api.http]: {
+          get: "/v1/media/{id}:download"
+        }
+      }
+      server_streaming: true
+    }
+  }
+  options: {
+    go_package: "github.com/example/media/v1;mediav1"
+  }
+  syntax: "proto3"
+}

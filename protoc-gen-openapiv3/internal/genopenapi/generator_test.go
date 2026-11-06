@@ -1565,10 +1565,44 @@ func TestGenerate_ServerStreaming(t *testing.T) {
 			}
 
 			// HttpBody streams are written as raw bytes, without the
-			// result/error wrapper.
-			if got, _ := okSchema("/v1/download").(map[string]any); got["properties"] != nil {
-				t.Errorf("HttpBody stream must not be wrapped in a stream result, got %v", got)
+			// result/error wrapper (see TestGenerate_HttpBodyResponse).
+			if diff := cmp.Diff(map[string]any{"*/*": map[string]any{}}, okResponse("/v1/download")["content"]); diff != "" {
+				t.Errorf("HttpBody stream response content mismatch (-want +got):\n%s", diff)
 			}
 		})
+	}
+}
+
+// TestGenerate_HttpBodyResponse checks that methods returning
+// google.api.HttpBody describe the raw bytes the runtime writes: the data
+// field is the response body and content_type is its Content-Type, so the
+// 200 response can be of any media type. This holds for every message of a
+// server stream as well.
+func TestGenerate_HttpBodyResponse(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/http_body.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	paths, _ := doc["paths"].(map[string]any)
+	for _, path := range []string{"/v1/media/{id}/thumbnail", "/v1/media/{id}:download"} {
+		get, _ := paths[path].(map[string]any)["get"].(map[string]any)
+		if get == nil {
+			t.Fatalf("expected GET operation under %s, got: %v", path, paths)
+		}
+		resp, _ := get["responses"].(map[string]any)["200"].(map[string]any)
+		want := map[string]any{"*/*": map[string]any{}}
+		if diff := cmp.Diff(want, resp["content"]); diff != "" {
+			t.Errorf("%s: 200 response content mismatch (-want +got):\n%s", path, diff)
+		}
+	}
+	schemas, _ := doc["components"].(map[string]any)["schemas"].(map[string]any)
+	if _, ok := schemas["google.api.HttpBody"]; ok {
+		t.Errorf("component schema %q does not describe the response body and must not be emitted", "google.api.HttpBody")
 	}
 }

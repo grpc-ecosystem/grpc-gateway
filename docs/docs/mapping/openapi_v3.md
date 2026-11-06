@@ -353,6 +353,11 @@ the wire. The HTTP-conventional `204 No Content` would be more idiomatic
 but conflicts with runtime behaviour, so generated clients would reject
 valid responses.
 
+RPCs returning `google.api.HttpBody` emit a `200` whose content is `*/*`
+with no schema. The runtime writes the message's `data` as the raw response
+body, with its `content_type` as the `Content-Type`, so the response can be
+of any media type.
+
 ### Error responses
 
 Every operation automatically gets a `default` response keyed to a
@@ -371,7 +376,8 @@ describes one of these chunks: an object titled `Stream result of <message>`
 with a `result` property holding the message schema (or the `response_body`
 field's schema) and an `error` property referencing `google.rpc.Status`. The
 `error` property is omitted when `disable_default_errors` is set.
-`google.api.HttpBody` streams are written as raw bytes and are not wrapped.
+`google.api.HttpBody` streams are written as raw bytes and are not wrapped,
+so they are described like a single `google.api.HttpBody` response.
 
 ## Security schemes
 

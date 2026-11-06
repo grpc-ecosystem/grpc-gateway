@@ -416,21 +416,32 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method, binding *descriptor.
 		if desc == "" {
 			desc = "A successful response."
 		}
-		var schema *SchemaOrRef
-		if binding.ResponseBody != nil && len(binding.ResponseBody.FieldPath) > 0 {
-			lastField := binding.ResponseBody.FieldPath[len(binding.ResponseBody.FieldPath)-1]
-			schema = b.fieldSchema(lastField.Target)
-		} else if wkt := wellKnownTypeSchema(m.ResponseType.FQMN()); wkt != nil {
-			schema = &SchemaOrRef{Value: wkt}
+		if m.ResponseType.FQMN() == httpBodyFQMN && binding.ResponseBody == nil {
+			// The runtime writes the data of a google.api.HttpBody as the
+			// raw response body, with its content_type as the Content-Type,
+			// both for a single response and for each message of a stream.
+			// The body can be of any media type and has no JSON schema.
+			resp.Codes["200"] = &ResponseRef{Value: &Response{
+				Description: desc,
+				Content:     map[string]*MediaType{"*/*": {}},
+			}}
 		} else {
-			b.ensureMessageSchema(m.ResponseType)
-			schema = NewSchemaRef(schemaName(m.ResponseType.FQMN()))
+			var schema *SchemaOrRef
+			if binding.ResponseBody != nil && len(binding.ResponseBody.FieldPath) > 0 {
+				lastField := binding.ResponseBody.FieldPath[len(binding.ResponseBody.FieldPath)-1]
+				schema = b.fieldSchema(lastField.Target)
+			} else if wkt := wellKnownTypeSchema(m.ResponseType.FQMN()); wkt != nil {
+				schema = &SchemaOrRef{Value: wkt}
+			} else {
+				b.ensureMessageSchema(m.ResponseType)
+				schema = NewSchemaRef(schemaName(m.ResponseType.FQMN()))
+			}
+			if m.GetServerStreaming() && m.ResponseType.FQMN() != httpBodyFQMN {
+				desc += " (streaming responses)"
+				schema = streamResultSchema(b, m, schema)
+			}
+			resp.Codes["200"] = &ResponseRef{Value: NewResponse(desc).WithJSONSchema(schema)}
 		}
-		if m.GetServerStreaming() && m.ResponseType.FQMN() != httpBodyFQMN {
-			desc += " (streaming responses)"
-			schema = streamResultSchema(b, m, schema)
-		}
-		resp.Codes["200"] = &ResponseRef{Value: NewResponse(desc).WithJSONSchema(schema)}
 	}
 
 	if !b.reg.GetDisableDefaultErrors() {
