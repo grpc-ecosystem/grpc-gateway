@@ -2,24 +2,17 @@
 
 ```bash
 # Handle dependencies (this repository uses Go modules)
-$ go mod download
+$ go -C examples mod download
 ```
 
-Follow the guides from this [README.md](./browser/README.md) to run the server and gateway.
+Run the gRPC server and the gateway in two terminals, from the root of the repository:
+
 ```bash
-# Make sure you are in the correct directory: 
-# $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
-$ cd examples/internal/browser
-$ pwd
+$ go -C examples run ./internal/cmd/example-grpc-server
+```
 
-# Install gulp
-$ npm install -g gulp-cli
-$ npm install
-$ gulp
-
-# Run
-$ gulp bower
-$ gulp backends
+```bash
+$ go -C examples run ./internal/cmd/example-gateway-server -openapi_dir internal/proto/examplepb
 ```
 
 Then you can use curl or a browser to test:
@@ -38,3 +31,10 @@ $ curl  http://localhost:8080/v1/example/echo/foo/123
 ```
 
 So you have visited the apis by HTTP successfully. You can also try other apis.
+
+The integration tests in [integration](./integration) start both servers themselves and exercise
+the gateway with clients generated from the OpenAPI definitions (see `client_test.go`):
+
+```bash
+$ go -C examples test ./internal/integration
+```

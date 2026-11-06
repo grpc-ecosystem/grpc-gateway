@@ -30,25 +30,6 @@ jobs:
           go-version-file: 'go.mod'
           check-latest: true
       - run: make test
-  node_test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version: 26
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: 'go.mod'
-          check-latest: true
-      - run: >
-          cd examples/internal/browser &&
-          npm install gulp-cli &&
-          npm install &&
-          ./node_modules/.bin/gulp
   generate:
     container:
       image: ghcr.io/grpc-ecosystem/grpc-gateway/build-env:latest@sha256:1760c0d749abdc15f861330aa3e497953b17157caba26a11a7473f3eb68d1255
