@@ -187,11 +187,15 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 		msgValue = msgValue.Mutable(fieldDescriptor).Message()
 	}
 
-	// A key using the map syntax (field[key]=value) must name a map field.
+	// A key using the map syntax (field[key]=value) must name a map field,
+	// or a repeated field of key/value messages laid out like map entries.
 	// Otherwise the bracket content would be bound as if it were a regular
 	// value: appended as a phantom element of a repeated field, or counted
 	// as a second value for a singular one.
 	if hasMapKey && !fieldDescriptor.IsMap() {
+		if isKeyValueList(fieldDescriptor) {
+			return populateKeyValueListField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), values)
+		}
 		return fmt.Errorf("field %q is not a map", fieldDescriptor.FullName().Name())
 	}
 
@@ -247,6 +251,48 @@ func populateMapField(fieldDescriptor protoreflect.FieldDescriptor, mp protorefl
 	}
 
 	mp.Set(key.MapKey(), value)
+
+	return nil
+}
+
+// isKeyValueList reports whether fieldDescriptor is a repeated message field
+// whose message has exactly a singular "key" and a singular "value" field.
+// Such a field is shaped like a map entry list, but can hold more than one
+// value for a key.
+func isKeyValueList(fieldDescriptor protoreflect.FieldDescriptor) bool {
+	if !fieldDescriptor.IsList() || fieldDescriptor.Message() == nil {
+		return false
+	}
+	fields := fieldDescriptor.Message().Fields()
+	if fields.Len() != 2 {
+		return false
+	}
+	key, value := fields.ByName("key"), fields.ByName("value")
+	return key != nil && key.Cardinality() != protoreflect.Repeated &&
+		value != nil && value.Cardinality() != protoreflect.Repeated
+}
+
+// populateKeyValueListField appends one key/value message to list for each of
+// values[1:], all with the key values[0].
+func populateKeyValueListField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, values []string) error {
+	fields := fieldDescriptor.Message().Fields()
+	keyField, valueField := fields.ByName("key"), fields.ByName("value")
+
+	key, err := parseField(keyField, values[0])
+	if err != nil {
+		return fmt.Errorf("parsing map key %q: %w", fieldDescriptor.FullName().Name(), err)
+	}
+
+	for _, value := range values[1:] {
+		v, err := parseField(valueField, value)
+		if err != nil {
+			return fmt.Errorf("parsing map value %q: %w", fieldDescriptor.FullName().Name(), err)
+		}
+		entry := list.NewElement()
+		entry.Message().Set(keyField, key)
+		entry.Message().Set(valueField, v)
+		list.Append(entry)
+	}
 
 	return nil
 }

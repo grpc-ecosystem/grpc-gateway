@@ -576,6 +576,29 @@ func TestPopulateParameters(t *testing.T) {
 			want:    &examplepb.Proto3Message{},
 			wanterr: errors.New(`field "string_value" is not a map`),
 		},
+		{
+			// Bind the map syntax on a repeated field of key/value messages,
+			// with one entry per value
+			values: url.Values{
+				"repeated_key_value[foobar]": {"hello", "world"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Message{
+				RepeatedKeyValue: []*examplepb.KeyValue{
+					{Key: "foobar", Value: "hello"},
+					{Key: "foobar", Value: "world"},
+				},
+			},
+		},
+		{
+			// Reject the map syntax on a repeated field of other messages
+			values: url.Values{
+				"repeated_message[key]": {"1"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`field "repeated_message" is not a map`),
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			msg := spec.want.ProtoReflect().New().Interface()
