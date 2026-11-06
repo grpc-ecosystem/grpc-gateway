@@ -1206,6 +1206,40 @@ func TestGenerate_NestedPathParam(t *testing.T) {
 	}
 }
 
+// TestGenerate_MapQueryParams checks that a map field is only emitted as a
+// `name[key]` query parameter when the runtime can read its values from a
+// query string: scalars, enums and well-known types other than Any and
+// ListValue. Maps of other messages are left out.
+func TestGenerate_MapQueryParams(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/map_query_param.prototext")
+	got := runGenerator(t, req)
+
+	var doc map[string]any
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	op, _ := doc["paths"].(map[string]any)["/v1/shelves"].(map[string]any)["get"].(map[string]any)
+	if op == nil {
+		t.Fatalf("expected GET /v1/shelves operation, got: %v", doc["paths"])
+	}
+	var gotParams []string
+	for _, p := range op["parameters"].([]any) {
+		m, _ := p.(map[string]any)
+		gotParams = append(gotParams, m["in"].(string)+":"+m["name"].(string))
+	}
+	want := []string{"query:labels[string]", "query:kinds[string]", "query:dueDates[string]"}
+	if diff := cmp.Diff(want, gotParams); diff != "" {
+		t.Errorf("parameters mismatch (-want +got):\n%s", diff)
+	}
+	schemas, _ := doc["components"].(map[string]any)["schemas"].(map[string]any)
+	if _, ok := schemas["shelf.v1.Book"]; ok {
+		t.Errorf("component schema %q is only referenced by the skipped map parameter and must not be emitted", "shelf.v1.Book")
+	}
+}
+
 // TestGenerate_OneofQueryParams checks that the other members of a oneof are
 // not emitted as query parameters when one member is bound to the path or to
 // the body: the runtime rejects them with "field already set for oneof".

@@ -1,0 +1,224 @@
+file_to_generate: "shelf/v1/shelf.proto"
+proto_file: {
+  name: "google/protobuf/any.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Any"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/anypb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "google/protobuf/timestamp.proto"
+  package: "google.protobuf"
+  message_type: {
+    name: "Timestamp"
+  }
+  options: {
+    go_package: "google.golang.org/protobuf/types/known/timestamppb"
+  }
+  syntax: "proto3"
+}
+proto_file: {
+  name: "shelf/v1/shelf.proto"
+  package: "shelf.v1"
+  dependency: "google/protobuf/any.proto"
+  dependency: "google/protobuf/timestamp.proto"
+  message_type: {
+    name: "ListShelvesRequest"
+    field: {
+      name: "labels"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".shelf.v1.ListShelvesRequest.LabelsEntry"
+      json_name: "labels"
+    }
+    field: {
+      name: "kinds"
+      number: 2
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".shelf.v1.ListShelvesRequest.KindsEntry"
+      json_name: "kinds"
+    }
+    field: {
+      name: "due_dates"
+      number: 3
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".shelf.v1.ListShelvesRequest.DueDatesEntry"
+      json_name: "dueDates"
+    }
+    field: {
+      name: "books"
+      number: 4
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".shelf.v1.ListShelvesRequest.BooksEntry"
+      json_name: "books"
+    }
+    field: {
+      name: "extras"
+      number: 5
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".shelf.v1.ListShelvesRequest.ExtrasEntry"
+      json_name: "extras"
+    }
+    nested_type: {
+      name: "LabelsEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+    nested_type: {
+      name: "KindsEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_ENUM
+        type_name: ".shelf.v1.Kind"
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+    nested_type: {
+      name: "DueDatesEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_MESSAGE
+        type_name: ".google.protobuf.Timestamp"
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+    nested_type: {
+      name: "BooksEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_MESSAGE
+        type_name: ".shelf.v1.Book"
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+    nested_type: {
+      name: "ExtrasEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_MESSAGE
+        type_name: ".google.protobuf.Any"
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+  }
+  message_type: {
+    name: "Book"
+    field: {
+      name: "title"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "title"
+    }
+  }
+  message_type: {
+    name: "ListShelvesResponse"
+    field: {
+      name: "names"
+      number: 1
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "names"
+    }
+  }
+  enum_type: {
+    name: "Kind"
+    value: {
+      name: "KIND_UNSPECIFIED"
+      number: 0
+    }
+    value: {
+      name: "KIND_FICTION"
+      number: 1
+    }
+  }
+  service: {
+    name: "ShelfService"
+    method: {
+      name: "ListShelves"
+      input_type: ".shelf.v1.ListShelvesRequest"
+      output_type: ".shelf.v1.ListShelvesResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/shelves"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/shelf/v1;shelfv1"
+  }
+  syntax: "proto3"
+}

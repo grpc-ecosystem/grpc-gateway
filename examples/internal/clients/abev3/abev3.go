@@ -528,10 +528,9 @@ type ABitOfEverythingServiceCustom1Params struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -625,10 +624,9 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -716,10 +714,9 @@ type ABitOfEverythingServiceCheckGetQueryParamsParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -802,10 +799,9 @@ type ABitOfEverythingServiceCheckPostQueryParamsParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -894,10 +890,9 @@ type ABitOfEverythingServiceGetQueryParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -970,9 +965,8 @@ type ABitOfEverythingServiceCreateParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	TimestampValue          *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	TimestampValue          *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -1058,10 +1052,9 @@ type ABitOfEverythingServiceExistsParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -1150,10 +1143,9 @@ type ABitOfEverythingServiceCustomOptionsRequestParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -1333,10 +1325,9 @@ type ABitOfEverythingServiceTraceRequestParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -1425,10 +1416,9 @@ type ABitOfEverythingServiceCustomParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -1517,10 +1507,9 @@ type ABitOfEverythingServiceDoubleColonParams struct {
 	MapValueString *GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"mapValue[string],omitempty" json:"mapValue[string],omitempty"`
 
 	// MappedStringValueString map of string  (This comment is overridden by the field annotation)
-	MappedStringValueString  *string                                                          `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
-	MappedNestedValueString  *GrpcGatewayExamplesInternalProtoExamplepbABitOfEverythingNested `form:"mappedNestedValue[string],omitempty" json:"mappedNestedValue[string],omitempty"`
-	NonConventionalNameValue *string                                                          `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *time.Time                                                       `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
+	MappedStringValueString  *string    `form:"mappedStringValue[string],omitempty" json:"mappedStringValue[string],omitempty"`
+	NonConventionalNameValue *string    `form:"nonConventionalNameValue,omitempty" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *time.Time `form:"timestampValue,omitempty" json:"timestampValue,omitempty"`
 
 	// RepeatedEnumValue repeated enum value. it is comma-separated in query
 	RepeatedEnumValue *[]GrpcGatewayExamplesInternalProtoExamplepbNumericEnum `form:"repeatedEnumValue,omitempty" json:"repeatedEnumValue,omitempty"`
@@ -4060,22 +4049,6 @@ func NewABitOfEverythingServiceCustom1Request(server string, optionalStringValue
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -5005,22 +4978,6 @@ func NewABitOfEverythingServiceCheckNestedEnumGetQueryParamsRequest(server strin
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -5845,22 +5802,6 @@ func NewABitOfEverythingServiceCheckGetQueryParamsRequest(server string, singleN
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -6635,22 +6576,6 @@ func NewABitOfEverythingServiceCheckPostQueryParamsRequestWithBody(server string
 		if params.MappedStringValueString != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedStringValue[string]", *params.MappedStringValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -7490,22 +7415,6 @@ func NewABitOfEverythingServiceGetQueryRequest(server string, uuid string, param
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -8187,22 +8096,6 @@ func NewABitOfEverythingServiceCreateRequest(server string, floatValue float32, 
 		if params.MappedStringValueString != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedStringValue[string]", *params.MappedStringValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -9076,22 +8969,6 @@ func NewABitOfEverythingServiceExistsRequest(server string, uuid string, params 
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -9903,22 +9780,6 @@ func NewABitOfEverythingServiceCustomOptionsRequestRequest(server string, uuid s
 		if params.MappedStringValueString != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedStringValue[string]", *params.MappedStringValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -10803,22 +10664,6 @@ func NewABitOfEverythingServiceTraceRequestRequest(server string, uuid string, p
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -11643,22 +11488,6 @@ func NewABitOfEverythingServiceCustomRequest(server string, uuid string, params 
 
 		}
 
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
 		if params.NonConventionalNameValue != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "nonConventionalNameValue", *params.NonConventionalNameValue, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
@@ -12470,22 +12299,6 @@ func NewABitOfEverythingServiceDoubleColonRequest(server string, uuid string, pa
 		if params.MappedStringValueString != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedStringValue[string]", *params.MappedStringValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.MappedNestedValueString != nil {
-
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mappedNestedValue[string]", *params.MappedNestedValueString, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "object", Format: ""}); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

@@ -264,6 +264,11 @@ service BookService {
 - `body="*"` synthesises an inline object schema that includes every request
   field **except** path parameters.
 - `body="field"` uses that single field's type as the request body.
+- A map field becomes a single `name[keyType]` query parameter (for example
+  `labels[string]`, sent as `?labels[foo]=bar`) whose schema is the value
+  type. Maps whose values are messages are left out, since the runtime can't
+  read those from a query string. Well-known types are the exception, apart
+  from `google.protobuf.Any` and `google.protobuf.ListValue`.
 
 ### Schemas
 
