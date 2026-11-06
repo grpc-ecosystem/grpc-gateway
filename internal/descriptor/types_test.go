@@ -393,3 +393,47 @@ func TestGoType(t *testing.T) {
 		t.Errorf("underscoreEnum.GoType() with ext package = %q; want %q", got, want)
 	}
 }
+
+// TestParameterConvertFuncExprPresence checks the converters picked for enum
+// and bytes path parameters of fields with explicit presence. Each one must
+// exist in the runtime package, or the generated handler does not compile.
+func TestParameterConvertFuncExprPresence(t *testing.T) {
+	for _, spec := range []struct {
+		name           string
+		syntax         string
+		typ            descriptorpb.FieldDescriptorProto_Type
+		proto3Optional bool
+		want           string
+	}{
+		{name: "proto2 enum", syntax: "proto2", typ: descriptorpb.FieldDescriptorProto_TYPE_ENUM, want: "runtime.Enum"},
+		{name: "proto2 bytes", syntax: "proto2", typ: descriptorpb.FieldDescriptorProto_TYPE_BYTES, want: "runtime.Bytes"},
+		{name: "proto3 optional enum", syntax: "proto3", typ: descriptorpb.FieldDescriptorProto_TYPE_ENUM, proto3Optional: true, want: "runtime.Enum"},
+		{name: "proto3 optional bytes", syntax: "proto3", typ: descriptorpb.FieldDescriptorProto_TYPE_BYTES, proto3Optional: true, want: "runtime.Bytes"},
+		{name: "proto3 optional string", syntax: "proto3", typ: descriptorpb.FieldDescriptorProto_TYPE_STRING, proto3Optional: true, want: "runtime.StringP"},
+	} {
+		t.Run(spec.name, func(t *testing.T) {
+			file := &File{FileDescriptorProto: &descriptorpb.FileDescriptorProto{Syntax: proto.String(spec.syntax)}}
+			msg := &Message{File: file, DescriptorProto: &descriptorpb.DescriptorProto{Name: proto.String("Request")}}
+			field := &Field{
+				Message: msg,
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:           proto.String("value"),
+					Label:          descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:           spec.typ.Enum(),
+					Proto3Optional: proto.Bool(spec.proto3Optional),
+				},
+			}
+			param := Parameter{
+				FieldPath: FieldPath{{Name: "value", Target: field}},
+				Target:    field,
+			}
+			got, err := param.ConvertFuncExpr()
+			if err != nil {
+				t.Fatalf("param.ConvertFuncExpr() failed with %v; want success", err)
+			}
+			if got != spec.want {
+				t.Errorf("param.ConvertFuncExpr() = %q; want %q", got, spec.want)
+			}
+		})
+	}
+}

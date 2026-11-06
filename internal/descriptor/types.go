@@ -559,6 +559,11 @@ var (
 			//       to a more generic file.
 			result[typ] = converter + "P"
 		}
+		// An optional bytes field is a plain []byte, and enums are converted
+		// to an int32 that the template turns into a pointer, so neither
+		// needs a pointer-returning converter.
+		result[descriptorpb.FieldDescriptorProto_TYPE_BYTES] = "runtime.Bytes"
+		result[descriptorpb.FieldDescriptorProto_TYPE_ENUM] = "runtime.Enum"
 		return result
 	}()
 
@@ -596,10 +601,9 @@ var (
 		descriptorpb.FieldDescriptorProto_TYPE_STRING:  "runtime.StringP",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
-		// FieldDescriptorProto_TYPE_BYTES
-		// TODO(yugui) Handle bytes
+		descriptorpb.FieldDescriptorProto_TYPE_BYTES:    "runtime.Bytes",
 		descriptorpb.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32P",
-		descriptorpb.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumP",
+		descriptorpb.FieldDescriptorProto_TYPE_ENUM:     "runtime.Enum",
 		descriptorpb.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32P",
 		descriptorpb.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64P",
 		descriptorpb.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32P",
