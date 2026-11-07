@@ -945,6 +945,12 @@ type ABitOfEverythingServiceGetQueryParams struct {
 
 	// Uuids Specify a custom format of repeated field items
 	Uuids *[]string `form:"uuids,omitempty" json:"uuids,omitempty"`
+
+	// XRequestId Correlates the request across services.
+	XRequestId *string `json:"X-Request-Id,omitempty"`
+
+	// Session The caller's session.
+	Session *string `form:"session,omitempty" json:"session,omitempty"`
 }
 
 // ABitOfEverythingServiceCreateParams defines parameters for ABitOfEverythingServiceCreate.
@@ -7791,6 +7797,38 @@ func NewABitOfEverythingServiceGetQueryRequest(server string, uuid string, param
 		return nil, err
 	}
 
+	if params != nil {
+
+		if params.XRequestId != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Request-Id", *params.XRequestId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Request-Id", headerParam0)
+		}
+
+	}
+
+	if params != nil {
+
+		if params.Session != nil {
+			var cookieParam0 string
+
+			cookieParam0, err = runtime.StyleParamWithOptions("simple", true, "session", *params.Session, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationCookie, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			cookie0 := &http.Cookie{
+				Name:  "session",
+				Value: cookieParam0,
+			}
+			req.AddCookie(cookie0)
+		}
+	}
 	return req, nil
 }
 
