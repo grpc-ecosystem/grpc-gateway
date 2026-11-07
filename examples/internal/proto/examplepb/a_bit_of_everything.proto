@@ -15,6 +15,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/rpc/status.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "protoc-gen-openapiv3/options/annotations.proto";
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -661,6 +662,18 @@ service ABitOfEverythingService {
         description: "Find out more about GetQuery"
       }
       security: {}
+    };
+    option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+      parameters: {
+        name: "X-Request-Id"
+        in: IN_HEADER
+        description: "Correlates the request across services."
+      }
+      parameters: {
+        name: "session"
+        in: IN_COOKIE
+        description: "The caller's session."
+      }
     };
   }
   rpc GetRepeatedQuery(ABitOfEverythingRepeated) returns (ABitOfEverythingRepeated) {

@@ -4583,6 +4583,22 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "description": "Correlates the request across services.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "session",
+            "in": "cookie",
+            "description": "The caller's session.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
