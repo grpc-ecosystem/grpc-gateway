@@ -511,7 +511,7 @@ var filter_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index }} = {{
 	{{- if $UseOpaqueAPI }}
 	{{ opaqueSetter $param.FieldPath "protoReq" }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
 	{{- else }}
-	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
+	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e){{ if or $param.IsProto2 $param.IsOptionalProto3 }}.Enum(){{ end }}
 	{{- end }}
 {{- end}}
 {{- end }}
@@ -734,7 +734,7 @@ func local_request_{{ .Method.Service.GetName }}_{{ .Method.GetName }}_{{ .Index
 	{{- if $UseOpaqueAPI }}
 	{{ opaqueSetter $param.FieldPath "protoReq" }}({{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e))
 	{{- else }}
-	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e)
+	{{ $param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path }} = {{ $enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier }}(e){{ if or $param.IsProto2 $param.IsOptionalProto3 }}.Enum(){{ end }}
 	{{- end }}
 {{- end }}
 {{- end }}
