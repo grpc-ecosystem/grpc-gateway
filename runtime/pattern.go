@@ -205,8 +205,29 @@ func (p Pattern) matchAndEscape(components []string, verb string, unescapingMode
 	}
 
 	var pos int
-	stack := make([]string, 0, p.stacksize)
-	captured := make([]string, len(p.vars))
+
+	// Scratch space for the match. Neither backing array escapes -- only the individual
+	// strings they hold are copied into the returned bindings -- so fixed-size arrays keep
+	// both off the heap for the patterns generated code registers, where the stack size and
+	// the variable count are single digits.
+	//
+	// This matters beyond one allocation each: ServeHTTP calls matchAndEscape once per
+	// registered pattern until one matches, and both allocations happened before the
+	// non-match return below, so a request paid for them once for every route it did not
+	// match. With a few dozen routes registered that was the largest single source of
+	// allocations in routing.
+	var stackArr, capturedArr [8]string
+	stack := stackArr[:0]
+	if p.stacksize > len(stackArr) {
+		stack = make([]string, 0, p.stacksize)
+	}
+	captured := capturedArr[:0]
+	if n := len(p.vars); n <= len(capturedArr) {
+		captured = capturedArr[:n]
+	} else {
+		captured = make([]string, n)
+	}
+
 	l := len(components)
 	for _, op := range p.ops {
 		var err error
