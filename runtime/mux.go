@@ -489,7 +489,9 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && !s.disableHTTPMethodOverride && s.isPathLengthFallback(r) {
+	// "X-Http-Method-Override" is the canonical spelling; Header.Get allocates a
+	// canonicalised copy of any other, and this lookup happens on every request.
+	if override := r.Header.Get("X-Http-Method-Override"); override != "" && !s.disableHTTPMethodOverride && s.isPathLengthFallback(r) {
 		if err := r.ParseForm(); err != nil {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
 			sterr := status.Error(codes.InvalidArgument, err.Error())
