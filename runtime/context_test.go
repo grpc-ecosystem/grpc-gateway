@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
@@ -818,5 +819,60 @@ func TestAnnotateIncomingContext_SupportsCustomAnnotators(t *testing.T) {
 		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
 	} else if m != expectedRPCName {
 		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
+}
+
+// benchAnnotateRequest is a request shaped like one a browser or a service mesh sends: a
+// handful of permanent headers the default matcher forwards, one Grpc-Metadata- header, a Host
+// and a RemoteAddr. Every one of those feeds annotateContext.
+func benchAnnotateRequest() *http.Request {
+	req := httptest.NewRequest(http.MethodPost, "/v1/echo", nil)
+	req.Host = "api.example.com"
+	req.RemoteAddr = "192.0.2.10:54321"
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	req.Header.Set("Accept-Language", "en-US,en;q=0.9")
+	req.Header.Set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.payload.sig")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Cookie", "session=abc123; csrf=def456")
+	req.Header.Set("User-Agent", "Mozilla/5.0")
+	req.Header.Set("X-Request-Id", "req-0123456789abcdef")
+	req.Header.Set("Grpc-Metadata-Tenant", "acme")
+	return req
+}
+
+// BenchmarkAnnotateContext measures the per-request conversion of HTTP headers into gRPC
+// metadata. Every request served by a generated handler goes through it exactly once, so
+// whatever it allocates is paid per request.
+func BenchmarkAnnotateContext(b *testing.B) {
+	mux := runtime.NewServeMux()
+	req := benchAnnotateRequest()
+	ctx := context.Background()
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if _, err := runtime.AnnotateContext(ctx, mux, req, "/bench.Service/Echo", runtime.WithHTTPPathPattern("/v1/echo")); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// BenchmarkAnnotateContextWithAnnotator covers the path where a metadata annotator is
+// registered, so that the join of annotator metadata over header metadata stays measured.
+func BenchmarkAnnotateContextWithAnnotator(b *testing.B) {
+	annotator := func(context.Context, *http.Request) metadata.MD {
+		return metadata.Pairs("x-tenant-tier", "gold")
+	}
+	mux := runtime.NewServeMux(runtime.WithMetadata(annotator))
+	req := benchAnnotateRequest()
+	ctx := context.Background()
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if _, err := runtime.AnnotateContext(ctx, mux, req, "/bench.Service/Echo", runtime.WithHTTPPathPattern("/v1/echo")); err != nil {
+			b.Fatal(err)
+		}
 	}
 }
