@@ -211,12 +211,16 @@ func WithLegacyHeaderMatching() ServeMuxOption {
 	return WithIncomingHeaderMatcher(LegacyHeaderMatcher)
 }
 
+// Concatenation rather than fmt.Sprintf("%s%s", ...): both arguments are strings, so there is
+// nothing to format, and these two run once per metadata entry and once per trailer entry of
+// every response. Sprintf boxes both arguments into interfaces and goes through the formatter
+// to produce what "+" produces in one allocation.
 func defaultOutgoingHeaderMatcher(key string) (string, bool) {
-	return fmt.Sprintf("%s%s", MetadataHeaderPrefix, key), true
+	return MetadataHeaderPrefix + key, true
 }
 
 func defaultOutgoingTrailerMatcher(key string) (string, bool) {
-	return fmt.Sprintf("%s%s", MetadataTrailerPrefix, key), true
+	return MetadataTrailerPrefix + key, true
 }
 
 // WithIncomingHeaderMatcher returns a ServeMuxOption representing a headerMatcher for incoming request to gateway.
