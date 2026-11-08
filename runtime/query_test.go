@@ -81,6 +81,8 @@ func BenchmarkPopulateQueryParameters(b *testing.B) {
 		{"bool_value"}, {"repeated_value"},
 	})
 
+	b.ReportAllocs()
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_ = runtime.PopulateQueryParameters(msg, values, filter)
 	}
