@@ -59,6 +59,7 @@ go_test(
         "handler_test.go",
         "marshal_httpbodyproto_test.go",
         "marshal_json_test.go",
+        "marshal_jsonpb_bench_test.go",
         "marshal_jsonpb_test.go",
         "marshal_proto_test.go",
         "marshaler_registry_test.go",

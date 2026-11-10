@@ -31,6 +31,21 @@ func (*JSONPb) ContentType(_ interface{}) string {
 
 // Marshal marshals "v" into JSON.
 func (j *JSONPb) Marshal(v interface{}) ([]byte, error) {
+	if p, ok := v.(proto.Message); ok {
+		// protojson already returns a freshly allocated slice that the caller owns, so
+		// routing it through a bytes.Buffer only added an allocation and a copy of the
+		// whole message per call. Every unary response goes through here.
+		//
+		// The error is returned with a nil slice rather than whatever protojson produced
+		// alongside it, matching what the bytes.Buffer path did: marshalTo returned before
+		// writing anything, so a failed Marshal never handed back partial output.
+		b, err := j.MarshalOptions.Marshal(p)
+		if err != nil {
+			return nil, err
+		}
+		return b, nil
+	}
+
 	var buf bytes.Buffer
 	if err := j.marshalTo(&buf, v); err != nil {
 		return nil, err
