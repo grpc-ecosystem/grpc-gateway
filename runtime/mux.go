@@ -646,10 +646,6 @@ func (s *ServeMux) GetForwardResponseOptions() []func(context.Context, http.Resp
 }
 
 func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
-	// The two cheap conditions come first. They used to be evaluated after the call below,
-	// which meant every caller paid a Header.Get and a mime.ParseMediaType -- the latter
-	// allocates a parameter map -- even for a GET request or with the fallback disabled, only
-	// to discard the result. The not-found path calls this up to three times per request.
 	if s.disablePathLengthFallback || r.Method != http.MethodPost {
 		return false
 	}
