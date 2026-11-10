@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -23,7 +22,34 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
+// splitMapKey splits a query parameter name of the form "field[key]" into the part before the
+// bracket and the key inside it, reporting whether the name has that shape at all.
+//
+// This replaces a FindStringSubmatch against `^(.*)\[(.*)\]$`, which ran for every query
+// parameter and cost two allocations each -- the submatch slice and the backtracker's state --
+// to answer a question that is two index operations. The returned strings are slices of the
+// caller's key, so nothing is copied; the caller rebuilds "[key]" as key[len(prefix):] rather
+// than concatenating it back together.
+//
+// The regexp is matched exactly, including two details worth spelling out:
+//
+//   - The first group is greedy, so the bracket that counts is the last one before the final
+//     "]". "a[b]c]" splits into "a" and "b]c", which is what LastIndexByte over everything but
+//     the final byte finds.
+//   - Go's regexp does not let "." match a newline and anchors ^ and $ at the ends of the text,
+//     so a key containing a newline could never match the pattern no matter where the brackets
+//     sat. The explicit newline check keeps that, rather than quietly starting to treat
+//     "a\n[b]" as a map key.
+func splitMapKey(key string) (prefix, inner string, ok bool) {
+	if len(key) < 2 || key[len(key)-1] != ']' || strings.IndexByte(key, '\n') >= 0 {
+		return "", "", false
+	}
+	open := strings.LastIndexByte(key[:len(key)-1], '[')
+	if open < 0 {
+		return "", "", false
+	}
+	return key[:open], key[open+1 : len(key)-1], true
+}
 
 var currentQueryParser QueryParameterParser = &DefaultQueryParser{}
 
@@ -55,9 +81,9 @@ func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 	seen := make(map[string]struct{}, len(values))
 	for key, values := range values {
 		fieldKey, mapKey := key, ""
-		if match := valuesKeyRegexp.FindStringSubmatch(key); len(match) == 3 {
-			fieldKey, mapKey = match[1], "["+match[2]+"]"
-			values = append([]string{match[2]}, values...)
+		if prefix, inner, ok := splitMapKey(key); ok {
+			fieldKey, mapKey = prefix, key[len(prefix):]
+			values = append([]string{inner}, values...)
 		}
 
 		msgValue := msg.ProtoReflect()
