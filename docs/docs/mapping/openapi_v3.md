@@ -272,7 +272,7 @@ service BookService {
 
 #### Header and cookie parameters
 
-Proto has no notion of headers or cookies, so they are declared with
+Protobuf has no notion of headers or cookies, so they are declared with
 `openapiv3_operation.parameters`. Each entry becomes an `in: header` or
 `in: cookie`
 [Parameter Object](https://spec.openapis.org/oas/v3.1.0#parameter-object),
