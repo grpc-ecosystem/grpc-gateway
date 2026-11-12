@@ -3540,13 +3540,22 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *desc
 	return ret
 }
 
-// optionalFloat64 returns a pointer to v when the option was set, so that an
-// explicit 0, e.g. `minimum: 0`, is still written to the schema.
-func optionalFloat64(set bool, v float64) *float64 {
-	if !set {
-		return nil
+// jsonSchemaBounds returns copies of the minimum and maximum of j, nil when
+// they're unset, so that an explicit 0, e.g. `minimum: 0`, is still written to
+// the schema and an unset one is left out.
+func jsonSchemaBounds(j *openapi_options.JSONSchema) (minimum, maximum *float64) {
+	if j == nil {
+		return nil, nil
 	}
-	return &v
+	if j.Minimum != nil {
+		v := *j.Minimum
+		minimum = &v
+	}
+	if j.Maximum != nil {
+		v := *j.Maximum
+		maximum = &v
+	}
+	return minimum, maximum
 }
 
 func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_options.JSONSchema, reg *descriptor.Registry, data interface{}) {
@@ -3563,8 +3572,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Items.Default = j.GetDefault()
 		s.Items.MaxProperties = j.GetMaxProperties()
 		s.Items.MinProperties = j.GetMinProperties()
-		s.Items.Minimum = optionalFloat64(j.HasMinimum(), j.GetMinimum())
-		s.Items.Maximum = optionalFloat64(j.HasMaximum(), j.GetMaximum())
+		s.Items.Minimum, s.Items.Maximum = jsonSchemaBounds(j)
 		s.Items.ReadOnly = j.GetReadOnly()
 		s.Items.MultipleOf = j.GetMultipleOf()
 		s.Items.ExclusiveMaximum = j.GetExclusiveMaximum()
@@ -3587,8 +3595,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Default = j.GetDefault()
 		s.MaxProperties = j.GetMaxProperties()
 		s.MinProperties = j.GetMinProperties()
-		s.Minimum = optionalFloat64(j.HasMinimum(), j.GetMinimum())
-		s.Maximum = optionalFloat64(j.HasMaximum(), j.GetMaximum())
+		s.Minimum, s.Maximum = jsonSchemaBounds(j)
 		s.ReadOnly = j.GetReadOnly()
 		s.MultipleOf = j.GetMultipleOf()
 		s.ExclusiveMaximum = j.GetExclusiveMaximum()
