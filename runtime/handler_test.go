@@ -648,3 +648,41 @@ func TestOutgoingTrailerMatcher(t *testing.T) {
 		})
 	}
 }
+
+// BenchmarkForwardResponseMessage measures the unary response path: the server metadata a
+// backend returns is turned into response headers, the message is marshalled and written.
+//
+// The withMetadata arm is the one that matters for the outgoing header matcher, which runs once
+// per metadata entry.
+func BenchmarkForwardResponseMessage(b *testing.B) {
+	mux := runtime.NewServeMux()
+	marshaler := &runtime.JSONPb{}
+	req := httptest.NewRequest(http.MethodPost, "/v1/echo", nil)
+	msg := &pb.SimpleMessage{Id: "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7"}
+
+	plain := context.Background()
+	withMetadata := runtime.NewServerMetadataContext(context.Background(), runtime.ServerMetadata{
+		HeaderMD: metadata.Pairs(
+			"x-request-id", "req-0123456789abcdef",
+			"x-trace-id", "4bf92f3577b34da6a3ce929d0e0e4736",
+			"x-tenant", "acme",
+		),
+	})
+
+	for _, tc := range []struct {
+		name string
+		ctx  context.Context
+	}{
+		{"plain", plain},
+		{"withMetadata", withMetadata},
+	} {
+		b.Run(tc.name, func(b *testing.B) {
+			rec := httptest.NewRecorder()
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				runtime.ForwardResponseMessage(tc.ctx, mux, marshaler, rec, req, msg)
+			}
+		})
+	}
+}
