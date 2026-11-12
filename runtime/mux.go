@@ -551,6 +551,14 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		pathParams, err := h.pat.matchAndEscape(comps, verb, unescapingMode, s.strictDeepWildcard)
 		if err != nil {
+			// ErrNotMatch is returned once for every registered pattern the request does not
+			// match, so it is by far the most common error reaching this branch. Checking it
+			// first keeps errors.As off that path: its target parameter is an any, so &mse is
+			// boxed onto the heap on every call -- one allocation per route a request did not
+			// match, which grows with the number of registered routes.
+			if errors.Is(err, ErrNotMatch) {
+				continue
+			}
 			var mse MalformedSequenceError
 			if ok := errors.As(err, &mse); ok {
 				_, outboundMarshaler := MarshalerForRequest(s, r)
