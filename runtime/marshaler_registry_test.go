@@ -126,3 +126,52 @@ type dummyEncoder struct{}
 func (dummyEncoder) Encode(interface{}) error {
 	return errors.New("not implemented")
 }
+
+// BenchmarkMarshalerForRequest covers the marshaller lookup every generated handler performs
+// once per request, and the error paths perform again.
+//
+// The Content-Type is the bare media type clients send, which is also exactly how marshallers
+// are registered, so this is the case worth keeping cheap.
+func BenchmarkMarshalerForRequest(b *testing.B) {
+	// A marshaller registered under the concrete media type, as the customisation examples in
+	// the documentation do. The default registry holds only MIMEWildcard, in which case the
+	// lookups below miss and the Content-Type still has to be parsed.
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption("application/json", &runtime.JSONPb{}))
+	req, err := http.NewRequest(http.MethodPost, "https://example.com/v1/echo", nil)
+	if err != nil {
+		b.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		inbound, outbound := runtime.MarshalerForRequest(mux, req)
+		if inbound == nil || outbound == nil {
+			b.Fatal("got a nil marshaler")
+		}
+	}
+}
+
+// BenchmarkMarshalerForRequestWithParams keeps the path that still has to parse measured: a
+// Content-Type carrying parameters is not a registry key, so it falls through to
+// mime.ParseMediaType.
+func BenchmarkMarshalerForRequestWithParams(b *testing.B) {
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption("application/json", &runtime.JSONPb{}))
+	req, err := http.NewRequest(http.MethodPost, "https://example.com/v1/echo", nil)
+	if err != nil {
+		b.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("Accept", "application/json")
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		inbound, outbound := runtime.MarshalerForRequest(mux, req)
+		if inbound == nil || outbound == nil {
+			b.Fatal("got a nil marshaler")
+		}
+	}
+}
