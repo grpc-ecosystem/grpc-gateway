@@ -5703,9 +5703,9 @@ func TestSchemaOfField(t *testing.T) {
 		Title:            "field title",
 		Description:      "field description",
 		MultipleOf:       100,
-		Maximum:          101,
+		Maximum:          proto.Float64(101),
 		ExclusiveMaximum: true,
-		Minimum:          1,
+		Minimum:          proto.Float64(1),
 		ExclusiveMinimum: true,
 		MaxLength:        10,
 		MinLength:        3,
@@ -6364,9 +6364,9 @@ func TestSchemaOfField(t *testing.T) {
 							Type: "string",
 						},
 						MultipleOf:       100,
-						Maximum:          101,
+						Maximum:          proto.Float64(101),
 						ExclusiveMaximum: true,
-						Minimum:          1,
+						Minimum:          proto.Float64(1),
 						ExclusiveMinimum: true,
 						MaxLength:        10,
 						MinLength:        3,
@@ -6410,9 +6410,9 @@ func TestSchemaOfField(t *testing.T) {
 							Format: "int64",
 						},
 						MultipleOf:       100,
-						Maximum:          101,
+						Maximum:          proto.Float64(101),
 						ExclusiveMaximum: true,
-						Minimum:          1,
+						Minimum:          proto.Float64(1),
 						ExclusiveMinimum: true,
 						MaxLength:        10,
 						MinLength:        3,
@@ -6755,9 +6755,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 						Title:            "title",
 						Description:      "desc",
 						MultipleOf:       100,
-						Maximum:          101,
+						Maximum:          proto.Float64(101),
 						ExclusiveMaximum: true,
-						Minimum:          1,
+						Minimum:          proto.Float64(1),
 						ExclusiveMinimum: true,
 						MaxLength:        10,
 						MinLength:        3,
@@ -6780,9 +6780,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					Title:            "title",
 					Description:      "desc",
 					MultipleOf:       100,
-					Maximum:          101,
+					Maximum:          proto.Float64(101),
 					ExclusiveMaximum: true,
-					Minimum:          1,
+					Minimum:          proto.Float64(1),
 					ExclusiveMinimum: true,
 					MaxLength:        10,
 					MinLength:        3,
@@ -6811,9 +6811,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 								Title:            "title",
 								Description:      "desc",
 								MultipleOf:       100,
-								Maximum:          101,
+								Maximum:          proto.Float64(101),
 								ExclusiveMaximum: true,
-								Minimum:          1,
+								Minimum:          proto.Float64(1),
 								ExclusiveMinimum: true,
 								MaxLength:        10,
 								MinLength:        3,
@@ -6838,9 +6838,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					Title:            "title",
 					Description:      "desc",
 					MultipleOf:       100,
-					Maximum:          101,
+					Maximum:          proto.Float64(101),
 					ExclusiveMaximum: true,
-					Minimum:          1,
+					Minimum:          proto.Float64(1),
 					ExclusiveMinimum: true,
 					MaxLength:        10,
 					MinLength:        3,
@@ -14918,5 +14918,64 @@ func TestRenderServicesOpenapiOmitsBodyFieldOnlyPathParams(t *testing.T) {
 	}
 	if !keys["other_field"] {
 		t.Errorf("expected other_field to remain in the body schema, got keys %v", keys)
+	}
+}
+
+func TestUpdateSwaggerObjectFromJSONSchemaZeroMinMax(t *testing.T) {
+	reg := descriptor.NewRegistry()
+	for _, tt := range []struct {
+		name       string
+		jsonSchema *openapi_options.JSONSchema
+		schemaType string
+		want       string
+	}{
+		{
+			name:       "unset",
+			jsonSchema: &openapi_options.JSONSchema{},
+			schemaType: "number",
+			want:       `{"type":"number"}`,
+		},
+		{
+			name: "explicit zero",
+			jsonSchema: &openapi_options.JSONSchema{
+				Minimum: proto.Float64(0),
+				Maximum: proto.Float64(0),
+			},
+			schemaType: "number",
+			want:       `{"type":"number","maximum":0,"minimum":0}`,
+		},
+		{
+			name: "zero minimum with a maximum",
+			jsonSchema: &openapi_options.JSONSchema{
+				Minimum:          proto.Float64(0),
+				ExclusiveMinimum: true,
+				Maximum:          proto.Float64(36.22),
+			},
+			schemaType: "number",
+			want:       `{"type":"number","maximum":36.22,"minimum":0,"exclusiveMinimum":true}`,
+		},
+		{
+			name: "explicit zero on array items",
+			jsonSchema: &openapi_options.JSONSchema{
+				Minimum: proto.Float64(0),
+			},
+			schemaType: "array",
+			want:       `{"type":"array","items":{"minimum":0}}`,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			s := openapiSchemaObject{schemaCore: schemaCore{Type: tt.schemaType}}
+			if tt.schemaType == "array" {
+				s.Items = &openapiItemsObject{}
+			}
+			updateswaggerObjectFromJSONSchema(&s, tt.jsonSchema, reg, nil)
+			got, err := json.Marshal(s)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(got) != tt.want {
+				t.Errorf("got %s, want %s", got, tt.want)
+			}
+		})
 	}
 }
