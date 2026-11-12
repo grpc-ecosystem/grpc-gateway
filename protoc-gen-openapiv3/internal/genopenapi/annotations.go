@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -511,42 +512,51 @@ func annotationNeedsSchemaBody(o *options.Schema) bool {
 		hasValueValidation(o)
 }
 
+// hasSchemaField reports whether the named field of a Schema annotation is
+// set. It goes through protoreflect so that it works the same with the open,
+// hybrid and opaque Go APIs, which don't all have Has methods or exported
+// fields.
+func hasSchemaField(o *options.Schema, name protoreflect.Name) bool {
+	m := o.ProtoReflect()
+	return m.Has(m.Descriptor().Fields().ByName(name))
+}
+
 // hasValueValidation reports whether a Schema annotation sets a validation
 // keyword that constrains a single value (a number or a string).
 func hasValueValidation(o *options.Schema) bool {
-	return o.HasMultipleOf() || o.HasMaximum() || o.HasExclusiveMaximum() ||
-		o.HasMinimum() || o.HasExclusiveMinimum() ||
-		o.HasMaxLength() || o.HasMinLength() || o.GetPattern() != ""
+	return hasSchemaField(o, "multiple_of") || hasSchemaField(o, "maximum") || hasSchemaField(o, "exclusive_maximum") ||
+		hasSchemaField(o, "minimum") || hasSchemaField(o, "exclusive_minimum") ||
+		hasSchemaField(o, "max_length") || hasSchemaField(o, "min_length") || o.GetPattern() != ""
 }
 
 // hasArrayValidation reports whether a Schema annotation sets a validation
 // keyword that constrains an array.
 func hasArrayValidation(o *options.Schema) bool {
-	return o.HasMaxItems() || o.HasMinItems() || o.GetUniqueItems()
+	return hasSchemaField(o, "max_items") || hasSchemaField(o, "min_items") || o.GetUniqueItems()
 }
 
 // applyValueValidation copies the value validation keywords of a field-level
 // Schema annotation onto a schema body.
 func applyValueValidation(s *Schema, o *options.Schema) {
-	if o.HasMultipleOf() {
+	if hasSchemaField(o, "multiple_of") {
 		s.MultipleOf = proto.Float64(o.GetMultipleOf())
 	}
-	if o.HasMaximum() {
+	if hasSchemaField(o, "maximum") {
 		s.Maximum = proto.Float64(o.GetMaximum())
 	}
-	if o.HasExclusiveMaximum() {
+	if hasSchemaField(o, "exclusive_maximum") {
 		s.ExclusiveMaximum = proto.Float64(o.GetExclusiveMaximum())
 	}
-	if o.HasMinimum() {
+	if hasSchemaField(o, "minimum") {
 		s.Minimum = proto.Float64(o.GetMinimum())
 	}
-	if o.HasExclusiveMinimum() {
+	if hasSchemaField(o, "exclusive_minimum") {
 		s.ExclusiveMinimum = proto.Float64(o.GetExclusiveMinimum())
 	}
-	if o.HasMaxLength() {
+	if hasSchemaField(o, "max_length") {
 		s.MaxLength = proto.Uint64(o.GetMaxLength())
 	}
-	if o.HasMinLength() {
+	if hasSchemaField(o, "min_length") {
 		s.MinLength = proto.Uint64(o.GetMinLength())
 	}
 	if v := o.GetPattern(); v != "" {
@@ -557,10 +567,10 @@ func applyValueValidation(s *Schema, o *options.Schema) {
 // applyArrayValidation copies the array validation keywords of a field-level
 // Schema annotation onto an array schema.
 func applyArrayValidation(s *Schema, o *options.Schema) {
-	if o.HasMaxItems() {
+	if hasSchemaField(o, "max_items") {
 		s.MaxItems = proto.Uint64(o.GetMaxItems())
 	}
-	if o.HasMinItems() {
+	if hasSchemaField(o, "min_items") {
 		s.MinItems = proto.Uint64(o.GetMinItems())
 	}
 	s.UniqueItems = s.UniqueItems || o.GetUniqueItems()
@@ -590,16 +600,16 @@ func validateSchemaValidation(o *options.Schema) error {
 	if o == nil {
 		return nil
 	}
-	if o.HasMultipleOf() && o.GetMultipleOf() <= 0 {
+	if hasSchemaField(o, "multiple_of") && o.GetMultipleOf() <= 0 {
 		return fmt.Errorf("multiple_of must be greater than 0, got %v", o.GetMultipleOf())
 	}
-	if o.HasMinimum() && o.HasMaximum() && o.GetMinimum() > o.GetMaximum() {
+	if hasSchemaField(o, "minimum") && hasSchemaField(o, "maximum") && o.GetMinimum() > o.GetMaximum() {
 		return fmt.Errorf("minimum %v is greater than maximum %v", o.GetMinimum(), o.GetMaximum())
 	}
-	if o.HasMinLength() && o.HasMaxLength() && o.GetMinLength() > o.GetMaxLength() {
+	if hasSchemaField(o, "min_length") && hasSchemaField(o, "max_length") && o.GetMinLength() > o.GetMaxLength() {
 		return fmt.Errorf("min_length %d is greater than max_length %d", o.GetMinLength(), o.GetMaxLength())
 	}
-	if o.HasMinItems() && o.HasMaxItems() && o.GetMinItems() > o.GetMaxItems() {
+	if hasSchemaField(o, "min_items") && hasSchemaField(o, "max_items") && o.GetMinItems() > o.GetMaxItems() {
 		return fmt.Errorf("min_items %d is greater than max_items %d", o.GetMinItems(), o.GetMaxItems())
 	}
 	return nil
