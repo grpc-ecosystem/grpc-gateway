@@ -1606,3 +1606,114 @@ func TestGenerate_HttpBodyResponse(t *testing.T) {
 		t.Errorf("component schema %q does not describe the response body and must not be emitted", "google.api.HttpBody")
 	}
 }
+
+// TestGenerate_FieldValidationKeywords checks that the validation keywords of
+// an openapiv3_field annotation land on the right schema: the field itself
+// for singular fields, the array and its items for repeated fields, the
+// values for map fields, and an allOf wrapper for $ref fields. An explicit 0
+// bound is kept, and an impossible range is dropped without failing
+// generation.
+func TestGenerate_FieldValidationKeywords(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/validation.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Schemas map[string]struct {
+				Properties map[string]map[string]any `json:"properties"`
+			} `json:"schemas"`
+		} `json:"components"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+	props := doc.Components.Schemas["val.v1.Item"].Properties
+	if props == nil {
+		t.Fatalf("missing val.v1.Item component schema:\n%s", string(got))
+	}
+
+	for _, tc := range []struct {
+		name string
+		path []string
+		want map[string]any
+		gone []string
+	}{
+		{
+			name: "string field",
+			path: []string{"name"},
+			want: map[string]any{"pattern": "^[a-z][a-z0-9-]*$", "minLength": float64(1), "maxLength": float64(63)},
+		},
+		{
+			name: "explicit zero minimum",
+			path: []string{"count"},
+			want: map[string]any{"minimum": float64(0), "maximum": float64(100)},
+		},
+		{
+			name: "exclusive bounds",
+			path: []string{"ratio"},
+			want: map[string]any{"exclusiveMinimum": float64(0), "exclusiveMaximum": float64(1), "multipleOf": 0.25},
+		},
+		{
+			name: "repeated field array keywords",
+			path: []string{"tags"},
+			want: map[string]any{"minItems": float64(1), "maxItems": float64(10), "uniqueItems": true},
+			gone: []string{"maxLength"},
+		},
+		{
+			name: "repeated field item keywords",
+			path: []string{"tags", "items"},
+			want: map[string]any{"type": "string", "maxLength": float64(20)},
+		},
+		{
+			name: "map field skips array keywords",
+			path: []string{"labels"},
+			want: map[string]any{"type": "object"},
+			gone: []string{"maxItems", "maxLength"},
+		},
+		{
+			name: "map field value keywords",
+			path: []string{"labels", "additionalProperties"},
+			want: map[string]any{"type": "string", "maxLength": float64(32)},
+		},
+		{
+			name: "repeated message keeps item ref",
+			path: []string{"owners", "items"},
+			want: map[string]any{"$ref": "#/components/schemas/val.v1.Owner"},
+		},
+		{
+			name: "singular ref is wrapped",
+			path: []string{"owner"},
+			want: map[string]any{"minLength": float64(1)},
+			gone: []string{"$ref"},
+		},
+		{
+			name: "impossible range is dropped",
+			path: []string{"badRange"},
+			want: map[string]any{"title": "Bad range"},
+			gone: []string{"minimum", "maximum"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			schema := props[tc.path[0]]
+			for _, key := range tc.path[1:] {
+				next, _ := schema[key].(map[string]any)
+				schema = next
+			}
+			if schema == nil {
+				t.Fatalf("no schema at %v:\n%s", tc.path, string(got))
+			}
+			for key, want := range tc.want {
+				if got := schema[key]; got != want {
+					t.Errorf("%s: want %v, got %v (schema %v)", key, want, got, schema)
+				}
+			}
+			for _, key := range tc.gone {
+				if v, ok := schema[key]; ok {
+					t.Errorf("%s: want unset, got %v (schema %v)", key, v, schema)
+				}
+			}
+		})
+	}
+}

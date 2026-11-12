@@ -507,5 +507,100 @@ func annotationNeedsSchemaBody(o *options.Schema) bool {
 	if o == nil {
 		return false
 	}
-	return o.GetTitle() != "" || o.GetDeprecated() || len(o.GetExtensions()) > 0
+	return o.GetTitle() != "" || o.GetDeprecated() || len(o.GetExtensions()) > 0 ||
+		hasValueValidation(o)
+}
+
+// hasValueValidation reports whether a Schema annotation sets a validation
+// keyword that constrains a single value (a number or a string).
+func hasValueValidation(o *options.Schema) bool {
+	return o.HasMultipleOf() || o.HasMaximum() || o.HasExclusiveMaximum() ||
+		o.HasMinimum() || o.HasExclusiveMinimum() ||
+		o.HasMaxLength() || o.HasMinLength() || o.GetPattern() != ""
+}
+
+// hasArrayValidation reports whether a Schema annotation sets a validation
+// keyword that constrains an array.
+func hasArrayValidation(o *options.Schema) bool {
+	return o.HasMaxItems() || o.HasMinItems() || o.GetUniqueItems()
+}
+
+// applyValueValidation copies the value validation keywords of a field-level
+// Schema annotation onto a schema body.
+func applyValueValidation(s *Schema, o *options.Schema) {
+	if o.HasMultipleOf() {
+		s.MultipleOf = proto.Float64(o.GetMultipleOf())
+	}
+	if o.HasMaximum() {
+		s.Maximum = proto.Float64(o.GetMaximum())
+	}
+	if o.HasExclusiveMaximum() {
+		s.ExclusiveMaximum = proto.Float64(o.GetExclusiveMaximum())
+	}
+	if o.HasMinimum() {
+		s.Minimum = proto.Float64(o.GetMinimum())
+	}
+	if o.HasExclusiveMinimum() {
+		s.ExclusiveMinimum = proto.Float64(o.GetExclusiveMinimum())
+	}
+	if o.HasMaxLength() {
+		s.MaxLength = proto.Uint64(o.GetMaxLength())
+	}
+	if o.HasMinLength() {
+		s.MinLength = proto.Uint64(o.GetMinLength())
+	}
+	if v := o.GetPattern(); v != "" {
+		s.Pattern = v
+	}
+}
+
+// applyArrayValidation copies the array validation keywords of a field-level
+// Schema annotation onto an array schema.
+func applyArrayValidation(s *Schema, o *options.Schema) {
+	if o.HasMaxItems() {
+		s.MaxItems = proto.Uint64(o.GetMaxItems())
+	}
+	if o.HasMinItems() {
+		s.MinItems = proto.Uint64(o.GetMinItems())
+	}
+	s.UniqueItems = s.UniqueItems || o.GetUniqueItems()
+}
+
+// withValueValidation returns the item or map value schema with the value
+// validation keywords of a field-level annotation applied. A $ref is wrapped
+// in allOf, since the keywords can't sit next to it.
+func withValueValidation(item *SchemaOrRef, o *options.Schema) *SchemaOrRef {
+	if item == nil || !hasValueValidation(o) {
+		return item
+	}
+	if item.Ref != "" {
+		wrapped := &Schema{AllOf: []*SchemaOrRef{{Ref: item.Ref}}}
+		applyValueValidation(wrapped, o)
+		return &SchemaOrRef{Value: wrapped}
+	}
+	if item.Value != nil {
+		applyValueValidation(item.Value, o)
+	}
+	return item
+}
+
+// validateSchemaValidation checks the validation keywords of a field-level
+// Schema annotation for values that can't be valid JSON Schema.
+func validateSchemaValidation(o *options.Schema) error {
+	if o == nil {
+		return nil
+	}
+	if o.HasMultipleOf() && o.GetMultipleOf() <= 0 {
+		return fmt.Errorf("multiple_of must be greater than 0, got %v", o.GetMultipleOf())
+	}
+	if o.HasMinimum() && o.HasMaximum() && o.GetMinimum() > o.GetMaximum() {
+		return fmt.Errorf("minimum %v is greater than maximum %v", o.GetMinimum(), o.GetMaximum())
+	}
+	if o.HasMinLength() && o.HasMaxLength() && o.GetMinLength() > o.GetMaxLength() {
+		return fmt.Errorf("min_length %d is greater than max_length %d", o.GetMinLength(), o.GetMaxLength())
+	}
+	if o.HasMinItems() && o.HasMaxItems() && o.GetMinItems() > o.GetMaxItems() {
+		return fmt.Errorf("min_items %d is greater than max_items %d", o.GetMinItems(), o.GetMaxItems())
+	}
+	return nil
 }

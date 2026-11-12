@@ -209,6 +209,40 @@ message Schema {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#specification-extensions
   map<string, google.protobuf.Value> extensions = 4;
+
+  // Validation keywords. These are only applied by field-level
+  // (`openapiv3_field`) annotations. On a repeated field, `min_items`,
+  // `max_items` and `unique_items` constrain the array and the other
+  // keywords constrain each item; on a map field the other keywords
+  // constrain each value. A keyword on a field whose schema is a $ref
+  // wraps the $ref in `allOf`.
+  //
+  // The numeric bounds are `optional` so that an explicit 0 is kept.
+  //
+  // See: https://json-schema.org/draft/2020-12/json-schema-validation
+
+  // The value must be a multiple of this number. Must be greater than 0.
+  optional double multiple_of = 5;
+  // Inclusive upper bound of a numeric value.
+  optional double maximum = 6;
+  // Exclusive upper bound of a numeric value.
+  optional double exclusive_maximum = 7;
+  // Inclusive lower bound of a numeric value.
+  optional double minimum = 8;
+  // Exclusive lower bound of a numeric value.
+  optional double exclusive_minimum = 9;
+  // Maximum length of a string value.
+  optional uint64 max_length = 10;
+  // Minimum length of a string value.
+  optional uint64 min_length = 11;
+  // An ECMA-262 regular expression that a string value must match.
+  string pattern = 12;
+  // Maximum number of items of a repeated field.
+  optional uint64 max_items = 13;
+  // Minimum number of items of a repeated field.
+  optional uint64 min_items = 14;
+  // Requires the items of a repeated field to be unique.
+  bool unique_items = 15;
 }
 
 // ExternalDocs is a link to external documentation.
