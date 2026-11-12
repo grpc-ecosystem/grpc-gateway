@@ -8,6 +8,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -400,6 +401,13 @@ func applyFieldValidation(s *Schema, field *descriptor.Field, ann *options.Schem
 	s.Items = withValueValidation(s.Items, ann)
 }
 
+// validationFieldNames lists the validation keyword fields of the Schema
+// annotation.
+var validationFieldNames = []protoreflect.Name{
+	"multiple_of", "maximum", "exclusive_maximum", "minimum", "exclusive_minimum",
+	"max_length", "min_length", "pattern", "max_items", "min_items", "unique_items",
+}
+
 // checkedValidationAnnotation returns the field annotation, or a copy without
 // its validation keywords when they can't be valid JSON Schema, e.g. a
 // minimum above the maximum. The problem is logged and the rest of the
@@ -411,17 +419,11 @@ func checkedValidationAnnotation(field *descriptor.Field, ann *options.Schema) *
 	}
 	grpclog.Infof("protoc-gen-openapiv3: openapiv3_field on field %q: %v; skipping its validation keywords", field.GetName(), err)
 	clean := proto.Clone(ann).(*options.Schema)
-	clean.ClearMultipleOf()
-	clean.ClearMaximum()
-	clean.ClearExclusiveMaximum()
-	clean.ClearMinimum()
-	clean.ClearExclusiveMinimum()
-	clean.ClearMaxLength()
-	clean.ClearMinLength()
-	clean.SetPattern("")
-	clean.ClearMaxItems()
-	clean.ClearMinItems()
-	clean.SetUniqueItems(false)
+	m := clean.ProtoReflect()
+	fields := m.Descriptor().Fields()
+	for _, name := range validationFieldNames {
+		m.Clear(fields.ByName(name))
+	}
 	return clean
 }
 
