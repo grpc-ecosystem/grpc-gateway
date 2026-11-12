@@ -1694,31 +1694,31 @@ func TestApplyResponseOverrides_Errors(t *testing.T) {
 		{
 			name:    "bad status code",
 			code:    "40",
-			resp:    options.Response_builder{Description: "x"}.Build(),
+			resp:    textResponse(t, `description: "x"`),
 			wantErr: `key "40" must be`,
 		},
 		{
 			name:    "lowercase range",
 			code:    "4xx",
-			resp:    options.Response_builder{Description: "x"}.Build(),
+			resp:    textResponse(t, `description: "x"`),
 			wantErr: `key "4xx" must be`,
 		},
 		{
 			name:    "missing description",
 			code:    "404",
-			resp:    options.Response_builder{}.Build(),
+			resp:    textResponse(t, ``),
 			wantErr: `responses["404"]: description is required`,
 		},
 		{
 			name:    "unknown message",
 			code:    "404",
-			resp:    options.Response_builder{Description: "x", Messages: []string{"resp.v1.Missing"}}.Build(),
+			resp:    textResponse(t, `description: "x" messages: "resp.v1.Missing"`),
 			wantErr: `responses["404"].messages[0]: unknown message "resp.v1.Missing"`,
 		},
 		{
 			name:    "empty message name",
 			code:    "404",
-			resp:    options.Response_builder{Description: "x", Messages: []string{""}}.Build(),
+			resp:    textResponse(t, `description: "x" messages: ""`),
 			wantErr: "message name is empty",
 		},
 	}
@@ -1732,4 +1732,15 @@ func TestApplyResponseOverrides_Errors(t *testing.T) {
 			}
 		})
 	}
+}
+
+// textResponse parses an options.Response from prototext, which works the
+// same whatever API level the options package was generated with.
+func textResponse(t *testing.T, text string) *options.Response {
+	t.Helper()
+	r := new(options.Response)
+	if err := prototext.Unmarshal([]byte(text), r); err != nil {
+		t.Fatalf("unmarshal response %q: %v", text, err)
+	}
+	return r
 }
