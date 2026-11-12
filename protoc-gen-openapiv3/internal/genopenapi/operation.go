@@ -3,8 +3,11 @@ package genopenapi
 import (
 	"fmt"
 	"net/http"
+	"sort"
+	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -47,6 +50,9 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 	op.Responses = buildResponses(b, m, binding)
 	if o, ok := methodOperationAnnotation(m); ok {
 		if err := applyOperationOverride(op, o); err != nil {
+			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
+		}
+		if err := applyResponseOverrides(b, op.Responses, o.GetResponses()); err != nil {
 			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
 		}
 		if o.GetOperationId() != "" && bindingIdx > 0 {
@@ -449,6 +455,102 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method, binding *descriptor.
 		resp.Default = &ResponseRef{Value: NewResponse("An unexpected error response.").WithJSONSchema(NewSchemaRef(statusSchemaName))}
 	}
 	return resp
+}
+
+// applyResponseOverrides adds the responses declared on an openapiv3_operation
+// annotation. An annotated key replaces the generated response for that key,
+// so "default" swaps out the google.rpc.Status error response and "200" the
+// success response.
+func applyResponseOverrides(b *schemaBuilder, resp *Responses, overrides map[string]*options.Response) error {
+	if len(overrides) == 0 {
+		return nil
+	}
+	codes := make([]string, 0, len(overrides))
+	for code := range overrides {
+		codes = append(codes, code)
+	}
+	// Sorted so errors and schema registration don't depend on map order.
+	sort.Strings(codes)
+	for _, code := range codes {
+		r, err := buildAnnotatedResponse(b, code, overrides[code])
+		if err != nil {
+			return err
+		}
+		if code == "default" {
+			resp.Default = &ResponseRef{Value: r}
+			continue
+		}
+		resp.Codes[code] = &ResponseRef{Value: r}
+	}
+	return nil
+}
+
+func buildAnnotatedResponse(b *schemaBuilder, code string, o *options.Response) (*Response, error) {
+	if !validResponseCode(code) {
+		return nil, fmt.Errorf("responses: key %q must be an HTTP status code like \"404\", a range like \"4XX\" or \"default\"", code)
+	}
+	if o.GetDescription() == "" {
+		return nil, fmt.Errorf("responses[%q]: description is required", code)
+	}
+	r := NewResponse(o.GetDescription())
+	var schemas []*SchemaOrRef
+	for i, name := range o.GetMessages() {
+		s, err := annotatedMessageSchema(b, name)
+		if err != nil {
+			return nil, fmt.Errorf("responses[%q].messages[%d]: %w", code, i, err)
+		}
+		schemas = append(schemas, s)
+	}
+	switch len(schemas) {
+	case 0:
+	case 1:
+		r.WithJSONSchema(schemas[0])
+	default:
+		r.WithJSONSchema(&SchemaOrRef{Value: &Schema{OneOf: schemas}})
+	}
+	return r, nil
+}
+
+// annotatedMessageSchema resolves a message named in a response annotation to
+// a schema, registering the component schema when needed.
+func annotatedMessageSchema(b *schemaBuilder, name string) (*SchemaOrRef, error) {
+	fqmn := "." + strings.TrimPrefix(name, ".")
+	if fqmn == "." {
+		return nil, fmt.Errorf("message name is empty")
+	}
+	if fqmn == "."+statusSchemaName {
+		// google.rpc.Status may not be in the registry; use the same
+		// built-in schema as the generated error responses.
+		ensureStatusSchema(b.doc)
+		return NewSchemaRef(statusSchemaName), nil
+	}
+	if wkt := wellKnownTypeSchema(fqmn); wkt != nil {
+		return &SchemaOrRef{Value: wkt}, nil
+	}
+	msg, err := b.reg.LookupMsg("", fqmn)
+	if err != nil {
+		return nil, fmt.Errorf("unknown message %q", name)
+	}
+	if msg.GetOptions().GetMapEntry() {
+		return nil, fmt.Errorf("%q is a map entry, not a message", name)
+	}
+	b.ensureMessageSchema(msg)
+	return NewSchemaRef(schemaName(msg.FQMN())), nil
+}
+
+// validResponseCode reports whether key is a valid Responses object key:
+// "default", a three digit status code or a range such as "4XX".
+func validResponseCode(key string) bool {
+	if key == "default" {
+		return true
+	}
+	if len(key) != 3 || key[0] < '1' || key[0] > '5' {
+		return false
+	}
+	if key[1:] == "XX" {
+		return true
+	}
+	return key[1] >= '0' && key[1] <= '9' && key[2] >= '0' && key[2] <= '9'
 }
 
 // streamResultSchema wraps the per-message schema of a server-streaming
