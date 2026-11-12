@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -1604,5 +1605,131 @@ func TestGenerate_HttpBodyResponse(t *testing.T) {
 	schemas, _ := doc["components"].(map[string]any)["schemas"].(map[string]any)
 	if _, ok := schemas["google.api.HttpBody"]; ok {
 		t.Errorf("component schema %q does not describe the response body and must not be emitted", "google.api.HttpBody")
+	}
+}
+
+// TestGenerate_ResponseAnnotations checks the responses declared on
+// openapiv3_operation: one message gives a $ref, several give a oneOf, an
+// entry without messages has no content, and an annotated key replaces the
+// generated success or default response.
+func TestGenerate_ResponseAnnotations(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/responses.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Schemas map[string]json.RawMessage `json:"schemas"`
+		} `json:"components"`
+		Paths map[string]map[string]struct {
+			Responses json.RawMessage `json:"responses"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	assertJSONEqual(t, doc.Paths["/v1/foo/{id}"]["delete"].Responses, []byte(`{
+		"default": {
+			"description": "An unexpected error response.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/google.rpc.Status"}}}
+		},
+		"200": {
+			"description": "A successful response.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.DeleteResponse"}}}
+		},
+		"304": {"description": "Not modified."},
+		"400": {
+			"description": "The foo is running or does not exist.",
+			"content": {"application/json": {"schema": {"oneOf": [
+				{"$ref": "#/components/schemas/resp.v1.CannotDeleteError"},
+				{"$ref": "#/components/schemas/resp.v1.NotFoundError"}
+			]}}}
+		},
+		"404": {
+			"description": "The foo does not exist.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.NotFoundError"}}}
+		},
+		"5XX": {
+			"description": "Server error.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/google.rpc.Status"}}}
+		}
+	}`))
+
+	assertJSONEqual(t, doc.Paths["/v1/foo/{id}:purge"]["post"].Responses, []byte(`{
+		"default": {
+			"description": "Purge failed.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.CannotDeleteError"}}}
+		},
+		"200": {
+			"description": "Purged at.",
+			"content": {"application/json": {"schema": {"type": "string", "format": "date-time"}}}
+		}
+	}`))
+
+	// Messages only referenced from an annotation still get a component.
+	for _, name := range []string{"resp.v1.CannotDeleteError", "resp.v1.NotFoundError"} {
+		if _, ok := doc.Components.Schemas[name]; !ok {
+			t.Errorf("components.schemas[%q] missing", name)
+		}
+	}
+}
+
+func TestApplyResponseOverrides_Errors(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/responses.prototext")
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+
+	cases := []struct {
+		name    string
+		code    string
+		resp    *options.Response
+		wantErr string
+	}{
+		{
+			name:    "bad status code",
+			code:    "40",
+			resp:    options.Response_builder{Description: "x"}.Build(),
+			wantErr: `key "40" must be`,
+		},
+		{
+			name:    "lowercase range",
+			code:    "4xx",
+			resp:    options.Response_builder{Description: "x"}.Build(),
+			wantErr: `key "4xx" must be`,
+		},
+		{
+			name:    "missing description",
+			code:    "404",
+			resp:    options.Response_builder{}.Build(),
+			wantErr: `responses["404"]: description is required`,
+		},
+		{
+			name:    "unknown message",
+			code:    "404",
+			resp:    options.Response_builder{Description: "x", Messages: []string{"resp.v1.Missing"}}.Build(),
+			wantErr: `responses["404"].messages[0]: unknown message "resp.v1.Missing"`,
+		},
+		{
+			name:    "empty message name",
+			code:    "404",
+			resp:    options.Response_builder{Description: "x", Messages: []string{""}}.Build(),
+			wantErr: "message name is empty",
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			b := newSchemaBuilder(reg, NewDocument("t", "1"))
+			err := applyResponseOverrides(b, NewResponses(), map[string]*options.Response{tc.code: tc.resp})
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
 	}
 }

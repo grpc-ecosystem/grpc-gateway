@@ -179,6 +179,30 @@ message Operation {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#operationSecurity
   repeated SecurityRequirement security = 9;
+  // Responses to document on this operation, keyed by HTTP status code
+  // ("404"), status code range ("4XX") or "default". An entry replaces the
+  // response the generator would produce for the same key, so "default"
+  // replaces the generated google.rpc.Status error response and "200"
+  // replaces the generated success response.
+  //
+  // Field number 10 is left free for operation parameters.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#responses-object
+  map<string, Response> responses = 11;
+}
+
+// Response describes a single response of an operation.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#response-object
+message Response {
+  // A description of the response. CommonMark syntax MAY be used for rich
+  // text representation. Required.
+  string description = 1;
+  // Fully qualified names of the proto messages the response body can hold,
+  // for example "example.v1.NotFoundError". One message is referenced
+  // directly; several are combined with `oneOf`. Leave empty for a response
+  // without a body.
+  repeated string messages = 2;
 }
 
 // Schema is a message- or field-level override applied to the generated
