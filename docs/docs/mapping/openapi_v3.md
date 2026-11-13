@@ -366,6 +366,30 @@ component schema named `google.rpc.Status` with the standard `code`,
 on error paths. Use the `disable_default_errors` plugin option to suppress
 this behaviour when using a custom error handler.
 
+To document more responses, list them under `responses` in the
+`openapiv3_operation` annotation, keyed by status code (`"404"`), range
+(`"4XX"`) or `"default"`. Each entry needs a `description` and can name the
+proto messages its body may hold. One message is referenced directly and
+several are combined with `oneOf`. Names are fully qualified, and messages
+named here get a component schema even if nothing else uses them. An entry
+replaces the generated response for the same key, so `"default"` swaps out
+the `google.rpc.Status` error response.
+
+```protobuf
+rpc DeleteFoo(DeleteFooRequest) returns (DeleteFooResponse) {
+  option (google.api.http) = {delete: "/v1/foo/{id}"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    responses: {
+      key: "400"
+      value: {
+        description: "The foo is running or does not exist."
+        messages: ["example.v1.CannotDeleteError", "example.v1.NotFoundError"]
+      }
+    }
+  };
+}
+```
+
 ### Server streaming
 
 For server-streaming RPCs, the `grpc-gateway` runtime writes one JSON object

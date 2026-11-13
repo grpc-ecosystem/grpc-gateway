@@ -1,0 +1,111 @@
+file_to_generate: "resp/v1/resp.proto"
+proto_file: {
+  name: "resp/v1/resp.proto"
+  package: "resp.v1"
+  message_type: {
+    name: "DeleteRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "DeleteResponse"
+  }
+  message_type: {
+    name: "CannotDeleteError"
+    field: {
+      name: "reason"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "reason"
+    }
+  }
+  message_type: {
+    name: "NotFoundError"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "FooService"
+    method: {
+      name: "Delete"
+      input_type: ".resp.v1.DeleteRequest"
+      output_type: ".resp.v1.DeleteResponse"
+      options: {
+        [google.api.http]: {
+          delete: "/v1/foo/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          responses: {
+            key: "400"
+            value: {
+              description: "The foo is running or does not exist."
+              messages: "resp.v1.CannotDeleteError"
+              messages: ".resp.v1.NotFoundError"
+            }
+          }
+          responses: {
+            key: "404"
+            value: {
+              description: "The foo does not exist."
+              messages: "resp.v1.NotFoundError"
+            }
+          }
+          responses: {
+            key: "5XX"
+            value: {
+              description: "Server error."
+              messages: "google.rpc.Status"
+            }
+          }
+          responses: {
+            key: "304"
+            value: {
+              description: "Not modified."
+            }
+          }
+        }
+      }
+    }
+    method: {
+      name: "Purge"
+      input_type: ".resp.v1.DeleteRequest"
+      output_type: ".resp.v1.DeleteResponse"
+      options: {
+        [google.api.http]: {
+          post: "/v1/foo/{id}:purge"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          responses: {
+            key: "default"
+            value: {
+              description: "Purge failed."
+              messages: "resp.v1.CannotDeleteError"
+            }
+          }
+          responses: {
+            key: "200"
+            value: {
+              description: "Purged at."
+              messages: "google.protobuf.Timestamp"
+            }
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/resp/v1;respv1"
+  }
+  syntax: "proto3"
+}

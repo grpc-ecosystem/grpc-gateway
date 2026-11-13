@@ -990,6 +990,7 @@ type Operation struct {
 	xxx_hidden_Servers      *[]*Server                 `protobuf:"bytes,7,rep,name=servers,proto3" json:"servers,omitempty"`
 	xxx_hidden_Extensions   map[string]*structpb.Value `protobuf:"bytes,8,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	xxx_hidden_Security     *[]*SecurityRequirement    `protobuf:"bytes,9,rep,name=security,proto3" json:"security,omitempty"`
+	xxx_hidden_Responses    map[string]*Response       `protobuf:"bytes,11,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -1086,6 +1087,13 @@ func (x *Operation) GetSecurity() []*SecurityRequirement {
 	return nil
 }
 
+func (x *Operation) GetResponses() map[string]*Response {
+	if x != nil {
+		return x.xxx_hidden_Responses
+	}
+	return nil
+}
+
 func (x *Operation) SetTags(v []string) {
 	x.xxx_hidden_Tags = v
 }
@@ -1120,6 +1128,10 @@ func (x *Operation) SetExtensions(v map[string]*structpb.Value) {
 
 func (x *Operation) SetSecurity(v []*SecurityRequirement) {
 	x.xxx_hidden_Security = &v
+}
+
+func (x *Operation) SetResponses(v map[string]*Response) {
+	x.xxx_hidden_Responses = v
 }
 
 func (x *Operation) HasExternalDocs() bool {
@@ -1171,6 +1183,16 @@ type Operation_builder struct {
 	//
 	// See: https://spec.openapis.org/oas/v3.1.0#operationSecurity
 	Security []*SecurityRequirement
+	// Responses to document on this operation, keyed by HTTP status code
+	// ("404"), status code range ("4XX") or "default". An entry replaces the
+	// response the generator would produce for the same key, so "default"
+	// replaces the generated google.rpc.Status error response and "200"
+	// replaces the generated success response.
+	//
+	// Field number 10 is left free for operation parameters.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#responses-object
+	Responses map[string]*Response
 }
 
 func (b0 Operation_builder) Build() *Operation {
@@ -1186,6 +1208,87 @@ func (b0 Operation_builder) Build() *Operation {
 	x.xxx_hidden_Servers = &b.Servers
 	x.xxx_hidden_Extensions = b.Extensions
 	x.xxx_hidden_Security = &b.Security
+	x.xxx_hidden_Responses = b.Responses
+	return m0
+}
+
+// Response describes a single response of an operation.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#response-object
+type Response struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Description string                 `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	xxx_hidden_Messages    []string               `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *Response) Reset() {
+	*x = Response{}
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Response) ProtoMessage() {}
+
+func (x *Response) ProtoReflect() protoreflect.Message {
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Response) GetDescription() string {
+	if x != nil {
+		return x.xxx_hidden_Description
+	}
+	return ""
+}
+
+func (x *Response) GetMessages() []string {
+	if x != nil {
+		return x.xxx_hidden_Messages
+	}
+	return nil
+}
+
+func (x *Response) SetDescription(v string) {
+	x.xxx_hidden_Description = v
+}
+
+func (x *Response) SetMessages(v []string) {
+	x.xxx_hidden_Messages = v
+}
+
+type Response_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// A description of the response. CommonMark syntax MAY be used for rich
+	// text representation. Required.
+	Description string
+	// Fully qualified names of the proto messages the response body can hold,
+	// for example "example.v1.NotFoundError". One message is referenced
+	// directly; several are combined with `oneOf`. Leave empty for a response
+	// without a body.
+	Messages []string
+}
+
+func (b0 Response_builder) Build() *Response {
+	m0 := &Response{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Description = b.Description
+	x.xxx_hidden_Messages = b.Messages
 	return m0
 }
 
@@ -1210,7 +1313,7 @@ type Schema struct {
 
 func (x *Schema) Reset() {
 	*x = Schema{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[7]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1222,7 +1325,7 @@ func (x *Schema) String() string {
 func (*Schema) ProtoMessage() {}
 
 func (x *Schema) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[7]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1324,7 +1427,7 @@ type ExternalDocs struct {
 
 func (x *ExternalDocs) Reset() {
 	*x = ExternalDocs{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1336,7 +1439,7 @@ func (x *ExternalDocs) String() string {
 func (*ExternalDocs) ProtoMessage() {}
 
 func (x *ExternalDocs) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1405,7 +1508,7 @@ type Tag struct {
 
 func (x *Tag) Reset() {
 	*x = Tag{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1417,7 +1520,7 @@ func (x *Tag) String() string {
 func (*Tag) ProtoMessage() {}
 
 func (x *Tag) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1531,7 +1634,7 @@ type SecurityScheme struct {
 
 func (x *SecurityScheme) Reset() {
 	*x = SecurityScheme{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1543,7 +1646,7 @@ func (x *SecurityScheme) String() string {
 func (*SecurityScheme) ProtoMessage() {}
 
 func (x *SecurityScheme) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1727,7 +1830,7 @@ type OAuthFlows struct {
 
 func (x *OAuthFlows) Reset() {
 	*x = OAuthFlows{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1739,7 +1842,7 @@ func (x *OAuthFlows) String() string {
 func (*OAuthFlows) ProtoMessage() {}
 
 func (x *OAuthFlows) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1885,7 +1988,7 @@ type OAuthFlow struct {
 
 func (x *OAuthFlow) Reset() {
 	*x = OAuthFlow{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1897,7 +2000,7 @@ func (x *OAuthFlow) String() string {
 func (*OAuthFlow) ProtoMessage() {}
 
 func (x *OAuthFlow) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2001,7 +2104,7 @@ type SecurityRequirement struct {
 
 func (x *SecurityRequirement) Reset() {
 	*x = SecurityRequirement{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2013,7 +2116,7 @@ func (x *SecurityRequirement) String() string {
 func (*SecurityRequirement) ProtoMessage() {}
 
 func (x *SecurityRequirement) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2063,7 +2166,7 @@ type SecurityRequirement_Scopes struct {
 
 func (x *SecurityRequirement_Scopes) Reset() {
 	*x = SecurityRequirement_Scopes{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[21]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2075,7 +2178,7 @@ func (x *SecurityRequirement_Scopes) String() string {
 func (*SecurityRequirement_Scopes) ProtoMessage() {}
 
 func (x *SecurityRequirement_Scopes) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[21]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2229,7 +2332,7 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc = []byte{
 	0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72,
 	0x6c, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
-	0x69, 0x6f, 0x6e, 0x22, 0xe2, 0x04, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x69, 0x6f, 0x6e, 0x22, 0xb8, 0x06, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f,
 	0x6e, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52,
 	0x04, 0x74, 0x61, 0x67, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x12,
@@ -2262,12 +2365,30 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc = []byte{
 	0x6e, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69,
 	0x6f, 0x6e, 0x73, 0x2e, 0x53, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75,
 	0x69, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x08, 0x73, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74,
-	0x79, 0x1a, 0x55, 0x0a, 0x0f, 0x45, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x45,
-	0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2c, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x76,
-	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x9a, 0x02, 0x0a, 0x06, 0x53, 0x63, 0x68,
+	0x79, 0x12, 0x61, 0x0a, 0x09, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x18, 0x0b,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x43, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65,
+	0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f,
+	0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x2e, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x09, 0x72, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x73, 0x1a, 0x55, 0x0a, 0x0f, 0x45, 0x78, 0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f,
+	0x6e, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2c, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x71, 0x0a, 0x0e, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a,
+	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12,
+	0x49, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33,
+	0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69,
+	0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x48,
+	0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65,
+	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x22, 0x9a, 0x02, 0x0a, 0x06, 0x53, 0x63, 0x68,
 	0x65, 0x6d, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,
 	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
@@ -2417,7 +2538,7 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc = []byte{
 }
 
 var file_protoc_gen_openapiv3_options_openapiv3_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
+var file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_protoc_gen_openapiv3_options_openapiv3_proto_goTypes = []any{
 	(SecurityScheme_Type)(0),           // 0: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.Type
 	(SecurityScheme_In)(0),             // 1: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.In
@@ -2428,64 +2549,68 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_goTypes = []any{
 	(*License)(nil),                    // 6: grpc.gateway.protoc_gen_openapiv3.options.License
 	(*Server)(nil),                     // 7: grpc.gateway.protoc_gen_openapiv3.options.Server
 	(*Operation)(nil),                  // 8: grpc.gateway.protoc_gen_openapiv3.options.Operation
-	(*Schema)(nil),                     // 9: grpc.gateway.protoc_gen_openapiv3.options.Schema
-	(*ExternalDocs)(nil),               // 10: grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
-	(*Tag)(nil),                        // 11: grpc.gateway.protoc_gen_openapiv3.options.Tag
-	(*SecurityScheme)(nil),             // 12: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
-	(*OAuthFlows)(nil),                 // 13: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
-	(*OAuthFlow)(nil),                  // 14: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	(*SecurityRequirement)(nil),        // 15: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
-	nil,                                // 16: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
-	nil,                                // 17: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
-	nil,                                // 18: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
-	nil,                                // 19: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
-	nil,                                // 20: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
-	nil,                                // 21: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
-	nil,                                // 22: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
-	(*SecurityRequirement_Scopes)(nil), // 23: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
-	nil,                                // 24: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
-	(*structpb.Value)(nil),             // 25: google.protobuf.Value
+	(*Response)(nil),                   // 9: grpc.gateway.protoc_gen_openapiv3.options.Response
+	(*Schema)(nil),                     // 10: grpc.gateway.protoc_gen_openapiv3.options.Schema
+	(*ExternalDocs)(nil),               // 11: grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	(*Tag)(nil),                        // 12: grpc.gateway.protoc_gen_openapiv3.options.Tag
+	(*SecurityScheme)(nil),             // 13: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
+	(*OAuthFlows)(nil),                 // 14: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
+	(*OAuthFlow)(nil),                  // 15: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	(*SecurityRequirement)(nil),        // 16: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
+	nil,                                // 17: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
+	nil,                                // 18: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
+	nil,                                // 19: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
+	nil,                                // 20: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
+	nil,                                // 21: grpc.gateway.protoc_gen_openapiv3.options.Operation.ResponsesEntry
+	nil,                                // 22: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
+	nil,                                // 23: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
+	nil,                                // 24: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
+	(*SecurityRequirement_Scopes)(nil), // 25: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
+	nil,                                // 26: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
+	(*structpb.Value)(nil),             // 27: google.protobuf.Value
 }
 var file_protoc_gen_openapiv3_options_openapiv3_proto_depIdxs = []int32{
 	4,  // 0: grpc.gateway.protoc_gen_openapiv3.options.Document.info:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Info
 	7,  // 1: grpc.gateway.protoc_gen_openapiv3.options.Document.servers:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Server
-	10, // 2: grpc.gateway.protoc_gen_openapiv3.options.Document.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
-	11, // 3: grpc.gateway.protoc_gen_openapiv3.options.Document.tags:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag
-	16, // 4: grpc.gateway.protoc_gen_openapiv3.options.Document.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
+	11, // 2: grpc.gateway.protoc_gen_openapiv3.options.Document.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	12, // 3: grpc.gateway.protoc_gen_openapiv3.options.Document.tags:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag
+	17, // 4: grpc.gateway.protoc_gen_openapiv3.options.Document.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
 	3,  // 5: grpc.gateway.protoc_gen_openapiv3.options.Document.components:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Components
-	15, // 6: grpc.gateway.protoc_gen_openapiv3.options.Document.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
-	17, // 7: grpc.gateway.protoc_gen_openapiv3.options.Components.security_schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
+	16, // 6: grpc.gateway.protoc_gen_openapiv3.options.Document.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
+	18, // 7: grpc.gateway.protoc_gen_openapiv3.options.Components.security_schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
 	5,  // 8: grpc.gateway.protoc_gen_openapiv3.options.Info.contact:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Contact
 	6,  // 9: grpc.gateway.protoc_gen_openapiv3.options.Info.license:type_name -> grpc.gateway.protoc_gen_openapiv3.options.License
-	18, // 10: grpc.gateway.protoc_gen_openapiv3.options.Info.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
-	10, // 11: grpc.gateway.protoc_gen_openapiv3.options.Operation.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	19, // 10: grpc.gateway.protoc_gen_openapiv3.options.Info.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
+	11, // 11: grpc.gateway.protoc_gen_openapiv3.options.Operation.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
 	7,  // 12: grpc.gateway.protoc_gen_openapiv3.options.Operation.servers:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Server
-	19, // 13: grpc.gateway.protoc_gen_openapiv3.options.Operation.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
-	15, // 14: grpc.gateway.protoc_gen_openapiv3.options.Operation.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
-	20, // 15: grpc.gateway.protoc_gen_openapiv3.options.Schema.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
-	10, // 16: grpc.gateway.protoc_gen_openapiv3.options.Tag.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
-	21, // 17: grpc.gateway.protoc_gen_openapiv3.options.Tag.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
-	0,  // 18: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.type:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.Type
-	1,  // 19: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.in:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.In
-	13, // 20: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.flows:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
-	14, // 21: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.implicit:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	14, // 22: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.password:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	14, // 23: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.client_credentials:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	14, // 24: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.authorization_code:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	22, // 25: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.scopes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
-	24, // 26: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
-	25, // 27: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	12, // 28: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
-	25, // 29: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	25, // 30: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	25, // 31: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	25, // 32: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	23, // 33: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
-	34, // [34:34] is the sub-list for method output_type
-	34, // [34:34] is the sub-list for method input_type
-	34, // [34:34] is the sub-list for extension type_name
-	34, // [34:34] is the sub-list for extension extendee
-	0,  // [0:34] is the sub-list for field type_name
+	20, // 13: grpc.gateway.protoc_gen_openapiv3.options.Operation.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
+	16, // 14: grpc.gateway.protoc_gen_openapiv3.options.Operation.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
+	21, // 15: grpc.gateway.protoc_gen_openapiv3.options.Operation.responses:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Operation.ResponsesEntry
+	22, // 16: grpc.gateway.protoc_gen_openapiv3.options.Schema.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
+	11, // 17: grpc.gateway.protoc_gen_openapiv3.options.Tag.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	23, // 18: grpc.gateway.protoc_gen_openapiv3.options.Tag.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
+	0,  // 19: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.type:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.Type
+	1,  // 20: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.in:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.In
+	14, // 21: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.flows:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
+	15, // 22: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.implicit:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	15, // 23: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.password:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	15, // 24: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.client_credentials:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	15, // 25: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.authorization_code:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	24, // 26: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.scopes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
+	26, // 27: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
+	27, // 28: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	13, // 29: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
+	27, // 30: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	27, // 31: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	9,  // 32: grpc.gateway.protoc_gen_openapiv3.options.Operation.ResponsesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Response
+	27, // 33: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	27, // 34: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	25, // 35: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
+	36, // [36:36] is the sub-list for method output_type
+	36, // [36:36] is the sub-list for method input_type
+	36, // [36:36] is the sub-list for extension type_name
+	36, // [36:36] is the sub-list for extension extendee
+	0,  // [0:36] is the sub-list for field type_name
 }
 
 func init() { file_protoc_gen_openapiv3_options_openapiv3_proto_init() }
@@ -2503,7 +2628,7 @@ func file_protoc_gen_openapiv3_options_openapiv3_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   23,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
