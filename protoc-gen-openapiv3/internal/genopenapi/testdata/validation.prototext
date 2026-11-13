@@ -1,0 +1,174 @@
+file_to_generate: "val/v1/validation.proto"
+proto_file: {
+  name: "val/v1/validation.proto"
+  package: "val.v1"
+  message_type: {
+    name: "Owner"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "Item"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          pattern: "^[a-z][a-z0-9-]*$"
+          min_length: 1
+          max_length: 63
+        }
+      }
+    }
+    field: {
+      name: "count"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "count"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          minimum: 0
+          maximum: 100
+        }
+      }
+    }
+    field: {
+      name: "ratio"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_DOUBLE
+      json_name: "ratio"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          exclusive_minimum: 0
+          exclusive_maximum: 1
+          multiple_of: 0.25
+        }
+      }
+    }
+    field: {
+      name: "tags"
+      number: 4
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "tags"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          min_items: 1
+          max_items: 10
+          unique_items: true
+          max_length: 20
+        }
+      }
+    }
+    field: {
+      name: "labels"
+      number: 5
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".val.v1.Item.LabelsEntry"
+      json_name: "labels"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          max_length: 32
+          max_items: 5
+        }
+      }
+    }
+    field: {
+      name: "owners"
+      number: 6
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".val.v1.Owner"
+      json_name: "owners"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          max_items: 3
+        }
+      }
+    }
+    field: {
+      name: "owner"
+      number: 7
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".val.v1.Owner"
+      json_name: "owner"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          min_length: 1
+        }
+      }
+    }
+    field: {
+      name: "bad_range"
+      number: 8
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "badRange"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          title: "Bad range"
+          minimum: 10
+          maximum: 1
+        }
+      }
+    }
+    nested_type: {
+      name: "LabelsEntry"
+      field: {
+        name: "key"
+        number: 1
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "key"
+      }
+      field: {
+        name: "value"
+        number: 2
+        label: LABEL_OPTIONAL
+        type: TYPE_STRING
+        json_name: "value"
+      }
+      options: {
+        map_entry: true
+      }
+    }
+  }
+  message_type: {
+    name: "GetItemRequest"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  service: {
+    name: "ItemService"
+    method: {
+      name: "GetItem"
+      input_type: ".val.v1.GetItemRequest"
+      output_type: ".val.v1.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/{name}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/val/v1;valv1"
+  }
+}

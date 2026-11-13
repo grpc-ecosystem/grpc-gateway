@@ -546,13 +546,26 @@ type Schema struct {
 	Examples []any `json:"examples,omitempty"`
 	Enum     []any `json:"enum,omitempty"`
 
+	// Numeric and string validation. Pointers keep an explicit 0.
+	MultipleOf       *float64 `json:"multipleOf,omitempty"`
+	Maximum          *float64 `json:"maximum,omitempty"`
+	ExclusiveMaximum *float64 `json:"exclusiveMaximum,omitempty"`
+	Minimum          *float64 `json:"minimum,omitempty"`
+	ExclusiveMinimum *float64 `json:"exclusiveMinimum,omitempty"`
+	MaxLength        *uint64  `json:"maxLength,omitempty"`
+	MinLength        *uint64  `json:"minLength,omitempty"`
+	Pattern          string   `json:"pattern,omitempty"`
+
 	// Object validation
 	Properties           map[string]*SchemaOrRef `json:"properties,omitempty"`
 	Required             []string                `json:"required,omitempty"`
 	AdditionalProperties *AdditionalProperties   `json:"additionalProperties,omitempty"`
 
 	// Array validation
-	Items *SchemaOrRef `json:"items,omitempty"`
+	Items       *SchemaOrRef `json:"items,omitempty"`
+	MaxItems    *uint64      `json:"maxItems,omitempty"`
+	MinItems    *uint64      `json:"minItems,omitempty"`
+	UniqueItems bool         `json:"uniqueItems,omitempty"`
 
 	// Composition
 	AllOf []*SchemaOrRef `json:"allOf,omitempty"`
