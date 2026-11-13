@@ -270,6 +270,47 @@ service BookService {
   read those from a query string. Well-known types are the exception, apart
   from `google.protobuf.Any` and `google.protobuf.ListValue`.
 
+#### Header and cookie parameters
+
+Protobuf has no notion of headers or cookies, so they are declared with
+`openapiv3_operation.parameters`. Each entry becomes an `in: header` or
+`in: cookie`
+[Parameter Object](https://spec.openapis.org/oas/v3.1.0#parameter-object),
+added after the path and query parameters on every binding of the method.
+`type` (string, number, integer or boolean; string when unset) and `format`
+set the parameter's schema.
+
+```protobuf
+rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+  option (google.api.http) = {get: "/v1/books"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    parameters: {
+      name: "X-Request-Id"
+      in: IN_HEADER
+      description: "Correlates the request across services."
+      format: "uuid"
+    }
+    parameters: {
+      name: "session"
+      in: IN_COOKIE
+      required: true
+    }
+  };
+}
+```
+
+`name` and `in` are required. Two parameters of one operation may not share
+both a location and a name; header names are compared case-insensitively.
+A header named `Accept`, `Content-Type` or `Authorization` is refused, since
+OpenAPI 3.1.0 says such a parameter SHALL be ignored. Describe authorization
+with [security schemes](#security-schemes) instead.
+
+The annotation only documents the parameter. By default the gateway forwards
+just the permanent HTTP request headers, `Cookie` among them, to gRPC
+metadata (see `runtime.DefaultHeaderMatcher`). Any other header reaches the
+backend only if the mux is built with a matcher that forwards it, using
+`runtime.WithIncomingHeaderMatcher`.
+
 ### Schemas
 
 - Messages become component schemas under `#/components/schemas/`.
