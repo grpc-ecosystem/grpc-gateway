@@ -648,9 +648,12 @@ func (s *ServeMux) GetForwardResponseOptions() []func(context.Context, http.Resp
 }
 
 func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
+	if s.disablePathLengthFallback || r.Method != http.MethodPost {
+		return false
+	}
 	// Like net/http's ParseForm, ignore parameters such as charset.
 	mediaType, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
-	return !s.disablePathLengthFallback && r.Method == "POST" && err == nil && mediaType == "application/x-www-form-urlencoded"
+	return err == nil && mediaType == "application/x-www-form-urlencoded"
 }
 
 type handler struct {
