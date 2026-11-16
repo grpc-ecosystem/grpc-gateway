@@ -1492,6 +1492,38 @@ func TestServeMux_MultiSegmentVariableKeepsEscapedSeparator(t *testing.T) {
 // components against a mux with many registered patterns, none of which match.
 // The routing cost has to stay proportional to the path, not to the path
 // multiplied by the number of handlers.
+// BenchmarkServeHTTPRouting measures routing against a mux with many registered patterns.
+//
+// The request is built to match the pattern registered first, which is the one ServeHTTP tries
+// last: Handle prepends, so the handler slice is in reverse registration order. Every other
+// pattern is therefore attempted and rejected first, which is what a request pays in the worst
+// case and what makes any per-attempt allocation scale with the number of registered routes.
+// The benchmark is parameterised by route count so that scaling shows up as a changing
+// allocs/op rather than hiding inside one number.
+func BenchmarkServeHTTPRouting(b *testing.B) {
+	for _, routes := range []int{20, 100} {
+		b.Run(fmt.Sprintf("routes=%d", routes), func(b *testing.B) {
+			mux := runtime.NewServeMux()
+			for i := 0; i < routes; i++ {
+				if err := mux.HandlePath(http.MethodPost, fmt.Sprintf("/v1/svc%d/{id}", i),
+					func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+						w.WriteHeader(http.StatusOK)
+					}); err != nil {
+					b.Fatal(err)
+				}
+			}
+			req := httptest.NewRequest(http.MethodPost, "/v1/svc0/abc123", nil)
+			req.Header.Set("Content-Type", "application/json")
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				mux.ServeHTTP(httptest.NewRecorder(), req)
+			}
+		})
+	}
+}
+
 func BenchmarkMuxServeHTTP(b *testing.B) {
 	mux := runtime.NewServeMux()
 	for i := 0; i < 100; i++ {
