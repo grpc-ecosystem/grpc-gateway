@@ -595,14 +595,10 @@ var (
 		{
 			data: examplepb.NumericEnum_ONE,
 			json: `"ONE"`,
-			// TODO(yugui) support unmarshaling of symbolic enum
-			skipUnmarshal: true,
 		},
 		{
 			data: (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
 			json: `"ONE"`,
-			// TODO(yugui) support unmarshaling of symbolic enum
-			skipUnmarshal: true,
 		},
 
 		{
@@ -970,5 +966,62 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 				spec.verifier(t, spec.input, buf)
 			}
 		})
+	}
+}
+
+func TestJSONPbDecoderSymbolicEnum(t *testing.T) {
+	m := runtime.JSONPb{}
+	var got examplepb.NumericEnum
+	if err := m.NewDecoder(strings.NewReader(`"ONE"`)).Decode(&got); err != nil {
+		t.Fatalf("Decode(%q) failed with %v; want success", `"ONE"`, err)
+	}
+	if got != examplepb.NumericEnum_ONE {
+		t.Errorf("got %v; want %v", got, examplepb.NumericEnum_ONE)
+	}
+
+	var list []examplepb.NumericEnum
+	if err := m.NewDecoder(strings.NewReader(`["ONE","ZERO",1]`)).Decode(&list); err != nil {
+		t.Fatalf("Decode list failed with %v; want success", err)
+	}
+	if want := []examplepb.NumericEnum{examplepb.NumericEnum_ONE, examplepb.NumericEnum_ZERO, examplepb.NumericEnum_ONE}; !reflect.DeepEqual(list, want) {
+		t.Errorf("got %v; want %v", list, want)
+	}
+
+	if err := m.NewDecoder(strings.NewReader(`null`)).Decode(&got); err != nil || got != examplepb.NumericEnum_ONE {
+		t.Errorf("Decode(null) = %v, %v; want the value left as %v", got, err, examplepb.NumericEnum_ONE)
+	}
+
+	if err := m.NewDecoder(strings.NewReader(`"NOT_A_VALUE"`)).Decode(&got); err == nil {
+		t.Errorf("Decode of an unknown enum name succeeded; want an error")
+	}
+
+	discard := runtime.JSONPb{UnmarshalOptions: protojson.UnmarshalOptions{DiscardUnknown: true}}
+	if err := discard.NewDecoder(strings.NewReader(`"NOT_A_VALUE"`)).Decode(&got); err != nil || got != examplepb.NumericEnum_ONE {
+		t.Errorf("Decode of an unknown enum name with DiscardUnknown = %v, %v; want the value left as %v", got, err, examplepb.NumericEnum_ONE)
+	}
+
+	var m2 map[string]examplepb.NumericEnum
+	if err := m.NewDecoder(strings.NewReader(`{"a":"ONE","b":0}`)).Decode(&m2); err != nil {
+		t.Fatalf("Decode map failed with %v; want success", err)
+	}
+	if want := map[string]examplepb.NumericEnum{"a": examplepb.NumericEnum_ONE, "b": examplepb.NumericEnum_ZERO}; !reflect.DeepEqual(m2, want) {
+		t.Errorf("got %v; want %v", m2, want)
+	}
+
+	// Like protojson, a null list item or map value is an error.
+	for _, in := range []string{`[null]`, `[ "ONE", null ]`} {
+		var l []examplepb.NumericEnum
+		if err := m.NewDecoder(strings.NewReader(in)).Decode(&l); err == nil {
+			t.Errorf("Decode(%s) = %v; want an error", in, l)
+		}
+	}
+	var mn map[string]examplepb.NumericEnum
+	if err := m.NewDecoder(strings.NewReader(`{"a":null}`)).Decode(&mn); err == nil {
+		t.Errorf("Decode({\"a\":null}) = %v; want an error", mn)
+	}
+	// google.protobuf.NullValue is the exception: null is its value.
+	var nv []structpb.NullValue
+	if err := m.NewDecoder(strings.NewReader(`[null]`)).Decode(&nv); err != nil || !reflect.DeepEqual(nv, []structpb.NullValue{structpb.NullValue_NULL_VALUE}) {
+		t.Errorf("Decode([null]) into []structpb.NullValue = %v, %v; want [NULL_VALUE]", nv, err)
 	}
 }
