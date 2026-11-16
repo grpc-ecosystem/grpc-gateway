@@ -339,9 +339,9 @@ type openapiSchemaObject struct {
 
 	ReadOnly         bool     `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
 	MultipleOf       float64  `json:"multipleOf,omitempty" yaml:"multipleOf,omitempty"`
-	Maximum          float64  `json:"maximum,omitempty" yaml:"maximum,omitempty"`
+	Maximum          *float64 `json:"maximum,omitempty" yaml:"maximum,omitempty"`
 	ExclusiveMaximum bool     `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"`
-	Minimum          float64  `json:"minimum,omitempty" yaml:"minimum,omitempty"`
+	Minimum          *float64 `json:"minimum,omitempty" yaml:"minimum,omitempty"`
 	ExclusiveMinimum bool     `json:"exclusiveMinimum,omitempty" yaml:"exclusiveMinimum,omitempty"`
 	MaxLength        uint64   `json:"maxLength,omitempty" yaml:"maxLength,omitempty"`
 	MinLength        uint64   `json:"minLength,omitempty" yaml:"minLength,omitempty"`
