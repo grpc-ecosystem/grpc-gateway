@@ -1190,7 +1190,15 @@ type Operation struct {
 	// `in` and `name`; header names are compared case-insensitively.
 	//
 	// See: https://spec.openapis.org/oas/v3.1.0#operationParameters
-	Parameters    []*Parameter `protobuf:"bytes,10,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*Parameter `protobuf:"bytes,10,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	// Responses to document on this operation, keyed by HTTP status code
+	// ("404"), status code range ("4XX") or "default". An entry replaces the
+	// response the generator would produce for the same key, so "default"
+	// replaces the generated google.rpc.Status error response and "200"
+	// replaces the generated success response.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#responses-object
+	Responses     map[string]*Response `protobuf:"bytes,11,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1290,6 +1298,13 @@ func (x *Operation) GetParameters() []*Parameter {
 	return nil
 }
 
+func (x *Operation) GetResponses() map[string]*Response {
+	if x != nil {
+		return x.Responses
+	}
+	return nil
+}
+
 func (x *Operation) SetTags(v []string) {
 	x.Tags = v
 }
@@ -1328,6 +1343,10 @@ func (x *Operation) SetSecurity(v []*SecurityRequirement) {
 
 func (x *Operation) SetParameters(v []*Parameter) {
 	x.Parameters = v
+}
+
+func (x *Operation) SetResponses(v map[string]*Response) {
+	x.Responses = v
 }
 
 func (x *Operation) HasExternalDocs() bool {
@@ -1386,6 +1405,14 @@ type Operation_builder struct {
 	//
 	// See: https://spec.openapis.org/oas/v3.1.0#operationParameters
 	Parameters []*Parameter
+	// Responses to document on this operation, keyed by HTTP status code
+	// ("404"), status code range ("4XX") or "default". An entry replaces the
+	// response the generator would produce for the same key, so "default"
+	// replaces the generated google.rpc.Status error response and "200"
+	// replaces the generated success response.
+	//
+	// See: https://spec.openapis.org/oas/v3.1.0#responses-object
+	Responses map[string]*Response
 }
 
 func (b0 Operation_builder) Build() *Operation {
@@ -1402,6 +1429,7 @@ func (b0 Operation_builder) Build() *Operation {
 	x.Extensions = b.Extensions
 	x.Security = b.Security
 	x.Parameters = b.Parameters
+	x.Responses = b.Responses
 	return m0
 }
 
@@ -1598,6 +1626,92 @@ func (b0 Parameter_builder) Build() *Parameter {
 	return m0
 }
 
+// Response describes a single response of an operation.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#response-object
+type Response struct {
+	state protoimpl.MessageState `protogen:"hybrid.v1"`
+	// A description of the response. CommonMark syntax MAY be used for rich
+	// text representation. Required.
+	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	// Fully qualified names of the proto messages the response body can hold,
+	// for example "example.v1.NotFoundError". One message is referenced
+	// directly; several are combined with `oneOf`. Leave empty for a response
+	// without a body.
+	Messages      []string `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Response) Reset() {
+	*x = Response{}
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Response) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Response) ProtoMessage() {}
+
+func (x *Response) ProtoReflect() protoreflect.Message {
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Response) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Response) GetMessages() []string {
+	if x != nil {
+		return x.Messages
+	}
+	return nil
+}
+
+func (x *Response) SetDescription(v string) {
+	x.Description = v
+}
+
+func (x *Response) SetMessages(v []string) {
+	x.Messages = v
+}
+
+type Response_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	// A description of the response. CommonMark syntax MAY be used for rich
+	// text representation. Required.
+	Description string
+	// Fully qualified names of the proto messages the response body can hold,
+	// for example "example.v1.NotFoundError". One message is referenced
+	// directly; several are combined with `oneOf`. Leave empty for a response
+	// without a body.
+	Messages []string
+}
+
+func (b0 Response_builder) Build() *Response {
+	m0 := &Response{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.Description = b.Description
+	x.Messages = b.Messages
+	return m0
+}
+
 // Schema is a message- or field-level override applied to the generated
 // JSON Schema. Non-empty fields replace values the generator would
 // otherwise derive from proto comments or the proto type.
@@ -1633,7 +1747,7 @@ type Schema struct {
 
 func (x *Schema) Reset() {
 	*x = Schema{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1645,7 +1759,7 @@ func (x *Schema) String() string {
 func (*Schema) ProtoMessage() {}
 
 func (x *Schema) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[8]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1750,7 +1864,7 @@ type ExternalDocs struct {
 
 func (x *ExternalDocs) Reset() {
 	*x = ExternalDocs{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1762,7 +1876,7 @@ func (x *ExternalDocs) String() string {
 func (*ExternalDocs) ProtoMessage() {}
 
 func (x *ExternalDocs) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[9]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1839,7 +1953,7 @@ type Tag struct {
 
 func (x *Tag) Reset() {
 	*x = Tag{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1851,7 +1965,7 @@ func (x *Tag) String() string {
 func (*Tag) ProtoMessage() {}
 
 func (x *Tag) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[10]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1996,7 +2110,7 @@ type SecurityScheme struct {
 
 func (x *SecurityScheme) Reset() {
 	*x = SecurityScheme{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2008,7 +2122,7 @@ func (x *SecurityScheme) String() string {
 func (*SecurityScheme) ProtoMessage() {}
 
 func (x *SecurityScheme) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[11]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2204,7 +2318,7 @@ type OAuthFlows struct {
 
 func (x *OAuthFlows) Reset() {
 	*x = OAuthFlows{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2216,7 +2330,7 @@ func (x *OAuthFlows) String() string {
 func (*OAuthFlows) ProtoMessage() {}
 
 func (x *OAuthFlows) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[12]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2377,7 +2491,7 @@ type OAuthFlow struct {
 
 func (x *OAuthFlow) Reset() {
 	*x = OAuthFlow{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2389,7 +2503,7 @@ func (x *OAuthFlow) String() string {
 func (*OAuthFlow) ProtoMessage() {}
 
 func (x *OAuthFlow) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[13]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2497,7 +2611,7 @@ type SecurityRequirement struct {
 
 func (x *SecurityRequirement) Reset() {
 	*x = SecurityRequirement{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[14]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2509,7 +2623,7 @@ func (x *SecurityRequirement) String() string {
 func (*SecurityRequirement) ProtoMessage() {}
 
 func (x *SecurityRequirement) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[14]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2562,7 +2676,7 @@ type SecurityRequirement_Scopes struct {
 
 func (x *SecurityRequirement_Scopes) Reset() {
 	*x = SecurityRequirement_Scopes{}
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[22]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2574,7 +2688,7 @@ func (x *SecurityRequirement_Scopes) String() string {
 func (*SecurityRequirement_Scopes) ProtoMessage() {}
 
 func (x *SecurityRequirement_Scopes) ProtoReflect() protoreflect.Message {
-	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[22]
+	mi := &file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2728,7 +2842,7 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc = []byte{
 	0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72,
 	0x6c, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
-	0x69, 0x6f, 0x6e, 0x22, 0xb8, 0x05, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x69, 0x6f, 0x6e, 0x22, 0x8e, 0x07, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f,
 	0x6e, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52,
 	0x04, 0x74, 0x61, 0x67, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x12,
@@ -2766,41 +2880,59 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc = []byte{
 	0x65, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f,
 	0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
 	0x73, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x52, 0x0a, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x1a, 0x55, 0x0a, 0x0f, 0x45, 0x78, 0x74, 0x65, 0x6e,
-	0x73, 0x69, 0x6f, 0x6e, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
-	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x2c, 0x0a, 0x05,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x67, 0x6f,
-	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x56, 0x61,
-	0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xc9,
-	0x03, 0x0a, 0x09, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x47, 0x0a, 0x02, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x37, 0x2e, 0x67,
-	0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33,
-	0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74,
-	0x65, 0x72, 0x2e, 0x49, 0x6e, 0x52, 0x02, 0x69, 0x6e, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,
-	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
-	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x72,
-	0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x72,
-	0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x70, 0x72, 0x65,
-	0x63, 0x61, 0x74, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0a, 0x64, 0x65, 0x70,
-	0x72, 0x65, 0x63, 0x61, 0x74, 0x65, 0x64, 0x12, 0x4d, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18,
-	0x06, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x39, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74,
-	0x65, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f,
-	0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x2e, 0x54, 0x79, 0x70, 0x65,
-	0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74,
-	0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x22, 0x36,
-	0x0a, 0x02, 0x49, 0x6e, 0x12, 0x12, 0x0a, 0x0e, 0x49, 0x4e, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45,
-	0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0d, 0x0a, 0x09, 0x49, 0x4e, 0x5f, 0x48,
-	0x45, 0x41, 0x44, 0x45, 0x52, 0x10, 0x01, 0x12, 0x0d, 0x0a, 0x09, 0x49, 0x4e, 0x5f, 0x43, 0x4f,
-	0x4f, 0x4b, 0x49, 0x45, 0x10, 0x02, 0x22, 0x62, 0x0a, 0x04, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14,
-	0x0a, 0x10, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49,
-	0x45, 0x44, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x53, 0x54, 0x52,
-	0x49, 0x4e, 0x47, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x4e, 0x55,
-	0x4d, 0x42, 0x45, 0x52, 0x10, 0x02, 0x12, 0x10, 0x0a, 0x0c, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x49,
-	0x4e, 0x54, 0x45, 0x47, 0x45, 0x52, 0x10, 0x03, 0x12, 0x10, 0x0a, 0x0c, 0x54, 0x59, 0x50, 0x45,
-	0x5f, 0x42, 0x4f, 0x4f, 0x4c, 0x45, 0x41, 0x4e, 0x10, 0x04, 0x22, 0x9a, 0x02, 0x0a, 0x06, 0x53,
+	0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x73, 0x12, 0x61, 0x0a, 0x09, 0x72, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x73, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x43, 0x2e, 0x67, 0x72, 0x70,
+	0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63,
+	0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f,
+	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52,
+	0x09, 0x72, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x1a, 0x55, 0x0a, 0x0f, 0x45, 0x78,
+	0x74, 0x65, 0x6e, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a,
+	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12,
+	0x2c, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38,
+	0x01, 0x1a, 0x71, 0x0a, 0x0e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x73, 0x45, 0x6e,
+	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x49, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65,
+	0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f,
+	0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x3a, 0x02, 0x38, 0x01, 0x22, 0xc9, 0x03, 0x0a, 0x09, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74,
+	0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x47, 0x0a, 0x02, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x37, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61,
+	0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f, 0x70, 0x65,
+	0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x2e, 0x49, 0x6e, 0x52, 0x02, 0x69, 0x6e, 0x12,
+	0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x08, 0x72, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x12, 0x1e, 0x0a,
+	0x0a, 0x64, 0x65, 0x70, 0x72, 0x65, 0x63, 0x61, 0x74, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x0a, 0x64, 0x65, 0x70, 0x72, 0x65, 0x63, 0x61, 0x74, 0x65, 0x64, 0x12, 0x4d, 0x0a,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x39, 0x2e, 0x67, 0x72,
+	0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x63, 0x5f, 0x67, 0x65, 0x6e, 0x5f, 0x6f, 0x70, 0x65, 0x6e, 0x61, 0x70, 0x69, 0x76, 0x33, 0x2e,
+	0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65,
+	0x72, 0x2e, 0x54, 0x79, 0x70, 0x65, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x16, 0x0a, 0x06,
+	0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x66, 0x6f,
+	0x72, 0x6d, 0x61, 0x74, 0x22, 0x36, 0x0a, 0x02, 0x49, 0x6e, 0x12, 0x12, 0x0a, 0x0e, 0x49, 0x4e,
+	0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0d,
+	0x0a, 0x09, 0x49, 0x4e, 0x5f, 0x48, 0x45, 0x41, 0x44, 0x45, 0x52, 0x10, 0x01, 0x12, 0x0d, 0x0a,
+	0x09, 0x49, 0x4e, 0x5f, 0x43, 0x4f, 0x4f, 0x4b, 0x49, 0x45, 0x10, 0x02, 0x22, 0x62, 0x0a, 0x04,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x10, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55, 0x4e, 0x53,
+	0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0f, 0x0a, 0x0b, 0x54, 0x59,
+	0x50, 0x45, 0x5f, 0x53, 0x54, 0x52, 0x49, 0x4e, 0x47, 0x10, 0x01, 0x12, 0x0f, 0x0a, 0x0b, 0x54,
+	0x59, 0x50, 0x45, 0x5f, 0x4e, 0x55, 0x4d, 0x42, 0x45, 0x52, 0x10, 0x02, 0x12, 0x10, 0x0a, 0x0c,
+	0x54, 0x59, 0x50, 0x45, 0x5f, 0x49, 0x4e, 0x54, 0x45, 0x47, 0x45, 0x52, 0x10, 0x03, 0x12, 0x10,
+	0x0a, 0x0c, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x42, 0x4f, 0x4f, 0x4c, 0x45, 0x41, 0x4e, 0x10, 0x04,
+	0x22, 0x48, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x20, 0x0a, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a,
+	0x0a, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
+	0x52, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x22, 0x9a, 0x02, 0x0a, 0x06, 0x53,
 	0x63, 0x68, 0x65, 0x6d, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64,
 	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
@@ -2950,7 +3082,7 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc = []byte{
 }
 
 var file_protoc_gen_openapiv3_options_openapiv3_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_protoc_gen_openapiv3_options_openapiv3_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_protoc_gen_openapiv3_options_openapiv3_proto_goTypes = []any{
 	(Parameter_In)(0),                  // 0: grpc.gateway.protoc_gen_openapiv3.options.Parameter.In
 	(Parameter_Type)(0),                // 1: grpc.gateway.protoc_gen_openapiv3.options.Parameter.Type
@@ -2964,67 +3096,71 @@ var file_protoc_gen_openapiv3_options_openapiv3_proto_goTypes = []any{
 	(*Server)(nil),                     // 9: grpc.gateway.protoc_gen_openapiv3.options.Server
 	(*Operation)(nil),                  // 10: grpc.gateway.protoc_gen_openapiv3.options.Operation
 	(*Parameter)(nil),                  // 11: grpc.gateway.protoc_gen_openapiv3.options.Parameter
-	(*Schema)(nil),                     // 12: grpc.gateway.protoc_gen_openapiv3.options.Schema
-	(*ExternalDocs)(nil),               // 13: grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
-	(*Tag)(nil),                        // 14: grpc.gateway.protoc_gen_openapiv3.options.Tag
-	(*SecurityScheme)(nil),             // 15: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
-	(*OAuthFlows)(nil),                 // 16: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
-	(*OAuthFlow)(nil),                  // 17: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	(*SecurityRequirement)(nil),        // 18: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
-	nil,                                // 19: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
-	nil,                                // 20: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
-	nil,                                // 21: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
-	nil,                                // 22: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
-	nil,                                // 23: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
-	nil,                                // 24: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
-	nil,                                // 25: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
-	(*SecurityRequirement_Scopes)(nil), // 26: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
-	nil,                                // 27: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
-	(*structpb.Value)(nil),             // 28: google.protobuf.Value
+	(*Response)(nil),                   // 12: grpc.gateway.protoc_gen_openapiv3.options.Response
+	(*Schema)(nil),                     // 13: grpc.gateway.protoc_gen_openapiv3.options.Schema
+	(*ExternalDocs)(nil),               // 14: grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	(*Tag)(nil),                        // 15: grpc.gateway.protoc_gen_openapiv3.options.Tag
+	(*SecurityScheme)(nil),             // 16: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
+	(*OAuthFlows)(nil),                 // 17: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
+	(*OAuthFlow)(nil),                  // 18: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	(*SecurityRequirement)(nil),        // 19: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
+	nil,                                // 20: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
+	nil,                                // 21: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
+	nil,                                // 22: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
+	nil,                                // 23: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
+	nil,                                // 24: grpc.gateway.protoc_gen_openapiv3.options.Operation.ResponsesEntry
+	nil,                                // 25: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
+	nil,                                // 26: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
+	nil,                                // 27: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
+	(*SecurityRequirement_Scopes)(nil), // 28: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
+	nil,                                // 29: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
+	(*structpb.Value)(nil),             // 30: google.protobuf.Value
 }
 var file_protoc_gen_openapiv3_options_openapiv3_proto_depIdxs = []int32{
 	6,  // 0: grpc.gateway.protoc_gen_openapiv3.options.Document.info:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Info
 	9,  // 1: grpc.gateway.protoc_gen_openapiv3.options.Document.servers:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Server
-	13, // 2: grpc.gateway.protoc_gen_openapiv3.options.Document.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
-	14, // 3: grpc.gateway.protoc_gen_openapiv3.options.Document.tags:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag
-	19, // 4: grpc.gateway.protoc_gen_openapiv3.options.Document.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
+	14, // 2: grpc.gateway.protoc_gen_openapiv3.options.Document.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	15, // 3: grpc.gateway.protoc_gen_openapiv3.options.Document.tags:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag
+	20, // 4: grpc.gateway.protoc_gen_openapiv3.options.Document.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry
 	5,  // 5: grpc.gateway.protoc_gen_openapiv3.options.Document.components:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Components
-	18, // 6: grpc.gateway.protoc_gen_openapiv3.options.Document.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
-	20, // 7: grpc.gateway.protoc_gen_openapiv3.options.Components.security_schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
+	19, // 6: grpc.gateway.protoc_gen_openapiv3.options.Document.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
+	21, // 7: grpc.gateway.protoc_gen_openapiv3.options.Components.security_schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry
 	7,  // 8: grpc.gateway.protoc_gen_openapiv3.options.Info.contact:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Contact
 	8,  // 9: grpc.gateway.protoc_gen_openapiv3.options.Info.license:type_name -> grpc.gateway.protoc_gen_openapiv3.options.License
-	21, // 10: grpc.gateway.protoc_gen_openapiv3.options.Info.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
-	13, // 11: grpc.gateway.protoc_gen_openapiv3.options.Operation.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	22, // 10: grpc.gateway.protoc_gen_openapiv3.options.Info.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry
+	14, // 11: grpc.gateway.protoc_gen_openapiv3.options.Operation.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
 	9,  // 12: grpc.gateway.protoc_gen_openapiv3.options.Operation.servers:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Server
-	22, // 13: grpc.gateway.protoc_gen_openapiv3.options.Operation.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
-	18, // 14: grpc.gateway.protoc_gen_openapiv3.options.Operation.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
+	23, // 13: grpc.gateway.protoc_gen_openapiv3.options.Operation.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry
+	19, // 14: grpc.gateway.protoc_gen_openapiv3.options.Operation.security:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement
 	11, // 15: grpc.gateway.protoc_gen_openapiv3.options.Operation.parameters:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Parameter
-	0,  // 16: grpc.gateway.protoc_gen_openapiv3.options.Parameter.in:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Parameter.In
-	1,  // 17: grpc.gateway.protoc_gen_openapiv3.options.Parameter.type:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Parameter.Type
-	23, // 18: grpc.gateway.protoc_gen_openapiv3.options.Schema.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
-	13, // 19: grpc.gateway.protoc_gen_openapiv3.options.Tag.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
-	24, // 20: grpc.gateway.protoc_gen_openapiv3.options.Tag.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
-	2,  // 21: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.type:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.Type
-	3,  // 22: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.in:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.In
-	16, // 23: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.flows:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
-	17, // 24: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.implicit:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	17, // 25: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.password:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	17, // 26: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.client_credentials:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	17, // 27: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.authorization_code:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
-	25, // 28: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.scopes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
-	27, // 29: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
-	28, // 30: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	15, // 31: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
-	28, // 32: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	28, // 33: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	28, // 34: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	28, // 35: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry.value:type_name -> google.protobuf.Value
-	26, // 36: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
-	37, // [37:37] is the sub-list for method output_type
-	37, // [37:37] is the sub-list for method input_type
-	37, // [37:37] is the sub-list for extension type_name
-	37, // [37:37] is the sub-list for extension extendee
-	0,  // [0:37] is the sub-list for field type_name
+	24, // 16: grpc.gateway.protoc_gen_openapiv3.options.Operation.responses:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Operation.ResponsesEntry
+	0,  // 17: grpc.gateway.protoc_gen_openapiv3.options.Parameter.in:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Parameter.In
+	1,  // 18: grpc.gateway.protoc_gen_openapiv3.options.Parameter.type:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Parameter.Type
+	25, // 19: grpc.gateway.protoc_gen_openapiv3.options.Schema.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry
+	14, // 20: grpc.gateway.protoc_gen_openapiv3.options.Tag.external_docs:type_name -> grpc.gateway.protoc_gen_openapiv3.options.ExternalDocs
+	26, // 21: grpc.gateway.protoc_gen_openapiv3.options.Tag.extensions:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry
+	2,  // 22: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.type:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.Type
+	3,  // 23: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.in:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.In
+	17, // 24: grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme.flows:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows
+	18, // 25: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.implicit:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	18, // 26: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.password:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	18, // 27: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.client_credentials:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	18, // 28: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlows.authorization_code:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow
+	27, // 29: grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.scopes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.OAuthFlow.ScopesEntry
+	29, // 30: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.schemes:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry
+	30, // 31: grpc.gateway.protoc_gen_openapiv3.options.Document.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	16, // 32: grpc.gateway.protoc_gen_openapiv3.options.Components.SecuritySchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityScheme
+	30, // 33: grpc.gateway.protoc_gen_openapiv3.options.Info.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	30, // 34: grpc.gateway.protoc_gen_openapiv3.options.Operation.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	12, // 35: grpc.gateway.protoc_gen_openapiv3.options.Operation.ResponsesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.Response
+	30, // 36: grpc.gateway.protoc_gen_openapiv3.options.Schema.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	30, // 37: grpc.gateway.protoc_gen_openapiv3.options.Tag.ExtensionsEntry.value:type_name -> google.protobuf.Value
+	28, // 38: grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.SchemesEntry.value:type_name -> grpc.gateway.protoc_gen_openapiv3.options.SecurityRequirement.Scopes
+	39, // [39:39] is the sub-list for method output_type
+	39, // [39:39] is the sub-list for method input_type
+	39, // [39:39] is the sub-list for extension type_name
+	39, // [39:39] is the sub-list for extension extendee
+	0,  // [0:39] is the sub-list for field type_name
 }
 
 func init() { file_protoc_gen_openapiv3_options_openapiv3_proto_init() }
@@ -3042,7 +3178,7 @@ func file_protoc_gen_openapiv3_options_openapiv3_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_protoc_gen_openapiv3_options_openapiv3_proto_rawDesc,
 			NumEnums:      4,
-			NumMessages:   24,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
