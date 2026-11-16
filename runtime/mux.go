@@ -212,11 +212,11 @@ func WithLegacyHeaderMatching() ServeMuxOption {
 }
 
 func defaultOutgoingHeaderMatcher(key string) (string, bool) {
-	return fmt.Sprintf("%s%s", MetadataHeaderPrefix, key), true
+	return MetadataHeaderPrefix + key, true
 }
 
 func defaultOutgoingTrailerMatcher(key string) (string, bool) {
-	return fmt.Sprintf("%s%s", MetadataTrailerPrefix, key), true
+	return MetadataTrailerPrefix + key, true
 }
 
 // WithIncomingHeaderMatcher returns a ServeMuxOption representing a headerMatcher for incoming request to gateway.
