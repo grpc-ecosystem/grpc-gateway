@@ -179,6 +179,76 @@ message Operation {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#operationSecurity
   repeated SecurityRequirement security = 9;
+  // Header and cookie parameters added to the operation, after the path and
+  // query parameters the generator derives from the HTTP binding and the
+  // request message. Within one operation, a parameter is identified by its
+  // `in` and `name`; header names are compared case-insensitively.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#operationParameters
+  repeated Parameter parameters = 10;
+}
+
+// Parameter describes a single header or cookie parameter of an operation.
+// It only documents the parameter: by default the gateway forwards just the
+// permanent HTTP request headers to gRPC metadata, so any other header needs
+// `runtime.WithIncomingHeaderMatcher`.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#parameter-object
+message Parameter {
+  // The location of the parameter.
+  enum In {
+    // Not set. Setting `in` is required.
+    IN_UNSPECIFIED = 0;
+    // The parameter is sent as a request header.
+    IN_HEADER = 1;
+    // The parameter is sent as a cookie.
+    IN_COOKIE = 2;
+  }
+
+  // The primitive type of the parameter's schema.
+  enum Type {
+    // Not set. The parameter is rendered as a string.
+    TYPE_UNSPECIFIED = 0;
+    // A string.
+    TYPE_STRING = 1;
+    // A number.
+    TYPE_NUMBER = 2;
+    // An integer.
+    TYPE_INTEGER = 3;
+    // A boolean.
+    TYPE_BOOLEAN = 4;
+  }
+
+  // The name of the parameter. Required. Header names are compared
+  // case-insensitively. A header named `Accept`, `Content-Type` or
+  // `Authorization` is refused, since OpenAPI 3.1.0 says such a parameter
+  // SHALL be ignored; describe authorization with `security`.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterName
+  string name = 1;
+  // The location of the parameter. Required.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterIn
+  In in = 2;
+  // A brief description of the parameter. CommonMark syntax MAY be used for
+  // rich text representation.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterDescription
+  string description = 3;
+  // Determines whether this parameter is mandatory.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterRequired
+  bool required = 4;
+  // Declares this parameter to be deprecated.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterDeprecated
+  bool deprecated = 5;
+  // The type of the parameter's schema. Defaults to string.
+  Type type = 6;
+  // The format of the parameter's schema, for example "int64" or "uuid".
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#dataTypeFormat
+  string format = 7;
 }
 
 // Schema is a message- or field-level override applied to the generated

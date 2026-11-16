@@ -774,6 +774,46 @@ func TestGenerate_Security(t *testing.T) {
 	assertJSONEqual(t, doc.Paths["/v1/health"]["get"].Security, []byte(`[{}]`))
 }
 
+// TestGenerate_HeaderCookieParameters checks that header and cookie
+// parameters from openapiv3_operation follow the generated path and query
+// parameters on every binding of the method, in annotation order.
+func TestGenerate_HeaderCookieParameters(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/header_cookie_parameters.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Paths map[string]map[string]struct {
+			Parameters json.RawMessage `json:"parameters"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	want := []byte(`[
+		{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}},
+		{"name": "filter", "in": "query", "schema": {"type": "string"}},
+		{"name": "X-Request-Id", "in": "header", "description": "Correlates the request across services.", "required": true, "schema": {"type": "string", "format": "uuid"}},
+		{"name": "X-Page-Size", "in": "header", "schema": {"type": "integer", "format": "int32"}},
+		{"name": "X-Weight", "in": "header", "schema": {"type": "number", "format": "double"}},
+		{"name": "X-Dry-Run", "in": "header", "deprecated": true, "schema": {"type": "boolean"}},
+		{"name": "X-Tenant", "in": "header", "schema": {"type": "string"}},
+		{"name": "session", "in": "cookie", "required": true, "schema": {"type": "string"}},
+		{"name": "Session", "in": "cookie", "schema": {"type": "string"}},
+		{"name": "x-request-id", "in": "cookie", "schema": {"type": "string"}},
+		{"name": "Authorization", "in": "cookie", "schema": {"type": "string"}}
+	]`)
+	assertJSONEqual(t, doc.Paths["/v1/things/{id}"]["get"].Parameters, want)
+	assertJSONEqual(t, doc.Paths["/v1/items/{id}"]["get"].Parameters, want)
+	// A method without the annotation keeps only its derived parameters.
+	assertJSONEqual(t, doc.Paths["/v1/things/{id}"]["delete"].Parameters, []byte(`[
+		{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}},
+		{"name": "filter", "in": "query", "schema": {"type": "string"}}
+	]`))
+}
+
 // TestGenerate_AnnotationErrors covers the spec-required-field validations
 // and the cross-operation invariants (operationId uniqueness, tag references
 // resolving). One sub-case per failure mode keeps the error messages
@@ -821,6 +861,31 @@ func TestGenerate_AnnotationErrors(t *testing.T) {
 			name:    "operation references undeclared security scheme",
 			fixture: "testdata/undeclared_security_scheme.prototext",
 			wantErr: `security[0]: references undeclared security scheme "undeclared"`,
+		},
+		{
+			name:    "operation parameter missing name",
+			fixture: "testdata/parameter_missing_name.prototext",
+			wantErr: "openapiv3 operation BadService.Get: parameters[0]: name is required",
+		},
+		{
+			name:    "operation parameter missing in",
+			fixture: "testdata/parameter_missing_in.prototext",
+			wantErr: "openapiv3 operation BadService.Get: parameters[0]: in is required",
+		},
+		{
+			name:    "operation header parameters differing only in case",
+			fixture: "testdata/duplicate_header_parameter.prototext",
+			wantErr: `parameters[1]: duplicates header parameter "X-Trace-Id" at parameters[0]`,
+		},
+		{
+			name:    "operation cookie parameters with the same name",
+			fixture: "testdata/duplicate_cookie_parameter.prototext",
+			wantErr: `parameters[1]: duplicates cookie parameter "session" at parameters[0]`,
+		},
+		{
+			name:    "operation header parameter OpenAPI ignores",
+			fixture: "testdata/reserved_header_parameter.prototext",
+			wantErr: `parameters[0]: header parameter "content-type" is ignored by OpenAPI 3.1.0`,
 		},
 		{
 			name:    "service tag external_docs missing url",

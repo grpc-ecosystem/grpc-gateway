@@ -418,12 +418,14 @@ func applyTagOverride(tag *Tag, t *options.Tag) error {
 // generated operation. Annotation values replace comment-derived summary and
 // description; a non-empty tag list replaces the default (the service name);
 // servers from the annotation are appended to any defaults; security
-// requirements replace the document-level ones. The annotation
-// `deprecated` flag is one-way: it can flip deprecation on, but cannot
-// clear a flag inherited from the proto cascade.
+// requirements replace the document-level ones; header and cookie
+// parameters are appended after the derived path and query parameters. The
+// annotation `deprecated` flag is one-way: it can flip deprecation on, but
+// cannot clear a flag inherited from the proto cascade.
 //
 // Returns an error if the annotation contains an external_docs without a url
-// or a server without a url, both spec-required per OpenAPI 3.1.0.
+// or a server without a url, both spec-required per OpenAPI 3.1.0, or a
+// parameter that convertParameters refuses.
 func applyOperationOverride(op *Operation, o *options.Operation) error {
 	if o == nil {
 		return nil
@@ -460,8 +462,81 @@ func applyOperationOverride(op *Operation, o *options.Operation) error {
 		})
 	}
 	op.Security = convertSecurityRequirements(o.GetSecurity())
+	params, err := convertParameters(o.GetParameters())
+	if err != nil {
+		return err
+	}
+	op.Parameters = append(op.Parameters, params...)
 	op.Extensions = processExtensions("openapiv3_operation", o.GetExtensions())
 	return nil
+}
+
+// convertParameters converts the header and cookie parameters of an
+// operation-level annotation. Name and in are required. A parameter is
+// identified by its location and name, so two parameters may not share
+// both; header names are compared case-insensitively, as HTTP header names
+// are. A header named Accept, Content-Type or Authorization is refused,
+// since OpenAPI 3.1.0 says such a parameter SHALL be ignored.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#parameter-object
+func convertParameters(params []*options.Parameter) ([]*ParameterRef, error) {
+	out := make([]*ParameterRef, 0, len(params))
+	seen := make(map[string]int, len(params))
+	for i, p := range params {
+		name := p.GetName()
+		if name == "" {
+			return nil, fmt.Errorf("parameters[%d]: name is required", i)
+		}
+		key := name
+		var in string
+		// See: https://spec.openapis.org/oas/v3.1.0#parameterIn
+		switch p.GetIn() {
+		case options.Parameter_IN_HEADER:
+			in = "header"
+			key = strings.ToLower(name)
+			switch key {
+			case "accept", "content-type", "authorization":
+				return nil, fmt.Errorf("parameters[%d]: header parameter %q is ignored by OpenAPI 3.1.0: Accept and Content-Type come from the media types, Authorization from security", i, name)
+			}
+		case options.Parameter_IN_COOKIE:
+			in = "cookie"
+		default:
+			return nil, fmt.Errorf("parameters[%d]: in is required", i)
+		}
+		key = in + ":" + key
+		if j, ok := seen[key]; ok {
+			return nil, fmt.Errorf("parameters[%d]: duplicates %s parameter %q at parameters[%d]", i, in, params[j].GetName(), j)
+		}
+		seen[key] = i
+		out = append(out, &ParameterRef{Value: &Parameter{
+			Name:        name,
+			In:          in,
+			Description: p.GetDescription(),
+			Required:    p.GetRequired(),
+			Deprecated:  p.GetDeprecated(),
+			Schema: &SchemaOrRef{Value: &Schema{
+				Type:   SchemaType{parameterType(p.GetType())},
+				Format: p.GetFormat(),
+			}},
+		}})
+	}
+	return out, nil
+}
+
+// parameterType returns the JSON Schema type of a header or cookie
+// parameter. An unset type is a string, which is what the value is on the
+// wire.
+func parameterType(t options.Parameter_Type) string {
+	switch t {
+	case options.Parameter_TYPE_NUMBER:
+		return "number"
+	case options.Parameter_TYPE_INTEGER:
+		return "integer"
+	case options.Parameter_TYPE_BOOLEAN:
+		return "boolean"
+	default:
+		return "string"
+	}
 }
 
 // applySchemaBodyOverride applies the title and deprecated fields from a

@@ -14,6 +14,7 @@ package openapiv3_test
 import (
 	"encoding/json"
 	"slices"
+	"strings"
 	"testing"
 
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
@@ -352,6 +353,43 @@ func TestABESpec_MultiWildcardParams(t *testing.T) {
 	for name, seen := range wantQuery {
 		if !seen {
 			t.Errorf("missing query param %q", name)
+		}
+	}
+}
+
+// TestABESpec_HeaderCookieParameters verifies that the header and cookie
+// parameters declared with openapiv3_operation on GetQuery follow its
+// derived path and query parameters, in annotation order.
+func TestABESpec_HeaderCookieParameters(t *testing.T) {
+	t.Parallel()
+	doc := loadABESpec(t)
+	paths, _ := doc["paths"].(map[string]any)
+	getQuery, _ := paths["/v1/example/a_bit_of_everything/query/{uuid}"].(map[string]any)
+	if getQuery == nil {
+		t.Fatal("missing GetQuery path")
+	}
+	get, _ := getQuery["get"].(map[string]any)
+	if get == nil {
+		t.Fatal("GetQuery: missing get operation")
+	}
+	params, _ := get["parameters"].([]any)
+	var got []string
+	for _, p := range params {
+		m, _ := p.(map[string]any)
+		in, _ := m["in"].(string)
+		name, _ := m["name"].(string)
+		got = append(got, in+":"+name)
+	}
+	if len(got) < 3 || got[0] != "path:uuid" {
+		t.Fatalf("GetQuery parameters: want path:uuid, query parameters, then the annotation's, got %v", got)
+	}
+	want := []string{"header:X-Request-Id", "cookie:session"}
+	if tail := got[len(got)-len(want):]; !slices.Equal(tail, want) {
+		t.Errorf("GetQuery trailing parameters: want %v, got %v", want, tail)
+	}
+	for _, p := range got[1 : len(got)-len(want)] {
+		if !strings.HasPrefix(p, "query:") {
+			t.Errorf("GetQuery: want only query parameters between the path and the annotation's, got %q", p)
 		}
 	}
 }

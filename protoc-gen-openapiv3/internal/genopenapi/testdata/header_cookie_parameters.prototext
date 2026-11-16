@@ -1,0 +1,111 @@
+file_to_generate: "params/v1/params.proto"
+proto_file: {
+  name: "params/v1/params.proto"
+  package: "params.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "filter"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "filter"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "ParamsService"
+    method: {
+      name: "Get"
+      input_type: ".params.v1.GetRequest"
+      output_type: ".params.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/things/{id}"
+          additional_bindings: {
+            get: "/v1/items/{id}"
+          }
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          parameters: {
+            name: "X-Request-Id"
+            in: IN_HEADER
+            description: "Correlates the request across services."
+            required: true
+            format: "uuid"
+          }
+          parameters: {
+            name: "X-Page-Size"
+            in: IN_HEADER
+            type: TYPE_INTEGER
+            format: "int32"
+          }
+          parameters: {
+            name: "X-Weight"
+            in: IN_HEADER
+            type: TYPE_NUMBER
+            format: "double"
+          }
+          parameters: {
+            name: "X-Dry-Run"
+            in: IN_HEADER
+            deprecated: true
+            type: TYPE_BOOLEAN
+          }
+          parameters: {
+            name: "X-Tenant"
+            in: IN_HEADER
+            type: TYPE_STRING
+          }
+          parameters: {
+            name: "session"
+            in: IN_COOKIE
+            required: true
+          }
+          parameters: {
+            name: "Session"
+            in: IN_COOKIE
+          }
+          parameters: {
+            name: "x-request-id"
+            in: IN_COOKIE
+          }
+          parameters: {
+            name: "Authorization"
+            in: IN_COOKIE
+          }
+        }
+      }
+    }
+    method: {
+      name: "Delete"
+      input_type: ".params.v1.GetRequest"
+      output_type: ".params.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          delete: "/v1/things/{id}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/params/v1;paramsv1"
+  }
+  syntax: "proto3"
+}
