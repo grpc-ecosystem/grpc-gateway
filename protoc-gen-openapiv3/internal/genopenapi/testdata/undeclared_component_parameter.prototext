@@ -1,0 +1,99 @@
+file_to_generate: "params/v1/params.proto"
+proto_file: {
+  name: "params/v1/params.proto"
+  package: "params.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "ParamsService"
+    method: {
+      name: "Get"
+      input_type: ".params.v1.GetRequest"
+      output_type: ".params.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/things/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          parameters: {
+            ref: "TenantId"
+          }
+          parameters: {
+            name: "X-Dry-Run"
+            in: IN_HEADER
+            type: TYPE_BOOLEAN
+          }
+          parameters: {
+            ref: "Missing"
+          }
+        }
+      }
+    }
+    method: {
+      name: "Delete"
+      input_type: ".params.v1.GetRequest"
+      output_type: ".params.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          delete: "/v1/things/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          parameters: {
+            ref: "TenantId"
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/params/v1;paramsv1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      components: {
+        parameters: {
+          key: "TenantId"
+          value: {
+            name: "X-Tenant-Id"
+            in: IN_HEADER
+            description: "Tenant the request runs as."
+            required: true
+            format: "uuid"
+          }
+        }
+        parameters: {
+          key: "Session"
+          value: {
+            name: "session"
+            in: IN_COOKIE
+          }
+        }
+        parameters: {
+          key: "Unused.v1"
+          value: {
+            name: "X-Unused"
+            in: IN_HEADER
+            type: TYPE_INTEGER
+          }
+        }
+      }
+    }
+  }
+  syntax: "proto3"
+}

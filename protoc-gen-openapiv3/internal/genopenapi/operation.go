@@ -49,7 +49,7 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 
 	op.Responses = buildResponses(b, m, binding)
 	if o, ok := methodOperationAnnotation(m); ok {
-		if err := applyOperationOverride(op, o); err != nil {
+		if err := applyOperationOverride(op, o, b.doc.Components.Parameters); err != nil {
 			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
 		}
 		if err := applyResponseOverrides(b, op.Responses, o.GetResponses()); err != nil {
