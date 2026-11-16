@@ -221,7 +221,7 @@ func (p Pattern) matchAndEscape(components []string, verb string, unescapingMode
 	if p.stacksize > len(stackArr) {
 		stack = make([]string, 0, p.stacksize)
 	}
-	captured := capturedArr[:0]
+	var captured []string
 	if n := len(p.vars); n <= len(capturedArr) {
 		captured = capturedArr[:n]
 	} else {
