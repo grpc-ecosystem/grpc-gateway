@@ -336,6 +336,13 @@ A `ref` entry can't set any other field, and must name a declared
 component. The duplicate check above uses the referenced parameter's name
 and location.
 
+Components belong to the document of the proto file that declares them. The
+generator writes one document per proto file, so a `ref` is resolved only
+against the `components.parameters` of its own file. A name declared in
+another file isn't found and is reported as an undeclared component, and two
+files may declare the same name, since their documents are separate. Declare
+the parameter in each file that uses it.
+
 The annotation only documents the parameter. By default the gateway forwards
 just the permanent HTTP request headers, `Cookie` among them, to gRPC
 metadata (see `runtime.DefaultHeaderMatcher`). Any other header reaches the
