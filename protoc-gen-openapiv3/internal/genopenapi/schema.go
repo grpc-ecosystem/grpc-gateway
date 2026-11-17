@@ -4,9 +4,11 @@ import (
 	"slices"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -338,6 +340,9 @@ func (b *schemaBuilder) propertySchema(field *descriptor.Field) *SchemaOrRef {
 	if hasAnn && ann.GetDescription() != "" {
 		desc = ann.GetDescription()
 	}
+	if hasAnn {
+		ann = checkedValidationAnnotation(field, ann)
+	}
 
 	if prop.Ref != "" {
 		// 3.1.0 allows description as a sibling of $ref, but title and
@@ -351,6 +356,9 @@ func (b *schemaBuilder) propertySchema(field *descriptor.Field) *SchemaOrRef {
 			}
 			applyFieldFlags(wrapped, field)
 			applySchemaBodyOverride(wrapped, ann)
+			if hasAnn {
+				applyValueValidation(wrapped, ann)
+			}
 			return &SchemaOrRef{Value: wrapped}
 		}
 		if desc != "" {
@@ -365,8 +373,58 @@ func (b *schemaBuilder) propertySchema(field *descriptor.Field) *SchemaOrRef {
 		}
 		applyFieldFlags(prop.Value, field)
 		applySchemaBodyOverride(prop.Value, ann)
+		if hasAnn {
+			applyFieldValidation(prop.Value, field, ann)
+		}
 	}
 	return prop
+}
+
+// applyFieldValidation applies the validation keywords of a field-level
+// annotation to an inline field schema. A singular field takes the value
+// keywords itself. A repeated field takes the array keywords, and its items
+// take the value keywords. A map field's values take the value keywords;
+// array keywords don't apply to a map and are skipped.
+func applyFieldValidation(s *Schema, field *descriptor.Field, ann *options.Schema) {
+	if field.GetLabel() != descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
+		applyValueValidation(s, ann)
+		return
+	}
+	if s.AdditionalProperties != nil {
+		if hasArrayValidation(ann) {
+			grpclog.Infof("protoc-gen-openapiv3: openapiv3_field on map field %q: min_items, max_items and unique_items don't apply to maps; skipping them", field.GetName())
+		}
+		s.AdditionalProperties.Schema = withValueValidation(s.AdditionalProperties.Schema, ann)
+		return
+	}
+	applyArrayValidation(s, ann)
+	s.Items = withValueValidation(s.Items, ann)
+}
+
+// validationFieldNames lists the validation keyword fields of the Schema
+// annotation.
+var validationFieldNames = []protoreflect.Name{
+	"multiple_of", "maximum", "exclusive_maximum", "minimum", "exclusive_minimum",
+	"max_length", "min_length", "pattern", "max_items", "min_items", "unique_items",
+}
+
+// checkedValidationAnnotation returns the field annotation, or a copy without
+// its validation keywords when they can't be valid JSON Schema, e.g. a
+// minimum above the maximum. The problem is logged and the rest of the
+// annotation still applies.
+func checkedValidationAnnotation(field *descriptor.Field, ann *options.Schema) *options.Schema {
+	err := validateSchemaValidation(ann)
+	if err == nil {
+		return ann
+	}
+	grpclog.Infof("protoc-gen-openapiv3: openapiv3_field on field %q: %v; skipping its validation keywords", field.GetName(), err)
+	clean := proto.Clone(ann).(*options.Schema)
+	m := clean.ProtoReflect()
+	fields := m.Descriptor().Fields()
+	for _, name := range validationFieldNames {
+		m.Clear(fields.ByName(name))
+	}
+	return clean
 }
 
 // needsAllOfWrap reports whether a referenced field needs an allOf wrapper to
