@@ -618,8 +618,8 @@ func parameterType(t options.Parameter_Type) string {
 	}
 }
 
-// applySchemaBodyOverride applies the title and deprecated fields from a
-// Schema annotation onto a schema body. Used for both message-level and
+// applySchemaBodyOverride applies the title, deprecated, extensions,
+// default and examples fields from a Schema annotation onto a schema body. Used for both message-level and
 // field-level annotations. For $ref-typed fields the caller must first
 // ensure an allOf wrapper exists, since neither field can sit alongside
 // $ref without one. The annotation `deprecated` flag is one-way: it can
@@ -638,6 +638,15 @@ func applySchemaBodyOverride(s *Schema, o *options.Schema) {
 		// (field-level) annotations; the generic label covers both.
 		s.Extensions = processExtensions("openapiv3_schema/openapiv3_field", o.GetExtensions())
 	}
+	if v := o.GetDefault(); v != nil {
+		s.Default = v.AsInterface()
+	}
+	if examples := o.GetExamples(); len(examples) > 0 {
+		s.Examples = make([]any, 0, len(examples))
+		for _, v := range examples {
+			s.Examples = append(s.Examples, v.AsInterface())
+		}
+	}
 }
 
 // applyMessageSchemaOverride applies a message-level Schema annotation onto
@@ -654,7 +663,8 @@ func applyMessageSchemaOverride(s *Schema, o *options.Schema) {
 
 // annotationNeedsSchemaBody reports whether a field annotation sets anything
 // that cannot be expressed as a $ref sibling in OpenAPI 3.1.0. `title`,
-// `deprecated`, and `extensions` all require a real schema body;
+// `deprecated`, `extensions`, `default` and `examples` all require a real
+// schema body;
 // `description` can sit as a $ref sibling directly. Used by propertySchema
 // to decide when a referenced field needs an allOf wrapper.
 func annotationNeedsSchemaBody(o *options.Schema) bool {
@@ -662,7 +672,7 @@ func annotationNeedsSchemaBody(o *options.Schema) bool {
 		return false
 	}
 	return o.GetTitle() != "" || o.GetDeprecated() || len(o.GetExtensions()) > 0 ||
-		hasValueValidation(o)
+		o.GetDefault() != nil || len(o.GetExamples()) > 0 || hasValueValidation(o)
 }
 
 // hasSchemaField reports whether the named field of a Schema annotation is

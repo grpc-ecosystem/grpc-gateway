@@ -348,6 +348,19 @@ message Schema {
   optional uint64 min_items = 14;
   // Requires the items of a repeated field to be unique.
   bool unique_items = 15;
+
+  // The default value of the instance, as a JSON value. It describes the
+  // whole field, so a repeated field takes a list. A null default is not
+  // emitted.
+  //
+  // See: https://json-schema.org/draft/2020-12/json-schema-validation#name-default
+  google.protobuf.Value default = 16;
+  // Example values of the instance, as JSON values. Rendered as the JSON
+  // Schema `examples` keyword, which OpenAPI 3.1 prefers over the
+  // deprecated `example`.
+  //
+  // See: https://json-schema.org/draft/2020-12/json-schema-validation#name-examples
+  repeated google.protobuf.Value examples = 17;
 }
 
 // ExternalDocs is a link to external documentation.
