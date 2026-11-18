@@ -3,6 +3,7 @@ package genopenapi
 import (
 	"fmt"
 	"maps"
+	"regexp"
 	"slices"
 	"sort"
 	"strings"
@@ -198,6 +199,11 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 			return fmt.Errorf("openapiv3 document components: %w", err)
 		}
 		doc.Components.SecuritySchemes = schemes
+		params, err := convertComponentParameters(c.GetParameters())
+		if err != nil {
+			return fmt.Errorf("openapiv3 document components: %w", err)
+		}
+		doc.Components.Parameters = params
 	}
 	doc.Security = convertSecurityRequirements(d.GetSecurity())
 	if err := checkSecurityRequirements(doc.Security, doc.Components.SecuritySchemes); err != nil {
@@ -205,6 +211,38 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 	}
 	doc.Extensions = processExtensions("openapiv3_document", d.GetExtensions())
 	return nil
+}
+
+// componentNamePattern is the pattern OpenAPI 3.1.0 requires of the keys of
+// a Components object.
+//
+// See: https://spec.openapis.org/oas/v3.1.0#components-object
+var componentNamePattern = regexp.MustCompile(`^[a-zA-Z0-9._-]+$`)
+
+// convertComponentParameters converts the reusable parameters of a
+// document-level Components annotation. Each entry is checked like an
+// operation parameter and can't be a reference itself.
+func convertComponentParameters(params map[string]*options.Parameter) (map[string]*Parameter, error) {
+	if len(params) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*Parameter, len(params))
+	// Iterate in sorted order so that error messages are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(params)) {
+		if !componentNamePattern.MatchString(name) {
+			return nil, fmt.Errorf("parameters[%q]: name may only contain letters, digits, \".\", \"-\" and \"_\"", name)
+		}
+		p := params[name]
+		if p.GetRef() != "" {
+			return nil, fmt.Errorf("parameters[%q]: ref is not allowed on a component parameter", name)
+		}
+		param, err := convertParameter(p)
+		if err != nil {
+			return nil, fmt.Errorf("parameters[%q]: %w", name, err)
+		}
+		out[name] = param
+	}
+	return out, nil
 }
 
 // convertSecuritySchemes converts the security schemes of a document-level
@@ -426,8 +464,9 @@ func applyTagOverride(tag *Tag, t *options.Tag) error {
 //
 // Returns an error if the annotation contains an external_docs without a url
 // or a server without a url, both spec-required per OpenAPI 3.1.0, or a
-// parameter that convertParameters refuses.
-func applyOperationOverride(op *Operation, o *options.Operation) error {
+// parameter that convertParameters refuses. `components` holds the
+// document's reusable parameters, which parameter refs resolve against.
+func applyOperationOverride(op *Operation, o *options.Operation, components map[string]*Parameter) error {
 	if o == nil {
 		return nil
 	}
@@ -463,7 +502,7 @@ func applyOperationOverride(op *Operation, o *options.Operation) error {
 		})
 	}
 	op.Security = convertSecurityRequirements(o.GetSecurity())
-	params, err := convertParameters(o.GetParameters())
+	params, err := convertParameters(o.GetParameters(), components)
 	if err != nil {
 		return err
 	}
@@ -473,55 +512,94 @@ func applyOperationOverride(op *Operation, o *options.Operation) error {
 }
 
 // convertParameters converts the header and cookie parameters of an
-// operation-level annotation. Name and in are required. A parameter is
-// identified by its location and name, so two parameters may not share
-// both; header names are compared case-insensitively, as HTTP header names
-// are. A header named Accept, Content-Type or Authorization is refused,
-// since OpenAPI 3.1.0 says such a parameter SHALL be ignored.
+// operation-level annotation. A parameter either sets ref, naming an entry
+// of `components`, or describes the parameter inline. A parameter is
+// identified by its location and name, after resolving refs, so two
+// parameters may not share both; header names are compared
+// case-insensitively, as HTTP header names are.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#parameter-object
-func convertParameters(params []*options.Parameter) ([]*ParameterRef, error) {
+func convertParameters(params []*options.Parameter, components map[string]*Parameter) ([]*ParameterRef, error) {
 	out := make([]*ParameterRef, 0, len(params))
-	seen := make(map[string]int, len(params))
+	type seenParam struct {
+		index int
+		name  string
+	}
+	seen := make(map[string]seenParam, len(params))
 	for i, p := range params {
-		name := p.GetName()
-		if name == "" {
-			return nil, fmt.Errorf("parameters[%d]: name is required", i)
-		}
-		key := name
-		var in string
-		// See: https://spec.openapis.org/oas/v3.1.0#parameterIn
-		switch p.GetIn() {
-		case options.Parameter_IN_HEADER:
-			in = "header"
-			key = strings.ToLower(name)
-			switch key {
-			case "accept", "content-type", "authorization":
-				return nil, fmt.Errorf("parameters[%d]: header parameter %q is ignored by OpenAPI 3.1.0: Accept and Content-Type come from the media types, Authorization from security", i, name)
+		var param *Parameter
+		var ref *ParameterRef
+		if name := p.GetRef(); name != "" {
+			if parameterSetsInlineFields(p) {
+				return nil, fmt.Errorf("parameters[%d]: ref %q can't be combined with other fields", i, name)
 			}
-		case options.Parameter_IN_COOKIE:
-			in = "cookie"
-		default:
-			return nil, fmt.Errorf("parameters[%d]: in is required", i)
+			param = components[name]
+			if param == nil {
+				return nil, fmt.Errorf("parameters[%d]: references undeclared component parameter %q; add it to openapiv3_document.components.parameters", i, name)
+			}
+			ref = &ParameterRef{Ref: "#/components/parameters/" + name}
+		} else {
+			var err error
+			param, err = convertParameter(p)
+			if err != nil {
+				return nil, fmt.Errorf("parameters[%d]: %w", i, err)
+			}
+			ref = &ParameterRef{Value: param}
 		}
-		key = in + ":" + key
-		if j, ok := seen[key]; ok {
-			return nil, fmt.Errorf("parameters[%d]: duplicates %s parameter %q at parameters[%d]", i, in, params[j].GetName(), j)
+		key := param.In + ":" + param.Name
+		if param.In == "header" {
+			key = param.In + ":" + strings.ToLower(param.Name)
 		}
-		seen[key] = i
-		out = append(out, &ParameterRef{Value: &Parameter{
-			Name:        name,
-			In:          in,
-			Description: p.GetDescription(),
-			Required:    p.GetRequired(),
-			Deprecated:  p.GetDeprecated(),
-			Schema: &SchemaOrRef{Value: &Schema{
-				Type:   SchemaType{parameterType(p.GetType())},
-				Format: p.GetFormat(),
-			}},
-		}})
+		if prev, ok := seen[key]; ok {
+			return nil, fmt.Errorf("parameters[%d]: duplicates %s parameter %q at parameters[%d]", i, param.In, prev.name, prev.index)
+		}
+		seen[key] = seenParam{index: i, name: param.Name}
+		out = append(out, ref)
 	}
 	return out, nil
+}
+
+// parameterSetsInlineFields reports whether p sets any field besides ref.
+func parameterSetsInlineFields(p *options.Parameter) bool {
+	return p.GetName() != "" || p.GetIn() != options.Parameter_IN_UNSPECIFIED ||
+		p.GetDescription() != "" || p.GetRequired() || p.GetDeprecated() ||
+		p.GetType() != options.Parameter_TYPE_UNSPECIFIED || p.GetFormat() != ""
+}
+
+// convertParameter converts a single inline header or cookie parameter.
+// Name and in are required. A header named Accept, Content-Type or
+// Authorization is refused, since OpenAPI 3.1.0 says such a parameter
+// SHALL be ignored.
+func convertParameter(p *options.Parameter) (*Parameter, error) {
+	name := p.GetName()
+	if name == "" {
+		return nil, fmt.Errorf("name is required")
+	}
+	var in string
+	// See: https://spec.openapis.org/oas/v3.1.0#parameterIn
+	switch p.GetIn() {
+	case options.Parameter_IN_HEADER:
+		in = "header"
+		switch strings.ToLower(name) {
+		case "accept", "content-type", "authorization":
+			return nil, fmt.Errorf("header parameter %q is ignored by OpenAPI 3.1.0: Accept and Content-Type come from the media types, Authorization from security", name)
+		}
+	case options.Parameter_IN_COOKIE:
+		in = "cookie"
+	default:
+		return nil, fmt.Errorf("in is required")
+	}
+	return &Parameter{
+		Name:        name,
+		In:          in,
+		Description: p.GetDescription(),
+		Required:    p.GetRequired(),
+		Deprecated:  p.GetDeprecated(),
+		Schema: &SchemaOrRef{Value: &Schema{
+			Type:   SchemaType{parameterType(p.GetType())},
+			Format: p.GetFormat(),
+		}},
+	}, nil
 }
 
 // parameterType returns the JSON Schema type of a header or cookie

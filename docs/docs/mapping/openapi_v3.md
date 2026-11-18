@@ -305,6 +305,44 @@ A header named `Accept`, `Content-Type` or `Authorization` is refused, since
 OpenAPI 3.1.0 says such a parameter SHALL be ignored. Describe authorization
 with [security schemes](#security-schemes) instead.
 
+A parameter shared by many operations can be declared once under
+`openapiv3_document.components.parameters` and referenced by name with
+`ref`. It's emitted under `components.parameters` and each use becomes a
+`$ref: '#/components/parameters/<name>'`.
+
+```protobuf
+option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
+  components: {
+    parameters: {
+      key: "TenantId"
+      value: {
+        name: "X-Tenant-Id"
+        in: IN_HEADER
+        required: true
+      }
+    }
+  }
+};
+
+rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+  option (google.api.http) = {get: "/v1/books"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    parameters: {ref: "TenantId"}
+  };
+}
+```
+
+A `ref` entry can't set any other field, and must name a declared
+component. The duplicate check above uses the referenced parameter's name
+and location.
+
+Components belong to the document of the proto file that declares them. The
+generator writes one document per proto file, so a `ref` is resolved only
+against the `components.parameters` of its own file. A name declared in
+another file isn't found and is reported as an undeclared component, and two
+files may declare the same name, since their documents are separate. Declare
+the parameter in each file that uses it.
+
 The annotation only documents the parameter. By default the gateway forwards
 just the permanent HTTP request headers, `Cookie` among them, to gRPC
 metadata (see `runtime.DefaultHeaderMatcher`). Any other header reaches the

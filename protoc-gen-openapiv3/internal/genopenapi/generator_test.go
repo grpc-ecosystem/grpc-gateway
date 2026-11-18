@@ -815,6 +815,169 @@ func TestGenerate_HeaderCookieParameters(t *testing.T) {
 	]`))
 }
 
+// TestGenerate_ComponentParameters checks that parameters declared under
+// openapiv3_document.components are emitted under components.parameters,
+// and that operations referencing them get a $ref in annotation order.
+func TestGenerate_ComponentParameters(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/component_parameters.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Parameters json.RawMessage `json:"parameters"`
+		} `json:"components"`
+		Paths map[string]map[string]struct {
+			Parameters json.RawMessage `json:"parameters"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// Declared parameters are emitted even when no operation uses them.
+	assertJSONEqual(t, doc.Components.Parameters, []byte(`{
+		"Session": {"name": "session", "in": "cookie", "schema": {"type": "string"}},
+		"TenantId": {"name": "X-Tenant-Id", "in": "header", "description": "Tenant the request runs as.", "required": true, "schema": {"type": "string", "format": "uuid"}},
+		"Unused.v1": {"name": "X-Unused", "in": "header", "schema": {"type": "integer"}}
+	}`))
+	assertJSONEqual(t, doc.Paths["/v1/things/{id}"]["get"].Parameters, []byte(`[
+		{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}},
+		{"$ref": "#/components/parameters/TenantId"},
+		{"name": "X-Dry-Run", "in": "header", "schema": {"type": "boolean"}},
+		{"$ref": "#/components/parameters/Session"}
+	]`))
+	assertJSONEqual(t, doc.Paths["/v1/things/{id}"]["delete"].Parameters, []byte(`[
+		{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}},
+		{"$ref": "#/components/parameters/TenantId"}
+	]`))
+}
+
+func TestConvertParameters_Errors(t *testing.T) {
+	t.Parallel()
+
+	components := map[string]*Parameter{
+		"TenantId": {Name: "X-Tenant-Id", In: "header"},
+		"Session":  {Name: "session", In: "cookie"},
+	}
+	cases := []struct {
+		name    string
+		params  []string
+		wantErr string
+	}{
+		{
+			name:    "ref with name",
+			params:  []string{`ref: "TenantId" name: "X-Other"`},
+			wantErr: `parameters[0]: ref "TenantId" can't be combined with other fields`,
+		},
+		{
+			name:    "ref with in",
+			params:  []string{`ref: "TenantId" in: IN_HEADER`},
+			wantErr: `parameters[0]: ref "TenantId" can't be combined with other fields`,
+		},
+		{
+			name:    "ref with description",
+			params:  []string{`ref: "TenantId" description: "x"`},
+			wantErr: `parameters[0]: ref "TenantId" can't be combined with other fields`,
+		},
+		{
+			name:    "undeclared ref",
+			params:  []string{`ref: "Missing"`},
+			wantErr: `parameters[0]: references undeclared component parameter "Missing"`,
+		},
+		{
+			name:    "ref duplicates inline header",
+			params:  []string{`name: "x-tenant-id" in: IN_HEADER`, `ref: "TenantId"`},
+			wantErr: `parameters[1]: duplicates header parameter "x-tenant-id" at parameters[0]`,
+		},
+		{
+			name:    "inline cookie duplicates ref",
+			params:  []string{`ref: "Session"`, `name: "session" in: IN_COOKIE`},
+			wantErr: `parameters[1]: duplicates cookie parameter "session" at parameters[0]`,
+		},
+		{
+			name:    "same ref twice",
+			params:  []string{`ref: "Session"`, `ref: "Session"`},
+			wantErr: `parameters[1]: duplicates cookie parameter "session" at parameters[0]`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			var params []*options.Parameter
+			for _, text := range tc.params {
+				params = append(params, textParameter(t, text))
+			}
+			_, err := convertParameters(params, components)
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestConvertComponentParameters_Errors(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name    string
+		key     string
+		param   string
+		wantErr string
+	}{
+		{
+			name:    "ref on a component",
+			key:     "TenantId",
+			param:   `ref: "Other"`,
+			wantErr: `parameters["TenantId"]: ref is not allowed on a component parameter`,
+		},
+		{
+			name:    "missing name",
+			key:     "TenantId",
+			param:   `in: IN_HEADER`,
+			wantErr: `parameters["TenantId"]: name is required`,
+		},
+		{
+			name:    "missing in",
+			key:     "TenantId",
+			param:   `name: "X-Tenant-Id"`,
+			wantErr: `parameters["TenantId"]: in is required`,
+		},
+		{
+			name:    "reserved header",
+			key:     "Auth",
+			param:   `name: "Authorization" in: IN_HEADER`,
+			wantErr: `parameters["Auth"]: header parameter "Authorization" is ignored`,
+		},
+		{
+			name:    "invalid key",
+			key:     "Tenant/Id",
+			param:   `name: "X-Tenant-Id" in: IN_HEADER`,
+			wantErr: `parameters["Tenant/Id"]: name may only contain`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			_, err := convertComponentParameters(map[string]*options.Parameter{tc.key: textParameter(t, tc.param)})
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+// textParameter parses an options.Parameter from prototext.
+func textParameter(t *testing.T, text string) *options.Parameter {
+	t.Helper()
+	p := new(options.Parameter)
+	if err := prototext.Unmarshal([]byte(text), p); err != nil {
+		t.Fatalf("unmarshal parameter %q: %v", text, err)
+	}
+	return p
+}
+
 // TestGenerate_AnnotationErrors covers the spec-required-field validations
 // and the cross-operation invariants (operationId uniqueness, tag references
 // resolving). One sub-case per failure mode keeps the error messages
@@ -887,6 +1050,11 @@ func TestGenerate_AnnotationErrors(t *testing.T) {
 			name:    "operation header parameter OpenAPI ignores",
 			fixture: "testdata/reserved_header_parameter.prototext",
 			wantErr: `parameters[0]: header parameter "content-type" is ignored by OpenAPI 3.1.0`,
+		},
+		{
+			name:    "operation references undeclared component parameter",
+			fixture: "testdata/undeclared_component_parameter.prototext",
+			wantErr: `openapiv3 operation ParamsService.Get: parameters[2]: references undeclared component parameter "Missing"`,
 		},
 		{
 			name:    "service tag external_docs missing url",

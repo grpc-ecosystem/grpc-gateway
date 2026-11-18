@@ -61,6 +61,13 @@ message Components {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#componentsSecuritySchemes
   map<string, SecurityScheme> security_schemes = 1;
+  // Parameters that operations can reference by name with
+  // `openapiv3_operation.parameters.ref`, keyed by component name. Names
+  // may only use letters, digits, ".", "-" and "_". An entry can't itself
+  // be a reference.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#componentsParameters
+  map<string, Parameter> parameters = 2;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -227,14 +234,14 @@ message Parameter {
     TYPE_BOOLEAN = 4;
   }
 
-  // The name of the parameter. Required. Header names are compared
+  // The name of the parameter. Required unless `ref` is set. Header names are compared
   // case-insensitively. A header named `Accept`, `Content-Type` or
   // `Authorization` is refused, since OpenAPI 3.1.0 says such a parameter
   // SHALL be ignored; describe authorization with `security`.
   //
   // See: https://spec.openapis.org/oas/v3.1.0#parameterName
   string name = 1;
-  // The location of the parameter. Required.
+  // The location of the parameter. Required unless `ref` is set.
   //
   // See: https://spec.openapis.org/oas/v3.1.0#parameterIn
   In in = 2;
@@ -257,6 +264,12 @@ message Parameter {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#dataTypeFormat
   string format = 7;
+  // Name of an entry in `openapiv3_document.components.parameters`. The
+  // parameter is rendered as a `$ref` to that entry. When set, the other
+  // fields must be empty.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#reference-object
+  string ref = 8;
 }
 
 // Response describes a single response of an operation.
