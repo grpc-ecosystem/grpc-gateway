@@ -1057,6 +1057,11 @@ func TestGenerate_AnnotationErrors(t *testing.T) {
 			wantErr: `openapiv3 operation ParamsService.Get: parameters[2]: references undeclared component parameter "Missing"`,
 		},
 		{
+			name:    "operation references undeclared component response",
+			fixture: "testdata/undeclared_component_response.prototext",
+			wantErr: `openapiv3 operation FooService.Delete: responses["404"]: references undeclared component response "Missing"`,
+		},
+		{
 			name:    "service tag external_docs missing url",
 			fixture: "testdata/service_tag_external_docs_missing_url.prototext",
 			wantErr: "openapiv3 service BadService: external_docs: url is required",
@@ -1909,6 +1914,76 @@ func TestGenerate_ResponseAnnotations(t *testing.T) {
 	}
 }
 
+// TestGenerate_ComponentResponses checks that responses declared under
+// openapiv3_document.components are emitted under components.responses with
+// their messages resolved to schemas, and that operations referencing them
+// get a $ref.
+func TestGenerate_ComponentResponses(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/component_responses.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Schemas   map[string]json.RawMessage `json:"schemas"`
+			Responses json.RawMessage            `json:"responses"`
+		} `json:"components"`
+		Paths map[string]map[string]struct {
+			Responses json.RawMessage `json:"responses"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// Declared responses are emitted even when no operation uses them.
+	assertJSONEqual(t, doc.Components.Responses, []byte(`{
+		"Conflict.v1": {
+			"description": "The foo is busy.",
+			"content": {"application/json": {"schema": {"oneOf": [
+				{"$ref": "#/components/schemas/resp.v1.CannotDeleteError"},
+				{"$ref": "#/components/schemas/google.rpc.Status"}
+			]}}}
+		},
+		"Gone": {
+			"description": "The foo was removed.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.GoneError"}}}
+		},
+		"NotFound": {
+			"description": "The foo does not exist.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.NotFoundError"}}}
+		}
+	}`))
+	assertJSONEqual(t, doc.Paths["/v1/foo/{id}"]["delete"].Responses, []byte(`{
+		"default": {
+			"description": "An unexpected error response.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/google.rpc.Status"}}}
+		},
+		"200": {
+			"description": "A successful response.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.DeleteResponse"}}}
+		},
+		"400": {"description": "Bad id."},
+		"404": {"$ref": "#/components/responses/NotFound"},
+		"409": {"$ref": "#/components/responses/Conflict.v1"}
+	}`))
+	assertJSONEqual(t, doc.Paths["/v1/foo/{id}:purge"]["post"].Responses, []byte(`{
+		"default": {"$ref": "#/components/responses/NotFound"},
+		"200": {
+			"description": "A successful response.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/resp.v1.DeleteResponse"}}}
+		}
+	}`))
+
+	// Messages only named by a component response still get a schema.
+	for _, name := range []string{"resp.v1.CannotDeleteError", "resp.v1.NotFoundError", "resp.v1.GoneError"} {
+		if _, ok := doc.Components.Schemas[name]; !ok {
+			t.Errorf("components.schemas[%q] missing", name)
+		}
+	}
+}
+
 func TestApplyResponseOverrides_Errors(t *testing.T) {
 	t.Parallel()
 
@@ -1918,6 +1993,9 @@ func TestApplyResponseOverrides_Errors(t *testing.T) {
 		t.Fatalf("registry load: %v", err)
 	}
 
+	components := map[string]*Response{
+		"NotFound": NewResponse("Not found."),
+	}
 	cases := []struct {
 		name    string
 		code    string
@@ -1954,12 +2032,90 @@ func TestApplyResponseOverrides_Errors(t *testing.T) {
 			resp:    textResponse(t, `description: "x" messages: ""`),
 			wantErr: "message name is empty",
 		},
+		{
+			name:    "ref with description",
+			code:    "404",
+			resp:    textResponse(t, `ref: "NotFound" description: "x"`),
+			wantErr: `responses["404"]: ref "NotFound" can't be combined with other fields`,
+		},
+		{
+			name:    "ref with messages",
+			code:    "404",
+			resp:    textResponse(t, `ref: "NotFound" messages: "resp.v1.NotFoundError"`),
+			wantErr: `responses["404"]: ref "NotFound" can't be combined with other fields`,
+		},
+		{
+			name:    "undeclared ref",
+			code:    "404",
+			resp:    textResponse(t, `ref: "Missing"`),
+			wantErr: `responses["404"]: references undeclared component response "Missing"`,
+		},
+		{
+			name:    "ref with bad status code",
+			code:    "40",
+			resp:    textResponse(t, `ref: "NotFound"`),
+			wantErr: `key "40" must be`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			doc := NewDocument("t", "1")
+			doc.Components.Responses = components
+			b := newSchemaBuilder(reg, doc)
+			err := applyResponseOverrides(b, NewResponses(), map[string]*options.Response{tc.code: tc.resp})
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestBuildComponentResponses_Errors(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/responses.prototext")
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+
+	cases := []struct {
+		name    string
+		key     string
+		resp    string
+		wantErr string
+	}{
+		{
+			name:    "ref on a component",
+			key:     "NotFound",
+			resp:    `ref: "Other"`,
+			wantErr: `responses["NotFound"]: ref is not allowed on a component response`,
+		},
+		{
+			name:    "missing description",
+			key:     "NotFound",
+			resp:    `messages: "resp.v1.NotFoundError"`,
+			wantErr: `responses["NotFound"]: description is required`,
+		},
+		{
+			name:    "unknown message",
+			key:     "NotFound",
+			resp:    `description: "x" messages: "resp.v1.Missing"`,
+			wantErr: `responses["NotFound"].messages[0]: unknown message "resp.v1.Missing"`,
+		},
+		{
+			name:    "invalid key",
+			key:     "Not Found",
+			resp:    `description: "x"`,
+			wantErr: `responses["Not Found"]: name may only contain`,
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			b := newSchemaBuilder(reg, NewDocument("t", "1"))
-			err := applyResponseOverrides(b, NewResponses(), map[string]*options.Response{tc.code: tc.resp})
+			_, err := buildComponentResponses(b, map[string]*options.Response{tc.key: textResponse(t, tc.resp)})
 			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
 			}

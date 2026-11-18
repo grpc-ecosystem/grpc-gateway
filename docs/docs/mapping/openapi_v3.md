@@ -479,6 +479,39 @@ rpc DeleteFoo(DeleteFooRequest) returns (DeleteFooResponse) {
 }
 ```
 
+A response shared by many operations can be declared once under
+`openapiv3_document.components.responses` and referenced by name with
+`ref`. It's emitted under `components.responses`, with its messages
+resolved to schemas the same way, and each use becomes a
+`$ref: '#/components/responses/<name>'`.
+
+```protobuf
+option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
+  components: {
+    responses: {
+      key: "NotFound"
+      value: {
+        description: "The resource does not exist."
+        messages: "example.v1.NotFoundError"
+      }
+    }
+  }
+};
+
+rpc GetFoo(GetFooRequest) returns (Foo) {
+  option (google.api.http) = {get: "/v1/foo/{id}"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    responses: {
+      key: "404"
+      value: {ref: "NotFound"}
+    }
+  };
+}
+```
+
+A `ref` entry can't set any other field, and must name a response declared
+in the same proto file, like [component parameters](#header-and-cookie-parameters).
+
 ### Server streaming
 
 For server-streaming RPCs, the `grpc-gateway` runtime writes one JSON object

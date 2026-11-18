@@ -2,7 +2,9 @@ package genopenapi
 
 import (
 	"fmt"
+	"maps"
 	"net/http"
+	"slices"
 	"sort"
 	"strings"
 
@@ -460,7 +462,8 @@ func buildResponses(b *schemaBuilder, m *descriptor.Method, binding *descriptor.
 // applyResponseOverrides adds the responses declared on an openapiv3_operation
 // annotation. An annotated key replaces the generated response for that key,
 // so "default" swaps out the google.rpc.Status error response and "200" the
-// success response.
+// success response. An entry either sets ref, naming an entry of the
+// document's components.responses, or describes the response inline.
 func applyResponseOverrides(b *schemaBuilder, resp *Responses, overrides map[string]*options.Response) error {
 	if len(overrides) == 0 {
 		return nil
@@ -477,27 +480,82 @@ func applyResponseOverrides(b *schemaBuilder, resp *Responses, overrides map[str
 			return err
 		}
 		if code == "default" {
-			resp.Default = &ResponseRef{Value: r}
+			resp.Default = r
 			continue
 		}
-		resp.Codes[code] = &ResponseRef{Value: r}
+		resp.Codes[code] = r
 	}
 	return nil
 }
 
-func buildAnnotatedResponse(b *schemaBuilder, code string, o *options.Response) (*Response, error) {
+func buildAnnotatedResponse(b *schemaBuilder, code string, o *options.Response) (*ResponseRef, error) {
 	if !validResponseCode(code) {
 		return nil, fmt.Errorf("responses: key %q must be an HTTP status code like \"404\", a range like \"4XX\" or \"default\"", code)
 	}
+	label := fmt.Sprintf("responses[%q]", code)
+	if name := o.GetRef(); name != "" {
+		if responseSetsInlineFields(o) {
+			return nil, fmt.Errorf("%s: ref %q can't be combined with other fields", label, name)
+		}
+		if b.doc.Components.Responses[name] == nil {
+			return nil, fmt.Errorf("%s: references undeclared component response %q; add it to openapiv3_document.components.responses", label, name)
+		}
+		return &ResponseRef{Ref: "#/components/responses/" + name}, nil
+	}
+	r, err := convertResponse(b, label, o)
+	if err != nil {
+		return nil, err
+	}
+	return &ResponseRef{Value: r}, nil
+}
+
+// buildComponentResponses converts the reusable responses of a
+// document-level Components annotation. Each entry is checked like an
+// operation response and can't be a reference itself. Messages are resolved
+// to schemas the same way, so they get a component schema even when no
+// operation references the response.
+func buildComponentResponses(b *schemaBuilder, responses map[string]*options.Response) (map[string]*Response, error) {
+	if len(responses) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*Response, len(responses))
+	// Iterate in sorted order so that error messages and schema
+	// registration are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(responses)) {
+		label := fmt.Sprintf("responses[%q]", name)
+		if !componentNamePattern.MatchString(name) {
+			return nil, fmt.Errorf("%s: name may only contain letters, digits, \".\", \"-\" and \"_\"", label)
+		}
+		o := responses[name]
+		if o.GetRef() != "" {
+			return nil, fmt.Errorf("%s: ref is not allowed on a component response", label)
+		}
+		r, err := convertResponse(b, label, o)
+		if err != nil {
+			return nil, err
+		}
+		out[name] = r
+	}
+	return out, nil
+}
+
+// responseSetsInlineFields reports whether o sets any field besides ref.
+func responseSetsInlineFields(o *options.Response) bool {
+	return o.GetDescription() != "" || len(o.GetMessages()) > 0
+}
+
+// convertResponse converts a single inline response. Description is
+// required. `label` prefixes error messages, for example `responses["404"]`.
+func convertResponse(b *schemaBuilder, label string, o *options.Response) (*Response, error) {
 	if o.GetDescription() == "" {
-		return nil, fmt.Errorf("responses[%q]: description is required", code)
+		return nil, fmt.Errorf("%s: description is required", label)
 	}
 	r := NewResponse(o.GetDescription())
 	var schemas []*SchemaOrRef
 	for i, name := range o.GetMessages() {
 		s, err := annotatedMessageSchema(b, name)
 		if err != nil {
-			return nil, fmt.Errorf("responses[%q].messages[%d]: %w", code, i, err)
+			return nil, fmt.Errorf("%s.messages[%d]: %w", label, i, err)
 		}
 		schemas = append(schemas, s)
 	}

@@ -652,18 +652,20 @@ func NewSchemaRef(name string) *SchemaOrRef {
 }
 
 // Components is the components/* section. Schemas are built from the proto
-// types; parameters and security schemes come from the document annotation.
+// types; responses, parameters and security schemes come from the document
+// annotation.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#components-object
 type Components struct {
 	Schemas         map[string]*SchemaOrRef    `json:"-"`
+	Responses       map[string]*Response       `json:"-"`
 	Parameters      map[string]*Parameter      `json:"-"`
 	SecuritySchemes map[string]*SecurityScheme `json:"-"`
 }
 
 // Empty reports whether the components section has no content to emit.
 func (c *Components) Empty() bool {
-	return c == nil || (len(c.Schemas) == 0 && len(c.Parameters) == 0 && len(c.SecuritySchemes) == 0)
+	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.SecuritySchemes) == 0)
 }
 
 // MarshalJSON emits components sub-maps with keys in lexicographic order so
@@ -676,6 +678,9 @@ func (c *Components) MarshalJSON() ([]byte, error) {
 	buf.WriteByte('{')
 	first := true
 	if err := writeSortedKeys(&buf, &first, "schemas", c.Schemas); err != nil {
+		return nil, err
+	}
+	if err := writeSortedKeys(&buf, &first, "responses", c.Responses); err != nil {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "parameters", c.Parameters); err != nil {
