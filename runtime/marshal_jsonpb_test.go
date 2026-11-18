@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	"bytes"
+	"math"
 	"reflect"
 	"strconv"
 	"strings"
@@ -277,6 +278,63 @@ func TestJSONPbUnmarshalEnumNonProto(t *testing.T) {
 		t.Errorf("m.Unmarshal(1, enum) failed with %v; want success", err)
 	} else if valid != examplepb.NumericEnum_ONE {
 		t.Errorf("m.Unmarshal(1, enum) = %d; want %d", int32(valid), int32(examplepb.NumericEnum_ONE))
+	}
+}
+
+func TestJSONPbUnmarshalScalarNonProto(t *testing.T) {
+	// A body bound directly to a numeric or bytes field decodes through
+	// decodeNonProtoField rather than protojson. It must accept the forms
+	// protojson accepts for the same field, such as int64 values written as
+	// strings, which is how protojson itself writes them.
+	var m runtime.JSONPb
+
+	for _, spec := range []struct {
+		json string
+		dest interface{}
+		want interface{}
+	}{
+		{json: `"123"`, dest: new(int64), want: int64(123)},
+		{json: `"-5"`, dest: new(int32), want: int32(-5)},
+		{json: `"18446744073709551615"`, dest: new(uint64), want: uint64(18446744073709551615)},
+		{json: `"7"`, dest: new(uint32), want: uint32(7)},
+		{json: `"1.5"`, dest: new(float32), want: float32(1.5)},
+		{json: `"Infinity"`, dest: new(float64), want: math.Inf(1)},
+		{json: `"_-8"`, dest: new([]byte), want: []byte{0xff, 0xef}},
+		{json: `["1","2"]`, dest: new([]int64), want: []int64{1, 2}},
+		{json: `{"a":"5"}`, dest: new(map[string]int64), want: map[string]int64{"a": 5}},
+		{json: `"123"`, dest: new(*int64), want: proto.Int64(123)},
+	} {
+		if err := m.Unmarshal([]byte(spec.json), spec.dest); err != nil {
+			t.Errorf("m.Unmarshal(%s, %T) failed with %v; want success", spec.json, spec.dest, err)
+			continue
+		}
+		if diff := cmp.Diff(reflect.ValueOf(spec.dest).Elem().Interface(), spec.want); diff != "" {
+			t.Errorf("m.Unmarshal(%s, %T): %s", spec.json, spec.dest, diff)
+		}
+	}
+
+	var nan float64
+	if err := m.Unmarshal([]byte(`"NaN"`), &nan); err != nil || !math.IsNaN(nan) {
+		t.Errorf("m.Unmarshal(\"NaN\", float64) = %v, %v; want NaN", nan, err)
+	}
+
+	for _, spec := range []struct {
+		json string
+		dest interface{}
+	}{
+		{json: `"2147483648"`, dest: new(int32)},
+		{json: `"-1"`, dest: new(uint64)},
+		{json: `"abc"`, dest: new(int64)},
+		{json: `1.5`, dest: new(int64)},
+	} {
+		if err := m.Unmarshal([]byte(spec.json), spec.dest); err == nil {
+			t.Errorf("m.Unmarshal(%s, %T) succeeded; want an error", spec.json, spec.dest)
+		}
+	}
+
+	opt := proto.Int64(1)
+	if err := m.Unmarshal([]byte("null"), &opt); err != nil || opt != nil {
+		t.Errorf("m.Unmarshal(null, *int64) = %v, %v; want nil", opt, err)
 	}
 }
 

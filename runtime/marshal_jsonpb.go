@@ -12,6 +12,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // JSONPb is a Marshaler which marshals/unmarshals into/from JSON
@@ -310,14 +311,7 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 	}
 	if rv.Kind() == reflect.Slice {
 		if rv.Type().Elem().Kind() == reflect.Uint8 {
-			var sl []byte
-			if err := d.Decode(&sl); err != nil {
-				return err
-			}
-			if sl != nil {
-				rv.SetBytes(sl)
-			}
-			return nil
+			return decodeScalarField(d, unmarshaler, &wrapperspb.BytesValue{}, v, rv)
 		}
 
 		var sl []json.RawMessage
@@ -376,7 +370,57 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 			return fmt.Errorf("cannot assign %#v into Go type %T", repr, rv.Interface())
 		}
 	}
+	if w := scalarWrapper(rv.Kind()); w != nil {
+		return decodeScalarField(d, unmarshaler, w, v, rv)
+	}
 	return d.Decode(v)
+}
+
+// scalarWrapper returns an empty wrapper message whose JSON form is the bare
+// value of a numeric field of kind k, or nil if k is not numeric.
+func scalarWrapper(k reflect.Kind) proto.Message {
+	switch k {
+	case reflect.Int32:
+		return &wrapperspb.Int32Value{}
+	case reflect.Int64:
+		return &wrapperspb.Int64Value{}
+	case reflect.Uint32:
+		return &wrapperspb.UInt32Value{}
+	case reflect.Uint64:
+		return &wrapperspb.UInt64Value{}
+	case reflect.Float32:
+		return &wrapperspb.FloatValue{}
+	case reflect.Float64:
+		return &wrapperspb.DoubleValue{}
+	}
+	return nil
+}
+
+// decodeScalarField decodes a numeric or bytes value into rv, the value v
+// points to, the way protojson decodes the same field in a message.
+// encoding/json rejects some of what protojson accepts and writes: 64-bit
+// integers as quoted strings, numbers in quotes, "NaN" and "Infinity", and
+// URL-safe base64.
+func decodeScalarField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, w proto.Message, v interface{}, rv reflect.Value) error {
+	var b json.RawMessage
+	if err := d.Decode(&b); err != nil {
+		return err
+	}
+	if string(b) == "null" {
+		// Leave null to encoding/json, which clears an optional field.
+		return json.Unmarshal(b, v)
+	}
+	if err := unmarshaler.Unmarshal(b, w); err != nil {
+		return err
+	}
+	m := w.ProtoReflect()
+	val := m.Get(m.Descriptor().Fields().ByName("value")).Interface()
+	if bs, ok := val.([]byte); ok {
+		rv.SetBytes(append([]byte{}, bs...))
+		return nil
+	}
+	rv.Set(reflect.ValueOf(val).Convert(rv.Type()))
+	return nil
 }
 
 // rejectNullEnumItem returns an error when t is an enum other than
