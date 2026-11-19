@@ -1062,6 +1062,11 @@ func TestGenerate_AnnotationErrors(t *testing.T) {
 			wantErr: `openapiv3 operation FooService.Delete: responses["404"]: references undeclared component response "Missing"`,
 		},
 		{
+			name:    "response references undeclared component header",
+			fixture: "testdata/undeclared_component_header.prototext",
+			wantErr: `openapiv3 operation FooService.Get: responses["200"].headers["RateLimit-Remaining"]: references undeclared component header "Missing"`,
+		},
+		{
 			name:    "service tag external_docs missing url",
 			fixture: "testdata/service_tag_external_docs_missing_url.prototext",
 			wantErr: "openapiv3 service BadService: external_docs: url is required",
@@ -2045,6 +2050,12 @@ func TestApplyResponseOverrides_Errors(t *testing.T) {
 			wantErr: `responses["404"]: ref "NotFound" can't be combined with other fields`,
 		},
 		{
+			name:    "ref with headers",
+			code:    "404",
+			resp:    textResponse(t, `ref: "NotFound" headers: {key: "Retry-After" value: {description: "x"}}`),
+			wantErr: `responses["404"]: ref "NotFound" can't be combined with other fields`,
+		},
+		{
 			name:    "undeclared ref",
 			code:    "404",
 			resp:    textResponse(t, `ref: "Missing"`),
@@ -2121,6 +2132,172 @@ func TestBuildComponentResponses_Errors(t *testing.T) {
 			}
 		})
 	}
+}
+
+// TestGenerate_ComponentHeaders checks that headers declared under
+// openapiv3_document.components are emitted under components.headers, and
+// that response headers, on operations and on component responses, render
+// either inline or as a $ref.
+func TestGenerate_ComponentHeaders(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/component_headers.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Headers   json.RawMessage `json:"headers"`
+			Responses json.RawMessage `json:"responses"`
+		} `json:"components"`
+		Paths map[string]map[string]struct {
+			Responses json.RawMessage `json:"responses"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// Declared headers are emitted even when nothing uses them.
+	assertJSONEqual(t, doc.Components.Headers, []byte(`{
+		"RateLimit-Remaining": {
+			"description": "Requests left in the current window.",
+			"required": true,
+			"schema": {"type": "integer", "format": "int32"}
+		},
+		"Retry-After": {
+			"description": "Seconds to wait before retrying.",
+			"schema": {"type": "integer"}
+		},
+		"X-Legacy-Id": {
+			"deprecated": true,
+			"schema": {"type": "string"}
+		}
+	}`))
+	assertJSONEqual(t, doc.Components.Responses, []byte(`{
+		"TooManyRequests": {
+			"description": "Rate limit exceeded.",
+			"headers": {"Retry-After": {"$ref": "#/components/headers/Retry-After"}}
+		}
+	}`))
+	assertJSONEqual(t, doc.Paths["/v1/foo/{id}"]["get"].Responses, []byte(`{
+		"default": {
+			"description": "An unexpected error response.",
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/google.rpc.Status"}}}
+		},
+		"200": {
+			"description": "The foo.",
+			"headers": {
+				"ETag": {
+					"description": "Version of the foo.",
+					"required": true,
+					"schema": {"type": "string"}
+				},
+				"RateLimit-Remaining": {"$ref": "#/components/headers/RateLimit-Remaining"}
+			},
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/hdr.v1.GetResponse"}}}
+		},
+		"429": {"$ref": "#/components/responses/TooManyRequests"}
+	}`))
+}
+
+func TestConvertResponseHeaders_Errors(t *testing.T) {
+	t.Parallel()
+
+	components := map[string]*Header{
+		"Retry-After": {Description: "x"},
+	}
+	cases := []struct {
+		name    string
+		headers map[string]string
+		wantErr string
+	}{
+		{
+			name:    "ref with description",
+			headers: map[string]string{"Retry-After": `ref: "Retry-After" description: "x"`},
+			wantErr: `responses["429"].headers["Retry-After"]: ref "Retry-After" can't be combined with other fields`,
+		},
+		{
+			name:    "ref with type",
+			headers: map[string]string{"Retry-After": `ref: "Retry-After" type: TYPE_INTEGER`},
+			wantErr: `responses["429"].headers["Retry-After"]: ref "Retry-After" can't be combined with other fields`,
+		},
+		{
+			name:    "undeclared ref",
+			headers: map[string]string{"Retry-After": `ref: "Missing"`},
+			wantErr: `responses["429"].headers["Retry-After"]: references undeclared component header "Missing"`,
+		},
+		{
+			name:    "content type",
+			headers: map[string]string{"content-type": `description: "x"`},
+			wantErr: `responses["429"].headers["content-type"]: Content-Type is ignored`,
+		},
+		{
+			name:    "case-insensitive duplicate",
+			headers: map[string]string{"Retry-After": `description: "x"`, "retry-after": `description: "y"`},
+			wantErr: `responses["429"].headers["retry-after"]: duplicates header "Retry-After"`,
+		},
+		{
+			name:    "empty name",
+			headers: map[string]string{"": `description: "x"`},
+			wantErr: `responses["429"].headers: header name is empty`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			headers := make(map[string]*options.Header, len(tc.headers))
+			for k, v := range tc.headers {
+				headers[k] = textHeader(t, v)
+			}
+			_, err := convertResponseHeaders(`responses["429"]`, headers, components)
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestConvertComponentHeaders_Errors(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name    string
+		key     string
+		header  string
+		wantErr string
+	}{
+		{
+			name:    "ref on a component",
+			key:     "Retry-After",
+			header:  `ref: "Other"`,
+			wantErr: `headers["Retry-After"]: ref is not allowed on a component header`,
+		},
+		{
+			name:    "invalid key",
+			key:     "Retry After",
+			header:  `description: "x"`,
+			wantErr: `headers["Retry After"]: name may only contain`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			_, err := convertComponentHeaders(map[string]*options.Header{tc.key: textHeader(t, tc.header)})
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+// textHeader parses an options.Header from prototext.
+func textHeader(t *testing.T, text string) *options.Header {
+	t.Helper()
+	h := new(options.Header)
+	if err := prototext.Unmarshal([]byte(text), h); err != nil {
+		t.Fatalf("unmarshal header %q: %v", text, err)
+	}
+	return h
 }
 
 // textResponse parses an options.Response from prototext, which works the

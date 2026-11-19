@@ -1,0 +1,101 @@
+file_to_generate: "hdr/v1/hdr.proto"
+proto_file: {
+  name: "hdr/v1/hdr.proto"
+  package: "hdr.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+  }
+  service: {
+    name: "FooService"
+    method: {
+      name: "Get"
+      input_type: ".hdr.v1.GetRequest"
+      output_type: ".hdr.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/foo/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          responses: {
+            key: "200"
+            value: {
+              description: "The foo."
+              messages: "hdr.v1.GetResponse"
+              headers: {
+                key: "RateLimit-Remaining"
+                value: {
+                  ref: "RateLimit-Remaining"
+                }
+              }
+              headers: {
+                key: "ETag"
+                value: {
+                  description: "Version of the foo."
+                  required: true
+                }
+              }
+            }
+          }
+          responses: {
+            key: "429"
+            value: {
+              ref: "TooManyRequests"
+            }
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/hdr/v1;hdrv1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      components: {
+        headers: {
+          key: "RateLimit-Remaining"
+          value: {
+            description: "Requests left in the current window."
+            required: true
+            type: TYPE_INTEGER
+            format: "int32"
+          }
+        }
+        headers: {
+          key: "Retry-After"
+          value: {
+            description: "Seconds to wait before retrying."
+            type: TYPE_INTEGER
+          }
+        }
+        headers: {
+          key: "X-Legacy-Id"
+          value: {
+            deprecated: true
+          }
+        }
+        responses: {
+          key: "TooManyRequests"
+          value: {
+            description: "Rate limit exceeded."
+            headers: {
+              key: "Retry-After"
+              value: {
+                ref: "Retry-After"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  syntax: "proto3"
+}

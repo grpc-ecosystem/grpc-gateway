@@ -75,6 +75,13 @@ message Components {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#componentsResponses
   map<string, Response> responses = 3;
+  // Response headers that responses can reference by name with
+  // `Response.headers.ref`, keyed by component name. Names may only use
+  // letters, digits, ".", "-" and "_". An entry can't itself be a
+  // reference.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#componentsHeaders
+  map<string, Header> headers = 4;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -297,6 +304,38 @@ message Response {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#reference-object
   string ref = 3;
+  // Headers sent with the response, keyed by header name. Names are
+  // compared case-insensitively, and `Content-Type` is refused since
+  // OpenAPI 3.1.0 says it SHALL be ignored here.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#responseHeaders
+  map<string, Header> headers = 4;
+}
+
+// Header describes a single response header. It's a Parameter without
+// `name` and `in`: the name is the key it's declared under.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#header-object
+message Header {
+  // A brief description of the header. CommonMark syntax MAY be used for
+  // rich text representation.
+  string description = 1;
+  // Determines whether the header is always sent.
+  bool required = 2;
+  // Declares this header to be deprecated.
+  bool deprecated = 3;
+  // The type of the header's schema. Defaults to string.
+  Parameter.Type type = 4;
+  // The format of the header's schema, for example "int64" or "uuid".
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#dataTypeFormat
+  string format = 5;
+  // Name of an entry in `openapiv3_document.components.headers`. The
+  // header is rendered as a `$ref` to that entry. When set, the other
+  // fields must be empty.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#reference-object
+  string ref = 6;
 }
 
 // Schema is a message- or field-level override applied to the generated

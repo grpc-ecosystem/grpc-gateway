@@ -541,7 +541,7 @@ func buildComponentResponses(b *schemaBuilder, responses map[string]*options.Res
 
 // responseSetsInlineFields reports whether o sets any field besides ref.
 func responseSetsInlineFields(o *options.Response) bool {
-	return o.GetDescription() != "" || len(o.GetMessages()) > 0
+	return o.GetDescription() != "" || len(o.GetMessages()) > 0 || len(o.GetHeaders()) > 0
 }
 
 // convertResponse converts a single inline response. Description is
@@ -551,6 +551,11 @@ func convertResponse(b *schemaBuilder, label string, o *options.Response) (*Resp
 		return nil, fmt.Errorf("%s: description is required", label)
 	}
 	r := NewResponse(o.GetDescription())
+	headers, err := convertResponseHeaders(label, o.GetHeaders(), b.doc.Components.Headers)
+	if err != nil {
+		return nil, err
+	}
+	r.Headers = headers
 	var schemas []*SchemaOrRef
 	for i, name := range o.GetMessages() {
 		s, err := annotatedMessageSchema(b, name)

@@ -204,6 +204,11 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 			return fmt.Errorf("openapiv3 document components: %w", err)
 		}
 		doc.Components.Parameters = params
+		headers, err := convertComponentHeaders(c.GetHeaders())
+		if err != nil {
+			return fmt.Errorf("openapiv3 document components: %w", err)
+		}
+		doc.Components.Headers = headers
 	}
 	doc.Security = convertSecurityRequirements(d.GetSecurity())
 	if err := checkSecurityRequirements(doc.Security, doc.Components.SecuritySchemes); err != nil {
@@ -243,6 +248,90 @@ func convertComponentParameters(params map[string]*options.Parameter) (map[strin
 		out[name] = param
 	}
 	return out, nil
+}
+
+// convertComponentHeaders converts the reusable response headers of a
+// document-level Components annotation. Each entry is checked like a
+// response header and can't be a reference itself.
+func convertComponentHeaders(headers map[string]*options.Header) (map[string]*Header, error) {
+	if len(headers) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*Header, len(headers))
+	// Iterate in sorted order so that error messages are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(headers)) {
+		if !componentNamePattern.MatchString(name) {
+			return nil, fmt.Errorf("headers[%q]: name may only contain letters, digits, \".\", \"-\" and \"_\"", name)
+		}
+		h := headers[name]
+		if h.GetRef() != "" {
+			return nil, fmt.Errorf("headers[%q]: ref is not allowed on a component header", name)
+		}
+		out[name] = convertHeader(h)
+	}
+	return out, nil
+}
+
+// convertResponseHeaders converts the headers of a response annotation. A
+// header either sets ref, naming an entry of `components`, or describes the
+// header inline. Header names are compared case-insensitively, and
+// Content-Type is refused since OpenAPI 3.1.0 says it SHALL be ignored.
+// `label` prefixes error messages, for example `responses["404"]`.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#responseHeaders
+func convertResponseHeaders(label string, headers map[string]*options.Header, components map[string]*Header) (map[string]*HeaderRef, error) {
+	if len(headers) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*HeaderRef, len(headers))
+	seen := make(map[string]string, len(headers))
+	// Iterate in sorted order so that error messages are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(headers)) {
+		hlabel := fmt.Sprintf("%s.headers[%q]", label, name)
+		if name == "" {
+			return nil, fmt.Errorf("%s.headers: header name is empty", label)
+		}
+		lower := strings.ToLower(name)
+		if lower == "content-type" {
+			return nil, fmt.Errorf("%s: Content-Type is ignored by OpenAPI 3.1.0 in response headers; it comes from the media types", hlabel)
+		}
+		if prev, ok := seen[lower]; ok {
+			return nil, fmt.Errorf("%s: duplicates header %q", hlabel, prev)
+		}
+		seen[lower] = name
+		h := headers[name]
+		if ref := h.GetRef(); ref != "" {
+			if headerSetsInlineFields(h) {
+				return nil, fmt.Errorf("%s: ref %q can't be combined with other fields", hlabel, ref)
+			}
+			if components[ref] == nil {
+				return nil, fmt.Errorf("%s: references undeclared component header %q; add it to openapiv3_document.components.headers", hlabel, ref)
+			}
+			out[name] = &HeaderRef{Ref: "#/components/headers/" + ref}
+			continue
+		}
+		out[name] = &HeaderRef{Value: convertHeader(h)}
+	}
+	return out, nil
+}
+
+// headerSetsInlineFields reports whether h sets any field besides ref.
+func headerSetsInlineFields(h *options.Header) bool {
+	return h.GetDescription() != "" || h.GetRequired() || h.GetDeprecated() ||
+		h.GetType() != options.Parameter_TYPE_UNSPECIFIED || h.GetFormat() != ""
+}
+
+// convertHeader converts a single inline response header.
+func convertHeader(h *options.Header) *Header {
+	return &Header{
+		Description: h.GetDescription(),
+		Required:    h.GetRequired(),
+		Deprecated:  h.GetDeprecated(),
+		Schema: &SchemaOrRef{Value: &Schema{
+			Type:   SchemaType{parameterType(h.GetType())},
+			Format: h.GetFormat(),
+		}},
+	}
 }
 
 // convertSecuritySchemes converts the security schemes of a document-level
