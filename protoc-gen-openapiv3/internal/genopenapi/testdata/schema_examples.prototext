@@ -1,0 +1,142 @@
+file_to_generate: "ex/v1/examples.proto"
+proto_file: {
+  name: "ex/v1/examples.proto"
+  package: "ex.v1"
+  message_type: {
+    name: "Owner"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+    options: {
+      [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_schema]: {
+        examples: {
+          struct_value: {
+            fields: {
+              key: "name"
+              value: { string_value: "alice" }
+            }
+          }
+        }
+      }
+    }
+  }
+  message_type: {
+    name: "Item"
+    field: {
+      name: "state"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "state"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          default: { string_value: "draft" }
+          examples: { string_value: "draft" }
+          examples: { string_value: "published" }
+        }
+      }
+    }
+    field: {
+      name: "page_size"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "pageSize"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          default: { number_value: 50 }
+        }
+      }
+    }
+    field: {
+      name: "archived"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_BOOL
+      json_name: "archived"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          default: { bool_value: false }
+        }
+      }
+    }
+    field: {
+      name: "tags"
+      number: 4
+      label: LABEL_REPEATED
+      type: TYPE_STRING
+      json_name: "tags"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          default: {
+            list_value: {
+              values: { string_value: "new" }
+            }
+          }
+        }
+      }
+    }
+    field: {
+      name: "owner"
+      number: 5
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".ex.v1.Owner"
+      json_name: "owner"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          examples: {
+            struct_value: {
+              fields: {
+                key: "name"
+                value: { string_value: "bob" }
+              }
+            }
+          }
+        }
+      }
+    }
+    field: {
+      name: "note"
+      number: 6
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "note"
+      options: {
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field]: {
+          default: { null_value: NULL_VALUE }
+        }
+      }
+    }
+  }
+  message_type: {
+    name: "GetItemRequest"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  service: {
+    name: "ItemService"
+    method: {
+      name: "GetItem"
+      input_type: ".ex.v1.GetItemRequest"
+      output_type: ".ex.v1.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/{name}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/ex/v1;exv1"
+  }
+}

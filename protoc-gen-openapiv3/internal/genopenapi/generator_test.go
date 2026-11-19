@@ -2088,3 +2088,96 @@ func TestGenerate_FieldValidationKeywords(t *testing.T) {
 		})
 	}
 }
+
+func TestGenerate_SchemaDefaultAndExamples(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/schema_examples.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Schemas map[string]map[string]any `json:"schemas"`
+		} `json:"components"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+	item := doc.Components.Schemas["ex.v1.Item"]
+	props, _ := item["properties"].(map[string]any)
+	if props == nil {
+		t.Fatalf("missing ex.v1.Item properties:\n%s", string(got))
+	}
+	prop := func(name string) map[string]any {
+		t.Helper()
+		p, _ := props[name].(map[string]any)
+		if p == nil {
+			t.Fatalf("missing property %q:\n%s", name, string(got))
+		}
+		return p
+	}
+
+	for _, tc := range []struct {
+		name   string
+		schema map[string]any
+		want   map[string]any
+		gone   []string
+	}{
+		{
+			name:   "string default and examples",
+			schema: prop("state"),
+			want:   map[string]any{"type": "string", "default": "draft", "examples": []any{"draft", "published"}},
+		},
+		{
+			name:   "number default",
+			schema: prop("pageSize"),
+			want:   map[string]any{"default": float64(50)},
+		},
+		{
+			name:   "false default is kept",
+			schema: prop("archived"),
+			want:   map[string]any{"default": false},
+		},
+		{
+			name:   "repeated field takes a list default",
+			schema: prop("tags"),
+			want:   map[string]any{"type": "array", "default": []any{"new"}},
+		},
+		{
+			name:   "ref field is wrapped",
+			schema: prop("owner"),
+			want:   map[string]any{"examples": []any{map[string]any{"name": "bob"}}},
+			gone:   []string{"$ref"},
+		},
+		{
+			name:   "null default is skipped",
+			schema: prop("note"),
+			want:   map[string]any{"type": "string"},
+			gone:   []string{"default"},
+		},
+		{
+			name:   "message level examples",
+			schema: doc.Components.Schemas["ex.v1.Owner"],
+			want:   map[string]any{"examples": []any{map[string]any{"name": "alice"}}},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for key, want := range tc.want {
+				if got := tc.schema[key]; !cmp.Equal(got, want) {
+					t.Errorf("%s: want %v, got %v (schema %v)", key, want, got, tc.schema)
+				}
+			}
+			for _, key := range tc.gone {
+				if v, ok := tc.schema[key]; ok {
+					t.Errorf("%s: want unset, got %v (schema %v)", key, v, tc.schema)
+				}
+			}
+		})
+	}
+
+	owner := prop("owner")
+	allOf, _ := owner["allOf"].([]any)
+	if len(allOf) != 1 || !cmp.Equal(allOf[0], map[string]any{"$ref": "#/components/schemas/ex.v1.Owner"}) {
+		t.Errorf("owner: want allOf wrapping the Owner ref, got %v", owner)
+	}
+}

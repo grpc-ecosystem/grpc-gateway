@@ -361,6 +361,16 @@ backend only if the mux is built with a matcher that forwards it, using
 - `google.api.field_behavior` maps to `required`, `readOnly`, and
   `writeOnly` on the parent schema.
 - `deprecated = true` on a field sets `deprecated: true` on the property.
+- `default` and `examples` on `openapiv3_field` or `openapiv3_schema` take
+  JSON values and are emitted as the JSON Schema `default` and `examples`
+  keywords. On a repeated field they describe the whole array.
+
+```protobuf
+int32 page_size = 2 [(grpc.gateway.protoc_gen_openapiv3.options.openapiv3_field) = {
+  default: {number_value: 50}
+  examples: [{number_value: 10}, {number_value: 100}]
+}];
+```
 
 ### Oneofs
 
