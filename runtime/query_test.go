@@ -1026,3 +1026,36 @@ func TestPopulateQueryParametersWithDuplicateFieldNames(t *testing.T) {
 		}
 	}
 }
+
+func TestPopulateQueryParametersWithDuplicateMapKeys(t *testing.T) {
+	// One map entry can be named by several query keys, either through the two
+	// map syntaxes or through key spellings that parse to the same value. The
+	// value that survived used to depend on map iteration order.
+	for _, spec := range []struct {
+		values  url.Values
+		wantErr string
+	}{
+		{
+			values:  url.Values{"map_value[key]": {"a"}, "map_value": {"key", "b"}},
+			wantErr: `duplicate key "key" in map "grpc.gateway.runtime.internal.examplepb.Proto3Message.map_value"`,
+		},
+		{
+			values:  url.Values{"map_value[key]": {"a"}, "mapValue": {"key", "b"}},
+			wantErr: `duplicate key "key" in map "grpc.gateway.runtime.internal.examplepb.Proto3Message.map_value"`,
+		},
+		{
+			values:  url.Values{"map_value3[1]": {"a"}, "map_value3[01]": {"b"}},
+			wantErr: `duplicate key "1" in map "grpc.gateway.runtime.internal.examplepb.Proto3Message.map_value3"`,
+		},
+		{
+			values:  url.Values{"map_value15[true]": {"a"}, "map_value15[1]": {"b"}},
+			wantErr: `duplicate key "true" in map "grpc.gateway.runtime.internal.examplepb.Proto3Message.map_value15"`,
+		},
+	} {
+		msg := &examplepb.Proto3Message{}
+		err := runtime.PopulateQueryParameters(msg, spec.values, utilities.NewDoubleArray(nil))
+		if err == nil || err.Error() != spec.wantErr {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, nil) = %v; want %v", spec.values, err, spec.wantErr)
+		}
+	}
+}

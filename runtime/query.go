@@ -270,6 +270,13 @@ func populateMapField(fieldDescriptor protoreflect.FieldDescriptor, mp protorefl
 	if err != nil {
 		return fmt.Errorf("parsing map key %q: %w", fieldDescriptor.FullName().Name(), err)
 	}
+	// Parse refuses a field named twice, but one map entry can be named by
+	// several keys: "m[k]=v" and "m=k&m=v", or "m[1]" and "m[01]" for an
+	// integer key. Refuse the second, as protojson does for a body, rather
+	// than letting the order Parse visits the keys in pick the value.
+	if mp.Has(key.MapKey()) {
+		return fmt.Errorf("duplicate key %q in map %q", key.MapKey().String(), fieldDescriptor.FullName())
+	}
 
 	value, err := parseField(fieldDescriptor.MapValue(), values[1])
 	if err != nil {
