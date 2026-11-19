@@ -419,6 +419,10 @@ protoc -I . --grpc-gateway_out ./gen/go \
 
 ### 5. Write an entrypoint for the HTTP reverse-proxy server
 
+The code below starts only the reverse proxy; it dials a gRPC server that you
+must run separately. For a complete example that runs both, see the
+[step by step tutorial](https://grpc-ecosystem.github.io/grpc-gateway/docs/tutorials/introduction/).
+
 ```go
 package main
 
