@@ -52,7 +52,6 @@ go_deps.module(
 )
 use_repo(
     go_deps,
-    "co_honnef_go_tools",
     "com_github_bazelbuild_buildtools_v7",
     "com_github_golang_protobuf",
     "com_github_google_go_cmp",
@@ -62,8 +61,6 @@ use_repo(
     "org_golang_google_grpc",
     "org_golang_google_grpc_cmd_protoc_gen_go_grpc",
     "org_golang_google_protobuf",
-    "org_golang_x_exp",
-    "org_golang_x_sys",
     "org_golang_x_text",
     "org_golang_x_tools",
 )
