@@ -52,13 +52,18 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 	}
 	b := newSchemaBuilder(reg, doc)
 	if hasDoc {
-		// Component responses name proto messages, so they're built once the
+		// Component responses and request bodies name proto messages, so they're built once the
 		// schema builder exists and before any operation can reference them.
 		responses, err := buildComponentResponses(b, d.GetComponents().GetResponses())
 		if err != nil {
 			return nil, false, fmt.Errorf("openapiv3 document components: %w", err)
 		}
 		doc.Components.Responses = responses
+		bodies, err := buildComponentRequestBodies(b, d.GetComponents().GetRequestBodies())
+		if err != nil {
+			return nil, false, fmt.Errorf("openapiv3 document components: %w", err)
+		}
+		doc.Components.RequestBodies = bodies
 	}
 
 	// Prime seenTags with any document-level annotation tags so a service's

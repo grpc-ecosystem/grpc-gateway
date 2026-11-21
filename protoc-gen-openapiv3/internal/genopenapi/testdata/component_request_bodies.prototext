@@ -1,0 +1,164 @@
+file_to_generate: "req/v1/req.proto"
+proto_file: {
+  name: "req/v1/req.proto"
+  package: "req.v1"
+  message_type: {
+    name: "Foo"
+    field: {
+      name: "name"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "name"
+    }
+  }
+  message_type: {
+    name: "Bar"
+    field: {
+      name: "size"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_INT32
+      json_name: "size"
+    }
+  }
+  message_type: {
+    name: "Baz"
+  }
+  message_type: {
+    name: "CreateRequest"
+    field: {
+      name: "parent"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "parent"
+    }
+    field: {
+      name: "foo"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".req.v1.Foo"
+      json_name: "foo"
+    }
+  }
+  message_type: {
+    name: "UpdateRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+    field: {
+      name: "foo"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".req.v1.Foo"
+      json_name: "foo"
+    }
+  }
+  message_type: {
+    name: "ImportRequest"
+    field: {
+      name: "data"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_BYTES
+      json_name: "data"
+    }
+  }
+  message_type: {
+    name: "Empty"
+  }
+  service: {
+    name: "FooService"
+    method: {
+      name: "Create"
+      input_type: ".req.v1.CreateRequest"
+      output_type: ".req.v1.Foo"
+      options: {
+        [google.api.http]: {
+          post: "/v1/{parent}/foos"
+          body: "*"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          request_body: {
+            description: "The foo to create."
+          }
+        }
+      }
+    }
+    method: {
+      name: "Update"
+      input_type: ".req.v1.UpdateRequest"
+      output_type: ".req.v1.Foo"
+      options: {
+        [google.api.http]: {
+          patch: "/v1/foo/{id}"
+          body: "foo"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          request_body: {
+            ref: "Foo"
+          }
+        }
+      }
+    }
+    method: {
+      name: "Import"
+      input_type: ".req.v1.ImportRequest"
+      output_type: ".req.v1.Empty"
+      options: {
+        [google.api.http]: {
+          post: "/v1/foos:import"
+          body: "*"
+          additional_bindings: {
+            get: "/v1/foos:import"
+          }
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          request_body: {
+            description: "A foo or a bar."
+            messages: "req.v1.Foo"
+            messages: "req.v1.Bar"
+          }
+        }
+      }
+    }
+    method: {
+      name: "Get"
+      input_type: ".req.v1.UpdateRequest"
+      output_type: ".req.v1.Foo"
+      options: {
+        [google.api.http]: {
+          get: "/v1/foo/{id}"
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/req/v1;reqv1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      components: {
+        request_bodies: {
+          key: "Foo"
+          value: {
+            description: "A foo."
+            messages: "req.v1.Foo"
+          }
+        }
+        request_bodies: {
+          key: "Unused"
+          value: {
+            messages: "req.v1.Baz"
+          }
+        }
+      }
+    }
+  }
+  syntax: "proto3"
+}

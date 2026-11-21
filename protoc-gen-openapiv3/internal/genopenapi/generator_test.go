@@ -12,6 +12,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
@@ -2512,5 +2513,198 @@ func TestGenerate_SchemaDefaultAndExamples(t *testing.T) {
 	allOf, _ := owner["allOf"].([]any)
 	if len(allOf) != 1 || !cmp.Equal(allOf[0], map[string]any{"$ref": "#/components/schemas/ex.v1.Owner"}) {
 		t.Errorf("owner: want allOf wrapping the Owner ref, got %v", owner)
+	}
+}
+
+// TestGenerate_ComponentRequestBodies checks that request bodies declared
+// under openapiv3_document.components are emitted under
+// components.requestBodies, and that the request_body of an operation
+// annotation either references one or changes the generated body.
+func TestGenerate_ComponentRequestBodies(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/component_request_bodies.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Schemas       map[string]json.RawMessage `json:"schemas"`
+			RequestBodies json.RawMessage            `json:"requestBodies"`
+		} `json:"components"`
+		Paths map[string]map[string]struct {
+			RequestBody json.RawMessage `json:"requestBody"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// Declared request bodies are emitted even when nothing uses them.
+	assertJSONEqual(t, doc.Components.RequestBodies, []byte(`{
+		"Foo": {
+			"description": "A foo.",
+			"required": true,
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/req.v1.Foo"}}}
+		},
+		"Unused": {
+			"required": true,
+			"content": {"application/json": {"schema": {"$ref": "#/components/schemas/req.v1.Baz"}}}
+		}
+	}`))
+
+	// A description alone keeps the schema derived from body="*".
+	assertJSONEqual(t, doc.Paths["/v1/{parent}/foos"]["post"].RequestBody, []byte(`{
+		"description": "The foo to create.",
+		"required": true,
+		"content": {"application/json": {"schema": {
+			"type": "object",
+			"properties": {"foo": {"$ref": "#/components/schemas/req.v1.Foo"}}
+		}}}
+	}`))
+	assertJSONEqual(t, doc.Paths["/v1/foo/{id}"]["patch"].RequestBody, []byte(`{"$ref": "#/components/requestBodies/Foo"}`))
+	assertJSONEqual(t, doc.Paths["/v1/foos:import"]["post"].RequestBody, []byte(`{
+		"description": "A foo or a bar.",
+		"required": true,
+		"content": {"application/json": {"schema": {"oneOf": [
+			{"$ref": "#/components/schemas/req.v1.Foo"},
+			{"$ref": "#/components/schemas/req.v1.Bar"}
+		]}}}
+	}`))
+	// The GET binding of the same method has no body to override.
+	if rb := doc.Paths["/v1/foos:import"]["get"].RequestBody; rb != nil {
+		t.Errorf("GET /v1/foos:import: want no requestBody, got %s", rb)
+	}
+
+	// A message only named by a component request body still gets a schema.
+	if _, ok := doc.Components.Schemas["req.v1.Baz"]; !ok {
+		t.Errorf("components.schemas: missing req.v1.Baz")
+	}
+}
+
+func TestGenerate_RequestBodyOverrideErrors(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name    string
+		method  string
+		body    string
+		wantErr string
+	}{
+		{
+			name:    "ref with description",
+			method:  "Update",
+			body:    `ref: "Foo" description: "x"`,
+			wantErr: `openapiv3 operation FooService.Update: request_body: ref "Foo" can't be combined with other fields`,
+		},
+		{
+			name:    "ref with messages",
+			method:  "Update",
+			body:    `ref: "Foo" messages: "req.v1.Bar"`,
+			wantErr: `request_body: ref "Foo" can't be combined with other fields`,
+		},
+		{
+			name:    "undeclared ref",
+			method:  "Update",
+			body:    `ref: "Missing"`,
+			wantErr: `request_body: references undeclared component request body "Missing"`,
+		},
+		{
+			name:    "unknown message",
+			method:  "Create",
+			body:    `messages: "req.v1.Missing"`,
+			wantErr: `request_body.messages[0]: unknown message "req.v1.Missing"`,
+		},
+		{
+			name:    "method without a body",
+			method:  "Get",
+			body:    `description: "x"`,
+			wantErr: `openapiv3 operation FooService.Get: request_body: the method has no request body`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			req := loadRequest(t, "testdata/component_request_bodies.prototext")
+			body := new(options.RequestBody)
+			if err := prototext.Unmarshal([]byte(tc.body), body); err != nil {
+				t.Fatalf("unmarshal request body %q: %v", tc.body, err)
+			}
+			setOperationRequestBody(t, req, tc.method, body)
+			if got := runGeneratorExpectError(t, req); !strings.Contains(got, tc.wantErr) {
+				t.Errorf("error: want substring %q, got %q", tc.wantErr, got)
+			}
+		})
+	}
+}
+
+// setOperationRequestBody replaces the openapiv3_operation annotation of the
+// named method in the first file of req with one that only sets body.
+func setOperationRequestBody(t *testing.T, req *pluginpb.CodeGeneratorRequest, method string, body *options.RequestBody) {
+	t.Helper()
+	for _, m := range req.GetProtoFile()[0].GetService()[0].GetMethod() {
+		if m.GetName() != method {
+			continue
+		}
+		op := new(options.Operation)
+		op.SetRequestBody(body)
+		proto.SetExtension(m.GetOptions(), options.E_Openapiv3Operation, op)
+		return
+	}
+	t.Fatalf("method %q not found", method)
+}
+
+func TestBuildComponentRequestBodies_Errors(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/component_request_bodies.prototext")
+	reg := descriptor.NewRegistry()
+	if err := reg.Load(req); err != nil {
+		t.Fatalf("registry load: %v", err)
+	}
+
+	cases := []struct {
+		name    string
+		key     string
+		body    string
+		wantErr string
+	}{
+		{
+			name:    "ref on a component",
+			key:     "Foo",
+			body:    `ref: "Other"`,
+			wantErr: `request_bodies["Foo"]: ref is not allowed on a component request body`,
+		},
+		{
+			name:    "missing messages",
+			key:     "Foo",
+			body:    `description: "x"`,
+			wantErr: `request_bodies["Foo"]: messages is required`,
+		},
+		{
+			name:    "unknown message",
+			key:     "Foo",
+			body:    `messages: "req.v1.Missing"`,
+			wantErr: `request_bodies["Foo"].messages[0]: unknown message "req.v1.Missing"`,
+		},
+		{
+			name:    "invalid key",
+			key:     "Foo Body",
+			body:    `messages: "req.v1.Foo"`,
+			wantErr: `request_bodies["Foo Body"]: name may only contain`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			body := new(options.RequestBody)
+			if err := prototext.Unmarshal([]byte(tc.body), body); err != nil {
+				t.Fatalf("unmarshal request body %q: %v", tc.body, err)
+			}
+			b := newSchemaBuilder(reg, NewDocument("t", "1"))
+			_, err := buildComponentRequestBodies(b, map[string]*options.RequestBody{tc.key: body})
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
 	}
 }
