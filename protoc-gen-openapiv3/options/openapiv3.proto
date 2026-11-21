@@ -82,6 +82,13 @@ message Components {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#componentsHeaders
   map<string, Header> headers = 4;
+  // Request bodies that operations can reference by name with
+  // `openapiv3_operation.request_body.ref`, keyed by component name. Names
+  // may only use letters, digits, ".", "-" and "_". An entry must name the
+  // messages its body holds and can't itself be a reference.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#componentsRequestBodies
+  map<string, RequestBody> request_bodies = 5;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -215,6 +222,33 @@ message Operation {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#responses-object
   map<string, Response> responses = 11;
+  // Overrides the request body the generator derives from the HTTP
+  // binding. It's applied to every binding of the method that has a body,
+  // and setting it on a method without one is an error.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#operationRequestBody
+  RequestBody request_body = 12;
+}
+
+// RequestBody describes the request body of an operation.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#request-body-object
+message RequestBody {
+  // A brief description of the request body. CommonMark syntax MAY be used
+  // for rich text representation.
+  string description = 1;
+  // Fully qualified names of the proto messages the request body can hold,
+  // for example "example.v1.Foo". One message is referenced directly;
+  // several are combined with `oneOf`. On an operation, leave it empty to
+  // keep the schema the generator derives from the binding. A component
+  // request body must set it.
+  repeated string messages = 2;
+  // Name of an entry in `openapiv3_document.components.request_bodies`. The
+  // request body is rendered as a `$ref` to that entry. When set, the other
+  // fields must be empty.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#reference-object
+  string ref = 3;
 }
 
 // Parameter describes a single header or cookie parameter of an operation.
