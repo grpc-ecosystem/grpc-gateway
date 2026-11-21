@@ -280,8 +280,8 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 		// encoding/json keeps the last value of a repeated key, while protojson
 		// rejects a duplicate map key, also when two spellings convert to the
 		// same key (e.g. "1" and "01"). Reject both here too.
-		if k, ok := duplicateObjectKey(raw); ok {
-			return fmt.Errorf("duplicate map key %q", k)
+		if err := checkObjectKeys(raw, unmarshaler); err != nil {
+			return err
 		}
 		seen := make(map[any]struct{}, len(m))
 		for k, v := range m {
@@ -377,9 +377,11 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 }
 
 // scalarWrapper returns an empty wrapper message whose JSON form is the bare
-// value of a numeric field of kind k, or nil if k is not numeric.
+// value of a numeric or string field of kind k, or nil if k is neither.
 func scalarWrapper(k reflect.Kind) proto.Message {
 	switch k {
+	case reflect.String:
+		return &wrapperspb.StringValue{}
 	case reflect.Int32:
 		return &wrapperspb.Int32Value{}
 	case reflect.Int64:
@@ -396,11 +398,12 @@ func scalarWrapper(k reflect.Kind) proto.Message {
 	return nil
 }
 
-// decodeScalarField decodes a numeric or bytes value into rv, the value v
-// points to, the way protojson decodes the same field in a message.
+// decodeScalarField decodes a numeric, string or bytes value into rv, the value
+// v points to, the way protojson decodes the same field in a message.
 // encoding/json rejects some of what protojson accepts and writes: 64-bit
 // integers as quoted strings, numbers in quotes, "NaN" and "Infinity", and
-// URL-safe base64.
+// URL-safe base64. It also accepts strings protojson rejects, replacing
+// invalid UTF-8 and unpaired surrogate escapes with U+FFFD.
 func decodeScalarField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, w proto.Message, v interface{}, rv reflect.Value) error {
 	var b json.RawMessage
 	if err := d.Decode(&b); err != nil {
@@ -434,30 +437,37 @@ func rejectNullEnumItem(t reflect.Type) error {
 	return fmt.Errorf("invalid value null for enum %s", e.Descriptor().FullName())
 }
 
-// duplicateObjectKey returns the first key that appears more than once in the
-// JSON object in data.
-func duplicateObjectKey(data []byte) (string, bool) {
+// checkObjectKeys returns an error for the first key of the JSON object in
+// data that appears more than once, or that protojson rejects as a string.
+// encoding/json replaces invalid UTF-8 and unpaired surrogate escapes in a key
+// with U+FFFD, so each key is checked in its raw form.
+func checkObjectKeys(data []byte, unmarshaler protojson.UnmarshalOptions) error {
 	d := json.NewDecoder(bytes.NewReader(data))
 	if t, err := d.Token(); err != nil || t != json.Delim('{') {
-		return "", false
+		return nil
 	}
 	seen := make(map[string]struct{})
 	for d.More() {
+		start := d.InputOffset()
 		t, err := d.Token()
 		if err != nil {
-			return "", false
+			return nil
+		}
+		rawKey := bytes.TrimLeft(data[start:d.InputOffset()], ", \t\r\n")
+		if err := unmarshaler.Unmarshal(rawKey, &wrapperspb.StringValue{}); err != nil {
+			return fmt.Errorf("invalid map key: %w", err)
 		}
 		k, _ := t.(string)
 		if _, ok := seen[k]; ok {
-			return k, true
+			return fmt.Errorf("duplicate map key %q", k)
 		}
 		seen[k] = struct{}{}
 		var v json.RawMessage
 		if err := d.Decode(&v); err != nil {
-			return "", false
+			return nil
 		}
 	}
-	return "", false
+	return nil
 }
 
 type protoEnum interface {

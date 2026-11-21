@@ -362,6 +362,50 @@ func TestJSONPbUnmarshalMapDuplicateKeyNonProto(t *testing.T) {
 	}
 }
 
+func TestJSONPbUnmarshalStringNonProto(t *testing.T) {
+	// A body bound directly to a string field decodes through
+	// decodeNonProtoField rather than protojson. encoding/json replaces
+	// invalid UTF-8 and unpaired surrogates with U+FFFD, while protojson
+	// rejects them for the same field in a message, so reject them here too.
+	var m runtime.JSONPb
+
+	for _, spec := range []struct {
+		json string
+		dest interface{}
+	}{
+		{json: "\"a\xffb\"", dest: new(string)},
+		{json: `"a\ud800b"`, dest: new(string)},
+		{json: `"a\udc00b"`, dest: new(*string)},
+		{json: "[\"ok\",\"a\xffb\"]", dest: new([]string)},
+		{json: `{"k":"a\ud800b"}`, dest: new(map[string]string)},
+		{json: "{\"a\xffb\":\"v\"}", dest: new(map[string]string)},
+		{json: `{"a\ud800b":"v"}`, dest: new(map[string]string)},
+	} {
+		if err := m.Unmarshal([]byte(spec.json), spec.dest); err == nil {
+			t.Errorf("m.Unmarshal(%q, %T) = %q; want an error", spec.json, spec.dest, reflect.ValueOf(spec.dest).Elem().Interface())
+		}
+	}
+
+	for _, spec := range []struct {
+		json string
+		dest interface{}
+		want interface{}
+	}{
+		{json: `"aé😀�"`, dest: new(string), want: "aé\U0001f600�"},
+		{json: `"x"`, dest: new(*string), want: proto.String("x")},
+		{json: `["a","b"]`, dest: new([]string), want: []string{"a", "b"}},
+		{json: ` { "k" : "v", "é" : "w" } `, dest: new(map[string]string), want: map[string]string{"k": "v", "é": "w"}},
+	} {
+		if err := m.Unmarshal([]byte(spec.json), spec.dest); err != nil {
+			t.Errorf("m.Unmarshal(%s, %T) failed with %v; want success", spec.json, spec.dest, err)
+			continue
+		}
+		if diff := cmp.Diff(reflect.ValueOf(spec.dest).Elem().Interface(), spec.want); diff != "" {
+			t.Errorf("m.Unmarshal(%s, %T): %s", spec.json, spec.dest, diff)
+		}
+	}
+}
+
 func TestJSONPbUnmarshalFields(t *testing.T) {
 	var m runtime.JSONPb
 	for _, fixt := range fieldFixtures {
