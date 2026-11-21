@@ -2645,8 +2645,7 @@ func setOperationRequestBody(t *testing.T, req *pluginpb.CodeGeneratorRequest, m
 		if m.GetName() != method {
 			continue
 		}
-		op := new(options.Operation)
-		op.SetRequestBody(body)
+		op := &options.Operation{RequestBody: body}
 		proto.SetExtension(m.GetOptions(), options.E_Openapiv3Operation, op)
 		return
 	}
