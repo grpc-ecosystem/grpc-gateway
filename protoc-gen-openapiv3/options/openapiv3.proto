@@ -68,6 +68,13 @@ message Components {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#componentsParameters
   map<string, Parameter> parameters = 2;
+  // Responses that operations can reference by name with
+  // `openapiv3_operation.responses.ref`, keyed by component name. Names
+  // may only use letters, digits, ".", "-" and "_". An entry can't itself
+  // be a reference.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#componentsResponses
+  map<string, Response> responses = 3;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -277,13 +284,19 @@ message Parameter {
 // Spec: https://spec.openapis.org/oas/v3.1.0#response-object
 message Response {
   // A description of the response. CommonMark syntax MAY be used for rich
-  // text representation. Required.
+  // text representation. Required unless `ref` is set.
   string description = 1;
   // Fully qualified names of the proto messages the response body can hold,
   // for example "example.v1.NotFoundError". One message is referenced
   // directly; several are combined with `oneOf`. Leave empty for a response
   // without a body.
   repeated string messages = 2;
+  // Name of an entry in `openapiv3_document.components.responses`. The
+  // response is rendered as a `$ref` to that entry. When set, the other
+  // fields must be empty.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#reference-object
+  string ref = 3;
 }
 
 // Schema is a message- or field-level override applied to the generated

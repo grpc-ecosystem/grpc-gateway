@@ -44,12 +44,22 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 	name := file.GetName()
 	title := strings.TrimSuffix(path.Base(name), path.Ext(name))
 	doc := NewDocument(title, "1.0.0")
-	if d, ok := fileDocumentAnnotation(file); ok {
+	d, hasDoc := fileDocumentAnnotation(file)
+	if hasDoc {
 		if err := applyDocumentOverride(doc, d); err != nil {
 			return nil, false, err
 		}
 	}
 	b := newSchemaBuilder(reg, doc)
+	if hasDoc {
+		// Component responses name proto messages, so they're built once the
+		// schema builder exists and before any operation can reference them.
+		responses, err := buildComponentResponses(b, d.GetComponents().GetResponses())
+		if err != nil {
+			return nil, false, fmt.Errorf("openapiv3 document components: %w", err)
+		}
+		doc.Components.Responses = responses
+	}
 
 	// Prime seenTags with any document-level annotation tags so a service's
 	// default tag does not clobber the annotation-provided description.
