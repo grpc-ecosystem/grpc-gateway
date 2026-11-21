@@ -512,6 +512,45 @@ rpc GetFoo(GetFooRequest) returns (Foo) {
 A `ref` entry can't set any other field, and must name a response declared
 in the same proto file, like [component parameters](#header-and-cookie-parameters).
 
+A response can also list the `headers` it sends, keyed by header name. A
+header takes the same `description`, `required`, `deprecated`, `type` and
+`format` fields as a header parameter. Names are compared
+case-insensitively, and `Content-Type` is refused because OpenAPI 3.1.0
+ignores it there. Headers used by many responses can be declared under
+`openapiv3_document.components.headers` and referenced with `ref`, which
+becomes a `$ref: '#/components/headers/<name>'`. The same rules apply: a
+`ref` entry can't set other fields and must name a declared header.
+
+```protobuf
+option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
+  components: {
+    headers: {
+      key: "Retry-After"
+      value: {
+        description: "Seconds to wait before retrying."
+        type: TYPE_INTEGER
+      }
+    }
+  }
+};
+
+rpc GetFoo(GetFooRequest) returns (Foo) {
+  option (google.api.http) = {get: "/v1/foo/{id}"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    responses: {
+      key: "429"
+      value: {
+        description: "Too many requests."
+        headers: {
+          key: "Retry-After"
+          value: {ref: "Retry-After"}
+        }
+      }
+    }
+  };
+}
+```
+
 ### Server streaming
 
 For server-streaming RPCs, the `grpc-gateway` runtime writes one JSON object

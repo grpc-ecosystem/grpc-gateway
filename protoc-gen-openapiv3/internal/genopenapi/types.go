@@ -466,7 +466,7 @@ func (r *Responses) MarshalJSON() ([]byte, error) {
 // Spec: https://spec.openapis.org/oas/v3.1.0#response-object
 type Response struct {
 	Description string                `json:"description"`
-	Headers     map[string]*Header    `json:"headers,omitempty"`
+	Headers     map[string]*HeaderRef `json:"headers,omitempty"`
 	Content     map[string]*MediaType `json:"content,omitempty"`
 }
 
@@ -508,7 +508,28 @@ func (r *ResponseRef) MarshalJSON() ([]byte, error) {
 // Spec: https://spec.openapis.org/oas/v3.1.0#header-object
 type Header struct {
 	Description string       `json:"description,omitempty"`
+	Required    bool         `json:"required,omitempty"`
+	Deprecated  bool         `json:"deprecated,omitempty"`
 	Schema      *SchemaOrRef `json:"schema,omitempty"`
+}
+
+// HeaderRef is either an inline Header or a $ref to a component header.
+//
+// Spec (reference form): https://spec.openapis.org/oas/v3.1.0#reference-object
+type HeaderRef struct {
+	Ref   string
+	Value *Header
+}
+
+// MarshalJSON dispatches between $ref and inline value.
+func (h *HeaderRef) MarshalJSON() ([]byte, error) {
+	if h == nil {
+		return []byte("null"), nil
+	}
+	if h.Ref != "" {
+		return json.Marshal(map[string]string{"$ref": h.Ref})
+	}
+	return json.Marshal(h.Value)
 }
 
 // SchemaType is JSON Schema's type field. In 3.1.0 it can be a string ("foo")
@@ -652,20 +673,21 @@ func NewSchemaRef(name string) *SchemaOrRef {
 }
 
 // Components is the components/* section. Schemas are built from the proto
-// types; responses, parameters and security schemes come from the document
-// annotation.
+// types; responses, parameters, headers and security schemes come from the
+// document annotation.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#components-object
 type Components struct {
 	Schemas         map[string]*SchemaOrRef    `json:"-"`
 	Responses       map[string]*Response       `json:"-"`
 	Parameters      map[string]*Parameter      `json:"-"`
+	Headers         map[string]*Header         `json:"-"`
 	SecuritySchemes map[string]*SecurityScheme `json:"-"`
 }
 
 // Empty reports whether the components section has no content to emit.
 func (c *Components) Empty() bool {
-	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.SecuritySchemes) == 0)
+	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.Headers) == 0 && len(c.SecuritySchemes) == 0)
 }
 
 // MarshalJSON emits components sub-maps with keys in lexicographic order so
@@ -684,6 +706,9 @@ func (c *Components) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "parameters", c.Parameters); err != nil {
+		return nil, err
+	}
+	if err := writeSortedKeys(&buf, &first, "headers", c.Headers); err != nil {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "securitySchemes", c.SecuritySchemes); err != nil {
