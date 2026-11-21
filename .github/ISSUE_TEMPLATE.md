@@ -22,7 +22,7 @@ the maintainers are reading the channel regularly. If you
 submit an issue which is clearly an environment setup problem, or it's obvious
 you haven't tried seeking help somewhere else first, we may close your issue.
 
-## I still have a problem!
+## Submitting a bug report
 
 Please follow these steps to submit a bug report:
 
