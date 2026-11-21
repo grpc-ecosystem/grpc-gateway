@@ -909,7 +909,7 @@ func TestConvertParameters_Errors(t *testing.T) {
 			for _, text := range tc.params {
 				params = append(params, textParameter(t, text))
 			}
-			_, err := convertParameters(params, components)
+			_, err := convertParameters(params, components, nil)
 			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
 			}
@@ -960,7 +960,7 @@ func TestConvertComponentParameters_Errors(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			_, err := convertComponentParameters(map[string]*options.Parameter{tc.key: textParameter(t, tc.param)})
+			_, err := convertComponentParameters(map[string]*options.Parameter{tc.key: textParameter(t, tc.param)}, nil)
 			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
 			}
@@ -2249,7 +2249,7 @@ func TestConvertResponseHeaders_Errors(t *testing.T) {
 			for k, v := range tc.headers {
 				headers[k] = textHeader(t, v)
 			}
-			_, err := convertResponseHeaders(`responses["429"]`, headers, components)
+			_, err := convertResponseHeaders(`responses["429"]`, headers, components, nil)
 			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
 			}
@@ -2282,12 +2282,174 @@ func TestConvertComponentHeaders_Errors(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			_, err := convertComponentHeaders(map[string]*options.Header{tc.key: textHeader(t, tc.header)})
+			_, err := convertComponentHeaders(map[string]*options.Header{tc.key: textHeader(t, tc.header)}, nil)
 			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
 				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
 			}
 		})
 	}
+}
+
+// TestGenerate_ComponentExamples checks that examples declared under
+// openapiv3_document.components are emitted under components.examples, and
+// that parameter and header examples, on operations and on component
+// parameters, render either inline or as a $ref.
+func TestGenerate_ComponentExamples(t *testing.T) {
+	t.Parallel()
+
+	req := loadRequest(t, "testdata/component_examples.prototext")
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Components struct {
+			Examples   json.RawMessage `json:"examples"`
+			Parameters json.RawMessage `json:"parameters"`
+		} `json:"components"`
+		Paths map[string]map[string]struct {
+			Parameters json.RawMessage `json:"parameters"`
+			Responses  map[string]struct {
+				Headers json.RawMessage `json:"headers"`
+			} `json:"responses"`
+		} `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	// Declared examples are emitted even when nothing uses them.
+	assertJSONEqual(t, doc.Components.Examples, []byte(`{
+		"Region": {"value": "eu-west-1"},
+		"Tenant": {
+			"summary": "A tenant",
+			"description": "The tenant most examples use.",
+			"value": "acme"
+		},
+		"Unused": {"externalValue": "https://example.com/examples/unused.txt"}
+	}`))
+	assertJSONEqual(t, doc.Components.Parameters, []byte(`{
+		"Region": {
+			"name": "X-Region",
+			"in": "header",
+			"schema": {"type": "string"},
+			"examples": {"default": {"$ref": "#/components/examples/Region"}}
+		}
+	}`))
+	get := doc.Paths["/v1/foo/{id}"]["get"]
+	assertJSONEqual(t, get.Parameters, []byte(`[
+		{"name": "id", "in": "path", "required": true, "schema": {"type": "string"}},
+		{"$ref": "#/components/parameters/Region"},
+		{
+			"name": "X-Tenant-Id",
+			"in": "header",
+			"schema": {"type": "string"},
+			"examples": {
+				"acme": {"$ref": "#/components/examples/Tenant"},
+				"globex": {"summary": "Another tenant", "value": "globex"}
+			}
+		}
+	]`))
+	assertJSONEqual(t, get.Responses["200"].Headers, []byte(`{
+		"ETag": {
+			"schema": {"type": "string"},
+			"examples": {"weak": {"value": "W/\"abc\""}}
+		}
+	}`))
+}
+
+func TestConvertExamples_Errors(t *testing.T) {
+	t.Parallel()
+
+	components := map[string]*Example{
+		"Tenant": {Value: "acme"},
+	}
+	cases := []struct {
+		name     string
+		examples map[string]string
+		wantErr  string
+	}{
+		{
+			name:     "ref with summary",
+			examples: map[string]string{"acme": `ref: "Tenant" summary: "x"`},
+			wantErr:  `parameter.examples["acme"]: ref "Tenant" can't be combined with other fields`,
+		},
+		{
+			name:     "undeclared ref",
+			examples: map[string]string{"acme": `ref: "Missing"`},
+			wantErr:  `parameter.examples["acme"]: references undeclared component example "Missing"`,
+		},
+		{
+			name:     "value and external value",
+			examples: map[string]string{"acme": `value: { string_value: "acme" } external_value: "https://example.com/acme"`},
+			wantErr:  `parameter.examples["acme"]: value and external_value are mutually exclusive`,
+		},
+		{
+			name:     "empty name",
+			examples: map[string]string{"": `value: { string_value: "acme" }`},
+			wantErr:  `parameter.examples: example name is empty`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			examples := make(map[string]*options.Example, len(tc.examples))
+			for k, v := range tc.examples {
+				examples[k] = textExample(t, v)
+			}
+			_, err := convertExamples("parameter", examples, components)
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestConvertComponentExamples_Errors(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name    string
+		key     string
+		example string
+		wantErr string
+	}{
+		{
+			name:    "ref on a component",
+			key:     "Tenant",
+			example: `ref: "Other"`,
+			wantErr: `examples["Tenant"]: ref is not allowed on a component example`,
+		},
+		{
+			name:    "invalid key",
+			key:     "A tenant",
+			example: `value: { string_value: "acme" }`,
+			wantErr: `examples["A tenant"]: name may only contain`,
+		},
+		{
+			name:    "value and external value",
+			key:     "Tenant",
+			example: `value: { string_value: "acme" } external_value: "https://example.com/acme"`,
+			wantErr: `examples["Tenant"]: value and external_value are mutually exclusive`,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			_, err := convertComponentExamples(map[string]*options.Example{tc.key: textExample(t, tc.example)})
+			if err == nil || !strings.Contains(err.Error(), tc.wantErr) {
+				t.Errorf("error: want substring %q, got %v", tc.wantErr, err)
+			}
+		})
+	}
+}
+
+// textExample parses an options.Example from prototext.
+func textExample(t *testing.T, text string) *options.Example {
+	t.Helper()
+	e := new(options.Example)
+	if err := prototext.Unmarshal([]byte(text), e); err != nil {
+		t.Fatalf("unmarshal example %q: %v", text, err)
+	}
+	return e
 }
 
 // textHeader parses an options.Header from prototext.

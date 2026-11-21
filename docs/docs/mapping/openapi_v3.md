@@ -349,6 +349,47 @@ metadata (see `runtime.DefaultHeaderMatcher`). Any other header reaches the
 backend only if the mux is built with a matcher that forwards it, using
 `runtime.WithIncomingHeaderMatcher`.
 
+#### Examples
+
+Header and cookie parameters, and response headers, can carry named
+[Example Objects](https://spec.openapis.org/oas/v3.1.0#example-object) in
+`examples`, keyed by a name of your choosing. An example sets `value` (any
+JSON value) or `external_value` (a URL), not both, plus an optional
+`summary` and `description`. An example used in many places can be declared
+once under `openapiv3_document.components.examples` and referenced with
+`ref`, which renders as `$ref: '#/components/examples/<name>'`.
+
+```protobuf
+option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
+  components: {
+    examples: {
+      key: "Tenant"
+      value: {
+        summary: "A tenant"
+        value: {string_value: "acme"}
+      }
+    }
+  }
+};
+
+rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+  option (google.api.http) = {get: "/v1/books"};
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    parameters: {
+      name: "X-Tenant-Id"
+      in: IN_HEADER
+      examples: {
+        key: "acme"
+        value: {ref: "Tenant"}
+      }
+    }
+  };
+}
+```
+
+As with parameters, a `ref` entry can't set any other field and is resolved
+only against the components of its own file.
+
 ### Schemas
 
 - Messages become component schemas under `#/components/schemas/`.

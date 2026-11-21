@@ -1,0 +1,112 @@
+file_to_generate: "exm/v1/exm.proto"
+proto_file: {
+  name: "exm/v1/exm.proto"
+  package: "exm.v1"
+  message_type: {
+    name: "GetRequest"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  message_type: {
+    name: "GetResponse"
+  }
+  service: {
+    name: "FooService"
+    method: {
+      name: "Get"
+      input_type: ".exm.v1.GetRequest"
+      output_type: ".exm.v1.GetResponse"
+      options: {
+        [google.api.http]: {
+          get: "/v1/foo/{id}"
+        }
+        [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation]: {
+          parameters: {
+            ref: "Region"
+          }
+          parameters: {
+            name: "X-Tenant-Id"
+            in: IN_HEADER
+            examples: {
+              key: "acme"
+              value: {
+                ref: "Tenant"
+              }
+            }
+            examples: {
+              key: "globex"
+              value: {
+                summary: "Another tenant"
+                value: { string_value: "globex" }
+              }
+            }
+          }
+          responses: {
+            key: "200"
+            value: {
+              description: "The foo."
+              messages: "exm.v1.GetResponse"
+              headers: {
+                key: "ETag"
+                value: {
+                  examples: {
+                    key: "weak"
+                    value: {
+                      value: { string_value: "W/\"abc\"" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/exm/v1;exmv1"
+    [grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document]: {
+      components: {
+        examples: {
+          key: "Tenant"
+          value: {
+            summary: "A tenant"
+            description: "The tenant most examples use."
+            value: { string_value: "acme" }
+          }
+        }
+        examples: {
+          key: "Region"
+          value: {
+            value: { string_value: "eu-west-1" }
+          }
+        }
+        examples: {
+          key: "Unused"
+          value: {
+            external_value: "https://example.com/examples/unused.txt"
+          }
+        }
+        parameters: {
+          key: "Region"
+          value: {
+            name: "X-Region"
+            in: IN_HEADER
+            examples: {
+              key: "default"
+              value: {
+                ref: "Region"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  syntax: "proto3"
+}

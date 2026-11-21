@@ -51,7 +51,7 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 
 	op.Responses = buildResponses(b, m, binding)
 	if o, ok := methodOperationAnnotation(m); ok {
-		if err := applyOperationOverride(op, o, b.doc.Components.Parameters); err != nil {
+		if err := applyOperationOverride(op, o, b.doc.Components.Parameters, b.doc.Components.Examples); err != nil {
 			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
 		}
 		if err := applyResponseOverrides(b, op.Responses, o.GetResponses()); err != nil {
@@ -551,7 +551,7 @@ func convertResponse(b *schemaBuilder, label string, o *options.Response) (*Resp
 		return nil, fmt.Errorf("%s: description is required", label)
 	}
 	r := NewResponse(o.GetDescription())
-	headers, err := convertResponseHeaders(label, o.GetHeaders(), b.doc.Components.Headers)
+	headers, err := convertResponseHeaders(label, o.GetHeaders(), b.doc.Components.Headers, b.doc.Components.Examples)
 	if err != nil {
 		return nil, err
 	}
