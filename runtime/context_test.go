@@ -538,7 +538,8 @@ func TestAnnotateContext_PerServeMuxDefaultTimeout(t *testing.T) {
 	// default is set.
 	muxDisabled := runtime.NewServeMux(runtime.WithDefaultContextTimeout(0))
 	assertDeadline(t, annotate(t, muxDisabled, newRequest()), 0, false)
-	assertDeadline(t, annotate(t, muxDisabled, newRequest()), 0, false)
+	assertDeadline(t, annotate(t, muxFallback, newRequest()), 15*time.Second, true)
+	assertDeadline(t, annotate(t, mux10s, newRequest()), 10*time.Second, true)
 
 	// A valid Grpc-Timeout keeps taking precedence over the mux default.
 	request := newRequest()
