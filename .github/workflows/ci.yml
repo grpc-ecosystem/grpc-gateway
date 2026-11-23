@@ -108,7 +108,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go tool gorelease -base=v2.34.0
+      - run: $(go -C tools tool -n gorelease) -base=v2.34.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +134,5 @@ jobs:
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - run: go tool staticcheck ./...
-        # The examples module has no staticcheck tool directive, so run the binary
-        # pinned in the root go.mod against it.
-      - run: cd examples && "$(go -C .. tool -n staticcheck)" ./...
+      - run: $(go -C tools tool -n staticcheck) ./...
+      - run: cd examples && "$(go -C ../tools tool -n staticcheck)" ./...
