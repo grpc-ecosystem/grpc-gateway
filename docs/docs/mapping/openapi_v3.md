@@ -390,6 +390,57 @@ rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
 As with parameters, a `ref` entry can't set any other field and is resolved
 only against the components of its own file.
 
+#### Request bodies
+
+You normally don't need this. The generated request body already matches what
+the gateway decodes, so only set `request_body` when your server changes the
+body outside of the gateway, which should be rare. (Responses are different:
+overriding them is how you document alternative status codes.)
+
+The `request_body` field of `openapiv3_operation` changes the request body
+the generator derives from the `body` of the HTTP rule. A `description` is
+added to it, and `messages` replaces its schema with the named proto
+messages, one referenced directly and several combined with `oneOf`, like
+the messages of a response. It's applied to every binding of the method that
+has a body, so a `GET` in `additional_bindings` is left alone, but setting it
+on a method with no body at all is an error.
+
+A request body shared by many operations can be declared once under
+`openapiv3_document.components.request_bodies` and referenced by name with
+`ref`, which becomes a `$ref: '#/components/requestBodies/<name>'`. A
+component request body must list its `messages`, since there's no HTTP rule
+to derive a schema from. As with other components, a `ref` entry can't set
+any other field and must name a request body declared in the same proto
+file.
+
+```protobuf
+option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_document) = {
+  components: {
+    request_bodies: {
+      key: "Book"
+      value: {
+        description: "The book to store."
+        messages: "example.v1.Book"
+      }
+    }
+  }
+};
+
+rpc UpdateBook(UpdateBookRequest) returns (Book) {
+  option (google.api.http) = {
+    patch: "/v1/books/{id}"
+    body: "book"
+  };
+  option (grpc.gateway.protoc_gen_openapiv3.options.openapiv3_operation) = {
+    request_body: {ref: "Book"}
+  };
+}
+```
+
+Replacing the schema only changes the document. The gateway still decodes
+the body into the field or message the HTTP rule names, so the messages
+should describe what it actually accepts.
+
 ### Schemas
 
 - Messages become component schemas under `#/components/schemas/`.
