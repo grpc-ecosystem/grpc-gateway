@@ -27,6 +27,46 @@ On the other hand, you can still add whatever you want as a middleware which wra
 
 As of now, No. But it should not be a big issue because the reverse-proxy which gRPC-Gateway generates usually works as an independent process and communicates with your gRPC server over TCP or a Unix domain sockets (Unix systems only).
 
+## Can I run the gateway in the same process as my gRPC server?
+
+Yes. If your gRPC server is written in Go, you don't need a separate gateway process. There are two ways to do this.
+
+**Dial the gRPC server from the same process.** Start your gRPC server, open a client connection to it, and register the gateway handlers using that connection. The [tutorial](tutorials/adding_annotations.md) does this. Requests still go through gRPC, so interceptors and streaming RPCs work as usual.
+
+```go
+s := grpc.NewServer()
+pb.RegisterGreeterServer(s, srv)
+go s.Serve(lis)
+
+conn, err := grpc.NewClient(lis.Addr().String(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+if err != nil {
+	return err
+}
+mux := runtime.NewServeMux()
+if err := pb.RegisterGreeterHandler(ctx, mux, conn); err != nil {
+	return err
+}
+return http.ListenAndServe(":8081", mux)
+```
+
+**Call your server implementation directly.** The generated `Register<Service>HandlerServer` function takes your server implementation and calls its methods directly, so there is no network hop and you don't need to start a gRPC server at all:
+
+```go
+mux := runtime.NewServeMux()
+if err := pb.RegisterGreeterHandlerServer(ctx, mux, srv); err != nil {
+	return err
+}
+return http.ListenAndServe(":8081", mux)
+```
+
+This option has some limitations:
+
+- Streaming RPCs aren't supported. They return `Unimplemented`.
+- gRPC interceptors don't run. Use the `runtime.WithMiddlewares` option of `runtime.NewServeMux` instead.
+- Many other gRPC library features stop working too.
+
+If you need those features, use the first option instead.
+
 ## Why are the models in the OpenAPI specification prefixed with the last part of the proto package name?
 
 The reason to generate the prefixes is that we don't have a guaranteed unique namespace. If two packages produce different `Foo` messages then we will have trouble.
