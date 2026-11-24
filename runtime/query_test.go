@@ -693,6 +693,27 @@ func TestPopulateParametersFieldMask(t *testing.T) {
 			},
 		},
 		{
+			name:   "camelCase paths are converted to snake_case",
+			values: url.Values{"fieldmask_value": {"floatValue,doubleValue"}},
+			want: &examplepb.Proto3Message{
+				FieldmaskValue: &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}},
+			},
+		},
+		{
+			name:   "camelCase nested path segments are converted to snake_case",
+			values: url.Values{"fieldmaskValue": {"nestedField.innerValue"}},
+			want: &examplepb.Proto3Message{
+				FieldmaskValue: &field_mask.FieldMask{Paths: []string{"nested_field.inner_value"}},
+			},
+		},
+		{
+			name:   "mixed camelCase and snake_case paths",
+			values: url.Values{"fieldmask_value": {"floatValue,double_value"}},
+			want: &examplepb.Proto3Message{
+				FieldmaskValue: &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}},
+			},
+		},
+		{
 			name:   "empty value",
 			values: url.Values{"fieldmask_value": {""}},
 			want: &examplepb.Proto3Message{

@@ -410,6 +410,29 @@ func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (pro
 	}
 }
 
+// fieldMaskPathToSnakeCase converts a single google.protobuf.FieldMask path
+// from the camelCase form used in JSON to the snake_case form in which
+// FieldMask paths are stored, mirroring how protojson decodes a FieldMask
+// (see strs.JSONSnakeCase in google.golang.org/protobuf). Query parameters
+// are not protojson input, so paths that are already in snake_case are
+// returned unchanged.
+func fieldMaskPathToSnakeCase(path string) string {
+	if !strings.ContainsAny(path, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
+		return path
+	}
+	var b strings.Builder
+	b.Grow(len(path))
+	for i := 0; i < len(path); i++ {
+		c := path[i]
+		if 'A' <= c && c <= 'Z' {
+			b.WriteByte('_')
+			c += 'a' - 'A'
+		}
+		b.WriteByte(c)
+	}
+	return b.String()
+}
+
 func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (protoreflect.Value, error) {
 	var msg proto.Message
 	switch msgDescriptor.FullName() {
@@ -482,7 +505,9 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 	case "google.protobuf.FieldMask":
 		fm := &field_mask.FieldMask{}
 		if value != "" {
-			fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
+			for _, path := range strings.Split(value, ",") {
+				fm.Paths = append(fm.Paths, fieldMaskPathToSnakeCase(path))
+			}
 		}
 		msg = fm
 	case "google.protobuf.Value":
