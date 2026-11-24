@@ -82,6 +82,12 @@ message Components {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#componentsHeaders
   map<string, Header> headers = 4;
+  // Examples that parameters and headers can reference by name with
+  // `examples.ref`, keyed by component name. Names may only use letters,
+  // digits, ".", "-" and "_". An entry can't itself be a reference.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#componentsExamples
+  map<string, Example> examples = 6;
 }
 
 // Info mirrors the fields of the OpenAPI 3.1.0 Info object that users most
@@ -284,6 +290,11 @@ message Parameter {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#reference-object
   string ref = 8;
+  // Named examples of the parameter's value, keyed by a name of your
+  // choosing.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterExamples
+  map<string, Example> examples = 9;
 }
 
 // Response describes a single response of an operation.
@@ -336,6 +347,33 @@ message Header {
   //
   // See: https://spec.openapis.org/oas/v3.1.0#reference-object
   string ref = 6;
+  // Named examples of the header's value, keyed by a name of your choosing.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#parameterExamples
+  map<string, Example> examples = 7;
+}
+
+// Example mirrors the OpenAPI 3.1.0 Example object. Either set ref, or
+// describe the example with `value` or `external_value`, not both.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#example-object
+message Example {
+  // A short summary of the example.
+  string summary = 1;
+  // A long description of the example. CommonMark syntax MAY be used for
+  // rich text representation.
+  string description = 2;
+  // The example value, as a JSON value.
+  google.protobuf.Value value = 3;
+  // A URL that points to the example value, for values that can't easily be
+  // embedded in JSON.
+  string external_value = 4;
+  // Name of an entry in `openapiv3_document.components.examples`. The
+  // example is rendered as a `$ref` to that entry. When set, the other
+  // fields must be empty.
+  //
+  // See: https://spec.openapis.org/oas/v3.1.0#reference-object
+  string ref = 5;
 }
 
 // Schema is a message- or field-level override applied to the generated

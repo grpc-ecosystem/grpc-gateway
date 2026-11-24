@@ -199,12 +199,19 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 			return fmt.Errorf("openapiv3 document components: %w", err)
 		}
 		doc.Components.SecuritySchemes = schemes
-		params, err := convertComponentParameters(c.GetParameters())
+		// Examples come first, since component parameters and headers can
+		// reference them.
+		examples, err := convertComponentExamples(c.GetExamples())
+		if err != nil {
+			return fmt.Errorf("openapiv3 document components: %w", err)
+		}
+		doc.Components.Examples = examples
+		params, err := convertComponentParameters(c.GetParameters(), examples)
 		if err != nil {
 			return fmt.Errorf("openapiv3 document components: %w", err)
 		}
 		doc.Components.Parameters = params
-		headers, err := convertComponentHeaders(c.GetHeaders())
+		headers, err := convertComponentHeaders(c.GetHeaders(), examples)
 		if err != nil {
 			return fmt.Errorf("openapiv3 document components: %w", err)
 		}
@@ -224,10 +231,97 @@ func applyDocumentOverride(doc *Document, d *options.Document) error {
 // See: https://spec.openapis.org/oas/v3.1.0#components-object
 var componentNamePattern = regexp.MustCompile(`^[a-zA-Z0-9._-]+$`)
 
+// convertComponentExamples converts the reusable examples of a
+// document-level Components annotation. Each entry is checked like an
+// inline example and can't be a reference itself.
+func convertComponentExamples(examples map[string]*options.Example) (map[string]*Example, error) {
+	if len(examples) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*Example, len(examples))
+	// Iterate in sorted order so that error messages are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(examples)) {
+		if !componentNamePattern.MatchString(name) {
+			return nil, fmt.Errorf("examples[%q]: name may only contain letters, digits, \".\", \"-\" and \"_\"", name)
+		}
+		e := examples[name]
+		if e.GetRef() != "" {
+			return nil, fmt.Errorf("examples[%q]: ref is not allowed on a component example", name)
+		}
+		example, err := convertExample(e)
+		if err != nil {
+			return nil, fmt.Errorf("examples[%q]: %w", name, err)
+		}
+		out[name] = example
+	}
+	return out, nil
+}
+
+// convertExamples converts the named examples of a parameter or header. An
+// example either sets ref, naming an entry of `components`, or describes the
+// example inline. `label` prefixes error messages.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#parameterExamples
+func convertExamples(label string, examples map[string]*options.Example, components map[string]*Example) (map[string]*ExampleRef, error) {
+	if len(examples) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*ExampleRef, len(examples))
+	// Iterate in sorted order so that error messages are deterministic.
+	for _, name := range slices.Sorted(maps.Keys(examples)) {
+		elabel := fmt.Sprintf("%s.examples[%q]", label, name)
+		if name == "" {
+			return nil, fmt.Errorf("%s.examples: example name is empty", label)
+		}
+		e := examples[name]
+		if ref := e.GetRef(); ref != "" {
+			if exampleSetsInlineFields(e) {
+				return nil, fmt.Errorf("%s: ref %q can't be combined with other fields", elabel, ref)
+			}
+			if components[ref] == nil {
+				return nil, fmt.Errorf("%s: references undeclared component example %q; add it to openapiv3_document.components.examples", elabel, ref)
+			}
+			out[name] = &ExampleRef{Ref: "#/components/examples/" + ref}
+			continue
+		}
+		example, err := convertExample(e)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", elabel, err)
+		}
+		out[name] = &ExampleRef{Value: example}
+	}
+	return out, nil
+}
+
+// exampleSetsInlineFields reports whether e sets any field besides ref.
+func exampleSetsInlineFields(e *options.Example) bool {
+	return e.GetSummary() != "" || e.GetDescription() != "" || e.GetValue() != nil || e.GetExternalValue() != ""
+}
+
+// convertExample converts a single inline example. OpenAPI 3.1.0 says value
+// and externalValue are mutually exclusive.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#exampleValue
+func convertExample(e *options.Example) (*Example, error) {
+	if e.GetValue() != nil && e.GetExternalValue() != "" {
+		return nil, fmt.Errorf("value and external_value are mutually exclusive")
+	}
+	example := &Example{
+		Summary:       e.GetSummary(),
+		Description:   e.GetDescription(),
+		ExternalValue: e.GetExternalValue(),
+	}
+	if v := e.GetValue(); v != nil {
+		example.Value = v.AsInterface()
+	}
+	return example, nil
+}
+
 // convertComponentParameters converts the reusable parameters of a
 // document-level Components annotation. Each entry is checked like an
-// operation parameter and can't be a reference itself.
-func convertComponentParameters(params map[string]*options.Parameter) (map[string]*Parameter, error) {
+// operation parameter and can't be a reference itself. `examples` holds the
+// document's reusable examples, which example refs resolve against.
+func convertComponentParameters(params map[string]*options.Parameter, examples map[string]*Example) (map[string]*Parameter, error) {
 	if len(params) == 0 {
 		return nil, nil
 	}
@@ -241,7 +335,7 @@ func convertComponentParameters(params map[string]*options.Parameter) (map[strin
 		if p.GetRef() != "" {
 			return nil, fmt.Errorf("parameters[%q]: ref is not allowed on a component parameter", name)
 		}
-		param, err := convertParameter(p)
+		param, err := convertParameter(p, examples)
 		if err != nil {
 			return nil, fmt.Errorf("parameters[%q]: %w", name, err)
 		}
@@ -253,7 +347,7 @@ func convertComponentParameters(params map[string]*options.Parameter) (map[strin
 // convertComponentHeaders converts the reusable response headers of a
 // document-level Components annotation. Each entry is checked like a
 // response header and can't be a reference itself.
-func convertComponentHeaders(headers map[string]*options.Header) (map[string]*Header, error) {
+func convertComponentHeaders(headers map[string]*options.Header, examples map[string]*Example) (map[string]*Header, error) {
 	if len(headers) == 0 {
 		return nil, nil
 	}
@@ -267,7 +361,11 @@ func convertComponentHeaders(headers map[string]*options.Header) (map[string]*He
 		if h.GetRef() != "" {
 			return nil, fmt.Errorf("headers[%q]: ref is not allowed on a component header", name)
 		}
-		out[name] = convertHeader(h)
+		header, err := convertHeader(h, examples)
+		if err != nil {
+			return nil, fmt.Errorf("headers[%q]: %w", name, err)
+		}
+		out[name] = header
 	}
 	return out, nil
 }
@@ -279,7 +377,7 @@ func convertComponentHeaders(headers map[string]*options.Header) (map[string]*He
 // `label` prefixes error messages, for example `responses["404"]`.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#responseHeaders
-func convertResponseHeaders(label string, headers map[string]*options.Header, components map[string]*Header) (map[string]*HeaderRef, error) {
+func convertResponseHeaders(label string, headers map[string]*options.Header, components map[string]*Header, examples map[string]*Example) (map[string]*HeaderRef, error) {
 	if len(headers) == 0 {
 		return nil, nil
 	}
@@ -310,7 +408,11 @@ func convertResponseHeaders(label string, headers map[string]*options.Header, co
 			out[name] = &HeaderRef{Ref: "#/components/headers/" + ref}
 			continue
 		}
-		out[name] = &HeaderRef{Value: convertHeader(h)}
+		header, err := convertHeader(h, examples)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", hlabel, err)
+		}
+		out[name] = &HeaderRef{Value: header}
 	}
 	return out, nil
 }
@@ -318,11 +420,17 @@ func convertResponseHeaders(label string, headers map[string]*options.Header, co
 // headerSetsInlineFields reports whether h sets any field besides ref.
 func headerSetsInlineFields(h *options.Header) bool {
 	return h.GetDescription() != "" || h.GetRequired() || h.GetDeprecated() ||
-		h.GetType() != options.Parameter_TYPE_UNSPECIFIED || h.GetFormat() != ""
+		h.GetType() != options.Parameter_TYPE_UNSPECIFIED || h.GetFormat() != "" ||
+		len(h.GetExamples()) > 0
 }
 
-// convertHeader converts a single inline response header.
-func convertHeader(h *options.Header) *Header {
+// convertHeader converts a single inline response header. `examples` holds
+// the document's reusable examples, which example refs resolve against.
+func convertHeader(h *options.Header, examples map[string]*Example) (*Header, error) {
+	named, err := convertExamples("header", h.GetExamples(), examples)
+	if err != nil {
+		return nil, err
+	}
 	return &Header{
 		Description: h.GetDescription(),
 		Required:    h.GetRequired(),
@@ -331,7 +439,8 @@ func convertHeader(h *options.Header) *Header {
 			Type:   SchemaType{parameterType(h.GetType())},
 			Format: h.GetFormat(),
 		}},
-	}
+		Examples: named,
+	}, nil
 }
 
 // convertSecuritySchemes converts the security schemes of a document-level
@@ -554,8 +663,9 @@ func applyTagOverride(tag *Tag, t *options.Tag) error {
 // Returns an error if the annotation contains an external_docs without a url
 // or a server without a url, both spec-required per OpenAPI 3.1.0, or a
 // parameter that convertParameters refuses. `components` holds the
-// document's reusable parameters, which parameter refs resolve against.
-func applyOperationOverride(op *Operation, o *options.Operation, components map[string]*Parameter) error {
+// document's reusable parameters, which parameter refs resolve against, and
+// `examples` its reusable examples.
+func applyOperationOverride(op *Operation, o *options.Operation, components map[string]*Parameter, examples map[string]*Example) error {
 	if o == nil {
 		return nil
 	}
@@ -591,7 +701,7 @@ func applyOperationOverride(op *Operation, o *options.Operation, components map[
 		})
 	}
 	op.Security = convertSecurityRequirements(o.GetSecurity())
-	params, err := convertParameters(o.GetParameters(), components)
+	params, err := convertParameters(o.GetParameters(), components, examples)
 	if err != nil {
 		return err
 	}
@@ -608,7 +718,7 @@ func applyOperationOverride(op *Operation, o *options.Operation, components map[
 // case-insensitively, as HTTP header names are.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#parameter-object
-func convertParameters(params []*options.Parameter, components map[string]*Parameter) ([]*ParameterRef, error) {
+func convertParameters(params []*options.Parameter, components map[string]*Parameter, examples map[string]*Example) ([]*ParameterRef, error) {
 	out := make([]*ParameterRef, 0, len(params))
 	type seenParam struct {
 		index int
@@ -629,7 +739,7 @@ func convertParameters(params []*options.Parameter, components map[string]*Param
 			ref = &ParameterRef{Ref: "#/components/parameters/" + name}
 		} else {
 			var err error
-			param, err = convertParameter(p)
+			param, err = convertParameter(p, examples)
 			if err != nil {
 				return nil, fmt.Errorf("parameters[%d]: %w", i, err)
 			}
@@ -652,14 +762,16 @@ func convertParameters(params []*options.Parameter, components map[string]*Param
 func parameterSetsInlineFields(p *options.Parameter) bool {
 	return p.GetName() != "" || p.GetIn() != options.Parameter_IN_UNSPECIFIED ||
 		p.GetDescription() != "" || p.GetRequired() || p.GetDeprecated() ||
-		p.GetType() != options.Parameter_TYPE_UNSPECIFIED || p.GetFormat() != ""
+		p.GetType() != options.Parameter_TYPE_UNSPECIFIED || p.GetFormat() != "" ||
+		len(p.GetExamples()) > 0
 }
 
 // convertParameter converts a single inline header or cookie parameter.
 // Name and in are required. A header named Accept, Content-Type or
 // Authorization is refused, since OpenAPI 3.1.0 says such a parameter
-// SHALL be ignored.
-func convertParameter(p *options.Parameter) (*Parameter, error) {
+// SHALL be ignored. `examples` holds the document's reusable examples, which
+// example refs resolve against.
+func convertParameter(p *options.Parameter, examples map[string]*Example) (*Parameter, error) {
 	name := p.GetName()
 	if name == "" {
 		return nil, fmt.Errorf("name is required")
@@ -678,6 +790,10 @@ func convertParameter(p *options.Parameter) (*Parameter, error) {
 	default:
 		return nil, fmt.Errorf("in is required")
 	}
+	named, err := convertExamples("parameter", p.GetExamples(), examples)
+	if err != nil {
+		return nil, err
+	}
 	return &Parameter{
 		Name:        name,
 		In:          in,
@@ -688,6 +804,7 @@ func convertParameter(p *options.Parameter) (*Parameter, error) {
 			Type:   SchemaType{parameterType(p.GetType())},
 			Format: p.GetFormat(),
 		}},
+		Examples: named,
 	}, nil
 }
 

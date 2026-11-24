@@ -339,13 +339,43 @@ func (o *Operation) MarshalJSON() ([]byte, error) {
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#parameter-object
 type Parameter struct {
-	Name        string       `json:"name"`
-	In          string       `json:"in"`
-	Description string       `json:"description,omitempty"`
-	Required    bool         `json:"required,omitempty"`
-	Deprecated  bool         `json:"deprecated,omitempty"`
-	Schema      *SchemaOrRef `json:"schema,omitempty"`
-	Example     any          `json:"example,omitempty"`
+	Name        string                 `json:"name"`
+	In          string                 `json:"in"`
+	Description string                 `json:"description,omitempty"`
+	Required    bool                   `json:"required,omitempty"`
+	Deprecated  bool                   `json:"deprecated,omitempty"`
+	Schema      *SchemaOrRef           `json:"schema,omitempty"`
+	Example     any                    `json:"example,omitempty"`
+	Examples    map[string]*ExampleRef `json:"examples,omitempty"`
+}
+
+// Example is a named example of a parameter or header value.
+//
+// Spec: https://spec.openapis.org/oas/v3.1.0#example-object
+type Example struct {
+	Summary       string `json:"summary,omitempty"`
+	Description   string `json:"description,omitempty"`
+	Value         any    `json:"value,omitempty"`
+	ExternalValue string `json:"externalValue,omitempty"`
+}
+
+// ExampleRef is either an inline Example or a $ref to a component example.
+//
+// Spec (reference form): https://spec.openapis.org/oas/v3.1.0#reference-object
+type ExampleRef struct {
+	Ref   string
+	Value *Example
+}
+
+// MarshalJSON dispatches between $ref and inline value.
+func (e *ExampleRef) MarshalJSON() ([]byte, error) {
+	if e == nil {
+		return []byte("null"), nil
+	}
+	if e.Ref != "" {
+		return json.Marshal(map[string]string{"$ref": e.Ref})
+	}
+	return json.Marshal(e.Value)
 }
 
 // ParameterRef is either an inline Parameter or a $ref to a component
@@ -507,10 +537,11 @@ func (r *ResponseRef) MarshalJSON() ([]byte, error) {
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#header-object
 type Header struct {
-	Description string       `json:"description,omitempty"`
-	Required    bool         `json:"required,omitempty"`
-	Deprecated  bool         `json:"deprecated,omitempty"`
-	Schema      *SchemaOrRef `json:"schema,omitempty"`
+	Description string                 `json:"description,omitempty"`
+	Required    bool                   `json:"required,omitempty"`
+	Deprecated  bool                   `json:"deprecated,omitempty"`
+	Schema      *SchemaOrRef           `json:"schema,omitempty"`
+	Examples    map[string]*ExampleRef `json:"examples,omitempty"`
 }
 
 // HeaderRef is either an inline Header or a $ref to a component header.
@@ -673,7 +704,7 @@ func NewSchemaRef(name string) *SchemaOrRef {
 }
 
 // Components is the components/* section. Schemas are built from the proto
-// types; responses, parameters, headers and security schemes come from the
+// types; responses, parameters, examples, headers and security schemes come from the
 // document annotation.
 //
 // Spec: https://spec.openapis.org/oas/v3.1.0#components-object
@@ -681,13 +712,14 @@ type Components struct {
 	Schemas         map[string]*SchemaOrRef    `json:"-"`
 	Responses       map[string]*Response       `json:"-"`
 	Parameters      map[string]*Parameter      `json:"-"`
+	Examples        map[string]*Example        `json:"-"`
 	Headers         map[string]*Header         `json:"-"`
 	SecuritySchemes map[string]*SecurityScheme `json:"-"`
 }
 
 // Empty reports whether the components section has no content to emit.
 func (c *Components) Empty() bool {
-	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.Headers) == 0 && len(c.SecuritySchemes) == 0)
+	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.Examples) == 0 && len(c.Headers) == 0 && len(c.SecuritySchemes) == 0)
 }
 
 // MarshalJSON emits components sub-maps with keys in lexicographic order so
@@ -706,6 +738,9 @@ func (c *Components) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "parameters", c.Parameters); err != nil {
+		return nil, err
+	}
+	if err := writeSortedKeys(&buf, &first, "examples", c.Examples); err != nil {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "headers", c.Headers); err != nil {
