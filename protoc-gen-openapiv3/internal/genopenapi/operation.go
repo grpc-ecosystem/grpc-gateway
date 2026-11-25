@@ -57,6 +57,11 @@ func buildOperation(b *schemaBuilder, svc *descriptor.Service, tag string, m *de
 		if err := applyResponseOverrides(b, op.Responses, o.GetResponses()); err != nil {
 			return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
 		}
+		if rb := o.GetRequestBody(); rb != nil {
+			if err := applyRequestBodyOverride(b, m, op, rb); err != nil {
+				return nil, fmt.Errorf("openapiv3 operation %s.%s: %w", svc.GetName(), m.GetName(), err)
+			}
+		}
 		if o.GetOperationId() != "" && bindingIdx > 0 {
 			// Suffix additional bindings like the default ID so the
 			// operationId stays unique.
@@ -556,8 +561,22 @@ func convertResponse(b *schemaBuilder, label string, o *options.Response) (*Resp
 		return nil, err
 	}
 	r.Headers = headers
+	s, err := annotatedMessagesSchema(b, label, o.GetMessages())
+	if err != nil {
+		return nil, err
+	}
+	if s != nil {
+		r.WithJSONSchema(s)
+	}
+	return r, nil
+}
+
+// annotatedMessagesSchema resolves the messages named in a response or
+// request body annotation to a single schema: the message's own for one
+// name, a oneOf for several, and nil for none.
+func annotatedMessagesSchema(b *schemaBuilder, label string, names []string) (*SchemaOrRef, error) {
 	var schemas []*SchemaOrRef
-	for i, name := range o.GetMessages() {
+	for i, name := range names {
 		s, err := annotatedMessageSchema(b, name)
 		if err != nil {
 			return nil, fmt.Errorf("%s.messages[%d]: %w", label, i, err)
@@ -566,12 +585,103 @@ func convertResponse(b *schemaBuilder, label string, o *options.Response) (*Resp
 	}
 	switch len(schemas) {
 	case 0:
+		return nil, nil
 	case 1:
-		r.WithJSONSchema(schemas[0])
+		return schemas[0], nil
 	default:
-		r.WithJSONSchema(&SchemaOrRef{Value: &Schema{OneOf: schemas}})
+		return &SchemaOrRef{Value: &Schema{OneOf: schemas}}, nil
 	}
-	return r, nil
+}
+
+// applyRequestBodyOverride applies the request_body of an openapiv3_operation
+// annotation to the request body generated for one binding. A ref replaces
+// the body with a $ref to an entry of the document's
+// components.request_bodies; otherwise description and messages replace the
+// generated values. Bindings without a body are left alone, but the method
+// must have at least one binding with a body.
+func applyRequestBodyOverride(b *schemaBuilder, m *descriptor.Method, op *Operation, o *options.RequestBody) error {
+	const label = "request_body"
+	if op.RequestBody == nil {
+		if methodHasRequestBody(b, m) {
+			return nil
+		}
+		return fmt.Errorf("%s: the method has no request body; set body in its google.api.http rule", label)
+	}
+	if name := o.GetRef(); name != "" {
+		if requestBodySetsInlineFields(o) {
+			return fmt.Errorf("%s: ref %q can't be combined with other fields", label, name)
+		}
+		if b.doc.Components.RequestBodies[name] == nil {
+			return fmt.Errorf("%s: references undeclared component request body %q; add it to openapiv3_document.components.request_bodies", label, name)
+		}
+		op.RequestBody = &RequestBodyRef{Ref: "#/components/requestBodies/" + name}
+		return nil
+	}
+	s, err := annotatedMessagesSchema(b, label, o.GetMessages())
+	if err != nil {
+		return err
+	}
+	body := op.RequestBody.Value
+	if v := o.GetDescription(); v != "" {
+		body.Description = v
+	}
+	if s != nil {
+		body.Content = map[string]*MediaType{"application/json": {Schema: s}}
+	}
+	return nil
+}
+
+// methodHasRequestBody reports whether any binding of m gets a request body.
+func methodHasRequestBody(b *schemaBuilder, m *descriptor.Method) bool {
+	if m.RequestType == nil {
+		return false
+	}
+	for _, binding := range m.Bindings {
+		if binding.Body != nil && needsRequestBody(binding.HTTPMethod, b.reg.IsAllowDeleteBody()) {
+			return true
+		}
+	}
+	return false
+}
+
+// buildComponentRequestBodies converts the reusable request bodies of a
+// document-level Components annotation. An entry must name the messages its
+// body holds, since there's no binding to derive a schema from, and can't be
+// a reference itself.
+func buildComponentRequestBodies(b *schemaBuilder, bodies map[string]*options.RequestBody) (map[string]*RequestBody, error) {
+	if len(bodies) == 0 {
+		return nil, nil
+	}
+	out := make(map[string]*RequestBody, len(bodies))
+	// Sorted so errors and schema registration don't depend on map order.
+	for _, name := range slices.Sorted(maps.Keys(bodies)) {
+		label := fmt.Sprintf("request_bodies[%q]", name)
+		if !componentNamePattern.MatchString(name) {
+			return nil, fmt.Errorf("%s: name may only contain letters, digits, \".\", \"-\" and \"_\"", label)
+		}
+		o := bodies[name]
+		if o.GetRef() != "" {
+			return nil, fmt.Errorf("%s: ref is not allowed on a component request body", label)
+		}
+		if len(o.GetMessages()) == 0 {
+			return nil, fmt.Errorf("%s: messages is required", label)
+		}
+		s, err := annotatedMessagesSchema(b, label, o.GetMessages())
+		if err != nil {
+			return nil, err
+		}
+		out[name] = &RequestBody{
+			Description: o.GetDescription(),
+			Content:     map[string]*MediaType{"application/json": {Schema: s}},
+			Required:    true,
+		}
+	}
+	return out, nil
+}
+
+// requestBodySetsInlineFields reports whether o sets any field besides ref.
+func requestBodySetsInlineFields(o *options.RequestBody) bool {
+	return o.GetDescription() != "" || len(o.GetMessages()) > 0
 }
 
 // annotatedMessageSchema resolves a message named in a response annotation to

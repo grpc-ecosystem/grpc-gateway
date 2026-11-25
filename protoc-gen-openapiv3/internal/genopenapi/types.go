@@ -713,13 +713,14 @@ type Components struct {
 	Responses       map[string]*Response       `json:"-"`
 	Parameters      map[string]*Parameter      `json:"-"`
 	Examples        map[string]*Example        `json:"-"`
+	RequestBodies   map[string]*RequestBody    `json:"-"`
 	Headers         map[string]*Header         `json:"-"`
 	SecuritySchemes map[string]*SecurityScheme `json:"-"`
 }
 
 // Empty reports whether the components section has no content to emit.
 func (c *Components) Empty() bool {
-	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.Examples) == 0 && len(c.Headers) == 0 && len(c.SecuritySchemes) == 0)
+	return c == nil || (len(c.Schemas) == 0 && len(c.Responses) == 0 && len(c.Parameters) == 0 && len(c.Examples) == 0 && len(c.RequestBodies) == 0 && len(c.Headers) == 0 && len(c.SecuritySchemes) == 0)
 }
 
 // MarshalJSON emits components sub-maps with keys in lexicographic order so
@@ -741,6 +742,9 @@ func (c *Components) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "examples", c.Examples); err != nil {
+		return nil, err
+	}
+	if err := writeSortedKeys(&buf, &first, "requestBodies", c.RequestBodies); err != nil {
 		return nil, err
 	}
 	if err := writeSortedKeys(&buf, &first, "headers", c.Headers); err != nil {
