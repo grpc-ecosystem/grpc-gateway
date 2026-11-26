@@ -2869,3 +2869,93 @@ func TestBuildComponentRequestBodies_Errors(t *testing.T) {
 		})
 	}
 }
+
+// TestGenerate_SkipTagForServicesWithoutEmittedOperations checks that a
+// service whose visible methods produce no OpenAPI operations — because they
+// have no google.api.http binding (gRPC-only) or only custom HTTP verbs that
+// OpenAPI 3.1 skips — does not leak an orphan entry into top-level doc.tags.
+func TestGenerate_SkipTagForServicesWithoutEmittedOperations(t *testing.T) {
+	t.Parallel()
+
+	const raw = `
+file_to_generate: "mixed/v1/mixed.proto"
+proto_file: {
+  name: "mixed/v1/mixed.proto"
+  package: "mixed.v1"
+  message_type: {
+    name: "Item"
+    field: {
+      name: "id"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "id"
+    }
+  }
+  service: {
+    name: "PublicService"
+    method: {
+      name: "GetItem"
+      input_type: ".mixed.v1.Item"
+      output_type: ".mixed.v1.Item"
+      options: {
+        [google.api.http]: {
+          get: "/v1/items/{id}"
+        }
+      }
+    }
+    method: {
+      name: "InternalPing"
+      input_type: ".mixed.v1.Item"
+      output_type: ".mixed.v1.Item"
+    }
+  }
+  service: {
+    name: "GrpcOnlyService"
+    method: {
+      name: "SyncItem"
+      input_type: ".mixed.v1.Item"
+      output_type: ".mixed.v1.Item"
+    }
+  }
+  service: {
+    name: "CustomVerbOnlyService"
+    method: {
+      name: "LockItem"
+      input_type: ".mixed.v1.Item"
+      output_type: ".mixed.v1.Item"
+      options: {
+        [google.api.http]: {
+          custom: {
+            kind: "LOCK"
+            path: "/v1/items/{id}:lock"
+          }
+        }
+      }
+    }
+  }
+  options: {
+    go_package: "github.com/example/mixed/v1;mixedv1"
+  }
+  syntax: "proto3"
+}
+`
+	req := new(pluginpb.CodeGeneratorRequest)
+	if err := prototext.Unmarshal([]byte(raw), req); err != nil {
+		t.Fatalf("prototext.Unmarshal: %v", err)
+	}
+	got := runGenerator(t, req)
+
+	var doc struct {
+		Tags  json.RawMessage `json:"tags"`
+		Paths map[string]any  `json:"paths"`
+	}
+	if err := json.Unmarshal(got, &doc); err != nil {
+		t.Fatalf("unmarshal output: %v\n%s", err, string(got))
+	}
+
+	if _, ok := doc.Paths["/v1/items/{id}"]; !ok {
+		t.Fatalf("expected path /v1/items/{id}, got %v", doc.Paths)
+	}
+	assertJSONEqual(t, doc.Tags, []byte(`[{"name": "PublicService"}]`))
+}
