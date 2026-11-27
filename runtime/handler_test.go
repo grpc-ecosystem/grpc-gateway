@@ -11,6 +11,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	pb "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -25,6 +26,15 @@ type fakeResponseBodyWrapper struct {
 func (r fakeResponseBodyWrapper) XXX_ResponseBody() interface{} {
 	resp := r.Message.(*pb.SimpleMessage)
 	return resp.Id
+}
+
+type fakeHTTPBodyResponseWrapper struct {
+	proto.Message
+	body *httpbody.HttpBody
+}
+
+func (r fakeHTTPBodyResponseWrapper) XXX_ResponseBody() interface{} {
+	return r.body
 }
 
 func TestForwardResponseStream(t *testing.T) {
@@ -389,6 +399,157 @@ func TestForwardResponseMessage(t *testing.T) {
 
 			if string(body) != string(want) {
 				t.Errorf("ForwardResponseMessage() = \"%s\" want \"%s\"", body, want)
+			}
+		})
+	}
+}
+
+func TestForwardResponseMessageContentType(t *testing.T) {
+	t.Parallel()
+
+	pdfBytes := []byte("%PDF-1.7\n")
+	csvBytes := []byte("id,name\n1,alice\n")
+
+	tests := []struct {
+		name            string
+		resp            proto.Message
+		marshaler       runtime.Marshaler
+		frw             runtime.ForwardResponseRewriter
+		fwdOpts         []func(context.Context, http.ResponseWriter, proto.Message) error
+		wantStatus      int
+		wantContentType string
+		wantHasCT       bool
+		wantBody        []byte
+	}{
+		{
+			name:      "rewriter returns HttpBody updates Content-Type",
+			resp:      &pb.SimpleMessage{Id: "report"},
+			marshaler: &runtime.HTTPBodyMarshaler{Marshaler: &runtime.JSONPb{}},
+			frw: func(_ context.Context, _ proto.Message) (any, error) {
+				return &httpbody.HttpBody{
+					ContentType: "application/pdf",
+					Data:        pdfBytes,
+				}, nil
+			},
+			wantStatus:      http.StatusOK,
+			wantContentType: "application/pdf",
+			wantHasCT:       true,
+			wantBody:        pdfBytes,
+		},
+		{
+			name: "responseBody returning HttpBody updates Content-Type",
+			resp: fakeHTTPBodyResponseWrapper{
+				Message: &pb.SimpleMessage{Id: "export"},
+				body: &httpbody.HttpBody{
+					ContentType: "text/csv",
+					Data:        csvBytes,
+				},
+			},
+			marshaler:       &runtime.HTTPBodyMarshaler{Marshaler: &runtime.JSONPb{}},
+			wantStatus:      http.StatusOK,
+			wantContentType: "text/csv",
+			wantHasCT:       true,
+			wantBody:        csvBytes,
+		},
+		{
+			name: "responseBody returning HttpBody with option calling WriteHeader",
+			resp: fakeHTTPBodyResponseWrapper{
+				Message: &pb.SimpleMessage{Id: "export"},
+				body: &httpbody.HttpBody{
+					ContentType: "text/csv",
+					Data:        csvBytes,
+				},
+			},
+			marshaler: &runtime.HTTPBodyMarshaler{Marshaler: &runtime.JSONPb{}},
+			fwdOpts: []func(context.Context, http.ResponseWriter, proto.Message) error{
+				func(_ context.Context, w http.ResponseWriter, _ proto.Message) error {
+					w.WriteHeader(http.StatusCreated)
+					return nil
+				},
+			},
+			wantStatus:      http.StatusCreated,
+			wantContentType: "text/csv",
+			wantHasCT:       true,
+			wantBody:        csvBytes,
+		},
+		{
+			name:      "ForwardResponseOption Content-Type override preserved over rewriter",
+			resp:      &pb.SimpleMessage{Id: "report"},
+			marshaler: &runtime.HTTPBodyMarshaler{Marshaler: &runtime.JSONPb{}},
+			frw: func(_ context.Context, _ proto.Message) (any, error) {
+				return &httpbody.HttpBody{
+					ContentType: "application/pdf",
+					Data:        pdfBytes,
+				}, nil
+			},
+			fwdOpts: []func(context.Context, http.ResponseWriter, proto.Message) error{
+				func(_ context.Context, w http.ResponseWriter, _ proto.Message) error {
+					w.Header().Set("Content-Type", "application/vnd.custom+pdf")
+					return nil
+				},
+			},
+			wantStatus:      http.StatusOK,
+			wantContentType: "application/vnd.custom+pdf",
+			wantHasCT:       true,
+			wantBody:        pdfBytes,
+		},
+		{
+			name:      "ForwardResponseOption suppressing Content-Type stays suppressed",
+			resp:      &pb.SimpleMessage{Id: "report"},
+			marshaler: &runtime.HTTPBodyMarshaler{Marshaler: &runtime.JSONPb{}},
+			frw: func(_ context.Context, _ proto.Message) (any, error) {
+				return &httpbody.HttpBody{
+					ContentType: "application/pdf",
+					Data:        pdfBytes,
+				}, nil
+			},
+			fwdOpts: []func(context.Context, http.ResponseWriter, proto.Message) error{
+				func(_ context.Context, w http.ResponseWriter, _ proto.Message) error {
+					w.Header()["Content-Type"] = nil
+					return nil
+				},
+			},
+			wantStatus: http.StatusOK,
+			wantHasCT:  false,
+			wantBody:   pdfBytes,
+		},
+	}
+
+	ctx := runtime.NewServerMetadataContext(context.Background(), runtime.ServerMetadata{})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			req := httptest.NewRequest(http.MethodGet, "http://example.com/foo", nil)
+			rec := httptest.NewRecorder()
+
+			var muxOpts []runtime.ServeMuxOption
+			if tt.frw != nil {
+				muxOpts = append(muxOpts, runtime.WithForwardResponseRewriter(tt.frw))
+			}
+
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(muxOpts...), tt.marshaler, rec, req, tt.resp, tt.fwdOpts...)
+
+			w := rec.Result()
+			defer w.Body.Close()
+
+			if w.StatusCode != tt.wantStatus {
+				t.Errorf("StatusCode = %d, want %d", w.StatusCode, tt.wantStatus)
+			}
+			gotCT := rec.Header().Values("Content-Type")
+			if tt.wantHasCT {
+				if len(gotCT) != 1 || gotCT[0] != tt.wantContentType {
+					t.Errorf("Content-Type = %v, want [%q]", gotCT, tt.wantContentType)
+				}
+			} else if len(gotCT) != 0 {
+				t.Errorf("Content-Type = %v, want header suppressed", gotCT)
+			}
+
+			body, err := io.ReadAll(w.Body)
+			if err != nil {
+				t.Fatalf("io.ReadAll() failed: %v", err)
+			}
+			if string(body) != string(tt.wantBody) {
+				t.Errorf("body = %q, want %q", body, tt.wantBody)
 			}
 		})
 	}

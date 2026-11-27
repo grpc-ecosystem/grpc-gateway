@@ -171,7 +171,11 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		w.Header().Set("Transfer-Encoding", "chunked")
 	}
 
-	contentType := marshaler.ContentType(resp)
+	var initialBody interface{} = resp
+	if rb, ok := resp.(responseBody); ok {
+		initialBody = rb.XXX_ResponseBody()
+	}
+	contentType := marshaler.ContentType(initialBody)
 	w.Header().Set("Content-Type", contentType)
 
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
@@ -184,12 +188,16 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
 	}
-	var buf []byte
+	var body interface{} = respRw
 	if rb, ok := respRw.(responseBody); ok {
-		buf, err = marshaler.Marshal(rb.XXX_ResponseBody())
-	} else {
-		buf, err = marshaler.Marshal(respRw)
+		body = rb.XXX_ResponseBody()
 	}
+	if vals := w.Header()["Content-Type"]; len(vals) == 1 && vals[0] == contentType {
+		if bodyContentType := marshaler.ContentType(body); bodyContentType != contentType {
+			w.Header().Set("Content-Type", bodyContentType)
+		}
+	}
+	buf, err := marshaler.Marshal(body)
 	if err != nil {
 		grpclog.Errorf("Marshal error: %v", err)
 		HTTPError(ctx, mux, marshaler, w, req, err)
