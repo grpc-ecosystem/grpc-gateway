@@ -347,6 +347,29 @@ func (p FieldPath) String() string {
 	return strings.Join(components, ".")
 }
 
+// HasOneofMember reports whether a component of the path is a member of a oneof.
+// Synthetic oneofs of proto3 optional fields don't count.
+func (p FieldPath) HasOneofMember() bool {
+	for _, c := range p {
+		if c.Target != nil && !c.Target.GetProto3Optional() && c.Target.OneofIndex != nil {
+			return true
+		}
+	}
+	return false
+}
+
+// GetterExpr returns a Go expression that reads the field through the generated
+// getters, e.g. msg.GetA().GetB(). Unlike AssignableExpr it doesn't panic when a
+// oneof on the path holds another member or is unset, the getters return the zero
+// value instead.
+func (p FieldPath) GetterExpr(msgExpr string) string {
+	expr := msgExpr
+	for _, c := range p {
+		expr += ".Get" + casing.Camel(c.Name) + "()"
+	}
+	return expr
+}
+
 // IsNestedProto3 indicates whether the FieldPath is a nested Proto3 path.
 func (p FieldPath) IsNestedProto3() bool {
 	if len(p) > 1 && !p[0].Target.Message.File.proto2() {
