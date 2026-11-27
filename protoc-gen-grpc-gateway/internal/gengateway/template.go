@@ -916,6 +916,8 @@ func (m response_{{ $svc.GetName }}_{{ $m.GetName }}_{{ $b.Index }}) XXX_Respons
 	{{- else }}
 	return response.Get{{ $b.ResponseBody.FieldPath.String | camelIdentifier }}()
 	{{- end }}
+	{{- else if $b.ResponseBody.FieldPath.HasOneofMember }}
+	return {{ $b.ResponseBody.FieldPath.GetterExpr "response" }}
 	{{- else }}
 	return {{ $b.ResponseBody.AssignableExpr "response" $m.Service.File.GoPkg.Path }}
 	{{- end }}

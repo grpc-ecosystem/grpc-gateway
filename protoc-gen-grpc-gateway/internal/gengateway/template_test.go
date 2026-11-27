@@ -322,6 +322,94 @@ func TestApplyTemplateNestedResponseBody(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateOneofMemberResponseBody(t *testing.T) {
+	reqdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleRequest"),
+	}
+	fieldDesc := &descriptorpb.FieldDescriptorProto{
+		Name:       proto.String("text"),
+		Number:     proto.Int32(1),
+		Label:      descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+		Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		OneofIndex: proto.Int32(0),
+	}
+	respdesc := &descriptorpb.DescriptorProto{
+		Name:      proto.String("ExampleResponse"),
+		Field:     []*descriptorpb.FieldDescriptorProto{fieldDesc},
+		OneofDecl: []*descriptorpb.OneofDescriptorProto{{Name: proto.String("result")}},
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleRequest"),
+		OutputType: proto.String("ExampleResponse"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	req := &descriptor.Message{
+		DescriptorProto: reqdesc,
+	}
+	resp := &descriptor.Message{
+		DescriptorProto: respdesc,
+	}
+	field := &descriptor.Field{
+		Message:              resp,
+		FieldDescriptorProto: fieldDesc,
+	}
+	resp.Fields = []*descriptor.Field{field}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			MessageType: []*descriptorpb.DescriptorProto{reqdesc, respdesc},
+			Service:     []*descriptorpb.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{req, resp},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           req,
+						ResponseType:          resp,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl:   compilePath(t, "/v1/example"),
+								ResponseBody: &descriptor.Body{
+									FieldPath: descriptor.FieldPath{
+										{
+											Name:   "text",
+											Target: field,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+	// A type assertion on the oneof would panic when another member is set.
+	if want := "return response.GetText()\n"; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if notWant := "response.Result.("; strings.Contains(got, notWant) {
+		t.Errorf("applyTemplate(%#v) = %s; want not to contain %s", file, got, notWant)
+	}
+}
+
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),

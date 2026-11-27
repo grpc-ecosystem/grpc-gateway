@@ -305,6 +305,48 @@ func TestFieldPathOpaqueSetterExpr(t *testing.T) {
 	}
 }
 
+func TestFieldPathGetterExpr(t *testing.T) {
+	oneofMember := &Field{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{OneofIndex: proto.Int32(0)}}
+	optional := &Field{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{OneofIndex: proto.Int32(0), Proto3Optional: proto.Bool(true)}}
+	plain := &Field{FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{}}
+
+	tcs := map[string]struct {
+		fieldPath FieldPath
+		want      string
+		hasOneof  bool
+	}{
+		"top-level field": {
+			fieldPath: FieldPath{{Name: "data", Target: plain}},
+			want:      "resp.GetData()",
+		},
+		"oneof member": {
+			fieldPath: FieldPath{{Name: "text_value", Target: oneofMember}},
+			want:      "resp.GetTextValue()",
+			hasOneof:  true,
+		},
+		"nested oneof member": {
+			fieldPath: FieldPath{{Name: "result", Target: plain}, {Name: "error", Target: oneofMember}},
+			want:      "resp.GetResult().GetError()",
+			hasOneof:  true,
+		},
+		"proto3 optional": {
+			fieldPath: FieldPath{{Name: "count", Target: optional}},
+			want:      "resp.GetCount()",
+		},
+	}
+
+	for name, tc := range tcs {
+		t.Run(name, func(t *testing.T) {
+			if got := tc.fieldPath.GetterExpr("resp"); got != tc.want {
+				t.Errorf("GetterExpr(%q) = %q; want %q", "resp", got, tc.want)
+			}
+			if got := tc.fieldPath.HasOneofMember(); got != tc.hasOneof {
+				t.Errorf("HasOneofMember() = %t; want %t", got, tc.hasOneof)
+			}
+		})
+	}
+}
+
 func TestGoType(t *testing.T) {
 	src := `
 		name: 'example.proto'
