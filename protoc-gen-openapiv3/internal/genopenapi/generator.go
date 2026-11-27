@@ -103,9 +103,10 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 				return nil, false, fmt.Errorf("openapiv3 service %s: %w", svc.GetName(), err)
 			}
 		}
-		// Track whether any methods of this service are visible,
-		// to avoid emitting a tag for a service with only hidden methods.
-		hasVisibleMethod := false
+		// Track whether any HTTP operation was emitted for this service,
+		// to avoid emitting a tag for a service with only hidden, unbound,
+		// or unsupported-method bindings.
+		hasEmittedOperation := false
 
 		for _, method := range svc.Methods {
 			if !isVisible(methodVisibility(method), reg) {
@@ -141,15 +142,13 @@ func generateFile(reg *descriptor.Registry, file *descriptor.File) (*Document, b
 					doc.Paths.Set(urlPath, item)
 				}
 				item.SetOperation(binding.HTTPMethod, op)
+				hasEmittedOperation = true
 			}
-			// At least one method is visible, so the service's tag
-			// should be emitted.
-			hasVisibleMethod = true
 		}
 
-		// Emit the service's tag if it has any visible
-		// methods and the tag hasn't already been emitted.
-		if hasVisibleMethod && !seenTags[tag.Name] {
+		// Emit the service's tag if it has any emitted operations
+		// and the tag hasn't already been emitted.
+		if hasEmittedOperation && !seenTags[tag.Name] {
 			seenTags[tag.Name] = true
 			doc.Tags = append(doc.Tags, tag)
 		}
