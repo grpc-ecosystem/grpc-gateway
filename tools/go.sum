@@ -2,8 +2,8 @@ github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c h1:pxW6RcqyfI9/k
 github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
-golang.org/x/exp v0.0.0-20261127181632-b10a66b71b35 h1:j8CqvuYlRup+Dk+VlMISYCW+avD6MO/bgG1TRVPc45M=
-golang.org/x/exp v0.0.0-20261127181632-b10a66b71b35/go.mod h1:VuBSChp6hKKsNlZeim+zdYf6WqX/LiHrHn6IRHeBvM4=
+golang.org/x/exp v0.0.0-20261128033645-f63ec7c7eed0 h1:hCuDbJvr2iO8wa4DdUepjd3reH0f4NjtIRpzq/Ef98Q=
+golang.org/x/exp v0.0.0-20261128033645-f63ec7c7eed0/go.mod h1:VuBSChp6hKKsNlZeim+zdYf6WqX/LiHrHn6IRHeBvM4=
 golang.org/x/exp/typeparams v0.0.0-20231108232855-2478ac86f678 h1:1P7xPZEwZMoBoz0Yze5Nx2/4pxj6nw9ZqHWXqP0iRgQ=
 golang.org/x/exp/typeparams v0.0.0-20231108232855-2478ac86f678/go.mod h1:AbB0pIl9nAr9wVwH+Z2ZpaocVmF5I4GyWCDIsVjR0bk=
 golang.org/x/mod v0.43.0 h1:MFuq5J6s35W9D3IjkwyWc9vHh0nENOrt5K8Iof4ofmg=
